@@ -17,7 +17,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Ошибка камеры"</string>
-    <string name="cannot_connect_camera" msgid="955440687597185163">"Не удается подключиться к камере."</string>
+    <string name="cannot_connect_camera" msgid="955440687597185163">"Не удалось подключиться к камере."</string>
     <string name="camera_disabled" msgid="8923911090533439312">"Камера отключена в соответствии с политикой безопасности."</string>
     <string name="camera_label" msgid="6346560772074764302">"Камера"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Видеокамера"</string>
@@ -52,11 +52,11 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Настройки камеры"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Настройки видеокамеры"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Размер фото"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 мегапикселей"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 мегапикселя"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 мегапикселя"</string>
-    <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1,3 мегапикселя"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1 мегапиксель"</string>
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 Мпикс."</string>
+    <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 Мпикс."</string>
+    <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 Мпикс."</string>
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1,3 Мпикс."</string>
+    <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1 Мпикс."</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Режим фокусировки"</string>
@@ -92,11 +92,11 @@
     <string name="switch_to_panorama_label" msgid="858801335653517864">"Переключить в режим панорамы"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Отправка картинки"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Отправка видео"</string>
-    <string name="no_picture_to_share" msgid="5352574090121328815">"Нет изображений для отправки."</string>
-    <string name="no_video_to_share" msgid="7567298642707627096">"Нет видео для отправки."</string>
+    <string name="no_picture_to_share" msgid="5352574090121328815">"Нет ни одного изображения."</string>
+    <string name="no_video_to_share" msgid="7567298642707627096">"Нет ни одного видео."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Очень быстро"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Обработка..."</string>
-    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Не удалось сохранить панораму."</string>
+    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Не удалось сохранить файл."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Панорама"</string>
     <string name="pano_capture_indication" msgid="8248825828264374507">"Создание панорамы..."</string>
     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Сохранение…"</string>
@@ -108,12 +108,15 @@
     <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"Большой рот"</string>
     <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"Маленький рот"</string>
     <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"Большой нос"</string>
-    <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"Мален. глаза"</string>
+    <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"Глаза в точку"</string>
     <string name="effect_backdropper_space" msgid="7935661090723068402">"Космос"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Закат"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Диско"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Выбрать видео"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Установите устройство на твердой поверхности и убедитесь, что позади вас нет движущихся предметов или людей."\n\n"Затем отойдите, чтобы вас было видно в камеру."</string>
+    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
+    <skip />
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Недоступно при использовании эффекта."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Чтобы сделать снимок при видеосъемке, нажмите на экран просмотра."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Невозможно сделать снимок при включенных спецэффектах."</string>

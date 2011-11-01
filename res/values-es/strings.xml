@@ -113,7 +113,10 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Atardecer"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Personalizada"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Coloca el dispositivo en una superficie plana y comprueba que no se produzca ningún movimiento detrás."\n\n"A continuación, colócate fuera de la vista de la cámara."</string>
+    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
+    <skip />
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"No se puede seleccionar si el efecto está activado."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Toca la pantalla de vista previa para hacer una foto mientras grabas vídeo."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"La instantánea de vídeo se inhabilita al activar efectos especiales."</string>

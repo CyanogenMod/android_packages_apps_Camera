@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Paglubog ng araw"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Pumili ng sarili mo"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Ipatong ang iyong device sa isang matatag na bagay at tiyaking walang kumikilos sa iyong likuran."\n\n"Pagkatapos ay umalis sa view ng camera."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Huwag munang gamitin ang iyong device"\n"Umalis muna nang ilang sandali"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Hindi mapipili kapag naka-on ang effect."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Kumuha ng isang larawan habang nagre-record ng video sa pamamagitan ng pagpindot sa screen ng preview."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Hindi pinapagana ang snapshot sa video kapag naka-on ang mga espesyal na effect."</string>

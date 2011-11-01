@@ -113,7 +113,10 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"일몰"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"디스코"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"내 동영상 선택"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"기기를 평평한 바닥에 올려놓고 뒤에 움직이는 물체가 없는지 확인합니다. "\n\n"그런 다음 카메라 뷰 밖으로 비켜섭니다."</string>
+    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
+    <skip />
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"효과를 사용 중일 때는 선택할 수 없습니다."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"동영상을 촬영하는 동안 미리보기 화면을 터치하여 사진을 찍을 수 있습니다."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"특수 효과가 설정되어 있으면 동영상 스냅샷이 사용 중지됩니다."</string>

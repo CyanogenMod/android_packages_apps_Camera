@@ -113,7 +113,10 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Zonsondergang"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Eigen keuze"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Plaats uw apparaat op een stevige ondergrond en zorg ervoor dat er geen beweging achter u te zien is."\n\n"Stap vervolgens uit beeld."</string>
+    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
+    <skip />
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Kan niet worden geselecteerd wanneer het effect is ingeschakeld."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Raak het voorbeeldscherm aan voor een foto bij video-opnamen."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Videosnapshot staat uit als speciale effecten zijn ingeschakeld."</string>
