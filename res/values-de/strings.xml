@@ -96,9 +96,9 @@
     <string name="no_video_to_share" msgid="7567298642707627096">"Kein Video zum Teilen"</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Zu schnell"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Panorama wird vorbereitet..."</string>
-    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Panorama konnte nicht gespeichert werden"</string>
+    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Panorama konnte nicht gespeichert werden."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
-    <string name="pano_capture_indication" msgid="8248825828264374507">"Panorama wird aufgenommen."</string>
+    <string name="pano_capture_indication" msgid="8248825828264374507">"Panorama wird aufgenommen..."</string>
     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Speichert..."</string>
     <string name="tap_to_focus" msgid="8863427645591903760">"Zum Fokussieren tippen"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Effekte"</string>
@@ -113,8 +113,11 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Sonnenuntergang"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Eigenes wählen"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Legen Sie Ihr Gerät auf eine stabile Oberfläche und achten Sie darauf, dass sich hinter Ihnen nichts bewegt."\n\n"Treten Sie anschließend aus dem Bild."</string>
-    <string name="not_selectable_in_effect" msgid="7967729203855039239">"Einstellung nicht wählbar, wenn Effekt aktiviert"</string>
+    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
+    <skip />
+    <string name="not_selectable_in_effect" msgid="7967729203855039239">"Einstellung nicht wählbar, wenn Effekt aktiviert ist"</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Durch Tippen Foto während Videoaufzeichnung aufnehmen"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Video-Schnappschuss ist bei Spezialeffekten deaktiviert."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Effekte löschen"</string>

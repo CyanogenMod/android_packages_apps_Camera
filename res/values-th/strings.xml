@@ -33,7 +33,7 @@
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"ไม่สามารถเข้าถึงที่เก็บข้อมูล USB"</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"ไม่สามารถเข้าถึงการ์ด SD"</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"คืนค่าเริ่มต้น"</string>
-    <string name="confirm_restore_message" msgid="6649481842684452641">"เรียกคืนการตั้งค่าเริ่มต้นของกล้องหรือไม่"</string>
+    <string name="confirm_restore_message" msgid="6649481842684452641">"คืนค่าเริ่มต้นของกล้องหรือไม่"</string>
     <string name="review_play" msgid="6378271587740884696">"เล่น"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ยกเลิก"</string>
     <string name="review_ok" msgid="5305096180300056529">"ตกลง"</string>
@@ -113,7 +113,10 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"พระอาทิตย์ตก"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"ดิสโก้"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"เลือกโดยคุณเอง"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"วางอุปกรณ์ของคุณบนพื้นผิวที่มั่นคงและแน่ใจว่าไม่มีการเคลื่อนไหวด้านหลังคุณ"\n\n"จากนั้นออกจากมุมมองของกล้อง"</string>
+    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
+    <skip />
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"ไม่สามารถเลือกหากเปิดใช้เอฟเฟ็กต์อยู่"</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"ถ่ายภาพระหว่างการบันทึกวิดีโอโดยการแตะหน้าจอดูตัวอย่าง"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"การจับภาพวิดีโอจะถูกปิดใช้งานเมื่อเปิดใช้เอฟเฟ็กต์พิเศษ"</string>
