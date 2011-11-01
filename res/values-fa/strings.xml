@@ -93,7 +93,7 @@
     <string name="share_picture_via" msgid="1375127849431890447">"اشتراک گذاری تصویر از طریق"</string>
     <string name="share_video_via" msgid="5152302809166549015">"اشتراک گذاری ویدیو از طریق"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"عکسی برای اشتراک وجود ندارد."</string>
-    <string name="no_video_to_share" msgid="7567298642707627096">"ویدیویی برای اشتراک وجود ندارد."</string>
+    <string name="no_video_to_share" msgid="7567298642707627096">"ویدیویی برای اشتراک‌گذاری وجود ندارد."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"بسیار سریع"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"تهیه پانوراما"</string>
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"ذخیره پانوراما امکان‌پذیر نیست."</string>
@@ -113,7 +113,10 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"غروب آفتاب"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"دیسکو"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"انتخاب مورد خود"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"دستگاه خود را بر روی یک سطح ثابت و محکم قرار دهید و مطمئن شوید هیچ حرکتی پشت سر شما وجود نداشته باشد."\n\n"سپس از نمای دوربین خارج شوید."</string>
+    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
+    <skip />
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"زمان روشن بودن جلوه قابل انتخاب نیست."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"در حین ضبط ویدیو با لمس کردن صفحه پیش‌نمایش یک عکس بگیرید."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"هنگام فعال بودن جلوه‌های ویژه، عکس فوری از ویدیو غیرفعال است."</string>

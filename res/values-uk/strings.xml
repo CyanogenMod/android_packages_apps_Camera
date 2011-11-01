@@ -113,7 +113,10 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Захід сонця"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Диско"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Вибрати власне"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Покладіть свій пристрій на нерухому поверхню та переконайтеся, що за вами немає жодного руху."\n\n"Потім вийдіть із поля зору камери."</string>
+    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
+    <skip />
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Неможливо вибрати, якщо ввімкнено ефект."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Зробіть фото під час відеозйомки, торкнувшись екрана перегляду."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Функцію миттєвого знімка відео вимкнено, коли ввімк. спецефекти."</string>

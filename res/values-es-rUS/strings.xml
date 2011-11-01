@@ -96,11 +96,11 @@
     <string name="no_video_to_share" msgid="7567298642707627096">"Ningún video para compartir"</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Muy rápido"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Preparando el panorama"</string>
-    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"No se pudo guardar el panorama."</string>
+    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"No se pudo guardar la im. panorámica."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
     <string name="pano_capture_indication" msgid="8248825828264374507">"Capturando el panorama"</string>
     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Guardando..."</string>
-    <string name="tap_to_focus" msgid="8863427645591903760">"Toca para enfocar"</string>
+    <string name="tap_to_focus" msgid="8863427645591903760">"Toca para enfocar."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efectos"</string>
     <string name="effect_none" msgid="3601545724573307541">"Ninguno"</string>
     <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Comprimir"</string>
@@ -112,8 +112,11 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"En el espacio"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Crepúsculo"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
-    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Elije tu fondo"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Coloca el dispositivo sobre una superficie firme y asegúrate de que no se produzca ningún movimiento detrás de ti."\n\n"Luego ubícate fuera del alcance de la cámara."</string>
+    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Elige tu fondo"</string>
+    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
+    <skip />
+    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
+    <skip />
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"No se puede seleccionar si se activó el efecto."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Toca la pant. de vista prev. mientras grabas para tomar una foto."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Las instantáneas de video se inhabilitan al activar los efectos."</string>
