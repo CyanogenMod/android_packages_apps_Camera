@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Saulėlydis"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Pasir. savo"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Įrenginį padėkite ant stabilaus paviršiaus ir įsitikinkite, kad už jūsų niekas nejuda."\n\n"Pasitraukite iš kameros regėjimo lauko."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Išjunkite įrenginį"\n"Trumpam pašalinkite iš rodinio"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Negalima pasirinkti, kai įjungtas efektas."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Kai įrašomas vaizdo įraš., fotograf. paliesdami peržiūros ekraną."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Moment. vaizdo įrašo vaizdas neleidž., kai įjungti spec. efektai."</string>

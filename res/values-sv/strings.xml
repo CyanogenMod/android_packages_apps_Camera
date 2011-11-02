@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Solnedgång"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Välj en egen"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Placera enheten på en stadig yta och se till att det är lugnt bakom dig."\n\n"Gå åt sidan så du inte syns på bilden."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Lägg ned enheten"\n"Ställ dig utom synhåll för ett ögonblick"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Det går inte att välja detta när effekten är på."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Ta ett foto under videoinspelningen genom att trycka på skärmen."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Ögonblicksbilden av en video inaktiveras när specialeffekter är aktiverade."</string>

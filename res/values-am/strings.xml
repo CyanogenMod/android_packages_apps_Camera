@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"ፀሀይ ስትጠልቅ"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"ዲስኮ"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"የራስህን  ምረጥ"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"መሳሪያዎን በዝርግ ስፍራ ላይ ያስቀምጡ እና ከእርስዎ ጀርባ ምንም ዓይነት መነቃነቅ እንደሌለ እርግጠኛ ሁን፡፡"\n\n" ከዛ በኋላ ከካሜራው እይታ ለቀው ይውጡ፡፡"</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"መሳሪያህን ወደታች"\n" አስቀምጥ ለትንሽ ቆይታ ከዕይታ ውጪ ሁን"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"ማሳመሪያው ሲበራ  ሊመረጥ አይችልም::"</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"የቅድመ ዕይታ ማያን በመዳሰስ በማድረግ በቪዲዮ ቀረፃ ጊዜ ፎቶ አንሳ።"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"ቪዲዮ ማንሻ ልዩ ማሳመሪያዎች ሲበሩ ይቦዝናል::"</string>

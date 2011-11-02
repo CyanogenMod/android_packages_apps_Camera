@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Sunset"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Choose your own"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Place your device on a steady surface and make sure that there\'s no movement behind you."\n\n"Then move out of the camera\'s view."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Put your device down"\n"Step out of view for a moment"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Not selectable when the effect is on."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Take a photo during video recording by touching the preview screen."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Video snapshot is disabled when special effects are on."</string>

@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Hoàng hôn"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Chọn hình nền của chính bạn"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Đặt thiết bị của bạn lên bề mặt chắc chắn và đảm bảo không có chuyển động nào phía sau bạn."\n\n"Sau đó, thoát khỏi chế độ xem của máy ảnh."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Đặt thiết bị của bạn xuống"\n"Thoát khỏi chế độ xem trong giây lát"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Không thể chọn khi hiệu ứng này được bật."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Chụp ảnh khi quay video bằng cách chạm vào màn hình xem trước."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Chụp nhanh video bị vô hiệu khi các hiệu ứng đặc biệt được bật."</string>
