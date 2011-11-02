@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Ukushona kwelanga"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"i-Disco!"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Khetha okwakho"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Beka i-device yakho endaweni enganyakazi bese uqinisekisa ukuthi akukho ukunyakaza ngemuva kwakho."\n\n"Bese usuka lapho kubheke khona ikhamera."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Setha idivayisi yakho iyephansi"\n"Phuma kancane ekubukeni"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Lokhu akukhetheki uma isinandisi sisavulekile."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Thatha isithombe ngesikhathi sokuqoshwa kwevidyo ngokuchofoza eskrinini sokubuka ngaphambili kokudlala."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Umfanekiso wevidyo awusebenzi uma izinandisi ezikhethekile zivuliwe."</string>
@@ -124,10 +124,10 @@
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Isithombe sakamuva"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Iswishi yekhamera yangaphambili kanye nangemuva"</string>
     <string name="accessibility_mode_picker" msgid="3278002189966833100">"Ikhamera, ividiyo noma ukhetho lwe-panorama"</string>
-    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Okunye ukulawula kokuhlela"</string>
-    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Vala ukulawula kokuhlela"</string>
-    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Ukulawula i-Zumu"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Izilawuli zezilungiselelo ezingaphezulu"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Vala izilawulo zezilungiso"</string>
+    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Ulawulo lokulwiza"</string>
     <string name="accessibility_decrement" msgid="1411194318538035666">"Nciphisa %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Yandisa %1$s"</string>
-    <string name="accessibility_switch" msgid="6995966685498958895">"%1$s iswishi"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"inkinobho ye-%1$s"</string>
 </resources>

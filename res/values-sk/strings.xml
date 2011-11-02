@@ -24,7 +24,7 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Nasnímané fotografie"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Nasnímané videá"</string>
     <string name="wait" msgid="8600187532323801552">"Čakajte, prosím..."</string>
-    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Pred použitím fotoaparátu pripojte zdieľaný ukladací priestor USB."</string>
+    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Pred použitím fotoaparátu pripojte zdieľané úložisko USB."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Pred použitím fotoaparátu vložte kartu SD."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Ukladací priestor USB je plný."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Vaša karta SD je plná."</string>
@@ -55,7 +55,7 @@
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 megapixlov"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 megapixle"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 megapixle"</string>
-    <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1,3 megapixelov"</string>
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1,3 megapixlov"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1 megapixel"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Západ slnka"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Zvoliť vlastné"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Umiestnite zariadenie na pevný povrch a uistite sa, že sa za vami nič nehýbe."\n\n"Potom ustúpte zo záberu fotoaparátu."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Položte svoje zariadenie"\n"Vyjdite na chvíľu zo zorného poľa"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Nastavenie nie je možné vybrať pri zap. efekte."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Počas nahrávania videa môžete fotiť dotknutím sa obrazovky ukážky."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Pri zapnutých špeciálnych efektoch je vytváranie snímok zakázané."</string>

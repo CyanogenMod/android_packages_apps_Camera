@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Pôr do Sol"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Escolher o seu"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Coloque o aparelho numa superfície estável e certifique-se de que não existe movimento atrás de si."\n\n"Em seguida, saia do alcance visual da câmara."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Pouse o aparelho"\n"Afaste-se por uns instantes"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Não selecionável ​​quando efeito ativado."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Tire fotografia durante grav. vídeo tocando no ecrã pré-visual."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Instantâneo vídeo desat. quando efeitos especiais estão ativos."</string>

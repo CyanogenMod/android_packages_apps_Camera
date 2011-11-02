@@ -94,7 +94,7 @@
     <string name="share_video_via" msgid="5152302809166549015">"Berkongsi video melalui"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"Tiada gambar untuk dikongsi."</string>
     <string name="no_video_to_share" msgid="7567298642707627096">"Tiada video untuk dikongsi."</string>
-    <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Trlalu Cepat"</string>
+    <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Trlalu cepat"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Menyediakan panorama"</string>
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Tidak dapat menyimpan panorama."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Matahari Terbenam"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Plh milik sndr"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Letakkan peranti anda di atas permukaan yang stabil dan pastikan tidak ada pergerakan di belakang anda."\n" "\n" Kemudian berjalan keluar dari pandangan kamera."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Tetapkan peranti anda ke bawah"\n"Keluar dari pandangan seketika"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Tidak boleh dipilih apabila kesan dihidupkan."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Ambil gmbr semasa rakaman video dgn menyentuh pd skrin pratonton."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Petikan video dilumpuhkan apabila kesan khas dihidupkan."</string>

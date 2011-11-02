@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Tramonto"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Scegli il tuo"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Posiziona il dispositivo su una superficie stabile e assicurati che non ci sia qualcosa in movimento dietro di te."\n\n"Dopodiché esci dall\'inquadratura della fotocamera."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Imposta il tuo dispositivo in basso"\n"Esci dalla visualizzazione per un attimo"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Non selezionabile quando l\'effetto è attivo."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Scatta una foto durante il video toccando lo schermo di anteprima."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Istantanea video disabilitata se gli effetti speciali sono attivi."</string>
