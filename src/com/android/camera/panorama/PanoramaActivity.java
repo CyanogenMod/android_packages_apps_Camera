@@ -25,6 +25,7 @@ import com.android.camera.MenuHelper;
 import com.android.camera.ModePicker;
 import com.android.camera.OnClickAttr;
 import com.android.camera.R;
+import com.android.camera.RotateDialogController;
 import com.android.camera.ShutterButton;
 import com.android.camera.SoundPlayer;
 import com.android.camera.Storage;
@@ -35,11 +36,8 @@ import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.SharePopup;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.AssetFileDescriptor;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
@@ -50,7 +48,6 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.graphics.YuvImage;
-import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.hardware.Sensor;
@@ -63,23 +60,18 @@ import android.os.ParcelFileDescriptor;
 import android.os.SystemProperties;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.File;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Activity to handle panorama capturing.
@@ -130,15 +122,6 @@ public class PanoramaActivity extends ActivityBase implements
     private TextView mTooFastPrompt;
     private ShutterButton mShutterButton;
     private Object mWaitObject = new Object();
-
-    private RotateLayout mRotateDialog;
-    private View mRotateDialogTitleLayout;
-    private View mRotateDialogButtonLayout;
-    private TextView mRotateDialogTitle;
-    private View mRotateDialogTitleSeperator;
-    private ProgressBar mRotateDialogSpinner;
-    private TextView mRotateDialogText;
-    private TextView mRotateDialogButton;
 
     private String mPreparePreviewString;
     private String mDialogTitle;
@@ -195,6 +178,8 @@ public class PanoramaActivity extends ActivityBase implements
     // respectively.
     private int mDeviceOrientation;
     private int mOrientationCompensation;
+
+    private RotateDialogController mRotateDialog;
 
     private class MosaicJpeg {
         public MosaicJpeg(byte[] data, int width, int height) {
@@ -316,8 +301,14 @@ public class PanoramaActivity extends ActivityBase implements
                         if (mPausing) {
                             resetToPreview();
                         } else {
-                            showAlertDialog(
-                                    mDialogTitle, mDialogPanoramaFailedString, mDialogOkString);
+                            mRotateDialog.showAlertDialog(
+                                    mDialogTitle, mDialogPanoramaFailedString,
+                                    mDialogOkString, new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            resetToPreview();
+                                        }},
+                                    null, null);
                         }
                         break;
                     case MSG_RESET_TO_PREVIEW:
@@ -332,12 +323,6 @@ public class PanoramaActivity extends ActivityBase implements
                 clearMosaicFrameProcessorIfNeeded();
             }
         };
-    }
-
-    @OnClickAttr
-    public void onAlertDialogButtonClicked(View v) {
-        dismissDialog();
-        resetToPreview();
     }
 
     private void setupCamera() {
@@ -604,7 +589,7 @@ public class PanoramaActivity extends ActivityBase implements
         mSurfaceTexture.setOnFrameAvailableListener(null);
 
         if (!aborted && !mThreadRunning) {
-            showWaitingDialog(mPreparePreviewString);
+            mRotateDialog.showWaitingDialog(mPreparePreviewString);
             runBackgroundThread(new Thread() {
                 @Override
                 public void run() {
@@ -716,14 +701,7 @@ public class PanoramaActivity extends ActivityBase implements
 
         mPanoLayout = findViewById(R.id.pano_layout);
 
-        mRotateDialog = (RotateLayout) findViewById(R.id.rotate_dialog_layout);
-        mRotateDialogTitleLayout = findViewById(R.id.rotate_dialog_title_layout);
-        mRotateDialogButtonLayout = findViewById(R.id.rotate_dialog_button_layout);
-        mRotateDialogTitle = (TextView) findViewById(R.id.rotate_dialog_title);
-        mRotateDialogTitleSeperator = (View) findViewById(R.id.rotate_dialog_title_divider);
-        mRotateDialogSpinner = (ProgressBar) findViewById(R.id.rotate_dialog_spinner);
-        mRotateDialogText = (TextView) findViewById(R.id.rotate_dialog_text);
-        mRotateDialogButton = (Button) findViewById(R.id.rotate_dialog_button);
+        mRotateDialog = new RotateDialogController(this, R.layout.rotate_dialog);
 
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             Rotatable[] rotateLayout = {
@@ -845,41 +823,6 @@ public class PanoramaActivity extends ActivityBase implements
         reportProgress();
     }
 
-    private void resetRotateDialog() {
-        mRotateDialogTitleLayout.setVisibility(View.GONE);
-        mRotateDialogSpinner.setVisibility(View.GONE);
-        mRotateDialogButtonLayout.setVisibility(View.GONE);
-    }
-
-    private void dismissDialog() {
-        if (mRotateDialog.getVisibility() != View.INVISIBLE) {
-            mRotateDialog.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void showAlertDialog(String title, String msg, String buttonText) {
-        resetRotateDialog();
-
-        mRotateDialogTitle.setText(title);
-        mRotateDialogTitleLayout.setVisibility(View.VISIBLE);
-
-        mRotateDialogText.setText(msg);
-
-        mRotateDialogButton.setText(buttonText);
-        mRotateDialogButtonLayout.setVisibility(View.VISIBLE);
-
-        mRotateDialog.setVisibility(View.VISIBLE);
-    }
-
-    private void showWaitingDialog(String msg) {
-        resetRotateDialog();
-
-        mRotateDialogText.setText(msg);
-        mRotateDialogSpinner.setVisibility(View.VISIBLE);
-
-        mRotateDialog.setVisibility(View.VISIBLE);
-    }
-
     private void runBackgroundThread(Thread thread) {
         mThreadRunning = true;
         thread.start();
@@ -887,7 +830,7 @@ public class PanoramaActivity extends ActivityBase implements
 
     private void onBackgroundThreadFinished() {
         mThreadRunning = false;
-        dismissDialog();
+        mRotateDialog.dismissDialog();
     }
 
     private void cancelHighResComputation() {
