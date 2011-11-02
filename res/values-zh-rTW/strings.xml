@@ -112,8 +112,8 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"太空"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"黃昏"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"迪斯可"</string>
-    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"自行選擇"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"將您的裝置放在平穩的表面上，確定自己身後沒有移動的物體。"\n\n"然後離開相機鏡頭的視野範圍。"</string>
+    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"選擇您自己的影片"</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"放下您的裝置"\n"暫時離開畫面"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"效果啟用時無法選取。"</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"影片錄製期間，只要輕觸預覽畫面即可拍攝相片。"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"特殊效果啟用時無法使用影片快照。"</string>

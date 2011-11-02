@@ -109,12 +109,12 @@
     <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"Liten munn"</string>
     <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"Stor nese"</string>
     <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"Små øyne"</string>
-    <string name="effect_backdropper_space" msgid="7935661090723068402">"I verdensrommet"</string>
+    <string name="effect_backdropper_space" msgid="7935661090723068402">"Verdensrommet"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Solnedgang"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Velg din egen"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Plassér enheten på et stødig underlag og sørg for at det ikke er noen bevegelser bak deg."\n\n"Deretter flytter du deg bort fra kamerabildet."</string>
-    <string name="not_selectable_in_effect" msgid="7967729203855039239">"Kan ikke velges når effekten er aktivert."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Sett enheten ned"\n"Hold deg ute av syne et øyeblikk"</string>
+    <string name="not_selectable_in_effect" msgid="7967729203855039239">"Kan ikke velges når effekten er slått på."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Ta bilder under videoopptak ved å trykke på forhåndsvisningen."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Øyeblikksbilder er deaktivert når spesialeffekter er aktivert."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Fjern effekter"</string>

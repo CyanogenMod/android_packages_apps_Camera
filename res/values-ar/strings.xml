@@ -104,16 +104,16 @@
     <string name="pref_video_effect_title" msgid="8243182968457289488">"تأثيرات"</string>
     <string name="effect_none" msgid="3601545724573307541">"بلا"</string>
     <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"ضغط"</string>
-    <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"العيون الكبيرة."</string>
-    <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"الفم الكبير"</string>
-    <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"الفم الصغير"</string>
-    <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"الأنف الكبير"</string>
-    <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"العيون الصغيرة"</string>
+    <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"عيون كبيرة"</string>
+    <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"فم كبير"</string>
+    <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"فم صغير"</string>
+    <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"أنف كبير"</string>
+    <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"عيون صغيرة"</string>
     <string name="effect_backdropper_space" msgid="7935661090723068402">"في الفضاء"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"الغروب"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"ديسكو"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"الاختيار الذاتي"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"ضع الجهاز على سطح ثابت وتأكد من عدم وجود حركة خلفك."\n\n"ثم انتقل إلى وضع الكاميرا."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"ضع جهازك أسفل"\n"اخرج من العرض للحظة"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"غير قابل للتحديد عند تشغيل التأثير."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"يمكنك التقاط صورة أثناء تسجيل الفيديو من خلال لمس شاشة المعاينة."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"يتم تعطيل لقطة الفيديو عند تشغيل التأثيرات الخاصة."</string>

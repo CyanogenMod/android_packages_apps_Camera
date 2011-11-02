@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Залазак сунца"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Диско"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Изаберите своје"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Поставите уређај на стабилну површину и уверите се да се иза вас ништа не помера."\n\n"Затим изађите из кадра камере."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Спустите уређај"\n"Изађите из кадра на тренутак"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Ово не може да се изабере када је ефекат укључен."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Снимите слику током снимања видео снимка додиром на екран прегледа."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Видео снимак је онемогућен када су специјални ефекти укључени."</string>

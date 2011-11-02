@@ -113,9 +113,9 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Apus de soare"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Propriu"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Aşezaţi dispozitivul pe o suprafaţă stabilă şi asiguraţi-vă că nu există mişcare în spatele dvs."\n\n"Apoi, ieşiţi din vizorul camerei foto."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Aşezaţi dispozitivul jos"\n"Ieşiţi din cadru un moment"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Nu este selectabil când efectul este activat."</string>
-    <string name="video_snapshot_hint" msgid="8159602664271448241">"Fotografiaţi în timpul înreg. video atingând ecranul de previz."</string>
+    <string name="video_snapshot_hint" msgid="8159602664271448241">"Pozaţi în timpul înregistrării atingând ecranul previzualizare."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Instant. video este dezact. când efectele speciale sunt pornite."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Ştergeţi efectul"</string>
     <string name="effect_silly_faces" msgid="3214174716769421248">"Feţe stupide"</string>

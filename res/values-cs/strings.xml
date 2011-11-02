@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Západ slunce"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Vybrat vlastní"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Umístěte zařízení na pevný povrch a zkontrolujte, zda se za vámi nic nehýbe."\n\n"Poté ustupte ze záběru kamery."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Odlište své zařízení od ostatních"\n"Vystupte na chvíli z řady"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Nastavení nelze vybrat, pokud je efekt zapnutý."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Během nahrávání videa lze fotit klepnutím na obrazovku náhledu."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Jsou-li zapnuty zvláštní efekty, jsou snímky videa zakázány."</string>
