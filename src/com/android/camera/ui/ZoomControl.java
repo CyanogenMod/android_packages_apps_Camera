@@ -41,7 +41,6 @@ public abstract class ZoomControl extends RelativeLayout implements Rotatable {
     protected ImageView mZoomIn;
     protected ImageView mZoomOut;
     protected ImageView mZoomSlider;
-    protected int mSliderPosition = 0;
     protected int mOrientation;
     private Handler mHandler;
 

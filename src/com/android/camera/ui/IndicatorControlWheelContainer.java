@@ -28,8 +28,8 @@ import android.view.View;
 
 /**
  * On the tablet UI, we have IndicatorControlWheelContainer which contains a
- * ShutterButton, a IndicatorControlWheel (which combines first-level and
- * second-level indicators) and a ZoomControlWheel.
+ * ShutterButton, an IndicatorControlWheel(which combines first-level and
+ * second-level indicators and a ZoomControlWheel).
  */
 public class IndicatorControlWheelContainer extends IndicatorControlContainer {
     public static final int STROKE_WIDTH = 87;
@@ -41,7 +41,6 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
     private View mShutterButton;
     private double mShutterButtonRadius;
     private IndicatorControlWheel mIndicatorControlWheel;
-    private ZoomControlWheel mZoomControlWheel;
     private int mCenterX, mCenterY;
 
     public IndicatorControlWheelContainer(Context context, AttributeSet attrs) {
@@ -53,9 +52,6 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
         mShutterButton = findViewById(R.id.shutter_button);
         mShutterButtonRadius = Util.dpToPixel(SHUTTER_BUTTON_RADIUS);
 
-        mZoomControlWheel = (ZoomControlWheel) findViewById(R.id.zoom_control);
-        mZoomControlWheel.setOnIndicatorEventListener(this);
-
         mIndicatorControlWheel = (IndicatorControlWheel) findViewById(
                 R.id.indicator_control_wheel);
     }
@@ -64,22 +60,9 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
             boolean isZoomSupported, String[] keys, String[] otherSettingKeys) {
         mIndicatorControlWheel.initialize(context, group, isZoomSupported,
                 keys, otherSettingKeys);
-        mIndicatorControlWheel.setOnIndicatorEventListener(this);
     }
 
     public void onIndicatorEvent(int event) {
-        switch (event) {
-            case OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL:
-                mIndicatorControlWheel.setVisibility(View.GONE);
-                mZoomControlWheel.setVisibility(View.VISIBLE);
-                mZoomControlWheel.startZoomControl();
-                break;
-
-            case OnIndicatorEventListener.EVENT_LEAVE_ZOOM_CONTROL:
-                mZoomControlWheel.setVisibility(View.GONE);
-                mIndicatorControlWheel.setVisibility(View.VISIBLE);
-                break;
-        }
     }
 
     @Override
@@ -96,8 +79,6 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
         if (radius <= mShutterButtonRadius) {
             if (mIndicatorControlWheel.getVisibility() == View.VISIBLE) {
                 mIndicatorControlWheel.onTouchOutBound();
-            } else {
-                return mZoomControlWheel.dispatchTouchEvent(event);
             }
             if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP) {
                 return mShutterButton.dispatchTouchEvent(event);
@@ -112,11 +93,7 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
             return true;
         }
 
-        if (mIndicatorControlWheel.getVisibility() == View.VISIBLE) {
-            return mIndicatorControlWheel.dispatchTouchEvent(event);
-        } else {
-            return mZoomControlWheel.dispatchTouchEvent(event);
-        }
+        return mIndicatorControlWheel.dispatchTouchEvent(event);
     }
 
     @Override
@@ -134,7 +111,6 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
                 mCenterY + shutterButtonHeight - shutterButtonHeight / 2);
         // Layout the control wheel.
         mIndicatorControlWheel.layout(0, 0, right - left, bottom - top);
-        mZoomControlWheel.layout(0, 0, right - left, bottom - top);
     }
 
     @Override
@@ -143,7 +119,6 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
         int freeSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
         mShutterButton.measure(freeSpec, freeSpec);
         mIndicatorControlWheel.measure(freeSpec, freeSpec);
-        mZoomControlWheel.measure(freeSpec, freeSpec);
 
         // Measure myself. Add some buffer for highlight arc.
         int desiredWidth = mShutterButton.getMeasuredWidth()
@@ -193,7 +168,6 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
     @Override
     public void setOrientation(int orientation) {
         mIndicatorControlWheel.setOrientation(orientation);
-        mZoomControlWheel.setOrientation(orientation);
     }
 
     public void startTimeLapseAnimation(int timeLapseInterval, long startTime) {
@@ -208,7 +182,6 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
     @Override
     public void setEnabled(boolean enabled) {
         mIndicatorControlWheel.setEnabled(enabled);
-        mZoomControlWheel.setEnabled(enabled);
     }
 
     @Override
