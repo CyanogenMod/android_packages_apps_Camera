@@ -73,20 +73,20 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
                     OnIndicatorEventListener.EVENT_LEAVE_SECOND_LEVEL_INDICATOR_BAR);
     }
 
-    private int getTouchViewIndex(int y, int height) {
+    private int getTouchViewIndex(int x, int width) {
         // If the current touch location is on close icon and above.
-        if (y < mCloseIcon.getBottom()) return indexOfChild(mCloseIcon);
+        if (x > mCloseIcon.getLeft()) return indexOfChild(mCloseIcon);
 
         // Calculate if the touch event is on the indicator buttons.
         int count = getChildCount();
         if (count == mNonIndicatorButtonCount) return -1;
         // The baseline will be the first indicator button's top minus spacing.
         View firstIndicatorButton = getChildAt(mNonIndicatorButtonCount);
-        int baselineY = firstIndicatorButton.getTop() - (ICON_SPACING / 2);
-        if (y < baselineY) return -1;
-        int iconHeight = firstIndicatorButton.getMeasuredHeight();
-        int buttonRange = iconHeight + ICON_SPACING;
-        return (mNonIndicatorButtonCount + (y - baselineY) / buttonRange);
+        int baselineX = firstIndicatorButton.getRight() + (ICON_SPACING / 2);
+        if (x > baselineX) return -1;
+        int iconWidth = firstIndicatorButton.getMeasuredWidth();
+        int buttonRange = iconWidth + ICON_SPACING;
+        return (mNonIndicatorButtonCount + ((baselineX - x) / buttonRange));
     }
 
     @Override
@@ -98,12 +98,12 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
 
         double x = (double) event.getX();
         double y = (double) event.getY();
-        int height = getHeight();
-        if (height == 0) return false; // the event is sent before onMeasure()
-        if (x > getWidth()) x = getWidth();
-        if (y >= height) y = height - 1;
+        int width = getWidth();
+        if (width == 0) return false; // the event is sent before onMeasure()
+        if (x > width) x = width;
+        if (y >= getHeight()) y = getHeight() - 1;
 
-        int index = getTouchViewIndex((int) y, height);
+        int index = getTouchViewIndex((int) x, width);
         if (index == -1) return true;
         View b = getChildAt(index);
         b.dispatchTouchEvent(event);
@@ -163,25 +163,25 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         if (count == 0) return;
         int width = right - left;
         int height = bottom - top;
-        int iconHeight = mCloseIcon.getMeasuredHeight();
-        int padding = getPaddingTop();
-
-        // The first icon is close button.
-        int offsetY = padding;
-        mCloseIcon.layout(0, padding, width, (padding + iconHeight));
-
-        // And layout the divider line.
-        offsetY += (iconHeight + padding);
-        mDivider.layout(padding, offsetY,
-                (width - padding), (offsetY + mDivider.getMeasuredHeight()));
+        int iconWidth = mCloseIcon.getMeasuredWidth();
+        int padding = getPaddingLeft();
 
         // Layout from the last icon up.
-        int startY = height - iconHeight - padding;
-        int decrement = iconHeight + ICON_SPACING;
+        int offsetX = padding;
+        int increment = iconWidth + ICON_SPACING;
         for (int i = count - 1; i >= mNonIndicatorButtonCount; --i) {
-            getChildAt(i).layout(0, startY, width, startY + iconHeight);
-            startY -= decrement;
+            getChildAt(i).layout(offsetX, 0, offsetX + iconWidth, height);
+            offsetX += increment;
         }
+
+        // And layout the divider line.
+        offsetX = width - iconWidth - 2 * padding;
+        mDivider.layout(offsetX, padding, (offsetX + mDivider.getMeasuredWidth()),
+                (height - padding));
+
+        offsetX = width - iconWidth - padding;
+        // The first icon is close button.
+        mCloseIcon.layout(offsetX, 0, (offsetX + iconWidth), height);
 
         // Hightlight the selected indicator if exists.
         if (mPopupedIndicator == null) {
@@ -190,9 +190,9 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
             mIndicatorHighlight.setVisibility(View.VISIBLE);
             // Keep the top and bottom of the hightlight the same as
             // the 'active' indicator button.
-            mIndicatorHighlight.layout(0, mPopupedIndicator.getTop(),
-                    mIndicatorHighlight.getLayoutParams().width,
-                    mPopupedIndicator.getBottom());
+            mIndicatorHighlight.layout(mPopupedIndicator.getLeft(), 0,
+                    mPopupedIndicator.getRight(),
+                    mIndicatorHighlight.getLayoutParams().height);
         }
    }
 

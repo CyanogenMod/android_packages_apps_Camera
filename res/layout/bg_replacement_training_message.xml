@@ -16,20 +16,20 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/bg_replace_message_frame"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:visibility="gone"
         android:onClick="onProtectiveCurtainClick"
         android:background="#77000000">
     <com.android.camera.ui.RotateLayout
             android:id="@+id/bg_replace_message"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:layout_centerInParent="true">
         <LinearLayout
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
                 android:background="@drawable/dialog_full_holo_dark">
             <TextView
                     android:layout_width="wrap_content"
@@ -39,13 +39,13 @@
                     android:padding="32dp" />
 
             <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="match_parent"
+                    android:layout_width="1px"
                     android:background="#aaaaaa" />
 
             <Button android:id="@+id/bg_replace_cancel_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dip"
+                    android:layout_height="match_parent"
+                    android:layout_width="48dip"
                     android:layout_gravity="center"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     style="?android:attr/borderlessButtonStyle"

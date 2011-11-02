@@ -43,14 +43,14 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer {
     public IndicatorControlBarContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
         mFadeIn = AnimationUtils.loadAnimation(
-                context, R.anim.grow_fade_in_from_top);
+                context, R.anim.first_level_fade_in);
         mFadeOut = AnimationUtils.loadAnimation(
-                context, R.anim.shrink_fade_out_from_bottom);
+                context, R.anim.first_level_fade_out);
         mFadeOut.setAnimationListener(mAnimationListener);
         mSecondLevelFadeIn = AnimationUtils.loadAnimation(
-                context, R.anim.grow_fade_in_from_bottom);
+                context, R.anim.second_level_fade_in);
         mSecondLevelFadeOut = AnimationUtils.loadAnimation(
-                context, R.anim.shrink_fade_out_from_top);
+                context, R.anim.second_level_fade_out);
         mSecondLevelFadeOut.setAnimationListener(mAnimationListener);
     }
 

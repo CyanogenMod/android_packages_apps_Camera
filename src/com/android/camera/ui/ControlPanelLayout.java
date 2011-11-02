@@ -41,7 +41,7 @@ public class ControlPanelLayout extends RelativeLayout {
         int widthSpecSize = MeasureSpec.getSize(widthSpec);
         int heightSpecSize = MeasureSpec.getSize(heightSpec);
         int measuredSize = 0;
-        int mode, longSideSize, shortSideSize, minSize, specSize;
+        int mode, longSideSize, shortSideSize, specSize;
 
         boolean isLandscape = (((Activity) getContext()).getRequestedOrientation()
                 == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -50,13 +50,11 @@ public class ControlPanelLayout extends RelativeLayout {
             mode = MeasureSpec.getMode(widthSpec);
             longSideSize = widthSpecSize;
             shortSideSize = heightSpecSize;
-            minSize = getSuggestedMinimumWidth();
             specSize = widthSpecSize;
         } else {
             mode = MeasureSpec.getMode(heightSpec);
             longSideSize = heightSpecSize;
             shortSideSize = widthSpecSize;
-            minSize = getSuggestedMinimumHeight();
             specSize = heightSpecSize;
         }
 
@@ -66,11 +64,6 @@ public class ControlPanelLayout extends RelativeLayout {
             measuredSize = (int) (longSideSize - shortSideSize / 3.0 * 4.0);
         } else {
             Log.e(TAG, "layout_xxx of ControlPanelLayout should be wrap_content");
-        }
-
-        // Make sure the width is bigger than the minimum length.
-        if (minSize > measuredSize) {
-            measuredSize = minSize;
         }
 
         // The width cannot be bigger than the constraint.

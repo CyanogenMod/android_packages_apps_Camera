@@ -14,14 +14,14 @@
      limitations under the License.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/share_item_height">
+        android:layout_height="@dimen/share_item_height"
+        android:layout_width="@dimen/share_item_width">
     <com.android.camera.ui.RotateLayout android:id="@+id/share_icon_rotate_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
             android:layout_gravity="center">
         <ImageView android:id="@+id/icon"
-                android:layout_width="@dimen/share_icon_length"
-                android:layout_height="@dimen/share_icon_length"/>
+                android:layout_height="@dimen/share_icon_length"
+                android:layout_width="@dimen/share_icon_length"/>
     </com.android.camera.ui.RotateLayout>
 </FrameLayout>
