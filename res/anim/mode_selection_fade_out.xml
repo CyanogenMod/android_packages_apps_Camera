@@ -14,5 +14,5 @@
      limitations under the License.
 -->
 <set xmlns:android="http://schemas.android.com/apk/res/android" android:interpolator="@android:anim/accelerate_interpolator">
-    <translate android:fromYDelta="0" android:toYDelta="66%p" android:duration="200" />
+    <translate android:fromXDelta="0" android:toXDelta="-66%p" android:duration="200" />
 </set>

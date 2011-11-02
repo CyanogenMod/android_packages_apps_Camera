@@ -33,6 +33,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Face;
@@ -823,7 +824,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             r.width = width;
             r.height = height;
             r.dateTaken = System.currentTimeMillis();
-            r.previewWidth = mPreviewFrameLayout.getWidth();
+            if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                r.previewWidth = mPreviewFrameLayout.getHeight();
+            } else {
+                r.previewWidth = mPreviewFrameLayout.getWidth();
+            }
             synchronized (this) {
                 while (mQueue.size() >= QUEUE_LIMIT) {
                     try {

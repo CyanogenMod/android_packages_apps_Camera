@@ -30,9 +30,13 @@
         <item name="android:background">@drawable/bg_pressed</item>
     </style>
     <style name="ReviewControlIcon">
-        <item name="android:layout_height">60dp</item>
-        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_width">75dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:gravity">center</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/bg_pressed</item>
     </style>
     <style name="ReviewControlText">
         <item name="android:layout_height">wrap_content</item>
@@ -56,7 +60,20 @@
         <item name="android:layout_marginRight">@dimen/setting_popup_right_margin</item>
         <item name="android:visibility">gone</item>
     </style>
+    <style name="PanoViewHorizontalBar">
+        <item name="android:background">#000000</item>
+        <item name="android:alpha">1.0</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">0.5</item>
+    </style>
     <style name="PanoCustomDialogText">
         <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
+    </style>
+    <style name="OneColumnGrid">
+        <item name="android:columnWidth">@dimen/share_item_width</item>
+        <item name="android:numColumns">1</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 </resources>

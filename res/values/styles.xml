@@ -38,10 +38,10 @@
         <item name="android:windowExitAnimation">@anim/on_screen_hint_exit</item>
     </style>
     <style name="ReviewControlIcon">
-        <item name="android:layout_height">50dp</item>
-        <item name="android:layout_width">75dp</item>
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">75dp</item>
         <item name="android:gravity">center</item>
-        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_centerVertical">true</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:background">@drawable/bg_pressed</item>
@@ -72,9 +72,9 @@
     <style name="SettingPopupWindow">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_toLeftOf">@+id/indicator_control</item>
-        <item name="android:layout_marginRight">@dimen/setting_popup_right_margin</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_above">@+id/indicator_control</item>
+        <item name="android:layout_marginBottom">@dimen/setting_popup_right_margin</item>
         <item name="android:visibility">gone</item>
     </style>
     <style name="PopupTitleText">
@@ -85,7 +85,6 @@
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/popup_title_color</item>
         <item name="android:layout_marginLeft">10dp</item>
-        <item name="android:paddingLeft">16dp</item>
     </style>
     <style name="PopupTitleSeperator">
         <item name="android:layout_width">match_parent</item>
@@ -169,8 +168,8 @@
     <style name="PanoViewHorizontalBar">
         <item name="android:background">#000000</item>
         <item name="android:alpha">1.0</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">0.5</item>
     </style>
     <style name="PanoCustomDialogText">
@@ -179,8 +178,8 @@
     <style name="ReviewThumbnail">
         <item name="android:layout_width">52dp</item>
         <item name="android:layout_height">52dp</item>
-        <item name="android:layout_alignParentTop">true</item>
-        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_centerVertical">true</item>
     </style>
     <style name="AnimationPopup" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/share_popup_enter</item>
@@ -231,5 +230,11 @@
         <item name="android:layout_height">2dp</item>
         <item name="android:paddingBottom">4dp</item>
         <item name="android:background">@android:drawable/divider_horizontal_dark</item>
+    </style>
+    <style name="OneRowGrid">
+        <item name="android:stretchMode">none</item>
+        <item name="android:columnWidth">@dimen/share_item_width</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 </resources>
