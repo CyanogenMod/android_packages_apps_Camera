@@ -22,8 +22,8 @@
         <TextView android:id="@+id/text"
                 style="@style/SettingItemTitle" />
         <ImageView android:id="@+id/image"
-                android:layout_width="@dimen/setting_item_icon_width"
                 android:layout_height="@dimen/setting_item_icon_width"
+                android:layout_width="@dimen/setting_item_icon_width"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true" />
 </LinearLayout>

@@ -19,31 +19,30 @@
 <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
-        android:layout_height="match_parent"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@color/share_popup_background">
     <FrameLayout android:id="@+id/root"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="left|center">
         <RelativeLayout android:id="@+id/share_view"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/border_last_picture">
             <com.android.camera.ui.RotateLayout
                     android:id="@+id/thumbnail_rotate_layout"
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true">
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true">
                 <!-- The size of the thumbnail is calculated in SharePopup.java -->
                 <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" >
                     <ImageView android:id="@+id/thumbnail"
-                            android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"/>
                     <ImageView android:id="@+id/play"
@@ -55,41 +54,34 @@
                 </FrameLayout>
             </com.android.camera.ui.RotateLayout>
         </RelativeLayout>
-        <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/share_item_height"
-                android:layout_gravity="bottom"
+        <LinearLayout
+                android:layout_width="@dimen/share_item_width"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_gravity="right"
                 android:background="@color/share_icon_background">
             <com.android.camera.ui.RotateLayout
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="8dip"
+                    android:layout_marginTop="8dip"
                     android:id="@+id/goto_gallery_button_rotate"
-                    android:layout_centerVertical="true"
-                    android:layout_height="match_parent"
-                    android:layout_width="wrap_content">
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
                 <ImageButton
                         android:id="@+id/goto_gallery_button"
                         android:background="?android:attr/selectableItemBackground"
                         android:layout_gravity="center"
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:src="@drawable/ic_gallery" />
             </com.android.camera.ui.RotateLayout>
             <View
-                    android:id="@+id/gallery_button_divider"
-                    android:layout_toLeftOf="@+id/goto_gallery_button_rotate"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
                     android:layout_margin="8dip"
-                    android:layout_width="1dp"
+                    android:layout_height="1dp"
                     android:background="#5affffff" />
 
-            <com.android.camera.ui.RightAlignedHorizontalScrollView android:id="@+id/share_list_container"
-                    android:layout_toLeftOf="@+id/gallery_button_divider"
-                    android:layout_height="match_parent"
-                    android:layout_width="wrap_content">
-                <com.android.camera.ui.OneRowGridView android:id="@+id/share_list"
-                        style="@style/OneRowGrid"/>
-            </com.android.camera.ui.RightAlignedHorizontalScrollView>
-        </RelativeLayout>
+            <GridView android:id="@+id/share_list"
+                    style="@style/OneColumnGrid" />
+        </LinearLayout>
     </FrameLayout>
 </FrameLayout>

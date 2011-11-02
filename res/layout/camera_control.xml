@@ -16,15 +16,15 @@
 
 <com.android.camera.ui.ControlPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/control_panel"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:minWidth="76dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="76dp"
         android:background="@drawable/bg_camera_pattern">
     <include layout="@layout/review_thumbnail" />
     <include layout="@layout/review_control" />
     <com.android.camera.ShutterButton android:id="@+id/shutter_button"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:layout_centerInParent="true"
             android:scaleType="center"
             android:clickable="true"
