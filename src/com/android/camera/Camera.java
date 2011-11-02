@@ -699,8 +699,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     + mPictureDisplayedToJpegCallbackTime + "ms");
 
             if (!mIsImageCaptureIntent) {
-                enableCameraControls(true);
-
                 startPreview();
                 startFaceDetection();
             }
@@ -739,12 +737,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
             mAutoFocusTime = System.currentTimeMillis() - mFocusStartTime;
             Log.v(TAG, "mAutoFocusTime = " + mAutoFocusTime + "ms");
+            setCameraState(IDLE);
             mFocusManager.onAutoFocus(focused);
-            // If focus completes and the snapshot is not started, enable the
-            // controls.
-            if (mFocusManager.isFocusCompleted()) {
-                enableCameraControls(true);
-            }
         }
     }
 
@@ -954,6 +948,20 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
+    private void setCameraState(int state) {
+        mCameraState = state;
+        switch (state) {
+            case SNAPSHOT_IN_PROGRESS:
+            case FOCUSING:
+                enableCameraControls(false);
+                break;
+            case IDLE:
+            case PREVIEW_STOPPED:
+                enableCameraControls(true);
+                break;
+        }
+    }
+
     @Override
     public boolean capture() {
         // If we are already in the middle of taking a snapshot then ignore.
@@ -962,7 +970,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
         mCaptureStartTime = System.currentTimeMillis();
         mPostViewPictureCallbackTime = 0;
-        enableCameraControls(false);
         mJpegImageData = null;
 
         // Set rotation and gps data.
@@ -973,7 +980,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
-        mCameraState = SNAPSHOT_IN_PROGRESS;
+        setCameraState(SNAPSHOT_IN_PROGRESS);
         return true;
     }
 
@@ -1440,7 +1447,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mOpenCameraFail || mCameraDisabled) return;
 
         mPausing = false;
-
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
 
@@ -1559,15 +1565,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     public void autoFocus() {
         mFocusStartTime = System.currentTimeMillis();
         mCameraDevice.autoFocus(mAutoFocusCallback);
-        mCameraState = FOCUSING;
-        enableCameraControls(false);
+        setCameraState(FOCUSING);
     }
 
     @Override
     public void cancelAutoFocus() {
         mCameraDevice.cancelAutoFocus();
-        mCameraState = IDLE;
-        enableCameraControls(true);
+        setCameraState(IDLE);
         setCameraParameters(UPDATE_PARAM_PREFERENCE);
     }
 
@@ -1713,7 +1717,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mCameraDevice.setFaceDetectionListener(null);
             mCameraDevice.setErrorCallback(null);
             mCameraDevice = null;
-            mCameraState = PREVIEW_STOPPED;
+            setCameraState(PREVIEW_STOPPED);
             mFocusManager.onCameraReleased();
         }
     }
@@ -1774,7 +1778,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         mZoomState = ZOOM_STOPPED;
-        mCameraState = IDLE;
+        setCameraState(IDLE);
         mFocusManager.onPreviewStarted();
 
         if (mSnapshotOnIdle) {
@@ -1788,7 +1792,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mCameraDevice.cancelAutoFocus(); // Reset the focus.
             mCameraDevice.stopPreview();
         }
-        mCameraState = PREVIEW_STOPPED;
+        setCameraState(PREVIEW_STOPPED);
         mFocusManager.onPreviewStopped();
     }
 
@@ -2029,8 +2033,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void hidePostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            enableCameraControls(true);
-
             int[] pickIds = {R.id.btn_retake, R.id.btn_done};
             for (int id : pickIds) {
                 Util.fadeOut(findViewById(id));
