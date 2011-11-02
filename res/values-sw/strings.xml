@@ -122,12 +122,12 @@
     <string name="effect_background" msgid="6909716214852487679">"Mandhari nyuma"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Kitufe cha kilango cha kamera"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Picha ya hivi karibuni"</string>
-    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Geuza kamera mbele na nyuma"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Swichi ya mbele na nyuma ya kamera"</string>
     <string name="accessibility_mode_picker" msgid="3264968460835265505">"Kamera, video au kichaguzi panorama"</string>
-    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Mipangilio zaidi ya kudhibiti"</string>
-    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Mipangilio ya karibu ya kufunga"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Vidhibiti zaidi vya mpangilio"</string>
+    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Funga vidhibiti mipangilio"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Dhibiti kukuza"</string>
     <string name="accessibility_decrement" msgid="1411194318538035666">"Punguza %1$s"</string>
-    <string name="accessibility_increment" msgid="8447850530444401135">"KOngeza %1$s"</string>
-    <string name="accessibility_switch" msgid="6995966685498958895">"Geuza %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"Ongeza %1$s"</string>
+    <string name="accessibility_switch" msgid="6995966685498958895">"Swichi %1$s"</string>
 </resources>
