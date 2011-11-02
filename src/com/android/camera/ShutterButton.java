@@ -26,7 +26,7 @@ import android.widget.ImageView;
  * It's currently an {@code ImageView} that can call a delegate when the
  * pressed state changes.
  */
-public class ShutterButton extends ImageView implements View.OnLongClickListener {
+public class ShutterButton extends ImageView {
     /**
      * A callback to be invoked when a ShutterButton's pressed state changes.
      */
@@ -40,28 +40,15 @@ public class ShutterButton extends ImageView implements View.OnLongClickListener
         void onShutterButtonClick();
     }
 
-    /**
-     * A callback to be invoked when a ShutterButton's long pressed.
-     */
-    public interface OnShutterButtonLongPressListener {
-        void onShutterButtonLongPressed();
-    }
-
     private OnShutterButtonListener mListener;
-    private OnShutterButtonLongPressListener mLongPressListener;
     private boolean mOldPressed;
 
     public ShutterButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setOnLongClickListener(this);
     }
 
     public void setOnShutterButtonListener(OnShutterButtonListener listener) {
         mListener = listener;
-    }
-
-    public void setOnShutterButtonLongPressListener(OnShutterButtonLongPressListener listener) {
-        mLongPressListener = listener;
     }
 
     /**
@@ -121,13 +108,5 @@ public class ShutterButton extends ImageView implements View.OnLongClickListener
             mListener.onShutterButtonClick();
         }
         return result;
-    }
-
-    @Override
-    public boolean onLongClick(View v) {
-        if (mLongPressListener != null) {
-            mLongPressListener.onShutterButtonLongPressed();
-        }
-        return false;
     }
 }
