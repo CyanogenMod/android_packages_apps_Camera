@@ -71,7 +71,7 @@
     <string name="review_cancel">CANCEL</string>
 
     <!-- button in review mode indicating that the taken photo/video is OK to be attached/uploaded [CHAR LIMIT=10] -->
-    <string name="review_ok">OK</string>
+    <string name="review_ok">DONE</string>
 
     <!-- button in review mode indicate the user want to retake another photo/video for attachment [CHAR LIMIT=10] -->
     <string name="review_retake">RETAKE</string>
