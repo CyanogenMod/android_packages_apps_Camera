@@ -22,5 +22,4 @@
 
     <include layout="@layout/pano_capture" />
     <include layout="@layout/pano_review" />
-    <include layout="@layout/pano_rotate_dialog" />
 </RelativeLayout>

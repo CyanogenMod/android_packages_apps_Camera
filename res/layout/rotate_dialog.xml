@@ -15,13 +15,16 @@
 -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rotate_dialog_root_layout"
+        android:clickable="true"
         android:gravity="center"
+        android:visibility="gone"
+        android:background="#55000000"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
     <com.android.camera.ui.RotateLayout
             android:id="@+id/rotate_dialog_layout"
-            android:visibility="gone"
             android:gravity="center"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
@@ -87,16 +90,31 @@
                         android:showDividers="beginning"
                         android:dividerPadding="0dip">
 
-                    <Button android:id="@+id/rotate_dialog_button"
-                            style="@android:style/Widget.Holo.Button.Borderless"
-                            android:gravity="center"
-                            android:text="@string/review_ok"
-                            android:maxLines="2"
-                            android:minHeight="48dp"
-                            android:textSize="14sp"
-                            android:onClick="onAlertDialogButtonClicked"
+                    <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                        <Button android:id="@+id/rotate_dialog_button2"
+                                style="@android:style/Widget.Holo.Button.Borderless"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:minHeight="48dp"
+                                android:textSize="14sp"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content" />
+                        <Button android:id="@+id/rotate_dialog_button1"
+                                style="@android:style/Widget.Holo.Button.Borderless"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:minHeight="48dp"
+                                android:textSize="14sp"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </FrameLayout>
