@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -65,6 +66,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
     private static final int TIME_LAPSE_ARC_WIDTH = 6;
 
     private final int HIGHLIGHT_COLOR;
+    private final int HIGHLIGHT_FAN_COLOR;
     private final int TIME_LAPSE_ARC_COLOR;
 
     // The center of the shutter button.
@@ -115,6 +117,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
         super(context, attrs);
         Resources resources = context.getResources();
         HIGHLIGHT_COLOR = resources.getColor(R.color.review_control_pressed_color);
+        HIGHLIGHT_FAN_COLOR = resources.getColor(R.color.review_control_pressed_fan_color);
         TIME_LAPSE_ARC_COLOR = resources.getColor(R.color.time_lapse_arc);
 
         setWillNotDraw(false);
@@ -420,19 +423,35 @@ public class IndicatorControlWheel extends IndicatorControl implements
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // Draw highlight.
-        float delta = mStrokeWidth * 0.5f;
-        float radius = (float) (mWheelRadius + mStrokeWidth * 0.5 + EDGE_STROKE_WIDTH);
-        mBackgroundRect.set(mCenterX - radius, mCenterY - radius, mCenterX + radius,
-                 mCenterY + radius);
-
         int selectedIndex = getSelectedIndicatorIndex();
 
         // Draw the highlight arc if an indicator is selected or being pressed.
-       if (selectedIndex >= 0) {
+        if (selectedIndex >= 0) {
             int degree = (int) Math.toDegrees(mChildRadians[selectedIndex]);
+            float innerR = (float) mShutterButtonRadius;
+            float outerR = (float) (mShutterButtonRadius + mStrokeWidth +
+                    EDGE_STROKE_WIDTH * 0.5);
+
+            // Construct the path of the fan-shaped semi-transparent area.
+            Path fanPath = new Path();
+            mBackgroundRect.set(mCenterX - innerR, mCenterY - innerR,
+                    mCenterX + innerR, mCenterY + innerR);
+            fanPath.arcTo(mBackgroundRect, -degree + HIGHLIGHT_DEGREES / 2,
+                    -HIGHLIGHT_DEGREES);
+            mBackgroundRect.set(mCenterX - outerR, mCenterY - outerR,
+                    mCenterX + outerR, mCenterY + outerR);
+            fanPath.arcTo(mBackgroundRect, -degree - HIGHLIGHT_DEGREES / 2,
+                    HIGHLIGHT_DEGREES);
+            fanPath.close();
+
             mBackgroundPaint.setStrokeWidth(HIGHLIGHT_WIDTH);
-            mBackgroundPaint.setStrokeCap(Paint.Cap.ROUND);
+            mBackgroundPaint.setStrokeCap(Paint.Cap.SQUARE);
+            mBackgroundPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mBackgroundPaint.setColor(HIGHLIGHT_FAN_COLOR);
+            canvas.drawPath(fanPath, mBackgroundPaint);
+
+            // Draw the highlight edge
+            mBackgroundPaint.setStyle(Paint.Style.STROKE);
             mBackgroundPaint.setColor(HIGHLIGHT_COLOR);
             canvas.drawArc(mBackgroundRect, -degree - HIGHLIGHT_DEGREES / 2,
                     HIGHLIGHT_DEGREES, false, mBackgroundPaint);
