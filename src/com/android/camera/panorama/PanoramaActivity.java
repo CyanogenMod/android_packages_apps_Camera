@@ -733,7 +733,9 @@ public class PanoramaActivity extends ActivityBase implements
                     (Rotatable) findViewById(R.id.pano_saving_progress_bar_layout),
                     (Rotatable) findViewById(R.id.pano_review_cancel_button_layout),
                     (Rotatable) mRotateDialog,
-                    (Rotatable) mCaptureIndicator};
+                    (Rotatable) mCaptureIndicator,
+                    (Rotatable) mModePicker,
+                    (Rotatable) mThumbnailView};
             for (Rotatable r : rotateLayout) {
                 r.setOrientation(270);
             }
