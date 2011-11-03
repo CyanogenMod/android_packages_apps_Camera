@@ -63,6 +63,7 @@ import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -146,6 +147,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private View mPreviewPanel;  // The container of PreviewFrameLayout.
     private PreviewFrameLayout mPreviewFrameLayout;
     private View mPreviewFrame;  // Preview frame area.
+    private RotateDialogController mRotateDialog;
 
     // A popup window that contains a bigger thumbnail and a list of apps to share.
     private SharePopup mSharePopup;
@@ -189,7 +191,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
      *
      * TODO: consider publishing by moving into MediaStore.
      */
-    private final static String EXTRA_QUICK_CAPTURE =
+    private static final String EXTRA_QUICK_CAPTURE =
             "android.intent.extra.quickCapture";
 
     // The display rotation in degrees. This is only valid when mCameraState is
@@ -1059,6 +1061,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mThumbnailView.setVisibility(View.VISIBLE);
         }
 
+        mRotateDialog = new RotateDialogController(this, R.layout.rotate_dialog);
+
         mPreferences.setLocalId(this, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
@@ -1232,7 +1236,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void setOrientationIndicator(int orientation) {
         Rotatable[] indicators = {mThumbnailView, mModePicker, mSharePopup,
                 mIndicatorControlContainer, mZoomControl, mFocusIndicator, mFaceView,
-                mReviewCancelButton, mReviewDoneButton};
+                mReviewCancelButton, mReviewDoneButton, mRotateDialog};
         for (Rotatable indicator : indicators) {
             if (indicator != null) indicator.setOrientation(orientation);
         }
@@ -2163,10 +2167,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 restorePreferences();
             }
         };
-        MenuHelper.confirmAction(this,
+        mRotateDialog.showAlertDialog(
                 getString(R.string.confirm_restore_title),
                 getString(R.string.confirm_restore_message),
-                runnable);
+                getString(android.R.string.ok), runnable,
+                getString(android.R.string.cancel), null);
     }
 
     private void restorePreferences() {
