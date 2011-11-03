@@ -223,10 +223,13 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     }
 
     private void updateModeState() {
-        // Grey-out the unselected icons.
-        for (int i = 0; i < MODE_NUM; ++i) {
-            highlightView(mModeSelectionIcon[i], (i == mCurrentMode));
+        // Grey-out the unselected icons for Phone UI.
+        if (mCurrentModeFrame != null) {
+            for (int i = 0; i < MODE_NUM; ++i) {
+                highlightView(mModeSelectionIcon[i], (i == mCurrentMode));
+            }
         }
+
         // Update the current mode icons on the Phone UI. The selected mode
         // should be in the center of the current mode icon bar.
         if (mCurrentModeFrame != null) {
