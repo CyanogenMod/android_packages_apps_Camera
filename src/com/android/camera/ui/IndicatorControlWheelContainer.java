@@ -223,6 +223,6 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
 
     @Override
     public void dismissSecondLevelIndicator() {
-        // TODO: back to first-level indicator set.
+        mIndicatorControlWheel.dismissSecondLevelIndicator();
     }
 }

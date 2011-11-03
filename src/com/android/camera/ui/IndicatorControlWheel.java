@@ -135,14 +135,18 @@ public class IndicatorControlWheel extends IndicatorControl implements
         }
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view == mZoomIcon) return;
+    private void changeIndicatorsLevel() {
         mPressedIndex = -1;
         dismissSettingPopup();
         mInAnimation = true;
         mAnimationStartTime = SystemClock.uptimeMillis();
         requestLayout();
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == mZoomIcon) return;
+        changeIndicatorsLevel();
     }
 
     public void initialize(Context context, PreferenceGroup group,
@@ -491,6 +495,12 @@ public class IndicatorControlWheel extends IndicatorControl implements
             injectMotionEvent(mPressedIndex, mLastMotionEvent, MotionEvent.ACTION_CANCEL);
             mPressedIndex = -1;
             invalidate();
+        }
+    }
+
+    public void dismissSecondLevelIndicator() {
+        if (mCurrentLevel == 1) {
+            changeIndicatorsLevel();
         }
     }
 }
