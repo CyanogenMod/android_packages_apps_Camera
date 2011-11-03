@@ -43,20 +43,28 @@
                         android:textSize="@dimen/effect_setting_clear_text_size"
                         android:minHeight="@dimen/effect_setting_clear_text_min_height"
                         android:background="@drawable/bg_pressed"/>
-                <View style="@style/EffectTitleSeparator"/>
+
                 <TextView android:id="@+id/effect_silly_faces_title"
                         android:text="@string/effect_silly_faces"
                         android:visibility="gone"
                         style="@style/EffectSettingTypeTitle"/>
+                <View android:id="@+id/effect_silly_faces_title_separator"
+                        android:visibility="gone"
+                        style="@style/EffectTypeSeparator"/>
                 <com.android.camera.ui.ExpandedGridView android:id="@+id/effect_silly_faces"
                         style="@style/EffectSettingGrid"/>
+
                 <View android:id="@+id/effect_background_separator"
                         android:visibility="gone"
                         style="@style/EffectTitleSeparator"/>
+
                 <TextView android:id="@+id/effect_background_title"
                         android:text="@string/effect_background"
                         android:visibility="gone"
                         style="@style/EffectSettingTypeTitle"/>
+                <View android:id="@+id/effect_background_title_separator"
+                        android:visibility="gone"
+                        style="@style/EffectTypeSeparator"/>
                 <com.android.camera.ui.ExpandedGridView android:id="@+id/effect_background"
                         android:visibility="gone"
                         style="@style/EffectSettingGrid"/>
