@@ -2534,3 +2534,4 @@ class JpegEncodingQualityMappings {
         return CameraProfile.getJpegEncodingQualityParameter(quality.intValue());
     }
 }
+
