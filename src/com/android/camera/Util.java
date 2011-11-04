@@ -413,6 +413,37 @@ public class Util {
         return optimalSize;
     }
 
+    // Returns the largest picture size which matches the given aspect ratio.
+    public static Size getOptimalVideoSnapshotPictureSize(
+            List<Size> sizes, double targetRatio) {
+        // Use a very small tolerance because we want an exact match.
+        final double ASPECT_TOLERANCE = 0.001;
+        if (sizes == null) return null;
+
+        Size optimalSize = null;
+
+        // Try to find a size matches aspect ratio and has the largest width
+        for (Size size : sizes) {
+            double ratio = (double) size.width / size.height;
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
+            if (optimalSize == null || size.width > optimalSize.width) {
+                optimalSize = size;
+            }
+        }
+
+        // Cannot find one that matches the aspect ratio. This should not happen.
+        // Ignore the requirement.
+        if (optimalSize == null) {
+            Log.w(TAG, "No picture size match the aspect ratio");
+            for (Size size : sizes) {
+                if (optimalSize == null || size.width > optimalSize.width) {
+                    optimalSize = size;
+                }
+            }
+        }
+        return optimalSize;
+    }
+
     public static void dumpParameters(Parameters parameters) {
         String flattened = parameters.flatten();
         StringTokenizer tokenizer = new StringTokenizer(flattened, ";");
