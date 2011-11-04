@@ -38,7 +38,6 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
     private final int MSG_DISMISS_POPUP = 0;
     private IndicatorChangeListener mListener;
 
-
     public static interface IndicatorChangeListener {
         public void onShowIndicator(View view, boolean showed);
     }
@@ -116,6 +115,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
     abstract protected void initializePopup();
 
     private void showPopup() {
+        setPressed(true);
         mHandler.removeMessages(MSG_DISMISS_POPUP);
         if (mPopup == null) initializePopup();
 
@@ -127,6 +127,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
     }
 
     public boolean dismissPopup() {
+        setPressed(false);
         mHandler.removeMessages(MSG_DISMISS_POPUP);
         if (mPopup != null && mPopup.getVisibility() == View.VISIBLE) {
             mPopup.clearAnimation();

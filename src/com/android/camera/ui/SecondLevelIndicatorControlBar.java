@@ -37,7 +37,6 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     private static int ICON_SPACING = Util.dpToPixel(16);
     private View mCloseIcon;
     private View mDivider; // the divider line
-    private View mIndicatorHighlight; // the side highlight bar
     private View mPopupedIndicator;
     int mOrientation = 0;
     int mSelectedIndex = -1;
@@ -53,7 +52,6 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     @Override
     protected void onFinishInflate() {
         mDivider = findViewById(R.id.divider);
-        mIndicatorHighlight = findViewById(R.id.indicator_highlight);
         mCloseIcon = findViewById(R.id.back_to_first_level);
         mCloseIcon.setOnClickListener(this);
     }
@@ -103,15 +101,13 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         if (!isEnabled()) return false;
 
         double x = (double) event.getX();
-        double y = (double) event.getY();
         int width = getWidth();
         if (width == 0) return false; // the event is sent before onMeasure()
         if (x > width) x = width;
-        if (y >= getHeight()) y = getHeight() - 1;
 
         int index = getTouchViewIndex((int) x, width);
-        if (index == -1) return true;
         View b = getChildAt(index);
+        if (b == null) return true;
         dispatchRelativeTouchEvent(b, event);
         if ((mSelectedIndex != -1) && (index != mSelectedIndex)) {
             View v = getChildAt(mSelectedIndex);
@@ -134,6 +130,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     @Override
     public IndicatorButton addIndicator(Context context, IconListPreference pref) {
         IndicatorButton b = super.addIndicator(context, pref);
+        b.setBackgroundResource(R.drawable.bg_pressed);
         b.setIndicatorChangeListener(this);
         return b;
     }
@@ -143,6 +140,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
             int resId, String[] keys) {
         OtherSettingIndicatorButton b =
                 super.addOtherSettingIndicator(context, resId, keys);
+        b.setBackgroundResource(R.drawable.bg_pressed);
         b.setIndicatorChangeListener(this);
         return b;
     }
@@ -188,18 +186,6 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         offsetX = width - iconWidth - padding;
         // The first icon is close button.
         mCloseIcon.layout(offsetX, 0, (offsetX + iconWidth), height);
-
-        // Hightlight the selected indicator if exists.
-        if (mPopupedIndicator == null) {
-            mIndicatorHighlight.setVisibility(View.GONE);
-        } else {
-            mIndicatorHighlight.setVisibility(View.VISIBLE);
-            // Keep the top and bottom of the hightlight the same as
-            // the 'active' indicator button.
-            mIndicatorHighlight.layout(mPopupedIndicator.getLeft(), 0,
-                    mPopupedIndicator.getRight(),
-                    mIndicatorHighlight.getLayoutParams().height);
-        }
    }
 
     @Override
