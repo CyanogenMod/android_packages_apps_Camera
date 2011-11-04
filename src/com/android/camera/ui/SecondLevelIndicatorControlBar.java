@@ -110,8 +110,8 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         if (y >= getHeight()) y = getHeight() - 1;
 
         int index = getTouchViewIndex((int) x, width);
-        if (index == -1) return true;
         View b = getChildAt(index);
+        if (b == null) return true;
         dispatchRelativeTouchEvent(b, event);
         if ((mSelectedIndex != -1) && (index != mSelectedIndex)) {
             View v = getChildAt(mSelectedIndex);
