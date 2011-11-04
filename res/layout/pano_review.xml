@@ -65,16 +65,18 @@
 
         <com.android.camera.ui.RotateLayout
                 android:id="@+id/pano_review_cancel_button_layout"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="bottom|center_horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
             <TextView android:id="@+id/pano_review_cancel_button"
                     android:text="@string/review_cancel"
+                    android:background="@drawable/bg_pressed"
+                    android:gravity="center"
                     android:clickable="true"
                     android:onClick="onCancelButtonClicked"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textSize="12sp"
                     android:minWidth="@dimen/pano_review_button_width"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_width="wrap_content" />
         </com.android.camera.ui.RotateLayout>
     </LinearLayout>
