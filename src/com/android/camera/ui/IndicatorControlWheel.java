@@ -298,7 +298,6 @@ public class IndicatorControlWheel extends IndicatorControl implements
         double increment = Math.toRadians(expectedAngle)
                 - mChildRadians[mSecondLevelStartIndex];
         for (int i = 0 ; i < getChildCount(); ++i) mChildRadians[i] += increment;
-        requestLayout();
    }
 
     @Override
@@ -317,7 +316,6 @@ public class IndicatorControlWheel extends IndicatorControl implements
         for (int i = 0; i < getChildCount(); ++i) {
             View view = getChildAt(i);
             // We still need to show the disabled indicators in the second level.
-            if (!view.isEnabled() && (mCurrentLevel == 0)) continue;
             double radian = mChildRadians[i];
             double startVisibleRadians = mInAnimation
                     ? mStartVisibleRadians[1]
@@ -325,8 +323,9 @@ public class IndicatorControlWheel extends IndicatorControl implements
             double endVisibleRadians = mInAnimation
                     ? mEndVisibleRadians[1]
                     : mEndVisibleRadians[mCurrentLevel];
-            if ((radian < (startVisibleRadians - HIGHLIGHT_RADIANS / 2)) ||
-                    (radian > (endVisibleRadians + HIGHLIGHT_RADIANS / 2))) {
+            if ((!view.isEnabled() && (mCurrentLevel == 0))
+                    || (radian < (startVisibleRadians - HIGHLIGHT_RADIANS / 2))
+                    || (radian > (endVisibleRadians + HIGHLIGHT_RADIANS / 2))) {
                 view.setVisibility(View.GONE);
                 continue;
             }
