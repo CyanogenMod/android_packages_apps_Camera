@@ -113,6 +113,11 @@ protected:
 
   int  PerformFinalBlending(YUVinfo &imgMos, MosaicRect &cropping_rect);
   void CropFinalMosaic(YUVinfo &imgMos, MosaicRect &cropping_rect);
+
+private:
+   static const float LIMIT_SIZE_MULTIPLIER = 5.0f * 2.0f;
+   static const float LIMIT_HEIGHT_MULTIPLIER = 2.5f;
+   int MosaicSizeCheck(float sizeMultiplier, float heightMultiplier);
 };
 
 #endif
