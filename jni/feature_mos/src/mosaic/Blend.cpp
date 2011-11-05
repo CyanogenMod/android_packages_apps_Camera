@@ -226,14 +226,25 @@ int Blend::runBlend(MosaicFrame **oframes, MosaicFrame **rframes,
     yTopMost = max(0, max(yTopCorners[0], yTopCorners[1]) - fullRect.top + 1);
     yBottomMost = min(Mheight - 1, min(yBottomCorners[0], yBottomCorners[1]) - fullRect.top - 1);
 
+    if (xRightMost <= xLeftMost || yBottomMost <= yTopMost)
+    {
+        LOGE("RunBlend: aborting -consistency check failed,"
+             "(xLeftMost, xRightMost, yTopMost, yBottomMost): (%d, %d, %d, %d)",
+             xLeftMost, xRightMost, yTopMost, yBottomMost);
+        return BLEND_RET_ERROR;
+    }
+
     // Make sure image width is multiple of 4
     Mwidth = (unsigned short) ((Mwidth + 3) & ~3);
     Mheight = (unsigned short) ((Mheight + 3) & ~3);    // Round up.
 
-    if (Mwidth < width || Mheight < height || xRightMost <= xLeftMost)
+    ret = MosaicSizeCheck(LIMIT_SIZE_MULTIPLIER, LIMIT_HEIGHT_MULTIPLIER);
+    if (ret != BLEND_RET_OK)
     {
-        LOGE("RunBlend: aborting - consistency check failed, w=%d, h=%d, xLeftMost=%d, xRightMost=%d", Mwidth, Mheight, xLeftMost, xRightMost);
-        return BLEND_RET_ERROR;
+       LOGE("RunBlend: aborting - mosaic size check failed, "
+            "(frame_width, frame_height) vs (mosaic_width, mosaic_height): "
+            "(%d, %d) vs (%d, %d)", width, height, Mwidth, Mheight);
+       return ret;
     }
 
     LOGI("Allocate mosaic image for blending - size: %d x %d", Mwidth, Mheight);
@@ -296,6 +307,26 @@ int Blend::runBlend(MosaicFrame **oframes, MosaicFrame **rframes,
     return ret;
 }
 
+int Blend::MosaicSizeCheck(float sizeMultiplier, float heightMultiplier) {
+   if (Mwidth < width || Mheight < height) {
+        return BLEND_RET_ERROR;
+    }
+
+   if ((Mwidth * Mheight) > (width * height * sizeMultiplier)) {
+         return BLEND_RET_ERROR;
+   }
+
+   // We won't do blending for the cases where users swing the device too much
+   // in the secondary direction. We use a short side to determine the
+   // secondary direction because users may hold the device in landsape
+   // or portrait.
+   int shortSide = min(Mwidth, Mheight);
+   if (shortSide > height * heightMultiplier) {
+       return BLEND_RET_ERROR;
+   }
+
+   return BLEND_RET_OK;
+}
 
 int Blend::FillFramePyramid(MosaicFrame *mb)
 {

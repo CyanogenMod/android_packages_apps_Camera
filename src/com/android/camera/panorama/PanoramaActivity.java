@@ -989,9 +989,20 @@ public class PanoramaActivity extends ActivityBase implements
         keepScreenOnAwhile();
     }
 
+    /**
+     * Generate the final mosaic image.
+     *
+     * @param highRes flag to indicate whether we want to get a high-res version.
+     * @return a MosaicJpeg with its isValid flag set to true if successful; null if the generation
+     *         process is cancelled; and a MosaicJpeg with its isValid flag set to false if there
+     *         is an error in generating the final mosaic.
+     */
     public MosaicJpeg generateFinalMosaic(boolean highRes) {
-        if (mMosaicFrameProcessor.createMosaic(highRes) == Mosaic.MOSAIC_RET_CANCELLED) {
+        int mosaicReturnCode = mMosaicFrameProcessor.createMosaic(highRes);
+        if (mosaicReturnCode == Mosaic.MOSAIC_RET_CANCELLED) {
             return null;
+        } else if (mosaicReturnCode == Mosaic.MOSAIC_RET_ERROR) {
+            return new MosaicJpeg();
         }
 
         byte[] imageData = mMosaicFrameProcessor.getFinalMosaicNV21();
