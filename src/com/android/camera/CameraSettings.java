@@ -177,7 +177,7 @@ public class CameraSettings {
         ListPreference lensShade = group.findPreference(KEY_LENSSHADING);
         ListPreference antiBanding = group.findPreference(KEY_ANTIBANDING);
         ListPreference autoExposure = group.findPreference(KEY_AUTOEXPOSURE);
-	ListPreference stabilization = group.findPreference(KEY_STABILIZATION);
+        ListPreference stabilization = group.findPreference(KEY_STABILIZATION);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -627,4 +627,3 @@ public class CameraSettings {
     }
 
 }
-

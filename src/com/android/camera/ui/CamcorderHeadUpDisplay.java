@@ -16,35 +16,35 @@
 
 package com.android.camera.ui;
 
-import android.content.Context;
-import android.hardware.Camera.Parameters;
-
 import com.android.camera.CameraSettings;
-import com.android.camera.IconListPreference;
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
 
-public class CameraHeadUpDisplay extends HeadUpDisplay {
+import android.content.Context;
+import android.hardware.Camera.Parameters;
+import android.util.Log;
 
-    private static final String TAG = "CamcoderHeadUpDisplay";
+public class CamcorderHeadUpDisplay extends HeadUpDisplay {
+
+    private static final String TAG = "CamcorderHeadUpDisplay";
 
     private OtherSettingsIndicator mOtherSettings;
     private SettingsIndicator mSettingsIndicator;
-    private GpsIndicator mGpsIndicator;
+    private int mInitialOrientation;
+    private BasicIndicator mVideoQualitySettings;
+    private float[] mInitialZoomRatios;
     private ZoomIndicator mZoomIndicator;
     private Context mContext;
-    private float[] mInitialZoomRatios;
-    private int mInitialOrientation;
 
-    public CameraHeadUpDisplay(Context context) {
+    public CamcorderHeadUpDisplay(Context context) {
         super(context);
         mContext = context;
     }
 
     public void initialize(Context context, PreferenceGroup group,
             float[] initialZoomRatios, int initialOrientation, Parameters params) {
-        mInitialZoomRatios = initialZoomRatios;
         mInitialOrientation = initialOrientation;
+        mInitialZoomRatios = initialZoomRatios;
         super.initialize(context, group, params);
     }
 
@@ -53,19 +53,14 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
             Context context, PreferenceGroup group, Parameters params) {
         super.initializeIndicatorBar(context, group, params);
 
-        ListPreference prefs[] = getListPreferences(group,
-                CameraSettings.KEY_CAPTURE_MODE,
+        ListPreference[] prefs = getListPreferences(group,
                 CameraSettings.KEY_FOCUS_MODE,
                 CameraSettings.KEY_EXPOSURE,
                 CameraSettings.KEY_SCENE_MODE,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_JPEG_QUALITY,
                 CameraSettings.KEY_COLOR_EFFECT,
-                CameraSettings.KEY_ISO,
-                CameraSettings.KEY_LENSSHADING,
-                CameraSettings.KEY_AUTOEXPOSURE,
-                CameraSettings.KEY_ANTIBANDING,
-		CameraSettings.KEY_STABILIZATION);
+                CameraSettings.KEY_STABILIZATION);
 
         mOtherSettings = new OtherSettingsIndicator(context, prefs);
         mOtherSettings.setOnRestorePreferencesClickedRunner(new Runnable() {
@@ -82,13 +77,10 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
             mIndicatorBar.addComponent(mSettingsIndicator);
         }
 
-        mGpsIndicator = new GpsIndicator(
-                context, (IconListPreference)
-                group.findPreference(CameraSettings.KEY_RECORD_LOCATION));
-        mIndicatorBar.addComponent(mGpsIndicator);
-
         addIndicator(context, group, CameraSettings.KEY_WHITE_BALANCE);
-        addIndicator(context, group, CameraSettings.KEY_FLASH_MODE);
+        addIndicator(context, group, CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE);
+
+        mVideoQualitySettings = addIndicator(context, group, CameraSettings.KEY_VIDEO_QUALITY);
 
         if (mInitialZoomRatios != null) {
             mZoomIndicator = new ZoomIndicator(mContext);
@@ -124,17 +116,6 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
         }
     }
 
-    public void setGpsHasSignal(final boolean hasSignal) {
-        GLRootView root = getGLRootView();
-        if (root != null) {
-            synchronized (root) {
-                mGpsIndicator.setHasSignal(hasSignal);
-            }
-        } else {
-            mGpsIndicator.setHasSignal(hasSignal);
-        }
-    }
-
     /**
      * Sets the zoom rations the camera driver provides. This methods must be
      * called before <code>setZoomListener()</code> and
@@ -154,5 +135,10 @@ public class CameraHeadUpDisplay extends HeadUpDisplay {
     private void setZoomRatiosLocked(float[] zoomRatios) {
         mZoomIndicator.setZoomRatios(zoomRatios);
     }
-}
 
+    public void setVideoQualityControlsEnabled(boolean enabled) {
+        if (mVideoQualitySettings != null) {
+            mVideoQualitySettings.setEnabled(enabled);
+        }
+    }
+}
