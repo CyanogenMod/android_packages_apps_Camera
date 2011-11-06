@@ -102,6 +102,7 @@ public class CameraSettings {
     private static boolean mSamsungSpecialSettings; // slow_ae and video_recording_gamma
 
     public static final String FOCUS_MODE_TOUCH = "touch";
+    public static final String FOCUS_MODE_AUTO = "auto";
 
     public CameraSettings(Activity activity, Parameters parameters,
                           CameraInfo[] cameraInfo, int cameraId) {

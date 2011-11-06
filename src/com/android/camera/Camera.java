@@ -1701,6 +1701,11 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                 || (mFocusState == FOCUS_SUCCESS
                 || mFocusState == FOCUS_FAIL)) {
             mImageCapture.onSnap();
+        } else if (mFocusMode.equals(CameraSettings.FOCUS_MODE_AUTO)
+		&& mFocusState == 0) {
+            // Do the focus, then snap
+            doFocus(true);
+            mFocusState = FOCUSING_SNAP_ON_FINISH;
         } else if (mFocusState == FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
             // already have requested AF for us, so just request capture on
