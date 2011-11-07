@@ -47,26 +47,6 @@ public class MenuHelper {
     private static final String PANORAMA_CLASS = "com.android.camera.panorama.PanoramaActivity";
     private static final String VIDEO_CAMERA_CLASS = "com.android.camera.VideoCamera";
 
-    public static void confirmAction(Context context, String title,
-            String message, final Runnable action) {
-        OnClickListener listener = new OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        if (action != null) action.run();
-                }
-            }
-        };
-        new AlertDialog.Builder(context)
-            .setIconAttribute(android.R.attr.alertDialogIcon)
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton(android.R.string.ok, listener)
-            .setNegativeButton(android.R.string.cancel, listener)
-            .create()
-            .show();
-    }
-
     public static void addSwitchModeMenuItem(Menu menu, int mode,
             final Runnable r) {
         int labelId, iconId;
