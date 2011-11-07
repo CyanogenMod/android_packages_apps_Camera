@@ -89,6 +89,12 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         return (mNonIndicatorButtonCount + ((baselineX - x) / buttonRange));
     }
 
+    private void dispatchRelativeTouchEvent(View view, MotionEvent event) {
+        event.offsetLocation(-view.getLeft(), -view.getTop());
+        view.dispatchTouchEvent(event);
+        event.offsetLocation(view.getLeft(), view.getTop());
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (!onFilterTouchEventForSecurity(event)) return false;
@@ -106,19 +112,19 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         int index = getTouchViewIndex((int) x, width);
         if (index == -1) return true;
         View b = getChildAt(index);
-        b.dispatchTouchEvent(event);
+        dispatchRelativeTouchEvent(b, event);
         if ((mSelectedIndex != -1) && (index != mSelectedIndex)) {
             View v = getChildAt(mSelectedIndex);
             if (v instanceof AbstractIndicatorButton) {
                 AbstractIndicatorButton c = (AbstractIndicatorButton) v;
                 event.setAction(MotionEvent.ACTION_CANCEL);
-                c.dispatchTouchEvent(event);
+                dispatchRelativeTouchEvent(c, event);
                 c.dismissPopup();
             }
 
             if (action == MotionEvent.ACTION_MOVE) {
                 event.setAction(MotionEvent.ACTION_DOWN);
-                b.dispatchTouchEvent(event);
+                dispatchRelativeTouchEvent(b, event);
             }
         }
         mSelectedIndex = index;
