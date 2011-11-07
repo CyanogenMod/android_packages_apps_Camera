@@ -63,7 +63,7 @@
                     android:layout_width="0dp"
                     android:background="@color/mode_selection_border"
                     android:visibility="gone" />
-            <com.android.camera.ui.ColorFilterImageView
+            <com.android.camera.ui.TwoStateImageView
                     android:id="@+id/back_to_first_level"
                     android:layout_height="match_parent"
                     android:layout_width="wrap_content"
