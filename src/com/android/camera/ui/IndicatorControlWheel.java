@@ -187,7 +187,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
         if (rotatable) {
             view = new RotateImageView(context);
         } else {
-            view = new ColorFilterImageView(context);
+            view = new TwoStateImageView(context);
         }
         view.setImageResource(resourceId);
         view.setOnClickListener(this);
