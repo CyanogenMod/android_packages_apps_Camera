@@ -322,10 +322,10 @@
     <string name="clear_effects">Clear effects</string>
 
     <!-- Title of category for silly face effects. [CHAR LIMIT=26] -->
-    <string name="effect_silly_faces">Silly faces</string>
+    <string name="effect_silly_faces">SILLY FACES</string>
 
     <!-- Title of category for background replacement effects. [CHAR LIMIT=26] -->
-    <string name="effect_background">Background</string>
+    <string name="effect_background">BACKGROUND</string>
 
     <!-- The shutter button. [CHAR LIMIT = NONE] -->
     <string name="accessibility_shutter_button">Shutter button</string>
