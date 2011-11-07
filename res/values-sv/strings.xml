@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"Vill du återställa standardinställningarna för kameran?"</string>
     <string name="review_play" msgid="6378271587740884696">"Spela"</string>
     <string name="review_cancel" msgid="8188009385853399254">"AVBRYT"</string>
-    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <!-- outdated translation 4750691949877864726 -->     <string name="review_ok" msgid="1156261588693116433">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"TA OM"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galleri"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Byt kamera"</string>
@@ -113,10 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Solnedgång"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Välj en egen"</string>
-    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
-    <skip />
-    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
-    <skip />
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Lägg ned enheten"\n"Ställ dig utom synhåll för ett ögonblick"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Det går inte att välja detta när effekten är på."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Ta ett foto under videoinspelningen genom att trycka på skärmen."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Ögonblicksbilden av en video inaktiveras när specialeffekter är aktiverade."</string>
