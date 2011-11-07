@@ -32,7 +32,7 @@ import android.widget.ImageView;
 /**
  * A @{code ImageView} which can rotate it's content.
  */
-public class RotateImageView extends ColorFilterImageView implements Rotatable {
+public class RotateImageView extends TwoStateImageView implements Rotatable {
 
     @SuppressWarnings("unused")
     private static final String TAG = "RotateImageView";
