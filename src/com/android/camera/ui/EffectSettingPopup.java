@@ -104,6 +104,7 @@ public class EffectSettingPopup extends AbstractSettingPopup implements
         // Initialize goofy face if it is supported.
         if (hasSillyFaces) {
             findViewById(R.id.effect_silly_faces_title).setVisibility(View.VISIBLE);
+            findViewById(R.id.effect_silly_faces_title_separator).setVisibility(View.VISIBLE);
             mSillyFacesGrid.setVisibility(View.VISIBLE);
             SimpleAdapter sillyFacesItemAdapter = new SimpleAdapter(context,
                     mSillyFacesItem, R.layout.effect_setting_item,
@@ -120,6 +121,7 @@ public class EffectSettingPopup extends AbstractSettingPopup implements
         // Initialize background replacer if it is supported.
         if (hasBackground) {
             findViewById(R.id.effect_background_title).setVisibility(View.VISIBLE);
+            findViewById(R.id.effect_background_title_separator).setVisibility(View.VISIBLE);
             mBackgroundGrid.setVisibility(View.VISIBLE);
             SimpleAdapter backgroundItemAdapter = new SimpleAdapter(context,
                     mBackgroundItem, R.layout.effect_setting_item,

@@ -45,10 +45,10 @@
     <dimen name="big_setting_popup_window_width">320dp</dimen>
     <dimen name="setting_item_icon_width">28dp</dimen>
     <dimen name="effect_setting_item_icon_width">40dp</dimen>
-    <dimen name="effect_setting_item_text_size">12dp</dimen>
-    <dimen name="effect_setting_type_text_size">18dp</dimen>
+    <dimen name="effect_setting_item_text_size">12sp</dimen>
+    <dimen name="effect_setting_type_text_size">12sp</dimen>
     <dimen name="effect_setting_type_text_min_height">36dp</dimen>
     <dimen name="effect_setting_clear_text_size">20dp</dimen>
-    <dimen name="effect_setting_clear_text_min_height">36dp</dimen>
+    <dimen name="effect_setting_clear_text_min_height">45dp</dimen>
     <dimen name="effect_setting_type_text_left_padding">16dp</dimen>
 </resources>
