@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"هل تريد استعادة إعدادات الكاميرا الافتراضية؟"</string>
     <string name="review_play" msgid="6378271587740884696">"تشغيل"</string>
     <string name="review_cancel" msgid="8188009385853399254">"إلغاء"</string>
-    <string name="review_ok" msgid="5305096180300056529">"موافق"</string>
+    <!-- outdated translation 4750691949877864726 -->     <string name="review_ok" msgid="1156261588693116433">"موافق"</string>
     <string name="review_retake" msgid="7804864054896088338">"سحب"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"المعرض"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"تبديل الكاميرا"</string>

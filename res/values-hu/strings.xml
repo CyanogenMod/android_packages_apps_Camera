@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"Visszaállítja a fényképezőgép alapértelmezett beállításait?"</string>
     <string name="review_play" msgid="6378271587740884696">"Lejátszás"</string>
     <string name="review_cancel" msgid="8188009385853399254">"MÉGSE"</string>
-    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <string name="review_ok" msgid="1156261588693116433">"KÉSZ"</string>
     <string name="review_retake" msgid="7804864054896088338">"ÚJ FELVÉTEL"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galéria"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Kamera váltása"</string>
@@ -113,10 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Napnyugta"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Diszkó"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Saját videó"</string>
-    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
-    <skip />
-    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
-    <skip />
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Tegye le a készüléket"\n"Lépjen ki a képből egy pillanatra"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Nem választható, ha a hatás be van kapcsolva."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Az előnézeti képernyő megérintésével fényképet készíthet."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"A video-pillanatfelvétel letiltva speciális effektek esetén."</string>

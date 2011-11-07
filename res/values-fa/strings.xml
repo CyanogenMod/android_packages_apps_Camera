@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"بازیابی تنظیمات پیش‌فرض دوربین؟"</string>
     <string name="review_play" msgid="6378271587740884696">"پخش"</string>
     <string name="review_cancel" msgid="8188009385853399254">"لغو"</string>
-    <string name="review_ok" msgid="5305096180300056529">"تأیید"</string>
+    <!-- outdated translation 4750691949877864726 -->     <string name="review_ok" msgid="1156261588693116433">"تأیید"</string>
     <string name="review_retake" msgid="7804864054896088338">"دریافت مجدد"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"گالری"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"جابجایی به دوربین"</string>
@@ -113,10 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"غروب آفتاب"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"دیسکو"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"انتخاب مورد خود"</string>
-    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
-    <skip />
-    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
-    <skip />
+    <string name="bg_replacement_message" msgid="6828585054971662284">"دستگاه خود را کنار بگذارید"\n"چند لحظه از دید خارج شوید"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"زمان روشن بودن جلوه قابل انتخاب نیست."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"در حین ضبط ویدیو با لمس کردن صفحه پیش‌نمایش یک عکس بگیرید."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"هنگام فعال بودن جلوه‌های ویژه، عکس فوری از ویدیو غیرفعال است."</string>
