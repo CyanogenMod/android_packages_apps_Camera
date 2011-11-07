@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"Ripristinare le impostazioni predefinite della fotocamera?"</string>
     <string name="review_play" msgid="6378271587740884696">"Riproduci"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ANNULLA"</string>
-    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <string name="review_ok" msgid="1156261588693116433">"FINE"</string>
     <string name="review_retake" msgid="7804864054896088338">"SCATTA DI NUOVO"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galleria"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Cambia fotocamera"</string>

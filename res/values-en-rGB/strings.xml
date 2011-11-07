@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"Restore Camera default settings?"</string>
     <string name="review_play" msgid="6378271587740884696">"Play"</string>
     <string name="review_cancel" msgid="8188009385853399254">"CANCEL"</string>
-    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <string name="review_ok" msgid="1156261588693116433">"DONE"</string>
     <string name="review_retake" msgid="7804864054896088338">"RETAKE"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Gallery"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Switch Camera"</string>

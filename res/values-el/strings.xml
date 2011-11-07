@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"Επαναφορά προεπιλεγμένων ρυθμίσεων φωτογραφικής μηχανής;"</string>
     <string name="review_play" msgid="6378271587740884696">"Αναπαρ."</string>
     <string name="review_cancel" msgid="8188009385853399254">"ΑΚΥΡΩΣΗ"</string>
-    <string name="review_ok" msgid="5305096180300056529">"ΟΚ"</string>
+    <!-- outdated translation 4750691949877864726 -->     <string name="review_ok" msgid="1156261588693116433">"Ok"</string>
     <string name="review_retake" msgid="7804864054896088338">"ΝΕΑ ΛΗΨΗ"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Συλλογή"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Εναλλαγή κάμερας"</string>
@@ -113,10 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Δύση ηλίου"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Ντίσκο"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Επιλέξτε το δικό σας"</string>
-    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
-    <skip />
-    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
-    <skip />
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Αφήστε τη συσκευή σας κάτω"\n"Απομακρυνθείτε από το πεδίο προβολής"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Δεν υπάρχει δυνατότητα επιλογής όταν το εφέ είναι ενεργοποιημένο."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Βγάλτε μια φωτογραφία κατά τη διάρκεια της εγγραφής βίντεο πατώντας την οθόνη προεπισκόπησης."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Το στιγμιότυπο οθόνης βίντεο απενεργοποιείται με ενεργά τα εφέ."</string>

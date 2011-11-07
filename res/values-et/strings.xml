@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"Kas taastada kaamera vaikeseaded?"</string>
     <string name="review_play" msgid="6378271587740884696">"Esita"</string>
     <string name="review_cancel" msgid="8188009385853399254">"TÜHISTA"</string>
-    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <!-- outdated translation 4750691949877864726 -->     <string name="review_ok" msgid="1156261588693116433">"Ok"</string>
     <string name="review_retake" msgid="7804864054896088338">"TEE UUESTI"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerii"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Vaheta kaamerat"</string>
@@ -113,7 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Päikeseloojang"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Valige ise"</string>
-    <string name="bg_replacement_message" msgid="6828585054971662284">"Pange seade käest ära"\n"Astuge korraks vaateväljast ära"</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Pange seade käest"\n"Lahkuge korraks vaateväljast"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Võimatu valida, kui efekt on sisse lülitatud."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Videot salvestades foto jäädvustamiseks koputage eelvaate kuval."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Kui eriefektid on sisse lülitatud, on video hetktõmmis keelatud."</string>

@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"要恢复“相机”的默认设置吗？"</string>
     <string name="review_play" msgid="6378271587740884696">"播放"</string>
     <string name="review_cancel" msgid="8188009385853399254">"取消"</string>
-    <string name="review_ok" msgid="5305096180300056529">"确定"</string>
+    <!-- outdated translation 4750691949877864726 -->     <string name="review_ok" msgid="1156261588693116433">"确定"</string>
     <string name="review_retake" msgid="7804864054896088338">"重拍"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"图库"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"切换相机"</string>
@@ -113,10 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"日落"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"迪斯科"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"自行选择"</string>
-    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
-    <skip />
-    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
-    <skip />
+    <string name="bg_replacement_message" msgid="6828585054971662284">"把设备放好"\n"离开镜头前片刻"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"无法在启用该效果时选择。"</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"录制视频时触摸预览屏幕可拍照。"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"启用特殊效果时停用视频快照。"</string>

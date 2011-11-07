@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"카메라 기본 설정값을 복원하시겠습니까?"</string>
     <string name="review_play" msgid="6378271587740884696">"재생"</string>
     <string name="review_cancel" msgid="8188009385853399254">"취소"</string>
-    <string name="review_ok" msgid="5305096180300056529">"확인"</string>
+    <!-- outdated translation 4750691949877864726 -->     <string name="review_ok" msgid="1156261588693116433">"확인"</string>
     <string name="review_retake" msgid="7804864054896088338">"다시 촬영"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"갤러리"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"카메라 방향 전환"</string>
@@ -113,10 +113,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"일몰"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"디스코"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"내 동영상 선택"</string>
-    <!-- unknown placeholder BREAK_0 in bg_replacement_message -->
-    <skip />
-    <!-- no translation found for bg_replacement_message (6828585054971662284) -->
-    <skip />
+    <string name="bg_replacement_message" msgid="6828585054971662284">"기기를 내려놓습니다."\n"잠시 동안 시야를 벗어납니다."</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"효과를 사용 중일 때는 선택할 수 없습니다."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"동영상을 촬영하는 동안 미리보기 화면을 터치하여 사진을 찍을 수 있습니다."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"특수 효과가 설정되어 있으면 동영상 스냅샷이 사용 중지됩니다."</string>
