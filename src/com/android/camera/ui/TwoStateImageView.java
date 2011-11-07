@@ -23,18 +23,17 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 /**
- * A @{code ImageView} which grey out the icon if disabled.
+ * A @{code ImageView} which change the opacity of the icon if disabled.
  */
-public class ColorFilterImageView extends ImageView {
-    private final int DISABLED_COLOR;
+public class TwoStateImageView extends ImageView {
+    private final float DISABLED_ALPHA = 0.4f;
     private boolean mFilterEnabled = true;
 
-    public ColorFilterImageView(Context context, AttributeSet attrs) {
+    public TwoStateImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        DISABLED_COLOR = context.getResources().getColor(R.color.icon_disabled_color);
     }
 
-    public ColorFilterImageView(Context context) {
+    public TwoStateImageView(Context context) {
         this(context, null);
     }
 
@@ -43,9 +42,9 @@ public class ColorFilterImageView extends ImageView {
         super.setEnabled(enabled);
         if (mFilterEnabled) {
             if (enabled) {
-                clearColorFilter();
+                setAlpha(1.0f);
             } else {
-                setColorFilter(DISABLED_COLOR);
+                setAlpha(DISABLED_ALPHA);
             }
         }
     }
