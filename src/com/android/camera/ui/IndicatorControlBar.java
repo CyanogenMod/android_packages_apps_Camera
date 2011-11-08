@@ -57,6 +57,7 @@ public class IndicatorControlBar extends IndicatorControl implements
 
         // Add CameraPicker control.
         initializeCameraPicker();
+        mCameraPicker.setBackgroundResource(R.drawable.bg_pressed);
 
         // Add the ZoomControl if supported.
         if (zoomSupported) {
@@ -83,22 +84,27 @@ public class IndicatorControlBar extends IndicatorControl implements
     @Override
     protected void onLayout(
             boolean changed, int left, int top, int right, int bottom) {
-        int padding = getPaddingTop();
-
         int count = getChildCount();
         if (count == 0) return;
+
+        // We have (equal) paddings at left and right, but no padding at top or
+        // bottom.
+        int padding = getPaddingLeft();
+        int width = right - left;
         int height = bottom - top;
 
-        mSecondLevelIcon.layout(0, 0, height, height);
+        // We want the icons to be square (size x size)
+        int size = height;
+
+        mSecondLevelIcon.layout(padding, 0, padding + size, size);
 
         // Layout the zoom control if required.
-        int offset = padding + height; // the padding and the icon height
         if (mZoomControl != null)  {
-            mZoomControl.layout(offset, 0, right - left - offset, height);
+            mZoomControl.layout(padding + size, 0, width - padding - size, size);
         }
 
         if (mCameraPicker != null) {
-            mCameraPicker.layout(right - left - offset, 0, right - left, height);
+            mCameraPicker.layout(width - padding - size, 0, width - padding, size);
         }
     }
 

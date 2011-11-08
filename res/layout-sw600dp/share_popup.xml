@@ -61,22 +61,21 @@
                 android:layout_gravity="right"
                 android:background="@color/share_icon_background">
             <com.android.camera.ui.RotateLayout
-                    android:layout_marginTop="8dip"
                     android:id="@+id/goto_gallery_button_rotate"
                     android:layout_gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="@dimen/share_item_width" >
                 <ImageButton
                         android:id="@+id/goto_gallery_button"
                         android:background="?android:attr/selectableItemBackground"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="center"
                         android:src="@drawable/ic_gallery" />
             </com.android.camera.ui.RotateLayout>
             <View
                     android:layout_width="match_parent"
-                    android:layout_margin="8dip"
+                    android:layout_margin="8dp"
                     android:layout_height="1dp"
                     android:background="#5affffff" />
 
