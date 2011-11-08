@@ -56,6 +56,7 @@
                 second item, we just use the second one instead.
         -->
         <item>@string/pref_camera_picturesize_entry_3264x2448</item>
+        <item>@string/pref_camera_picturesize_entry_3264x1968</item>
         <item>@string/pref_camera_picturesize_entry_3264x1952</item>
         <item>@string/pref_camera_picturesize_entry_2592x1936</item>
         <item>@string/pref_camera_picturesize_entry_2592x1936</item>
@@ -91,6 +92,7 @@
          driver -->
     <string-array name="pref_camera_picturesize_entryvalues" translatable="false">
         <item>3264x2448</item>
+        <item>3264x1968</item>
         <item>3264x1952</item>
         <item>2592x1944</item>
         <item>2592x1936</item>
