@@ -26,7 +26,8 @@
             android:layout_width="match_parent">
         <com.android.camera.ui.IndicatorControlBar
                 android:id="@+id/indicator_bar"
-                android:padding="8dp"
+                android:paddingRight="8dp"
+                android:paddingLeft="8dp"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:layout_centerVertical="true">
@@ -41,6 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:contentDescription="@string/accessibility_second_level_indicators"
+                    android:background="@drawable/bg_pressed"
                     android:src="@drawable/ic_settings_holo_light" />
         </com.android.camera.ui.IndicatorControlBar>
 
@@ -57,19 +59,13 @@
                     android:layout_height="match_parent"
                     android:layout_width="1dp"
                     android:background="@android:color/white" />
-            <View android:id="@+id/indicator_highlight"
-                    android:layout_alignParentTop="true"
-                    android:layout_height="3dp"
-                    android:layout_width="0dp"
-                    android:background="@color/mode_selection_border"
-                    android:visibility="gone" />
             <com.android.camera.ui.TwoStateImageView
                     android:id="@+id/back_to_first_level"
                     android:layout_height="match_parent"
                     android:layout_width="wrap_content"
                     android:contentDescription="@string/accessibility_back_to_first_level"
+                    android:background="@drawable/bg_pressed"
                     android:src="@drawable/btn_close_settings" />
         </com.android.camera.ui.SecondLevelIndicatorControlBar>
-
     </RelativeLayout>
 </com.android.camera.ui.IndicatorControlBarContainer>
