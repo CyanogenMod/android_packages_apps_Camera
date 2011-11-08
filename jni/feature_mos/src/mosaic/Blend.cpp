@@ -445,7 +445,7 @@ int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
         {
             // Set the number of pixels around the seam to cross-fade between
             // the two component images,
-            int tw = STRIP_CROSS_FADE_WIDTH * width;
+            int tw = STRIP_CROSS_FADE_WIDTH_PXLS;
 
             // Proceed with the image index calculation for cross-fading
             // only if the cross-fading width is larger than 0
@@ -498,7 +498,7 @@ int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
         {
             // Set the number of pixels around the seam to cross-fade between
             // the two component images,
-            int tw = STRIP_CROSS_FADE_WIDTH * height;
+            int tw = STRIP_CROSS_FADE_WIDTH_PXLS;
 
             // Proceed with the image index calculation for cross-fading
             // only if the cross-fading width is larger than 0
@@ -941,7 +941,10 @@ void Blend::ProcessPyramidForThisFrame(CSite *csite, BlendRect &vcrect, BlendRec
                 {
                     if(inMask && imgMos.Y.ptr[jj][ii] != 255)
                     {
-                        if(imgMos.V.ptr[jj][ii] == 128) // Not on a seam
+                        // If not on a seam OR pyramid level exceeds
+                        // maximum level for cross-fading.
+                        if((imgMos.V.ptr[jj][ii] == 128) ||
+                            (dscale > STRIP_CROSS_FADE_MAX_PYR_LEVEL))
                         {
                             wt0 = 0.0;
                             wt1 = 1.0;
@@ -1216,8 +1219,8 @@ void Blend::SelectRelevantFrames(MosaicFrame **frames, int frames_size,
         double deltaY = currY - prevY;
         double center2centerDist = sqrt(deltaY * deltaY + deltaX * deltaX);
 
-        if (fabs(deltaX) > STRIP_SEPARATION_THRESHOLD * last->width ||
-                fabs(deltaY) > STRIP_SEPARATION_THRESHOLD * last->height)
+        if (fabs(deltaX) > STRIP_SEPARATION_THRESHOLD_PXLS ||
+                fabs(deltaY) > STRIP_SEPARATION_THRESHOLD_PXLS)
         {
             relevant_frames[relevant_frames_size] = mb;
             relevant_frames_size++;
