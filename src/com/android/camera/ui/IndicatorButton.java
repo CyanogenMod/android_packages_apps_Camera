@@ -27,8 +27,8 @@ import android.view.ViewGroup;
 
 // An indicator button that represents one camera setting. Ex: flash. Pressing it opens a popup
 // window.
-public class IndicatorButton extends AbstractIndicatorButton implements BasicSettingPopup.Listener,
-        EffectSettingPopup.Listener{
+public class IndicatorButton extends AbstractIndicatorButton
+        implements BasicSettingPopup.Listener, EffectSettingPopup.Listener{
     private final String TAG = "IndicatorButton";
     private IconListPreference mPreference;
     // Scene mode can override the original preference value.
