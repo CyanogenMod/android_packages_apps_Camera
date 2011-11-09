@@ -35,14 +35,18 @@ const float TIME_PERCENT_FINAL = 5.0;
 
 // This threshold determines the minimum separation between the image centers
 // of the input image frames for them to be accepted for blending in the
-// STRIP_TYPE_WIDE mode. This threshold is specified as a fraction of the
-// input image frame width.
-const float STRIP_SEPARATION_THRESHOLD = 0.10;
+// STRIP_TYPE_WIDE mode.
+const float STRIP_SEPARATION_THRESHOLD_PXLS = 10;
 
 // This threshold determines the number of pixels on either side of the strip
-// to cross-fade using the images contributing to each seam. This threshold
-// is specified as a fraction of the input image frame width.
-const float STRIP_CROSS_FADE_WIDTH = 0.002;
+// to cross-fade using the images contributing to each seam.
+const float STRIP_CROSS_FADE_WIDTH_PXLS = 2;
+// This specifies the maximum pyramid level to which cross-fading is applied.
+// The original image resolution is Level-0, half of that size is Level-1 and
+// so on. BLEND_RANGE_DEFAULT specifies the number of pyramid levels used by
+// the blending algorithm.
+const int STRIP_CROSS_FADE_MAX_PYR_LEVEL = 2;
+
 /**
  *  Class for pyramid blending a mosaic.
  */
