@@ -43,12 +43,12 @@
             <com.android.camera.ui.IndicatorControlWheel android:id="@+id/indicator_control_wheel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+                <com.android.camera.ui.ZoomControlWheel
+                        android:id="@+id/zoom_control"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
             </com.android.camera.ui.IndicatorControlWheel>
-            <com.android.camera.ui.ZoomControlWheel
-                    android:id="@+id/zoom_control"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone" />
         </com.android.camera.ui.IndicatorControlWheelContainer>
         <include layout="@layout/mode_picker" />
 </com.android.camera.ui.ControlPanelLayout>

@@ -29,23 +29,27 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
- * A view that contains camera zoom control and its layout.
+ * A view that contains camera zoom control and its layout. In addition to the
+ * zoom control, the method {@link #rotate} is added for rotation animation
+ * which is called in switching between first-level and second-level indicators.
  */
 public class ZoomControlWheel extends ZoomControl {
     private static final String TAG = "ZoomControlWheel";
     private static final int HIGHLIGHT_WIDTH = 4;
     private static final int HIGHLIGHT_DEGREES = 30;
     private static final int TRAIL_WIDTH = 2;
-    private static final int ZOOM_IN_ICON_DEGREES = 60;
-    private static final int ZOOM_OUT_ICON_DEGREES = 300;
-    private static final int DEFAULT_SLIDER_POSITION = 180;
+    private static final int ZOOM_IN_ICON_DEGREES = 96;
+    private static final int ZOOM_OUT_ICON_DEGREES = 264;
     private static final int MAX_SLIDER_ANGLE =
             ZOOM_OUT_ICON_DEGREES - (HIGHLIGHT_DEGREES / 2);
     private static final int MIN_SLIDER_ANGLE =
             ZOOM_IN_ICON_DEGREES + (HIGHLIGHT_DEGREES / 2);
+    private static final int DEFAULT_SLIDER_POSITION = MAX_SLIDER_ANGLE;
     private static final float EDGE_STROKE_WIDTH = 6f;
     private static final double BUFFER_RADIANS = Math.toRadians(HIGHLIGHT_DEGREES / 2);
-    private double mSliderRadians = Math.toRadians(DEFAULT_SLIDER_POSITION);
+    private static final double SLIDER_RANGE =
+            Math.toRadians(MAX_SLIDER_ANGLE - MIN_SLIDER_ANGLE);
+    private double mSliderRadians = DEFAULT_SLIDER_POSITION;
 
     private final int HIGHLIGHT_COLOR;
     private final int TRAIL_COLOR;
@@ -58,6 +62,8 @@ public class ZoomControlWheel extends ZoomControl {
     private double mWheelRadius;
     private Paint mBackgroundPaint;
     private RectF mBackgroundRect;
+
+    private double mRotateAngle;
 
     public ZoomControlWheel(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -75,35 +81,21 @@ public class ZoomControlWheel extends ZoomControl {
         mShutterButtonRadius = IndicatorControlWheelContainer.SHUTTER_BUTTON_RADIUS;
         mStrokeWidth = Util.dpToPixel(IndicatorControlWheelContainer.STROKE_WIDTH);
         mWheelRadius = mShutterButtonRadius + mStrokeWidth * 0.5;
-        super.setZoomStep(1); // one zoom level at a time
-    }
-
-    private void performZoom() {
-        if (mSliderRadians > (Math.PI + BUFFER_RADIANS)) {
-            super.performZoom(ZOOM_OUT);
-        } else if (mSliderRadians < (Math.PI - BUFFER_RADIANS)) {
-            super.performZoom(ZOOM_IN);
-        } else {
-            super.performZoom(ZOOM_STOP);
-        }
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        if (!onFilterTouchEventForSecurity(event)) return false;
+        if (!onFilterTouchEventForSecurity(event) || !isEnabled()) return false;
         int action = event.getAction();
 
         double dx = event.getX() - mCenterX;
         double dy = mCenterY - event.getY();
         double radius = Math.sqrt(dx * dx + dy * dy);
         // Ignore the event if too far from the shutter button.
-        mSliderRadians = Math.atan2(dy, dx);
-        if (mSliderRadians < 0) mSliderRadians += Math.PI * 2;
-        if (mSliderRadians > (Math.PI + BUFFER_RADIANS)) {
-            mSliderPosition = 1;
-        } else {
-            mSliderPosition = (mSliderRadians < (Math.PI - BUFFER_RADIANS)) ? -1 : 0;
-        }
+        double angle = Math.atan2(dy, dx);
+        if (angle < 0) angle += (2 * Math.PI);
+        mSliderRadians = getSliderDrawAngle(angle);
+
         // We assume the slider button is pressed all the time when the
         // zoom control is active. So we take care of the following events
         // only.
@@ -114,7 +106,8 @@ public class ZoomControlWheel extends ZoomControl {
                 closeZoomControl();
                 break;
             case MotionEvent.ACTION_MOVE:
-                performZoom();
+                performZoom((Math.toRadians(MAX_SLIDER_ANGLE)
+                        - mSliderRadians) / SLIDER_RANGE);
                 requestLayout();
         }
         return true;
@@ -127,6 +120,9 @@ public class ZoomControlWheel extends ZoomControl {
     }
 
     private void layoutIcon(View view, double radian) {
+        // Rotate the wheel with the angle when the wheel is rotating or
+        // the indicator control is in the second-level.
+        radian += mRotateAngle;
         int x = mCenterX + (int)(mWheelRadius * Math.cos(radian));
         int y = mCenterY - (int)(mWheelRadius * Math.sin(radian));
         int width = view.getMeasuredWidth();
@@ -135,8 +131,7 @@ public class ZoomControlWheel extends ZoomControl {
                 y + height / 2);
     }
 
-    private double getSliderDrawAngle() {
-        double sliderAngle = mSliderRadians;
+    private double getSliderDrawAngle(double sliderAngle) {
         if (sliderAngle > Math.toRadians(MAX_SLIDER_ANGLE)) {
             return Math.toRadians(MAX_SLIDER_ANGLE);
         } else if (sliderAngle < Math.toRadians(MIN_SLIDER_ANGLE)) {
@@ -153,7 +148,7 @@ public class ZoomControlWheel extends ZoomControl {
         mCenterY = (bottom - top) / 2;
         layoutIcon(mZoomIn, Math.toRadians(ZOOM_IN_ICON_DEGREES));
         layoutIcon(mZoomOut, Math.toRadians(ZOOM_OUT_ICON_DEGREES));
-        layoutIcon(mZoomSlider, getSliderDrawAngle());
+        layoutIcon(mZoomSlider, getSliderDrawAngle(mSliderRadians));
    }
 
     private double getZoomIndexAngle() {
@@ -174,14 +169,17 @@ public class ZoomControlWheel extends ZoomControl {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // Draw zoom index highlight.
-        float radius = (float) (mWheelRadius + mStrokeWidth * 0.5 + EDGE_STROKE_WIDTH);
-        int degree = (int) Math.toDegrees(getZoomIndexAngle());
-        drawArc(canvas, (-degree - HIGHLIGHT_DEGREES / 2), HIGHLIGHT_DEGREES,
-                radius, HIGHLIGHT_COLOR, HIGHLIGHT_WIDTH);
         // Draw the slider trail.
-        drawArc(canvas, -MAX_SLIDER_ANGLE, (MAX_SLIDER_ANGLE - MIN_SLIDER_ANGLE),
+        int startAngle = -MAX_SLIDER_ANGLE - (int) Math.toDegrees(mRotateAngle);
+        int radians = (MAX_SLIDER_ANGLE - MIN_SLIDER_ANGLE);
+        if ((startAngle + radians) > 0) radians = -startAngle;
+        drawArc(canvas, startAngle, radians,
                 mWheelRadius, TRAIL_COLOR, TRAIL_WIDTH);
         super.onDraw(canvas);
+    }
+
+    public void rotate(double angle) {
+        mRotateAngle = angle;
+        requestLayout();
     }
 }
