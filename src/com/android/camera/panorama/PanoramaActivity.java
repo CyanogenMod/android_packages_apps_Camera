@@ -27,7 +27,6 @@ import com.android.camera.OnClickAttr;
 import com.android.camera.R;
 import com.android.camera.RotateDialogController;
 import com.android.camera.ShutterButton;
-import com.android.camera.SoundPlayer;
 import com.android.camera.Storage;
 import com.android.camera.Thumbnail;
 import com.android.camera.Util;
@@ -50,6 +49,7 @@ import android.graphics.SurfaceTexture;
 import android.graphics.YuvImage;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.hardware.Camera.Sound;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.Uri;
@@ -57,7 +57,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
-import android.os.SystemProperties;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -103,8 +102,6 @@ public class PanoramaActivity extends ActivityBase implements
 
     // Ratio of nanosecond to second
     private static final float NS2S = 1.0f / 1000000000.0f;
-
-    private static final String VIDEO_RECORD_SOUND = "/system/media/audio/ui/VideoRecord.ogg";
 
     private boolean mPausing;
 
@@ -166,8 +163,6 @@ public class PanoramaActivity extends ActivityBase implements
     private boolean mCancelComputation;
     private float[] mTransformMatrix;
     private float mHorizontalViewAngle;
-
-    private SoundPlayer mRecordSound;
 
     // Prefer FOCUS_MODE_INFINITY to FOCUS_MODE_CONTINUOUS_VIDEO because of
     // getting a better image quality by the former.
@@ -729,11 +724,11 @@ public class PanoramaActivity extends ActivityBase implements
         // right now.
         switch (mCaptureState) {
             case CAPTURE_STATE_VIEWFINDER:
-                if (mRecordSound != null) mRecordSound.play();
+                mCameraDevice.playSound(Sound.START_VIDEO_RECORDING);
                 startCapture();
                 break;
             case CAPTURE_STATE_MOSAIC:
-                if (mRecordSound != null) mRecordSound.play();
+                mCameraDevice.playSound(Sound.STOP_VIDEO_RECORDING);
                 stopCapture(false);
         }
     }
@@ -916,34 +911,6 @@ public class PanoramaActivity extends ActivityBase implements
         mMosaicFrameProcessor.initialize();
     }
 
-    private void initSoundRecorder() {
-        // Construct sound player; use enforced sound output if necessary
-        File recordSoundFile = new File(VIDEO_RECORD_SOUND);
-        try {
-            ParcelFileDescriptor recordSoundParcel =
-                    ParcelFileDescriptor.open(recordSoundFile,
-                            ParcelFileDescriptor.MODE_READ_ONLY);
-            AssetFileDescriptor recordSoundAsset =
-                    new AssetFileDescriptor(recordSoundParcel, 0,
-                                            AssetFileDescriptor.UNKNOWN_LENGTH);
-            if (SystemProperties.get("ro.camera.sound.forced", "0").equals("0")) {
-                mRecordSound = new SoundPlayer(recordSoundAsset, false);
-            } else {
-                mRecordSound = new SoundPlayer(recordSoundAsset, true);
-            }
-        } catch (java.io.FileNotFoundException e) {
-            Log.e(TAG, "System video record sound not found");
-            mRecordSound = null;
-        }
-    }
-
-    private void releaseSoundRecorder() {
-        if (mRecordSound != null) {
-            mRecordSound.release();
-            mRecordSound = null;
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -962,7 +929,6 @@ public class PanoramaActivity extends ActivityBase implements
         }
 
         releaseCamera();
-        releaseSoundRecorder();
         mMosaicView.onPause();
         clearMosaicFrameProcessorIfNeeded();
         mOrientationEventListener.disable();
@@ -977,8 +943,6 @@ public class PanoramaActivity extends ActivityBase implements
 
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
         setupCamera();
-
-        initSoundRecorder();
 
         // Camera must be initialized before MosaicFrameProcessor is initialized. The preview size
         // has to be decided by camera device.

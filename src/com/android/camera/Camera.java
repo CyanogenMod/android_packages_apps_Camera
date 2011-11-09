@@ -384,7 +384,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
         mFocusManager.initialize(mFocusIndicator, mPreviewFrame, mFaceView, this,
                 mirror, mDisplayOrientation);
-        mFocusManager.initializeSoundPlayer(getResources().openRawResourceFd(R.raw.camera_focus));
         mImageSaver = new ImageSaver();
         Util.initializeScreenBrightness(getWindow(), getContentResolver());
         installIntentFilter();
@@ -443,7 +442,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mLocationManager.recordLocation(recordLocation);
 
         installIntentFilter();
-        mFocusManager.initializeSoundPlayer(getResources().openRawResourceFd(R.raw.camera_focus));
         mImageSaver = new ImageSaver();
         initializeZoom();
         keepMediaProviderInstance();
@@ -997,6 +995,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         setCameraParameters(UPDATE_PARAM_PREFERENCE);
     }
 
+    @Override
+    public void playSound(int soundId) {
+        mCameraDevice.playSound(soundId);
+    }
+
     private boolean saveDataToFile(String filePath, byte[] data) {
         FileOutputStream f = null;
         try {
@@ -1524,8 +1527,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
         if (mLocationManager != null) mLocationManager.recordLocation(false);
         updateExposureOnScreenIndicator(0);
-
-        mFocusManager.releaseSoundPlayer();
 
         if (mStorageHint != null) {
             mStorageHint.cancel();
