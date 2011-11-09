@@ -47,6 +47,10 @@ Mosaic::~Mosaic()
     delete frames;
     delete rframes;
 
+    for (int j = 0; j < owned_size; j++)
+        delete owned_frames[j];
+    delete owned_frames;
+
     if (aligner != NULL)
         delete aligner;
     if (blender != NULL)
@@ -88,9 +92,10 @@ int Mosaic::initialize(int blendingType, int stripType, int width, int height, i
         {
             frames[i] = NULL;
         }
-
-
     }
+
+    owned_frames = new ImageType[max_frames];
+    owned_size = 0;
 
     LOGV("Initialize %d %d", width, height);
     LOGV("Frame width %d,%d", width, height);
@@ -123,7 +128,15 @@ int Mosaic::addFrameRGB(ImageType imageRGB)
     imageYVU = ImageUtils::allocateImage(this->width, this->height, ImageUtils::IMAGE_TYPE_NUM_CHANNELS);
     ImageUtils::rgb2yvu(imageYVU, imageRGB, width, height);
 
-    return addFrame(imageYVU);
+    int existing_frames_size = frames_size;
+    int ret = addFrame(imageYVU);
+
+    if (frames_size > existing_frames_size)
+        owned_frames[owned_size++] = imageYVU;
+    else
+        ImageUtils::freeImage(imageYVU);
+
+    return ret;
 }
 
 int Mosaic::addFrame(ImageType imageYVU)
