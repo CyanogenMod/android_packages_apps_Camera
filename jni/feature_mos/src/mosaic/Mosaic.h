@@ -182,6 +182,12 @@ protected:
   int max_frames;
 
   /**
+    * Implicitly created frames, should be freed by Mosaic.
+    */
+  ImageType *owned_frames;
+  int owned_size;
+
+  /**
    * Initialization state.
    */
   bool initialized;
