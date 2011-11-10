@@ -47,17 +47,19 @@ public class IndicatorControlWheel extends IndicatorControl implements
     private static final double HIGHLIGHT_RADIANS = Math.toRadians(HIGHLIGHT_DEGREES);
 
     // The following angles are based in the zero degree on the right. Here we
-    // have the fix 45 degrees for each sector in the first-level as we have to
-    // align the zoom button exactly at degree 180. For second-level indicators,
-    // the indicators located evenly between start and end angle. In addition,
-    // these indicators for the second-level hidden in the same wheel with
-    // larger angle values are visible after rotation.
-    private static final int FIRST_LEVEL_END_DEGREES = 270;
+    // have the CameraPicker, ZoomControl and the Settings icons in the
+    // first-level. For consistency, we treat the zoom control as one of the
+    // indicator buttons but it needs additional efforts for rotation animation.
+    // For second-level indicators, the indicators are located evenly between start
+    // and end angle. In addition, these indicators for the second-level hidden
+    // in the same wheel with larger angle values are visible after rotation.
+    private static final int FIRST_LEVEL_START_DEGREES = 74;
+    private static final int FIRST_LEVEL_END_DEGREES = 286;
     private static final int FIRST_LEVEL_SECTOR_DEGREES = 45;
     private static final int SECOND_LEVEL_START_DEGREES = 60;
     private static final int SECOND_LEVEL_END_DEGREES = 300;
+    private static final int MAX_ZOOM_CONTROL_DEGREES = 264;
     private static final int CLOSE_ICON_DEFAULT_DEGREES = 315;
-    private static final int ZOOM_ICON_DEFAULT_DEGREES = 180;
 
     private static final int ANIMATION_TIME = 300; // milliseconds
 
@@ -111,7 +113,8 @@ public class IndicatorControlWheel extends IndicatorControl implements
     private double mSectorRadians[] = new double[2];
     private double mTouchSectorRadians[] = new double[2];
 
-    private ImageView mZoomIcon;
+    private ZoomControlWheel mZoomControl;
+    private boolean mInitialized;
 
     public IndicatorControlWheel(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -148,7 +151,6 @@ public class IndicatorControlWheel extends IndicatorControl implements
 
     @Override
     public void onClick(View view) {
-        if (view == mZoomIcon) return;
         changeIndicatorsLevel();
     }
 
@@ -160,9 +162,10 @@ public class IndicatorControlWheel extends IndicatorControl implements
 
         setPreferenceGroup(group);
 
-        // Add Zoom Icon.
+        // Add the ZoomControl if supported.
         if (isZoomSupported) {
-            mZoomIcon = (ImageView) addImageButton(context, R.drawable.ic_zoom_holo_light, false);
+            mZoomControl = (ZoomControlWheel) findViewById(R.id.zoom_control);
+            mZoomControl.setVisibility(View.VISIBLE);
         }
 
         // Add CameraPicker.
@@ -180,6 +183,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
         mChildRadians = new double[getChildCount()];
         presetFirstLevelChildRadians();
         presetSecondLevelChildRadians();
+        mInitialized = true;
     }
 
     private ImageView addImageButton(Context context, int resourceId, boolean rotatable) {
@@ -200,18 +204,25 @@ public class IndicatorControlWheel extends IndicatorControl implements
         if (mInAnimation) return -1;
         int count = getChildCountByLevel(mCurrentLevel);
         if (count == 0) return -1;
-        int startIndex = (mCurrentLevel == 0) ? 0 : mSecondLevelStartIndex;
+        int startIndex = 0;
         int sectors = count - 1;
         // Check which indicator is touched.
         if ((delta >= (mStartVisibleRadians[mCurrentLevel] - HIGHLIGHT_RADIANS / 2)) &&
             (delta <= (mEndVisibleRadians[mCurrentLevel] + HIGHLIGHT_RADIANS / 2))) {
-            int index = (int) ((delta - mStartVisibleRadians[mCurrentLevel])
-                    / mSectorRadians[mCurrentLevel]);
-
-            // greater than the center of ending indicator
-            if (index > sectors) return (startIndex + sectors);
-            // less than the center of starting indicator
-            if (index < 0) return startIndex;
+            int index = 0;
+            if (mCurrentLevel == 0) {
+                // Skip the first component if it is zoom control, as we will
+                // deal with it specifically.
+                if (mZoomControl != null) startIndex++;
+            } else {
+                startIndex = mSecondLevelStartIndex;
+                index = (int) ((delta - mStartVisibleRadians[mCurrentLevel])
+                        / mSectorRadians[mCurrentLevel]);
+                // greater than the center of ending indicator
+                if (index > sectors) return (startIndex + sectors);
+                // less than the center of starting indicator
+                if (index < 0) return startIndex;
+            }
 
             if (delta <= (mChildRadians[startIndex + index]
                     + mTouchSectorRadians[mCurrentLevel] / 2)) {
@@ -221,6 +232,10 @@ public class IndicatorControlWheel extends IndicatorControl implements
                     - mTouchSectorRadians[mCurrentLevel] / 2)) {
                 return (startIndex + index + 1);
             }
+
+            // It must be for zoom control if the touch event is in the visible
+            // range and not for other indicator buttons.
+            if ((mCurrentLevel == 0) && (mZoomControl != null)) return 0;
         }
         return -1;
     }
@@ -246,6 +261,10 @@ public class IndicatorControlWheel extends IndicatorControl implements
             double delta = Math.atan2(dy, dx);
             if (delta < 0) delta += Math.PI * 2;
             int index = getTouchIndicatorIndex(delta);
+            // Check if the touch event is for zoom control.
+            if ((mZoomControl != null) && (index == 0)) {
+                mZoomControl.dispatchTouchEvent(event);
+            }
             // Move over from one indicator to another.
             if ((index != mPressedIndex) || (action == MotionEvent.ACTION_DOWN)) {
                 if (mPressedIndex != -1) {
@@ -255,21 +274,19 @@ public class IndicatorControlWheel extends IndicatorControl implements
                     if (getSelectedIndicatorIndex() != index) dismissSettingPopup();
                 }
                 if ((index != -1) && (action == MotionEvent.ACTION_MOVE)) {
-                    injectMotionEvent(index, event, MotionEvent.ACTION_DOWN);
+                    if (mCurrentLevel != 0) {
+                        injectMotionEvent(index, event, MotionEvent.ACTION_DOWN);
+                    }
                 }
             }
             if ((index != -1) && (action != MotionEvent.ACTION_MOVE)) {
-                View view = getChildAt(index);
-                // Switch to zoom control only if a touch down event is received.
-                if ((view == mZoomIcon) && (action == MotionEvent.ACTION_DOWN)
-                        && mZoomIcon.isEnabled()) {
-                    mPressedIndex = -1;
-                    mOnIndicatorEventListener.onIndicatorEvent(
-                            OnIndicatorEventListener.EVENT_ENTER_ZOOM_CONTROL);
-                    return true;
-                } else {
-                    getChildAt(index).dispatchTouchEvent(event);
-                }
+                getChildAt(index).dispatchTouchEvent(event);
+            }
+            // Do not highlight the CameraPicker or Settings icon if we
+            // touch from the zoom control to one of them.
+            if ((mCurrentLevel == 0) && (index != 0)
+                    && (action == MotionEvent.ACTION_MOVE)) {
+                return true;
             }
             // Once the button is up, reset the press index.
             mPressedIndex = (action == MotionEvent.ACTION_UP) ? -1 : index;
@@ -298,11 +315,17 @@ public class IndicatorControlWheel extends IndicatorControl implements
         double increment = Math.toRadians(expectedAngle)
                 - mChildRadians[mSecondLevelStartIndex];
         for (int i = 0 ; i < getChildCount(); ++i) mChildRadians[i] += increment;
-   }
+        // We also need to rotate the zoom control wheel as well.
+        if (mZoomControl != null) {
+            mZoomControl.rotate(mChildRadians[0]
+                    - Math.toRadians(MAX_ZOOM_CONTROL_DEGREES));
+        }
+    }
 
     @Override
     protected void onLayout(
             boolean changed, int left, int top, int right, int bottom) {
+        if (!mInitialized) return;
         if (mInAnimation) {
             rotateWheel();
             mHandler.post(mRunnable);
@@ -334,39 +357,31 @@ public class IndicatorControlWheel extends IndicatorControl implements
             int y = mCenterY - (int)(mWheelRadius * Math.sin(radian));
             int width = view.getMeasuredWidth();
             int height = view.getMeasuredHeight();
-            view.layout(x - width / 2, y - height / 2, x + width / 2,
-                    y + height / 2);
+            if (view == mZoomControl) {
+                // ZoomControlWheel matches the size of its parent view.
+                view.layout(0, 0, right - left, bottom - top);
+            } else {
+                view.layout(x - width / 2, y - height / 2, x + width / 2,
+                        y + height / 2);
+            }
         }
     }
 
     private void presetFirstLevelChildRadians() {
-        int count = getChildCountByLevel(0);
-        int sectors = (count <= 1) ? 0 : (count - 1);
-        double sectorDegrees = FIRST_LEVEL_SECTOR_DEGREES;
-        mSectorRadians[0] = Math.toRadians(sectorDegrees);
-        int zoomIndex = indexOfChild(mZoomIcon);
-        double degrees;
-
-        // Make sure the zoom button is located at 180 degrees. If there are
-        // more buttons than we could show in the visible angle from 90 degrees
-        // to 270 degrees, the modification of FIRST_LEVEL_SECTOR_DEGREES is
-        // required then.
-        if (zoomIndex >= 0) {
-            degrees = ZOOM_ICON_DEFAULT_DEGREES - (zoomIndex * sectorDegrees);
-        }  else {
-            degrees = FIRST_LEVEL_END_DEGREES - (sectors * sectorDegrees);
-        }
-        mStartVisibleRadians[0] = Math.toRadians(degrees);
-
-        int startIndex = 0;
-        for (int i = 0; i < count; i++) {
-            mChildRadians[startIndex + i] = Math.toRadians(degrees);
-            degrees += sectorDegrees;
-        }
-
-        // The radians for the touch sector of an indicator.
+        // Set the visible range in the first-level indicator wheel.
+        mStartVisibleRadians[0] = Math.toRadians(FIRST_LEVEL_START_DEGREES);
         mTouchSectorRadians[0] = HIGHLIGHT_RADIANS;
         mEndVisibleRadians[0] = Math.toRadians(FIRST_LEVEL_END_DEGREES);
+
+        // Set the angle of each component in the first-level indicator wheel.
+        int startIndex = 0;
+        if (mZoomControl != null) {
+            mChildRadians[startIndex++] = Math.toRadians(MAX_ZOOM_CONTROL_DEGREES);
+        }
+        if (mCameraPicker != null) {
+            mChildRadians[startIndex++] = Math.toRadians(FIRST_LEVEL_START_DEGREES);
+        }
+        mChildRadians[startIndex++] = Math.toRadians(FIRST_LEVEL_END_DEGREES);
     }
 
     private void presetSecondLevelChildRadians() {
@@ -425,7 +440,8 @@ public class IndicatorControlWheel extends IndicatorControl implements
         int selectedIndex = getSelectedIndicatorIndex();
 
         // Draw the highlight arc if an indicator is selected or being pressed.
-        if (selectedIndex >= 0) {
+        // And skip the zoom control which index is zero.
+        if (selectedIndex >= 1) {
             int degree = (int) Math.toDegrees(mChildRadians[selectedIndex]);
             float innerR = (float) mShutterButtonRadius;
             float outerR = (float) (mShutterButtonRadius + mStrokeWidth +
@@ -491,6 +507,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
+        if (!mInitialized) return;
         if (mCurrentMode == MODE_VIDEO) {
             mSecondLevelIcon.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
             mCloseIcon.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
@@ -504,7 +521,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
     }
 
     public void enableZoom(boolean enabled) {
-        if (mZoomIcon != null)  mZoomIcon.setEnabled(enabled);
+        if (mZoomControl != null) mZoomControl.setEnabled(enabled);
     }
 
     public void onTouchOutBound() {
