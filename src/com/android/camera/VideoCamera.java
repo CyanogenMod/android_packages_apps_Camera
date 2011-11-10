@@ -1540,6 +1540,7 @@ public class VideoCamera extends ActivityBase
             return;
         }
 
+        mCurrentVideoUri = null;
         if (effectsActive()) {
             initializeEffectsRecording();
             if (mEffectsRecorder == null) {
