@@ -35,6 +35,7 @@ public class ZoomControlBar extends ZoomControl {
 
     private View mBar;
     private boolean mStartChanging;
+    private int mSliderPosition = 0;
     private int mSliderLength;
     private int mWidth;
     private int mIconWidth;
