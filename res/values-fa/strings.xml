@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"بازیابی تنظیمات پیش‌فرض دوربین؟"</string>
     <string name="review_play" msgid="6378271587740884696">"پخش"</string>
     <string name="review_cancel" msgid="8188009385853399254">"لغو"</string>
-    <string name="review_ok" msgid="5305096180300056529">"تأیید"</string>
+    <string name="review_ok" msgid="1156261588693116433">"انجام شد"</string>
     <string name="review_retake" msgid="7804864054896088338">"دریافت مجدد"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"گالری"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"جابجایی به دوربین"</string>
@@ -93,7 +93,7 @@
     <string name="share_picture_via" msgid="1375127849431890447">"اشتراک گذاری تصویر از طریق"</string>
     <string name="share_video_via" msgid="5152302809166549015">"اشتراک گذاری ویدیو از طریق"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"عکسی برای اشتراک وجود ندارد."</string>
-    <string name="no_video_to_share" msgid="7567298642707627096">"ویدیویی برای اشتراک وجود ندارد."</string>
+    <string name="no_video_to_share" msgid="7567298642707627096">"ویدیویی برای اشتراک‌گذاری وجود ندارد."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"بسیار سریع"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"تهیه پانوراما"</string>
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"ذخیره پانوراما امکان‌پذیر نیست."</string>
@@ -113,13 +113,13 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"غروب آفتاب"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"دیسکو"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"انتخاب مورد خود"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"دستگاه خود را بر روی یک سطح ثابت و محکم قرار دهید و مطمئن شوید هیچ حرکتی پشت سر شما وجود نداشته باشد."\n\n"سپس از نمای دوربین خارج شوید."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"دستگاه خود را کنار بگذارید"\n"چند لحظه از دید خارج شوید"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"زمان روشن بودن جلوه قابل انتخاب نیست."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"در حین ضبط ویدیو با لمس کردن صفحه پیش‌نمایش یک عکس بگیرید."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"هنگام فعال بودن جلوه‌های ویژه، عکس فوری از ویدیو غیرفعال است."</string>
     <string name="clear_effects" msgid="5485339175014139481">"پاک کردن جلوه‌ها"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"چهره‌های احمقانه"</string>
-    <string name="effect_background" msgid="6909716214852487679">"پس‌زمینه"</string>
+    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"چهره‌های احمقانه"</string>
+    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"پس‌زمینه"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"دکمه شاتر"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"جدیدترین عکس"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"کلید دوربین جلو و عقب"</string>
