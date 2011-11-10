@@ -24,7 +24,7 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Zdjęcia z aparatu"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Filmy z aparatu"</string>
     <string name="wait" msgid="8600187532323801552">"Proszę czekać…"</string>
-    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Przed przystąpieniem do korzystania z aparatu podłącz nośnik USB."</string>
+    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Zanim użyjesz aparatu podłącz nośnik USB."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Przed przystąpieniem do korzystania z aparatu włóż kartę SD."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Nośnik USB jest pełny."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Karta SD jest pełna."</string>
@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"Czy przywrócić domyślne ustawienia aparatu?"</string>
     <string name="review_play" msgid="6378271587740884696">"Odtwórz"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ANULUJ"</string>
-    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <string name="review_ok" msgid="1156261588693116433">"GOTOWE"</string>
     <string name="review_retake" msgid="7804864054896088338">"ZRÓB PONOWNIE"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galeria"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Przełącz aparat"</string>
@@ -113,13 +113,13 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Zachód słońca"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Wybierz własny"</string>
-    <string name="bg_replacement_message" msgid="7540788298745332389">"Umieść urządzenie na stabilnej powierzchni i upewnij się, że za Tobą nic się nie dzieje."\n\n"Następnie wyjdź z pola widzenia aparatu."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Skieruj urządzenie w dół"\n"Opuść na chwilę widok"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Opcji nie można wybrać, gdy efekt jest włączony."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Zrób zdjęcie podczas nagrywania filmu, klikając ekran podglądu."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Stopklatka nie działa, gdy są aktywne efekty specjalne."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Usuń efekty"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"Zabawne twarze"</string>
-    <string name="effect_background" msgid="6909716214852487679">"Tło"</string>
+    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"Zabawne twarze"</string>
+    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"Tło"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Przycisk migawki"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Najnowsze zdjęcie"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Przełącznik przedniego i tylnego aparatu"</string>

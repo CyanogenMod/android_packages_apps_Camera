@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"कैमरा डिफ़ॉल्‍ट सेटिंग पुनर्स्‍थापित करें?"</string>
     <string name="review_play" msgid="6378271587740884696">"चलाएं"</string>
     <string name="review_cancel" msgid="8188009385853399254">"रद्द करें"</string>
-    <string name="review_ok" msgid="5305096180300056529">"ठीक"</string>
+    <string name="review_ok" msgid="1156261588693116433">"पूर्ण"</string>
     <string name="review_retake" msgid="7804864054896088338">"रीटेक"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"गैलरी"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"कैमरा स्विच करें"</string>
@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"वीडियो रिकॉ. के समय पूर्वावलोकन स्‍क्रीन स्‍पर्श करके फ़ोटो लें."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"विशेष प्रभावों के चालू होने पर वीडियो स्‍नेपशॉट अक्षम हो जाता है."</string>
     <string name="clear_effects" msgid="5485339175014139481">"प्रभाव साफ़ करें"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"मज़ाकिया चेहरे"</string>
-    <string name="effect_background" msgid="6909716214852487679">"पृष्ठभूमि"</string>
+    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"मज़ाकिया चेहरे"</string>
+    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"पृष्ठभूमि"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"शटर बटन"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"हाल ही का फ़ोटो"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"अगला और पिछला कैमरा स्‍विच"</string>

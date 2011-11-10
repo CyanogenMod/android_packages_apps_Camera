@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"Επαναφορά προεπιλεγμένων ρυθμίσεων φωτογραφικής μηχανής;"</string>
     <string name="review_play" msgid="6378271587740884696">"Αναπαρ."</string>
     <string name="review_cancel" msgid="8188009385853399254">"ΑΚΥΡΩΣΗ"</string>
-    <string name="review_ok" msgid="5305096180300056529">"ΟΚ"</string>
+    <string name="review_ok" msgid="1156261588693116433">"ΤΕΛΟΣ"</string>
     <string name="review_retake" msgid="7804864054896088338">"ΝΕΑ ΛΗΨΗ"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Συλλογή"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Εναλλαγή κάμερας"</string>
@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Βγάλτε μια φωτογραφία κατά τη διάρκεια της εγγραφής βίντεο πατώντας την οθόνη προεπισκόπησης."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Το στιγμιότυπο οθόνης βίντεο απενεργοποιείται με ενεργά τα εφέ."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Διαγραφή εφέ"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"Αστεία πρόσωπα"</string>
-    <string name="effect_background" msgid="6909716214852487679">"Φόντο"</string>
+    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"Αστεία πρόσωπα"</string>
+    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"Φόντο"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Κουμπί κλείστρου"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Πιο πρόσφατη φωτογραφία"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Διακόπτης εμπρός και πίσω φωτογραφικής μηχανής"</string>
