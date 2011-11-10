@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"Rétablir les paramètres par défaut de l\'appareil photo ?"</string>
     <string name="review_play" msgid="6378271587740884696">"Lire"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ANNULER"</string>
-    <string name="review_ok" msgid="5305096180300056529">"OK"</string>
+    <string name="review_ok" msgid="1156261588693116433">"OK"</string>
     <string name="review_retake" msgid="7804864054896088338">"AUTRE PHOTO"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerie"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Changer de caméra"</string>
@@ -113,13 +113,13 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Coucher soleil"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Sélectionner arrière-plan"</string>
-    <string name="bg_replacement_message" msgid="6828585054971662284">"Désactivez votre appareil."\n"Déconnectez-vous quelques instants."</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Posez votre appareil."\n"Sortez du cadre quelques instants."</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Sélection impossible lorsque l\'effet est activé."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Appuyez sur écran aperçu pour prendre photo pendant enreg. vidéo."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Instantané vidéo désactivé en cas d\'activation des effets spéciaux."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Effacer les effets"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"Drôles de têtes"</string>
-    <string name="effect_background" msgid="6909716214852487679">"Arrière-plan"</string>
+    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"Drôles de têtes"</string>
+    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"Arrière-plan"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Bouton de l\'obturateur"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Photo la plus récente"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Interrupteur des caméras avant et arrière"</string>

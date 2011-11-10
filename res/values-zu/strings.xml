@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"Buyisela Izisetho zekhamera?"</string>
     <string name="review_play" msgid="6378271587740884696">"Dlala"</string>
     <string name="review_cancel" msgid="8188009385853399254">"KHANSELA"</string>
-    <string name="review_ok" msgid="5305096180300056529">"KULUNGILE"</string>
+    <string name="review_ok" msgid="1156261588693116433">"KUQEDIWE"</string>
     <string name="review_retake" msgid="7804864054896088338">"THATHA FUTHI"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Igalari"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Shintsha Ikhamera"</string>
@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Thatha isithombe ngesikhathi sokuqoshwa kwevidyo ngokuchofoza eskrinini sokubuka ngaphambili kokudlala."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Umfanekiso wevidyo awusebenzi uma izinandisi ezikhethekile zivuliwe."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Izinandisi ezicacile"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"Ubuso obungasile"</string>
-    <string name="effect_background" msgid="6909716214852487679">"Ingemuva"</string>
+    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"Ubuso obungasile"</string>
+    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"Ingemuva"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Inkinobho Yokuvala"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Isithombe sakamuva"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Iswishi yekhamera yangaphambili kanye nangemuva"</string>
