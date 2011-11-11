@@ -285,6 +285,8 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         // the view is measured.
         if (mActivityOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             mShareList.setNumColumns(items.size());
+            int width = mContext.getResources().getDimensionPixelSize(R.dimen.share_item_width);
+            mShareList.setColumnWidth(width);
         }
 
         SimpleAdapter listItemAdapter = new MySimpleAdapter(mContext, items,
