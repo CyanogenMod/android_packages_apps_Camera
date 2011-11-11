@@ -16,28 +16,32 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.R;
-import com.android.camera.Util;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.GridView;
 
 public class OneRowGridView extends GridView {
+    private int mInternalRequestedColumnWidth;
     public OneRowGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // Once we know the number of children in this view, we have to set
-        // the correct width and height for containing the icons in one row.
-        int n = getChildCount();
-        if (n == 0) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        } else {
-            setMeasuredDimension((n * getChildAt(0).getMeasuredWidth()),
-                    getMeasuredHeight());
+    public void setColumnWidth(int columnWidth) {
+        super.setColumnWidth(columnWidth);
+        if (mInternalRequestedColumnWidth != columnWidth) {
+            mInternalRequestedColumnWidth = columnWidth;
+            requestLayout();
         }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mInternalRequestedColumnWidth != 0) {
+            int n = (getAdapter() == null) ? 0 : getAdapter().getCount();
+            int size = mInternalRequestedColumnWidth * n;
+            widthMeasureSpec = MeasureSpec.makeMeasureSpec(size, MeasureSpec.EXACTLY);
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }
