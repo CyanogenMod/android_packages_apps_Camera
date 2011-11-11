@@ -22,6 +22,7 @@ import com.android.camera.ui.IndicatorControlWheelContainer;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
+import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.SharePopup;
 import com.android.camera.ui.ZoomControl;
 
@@ -98,7 +99,6 @@ public class VideoCamera extends ActivityBase
     private static final int UPDATE_RECORD_TIME = 5;
     private static final int ENABLE_SHUTTER_BUTTON = 6;
     private static final int SHOW_TAP_TO_SNAPSHOT_TOAST = 7;
-    private static final int DISMISS_TAP_TO_SNAPSHOT_TOAST = 8;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
 
@@ -305,14 +305,6 @@ public class VideoCamera extends ActivityBase
 
                 case SHOW_TAP_TO_SNAPSHOT_TOAST: {
                     showTapToSnapshotToast();
-                    break;
-                }
-
-                case DISMISS_TAP_TO_SNAPSHOT_TOAST: {
-                    View v = findViewById(R.id.first_use_hint);
-                    v.setVisibility(View.GONE);
-                    v.setAnimation(AnimationUtils.loadAnimation(VideoCamera.this,
-                            R.anim.on_screen_hint_exit));
                     break;
                 }
 
@@ -2344,8 +2336,8 @@ public class VideoCamera extends ActivityBase
     @Override
     public boolean onTouch(View v, MotionEvent e) {
         if (mMediaRecorderRecording && effectsActive()) {
-            Toast.makeText(this, getResources().getString(
-                    R.string.disable_video_snapshot_hint), Toast.LENGTH_LONG).show();
+            new RotateTextToast(this, R.string.disable_video_snapshot_hint,
+                    mOrientation).show();
             return false;
         }
 
@@ -2444,15 +2436,8 @@ public class VideoCamera extends ActivityBase
     }
 
     private void showTapToSnapshotToast() {
-        // Set the text of toast
-        TextView textView = (TextView) findViewById(R.id.toast_text);
-        textView.setText(R.string.video_snapshot_hint);
-        // Show the toast.
-        RotateLayout v = (RotateLayout) findViewById(R.id.first_use_hint);
-        v.setOrientation(mOrientationCompensation);
-        v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.on_screen_hint_enter));
-        v.setVisibility(View.VISIBLE);
-        mHandler.sendEmptyMessageDelayed(DISMISS_TAP_TO_SNAPSHOT_TOAST, 5000);
+        new RotateTextToast(this, R.string.video_snapshot_hint, mOrientation)
+                .show();
         // Clear the preference.
         Editor editor = mPreferences.edit();
         editor.putBoolean(CameraSettings.KEY_VIDEO_FIRST_USE_HINT_SHOWN, false);
