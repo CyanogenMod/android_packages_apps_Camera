@@ -66,6 +66,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -159,7 +160,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private RotateImageView mThumbnailView;
     private ModePicker mModePicker;
     private FaceView mFaceView;
-    private RotateLayout mFocusIndicator;
+    private RotateLayout mFocusAreaIndicator;
     private Rotatable mReviewCancelButton;
     private Rotatable mReviewDoneButton;
 
@@ -167,10 +168,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private String mCropValue;
     private Uri mSaveUri;
 
-    // On-screen indicator
-    private View mGpsNoSignalIndicator;
-    private View mGpsHasSignalIndicator;
+    // Small indicators which show the camera settings in the viewfinder.
     private TextView mExposureIndicator;
+    private ImageView mGpsIndicator;
+    private ImageView mFlashIndicator;
+    private ImageView mSceneIndicator;
+    private ImageView mWhiteBalanceIndicator;
+    private ImageView mFocusIndicator;
 
     // We use a thread in ImageSaver to do the work of saving images and
     // generating thumbnails. This reduces the shot-to-shot time.
@@ -379,16 +383,17 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Initialize focus UI.
         mPreviewFrame = findViewById(R.id.camera_preview);
         mPreviewFrame.setOnTouchListener(this);
-        mFocusIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
+        mFocusAreaIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
         CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
         boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
-        mFocusManager.initialize(mFocusIndicator, mPreviewFrame, mFaceView, this,
+        mFocusManager.initialize(mFocusAreaIndicator, mPreviewFrame, mFaceView, this,
                 mirror, mDisplayOrientation);
         mFocusManager.initializeSoundPlayer(getResources().openRawResourceFd(R.raw.camera_focus));
         mImageSaver = new ImageSaver();
         Util.initializeScreenBrightness(getWindow(), getContentResolver());
         installIntentFilter();
         initializeZoom();
+        updateOnScreenIndicators();
         startFaceDetection();
         // Show the tap to focus toast if this is the first start.
         if (mFocusAreaSupported &&
@@ -598,39 +603,31 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     };
 
     private void initOnScreenIndicator() {
-        mGpsNoSignalIndicator = findViewById(R.id.onscreen_gps_indicator_no_signal);
-        mGpsHasSignalIndicator = findViewById(R.id.onscreen_gps_indicator_on);
+        mGpsIndicator = (ImageView) findViewById(R.id.onscreen_gps_indicator);
         mExposureIndicator = (TextView) findViewById(R.id.onscreen_exposure_indicator);
+        mFlashIndicator = (ImageView) findViewById(R.id.onscreen_flash_indicator);
+        mSceneIndicator = (ImageView) findViewById(R.id.onscreen_scene_indicator);
+        mWhiteBalanceIndicator =
+                (ImageView) findViewById(R.id.onscreen_white_balance_indicator);
+        mFocusIndicator = (ImageView) findViewById(R.id.onscreen_focus_indicator);
     }
 
     @Override
     public void showGpsOnScreenIndicator(boolean hasSignal) {
         if (hasSignal) {
-            if (mGpsNoSignalIndicator != null) {
-                mGpsNoSignalIndicator.setVisibility(View.GONE);
-            }
-            if (mGpsHasSignalIndicator != null) {
-                mGpsHasSignalIndicator.setVisibility(View.VISIBLE);
-            }
+            mGpsIndicator.setImageResource(R.drawable.ic_viewfinder_gps_on);
         } else {
-            if (mGpsNoSignalIndicator != null) {
-                mGpsNoSignalIndicator.setVisibility(View.VISIBLE);
-            }
-            if (mGpsHasSignalIndicator != null) {
-                mGpsHasSignalIndicator.setVisibility(View.GONE);
-            }
+            mGpsIndicator.setImageResource(R.drawable.ic_viewfinder_gps_no_signal);
         }
+        mGpsIndicator.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideGpsOnScreenIndicator() {
-        if (mGpsNoSignalIndicator != null) mGpsNoSignalIndicator.setVisibility(View.GONE);
-        if (mGpsHasSignalIndicator != null) mGpsHasSignalIndicator.setVisibility(View.GONE);
+        mGpsIndicator.setVisibility(View.GONE);
     }
 
     private void updateExposureOnScreenIndicator(int value) {
-        if (mExposureIndicator == null) return;
-
         if (value == 0) {
             mExposureIndicator.setText("");
             mExposureIndicator.setVisibility(View.GONE);
@@ -645,6 +642,57 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
+    private void updateFlashOnScreenIndicator(String value) {
+        if (Parameters.FLASH_MODE_AUTO.equals(value)) {
+            mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_auto);
+        } else if (Parameters.FLASH_MODE_ON.equals(value)) {
+            mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_on);
+        } else if (Parameters.FLASH_MODE_OFF.equals(value)) {
+            mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_off);
+        }
+    }
+
+    private void updateSceneOnScreenIndicator(boolean isVisible) {
+        mSceneIndicator.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    private void updateWhiteBalanceOnScreenIndicator(String value) {
+        if (Parameters.WHITE_BALANCE_AUTO.equals(value)) {
+            mWhiteBalanceIndicator.setVisibility(View.GONE);
+        } else {
+            if (Parameters.WHITE_BALANCE_FLUORESCENT.equals(value)) {
+                mWhiteBalanceIndicator.setImageResource(R.drawable.ic_indicators_fluorescent);
+            } else if (Parameters.WHITE_BALANCE_INCANDESCENT.equals(value)) {
+                mWhiteBalanceIndicator.setImageResource(R.drawable.ic_indicators_incandescent);
+            } else if (Parameters.WHITE_BALANCE_DAYLIGHT.equals(value)) {
+                mWhiteBalanceIndicator.setImageResource(R.drawable.ic_indicators_sunlight);
+            } else if (Parameters.WHITE_BALANCE_CLOUDY_DAYLIGHT.equals(value)) {
+                mWhiteBalanceIndicator.setImageResource(R.drawable.ic_indicators_cloudy);
+            }
+            mWhiteBalanceIndicator.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void updateFocusOnScreenIndicator(String value) {
+        if (Parameters.FOCUS_MODE_INFINITY.equals(value)) {
+            mFocusIndicator.setImageResource(R.drawable.ic_indicators_landscape);
+            mFocusIndicator.setVisibility(View.VISIBLE);
+        } else if (Parameters.FOCUS_MODE_MACRO.equals(value)) {
+            mFocusIndicator.setImageResource(R.drawable.ic_indicators_macro);
+            mFocusIndicator.setVisibility(View.VISIBLE);
+        } else {
+            mFocusIndicator.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateOnScreenIndicators() {
+        boolean isAutoScene = !(Parameters.SCENE_MODE_AUTO.equals(mParameters.getSceneMode()));
+        updateSceneOnScreenIndicator(isAutoScene);
+        updateExposureOnScreenIndicator(CameraSettings.readExposure(mPreferences));
+        updateFlashOnScreenIndicator(mParameters.getFlashMode());
+        updateWhiteBalanceOnScreenIndicator(mParameters.getWhiteBalance());
+        updateFocusOnScreenIndicator(mParameters.getFocusMode());
+    }
     private final class ShutterCallback
             implements android.hardware.Camera.ShutterCallback {
         public void onShutter() {
@@ -1241,7 +1289,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void setOrientationIndicator(int orientation) {
         Rotatable[] indicators = {mThumbnailView, mModePicker, mSharePopup,
-                mIndicatorControlContainer, mZoomControl, mFocusIndicator, mFaceView,
+                mIndicatorControlContainer, mZoomControl, mFocusAreaIndicator, mFaceView,
                 mReviewCancelButton, mReviewDoneButton, mRotateDialog};
         for (Rotatable indicator : indicators) {
             if (indicator != null) indicator.setOrientation(orientation);
@@ -2151,8 +2199,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
         }
 
-        int exposureValue = CameraSettings.readExposure(mPreferences);
-        updateExposureOnScreenIndicator(exposureValue);
+        updateOnScreenIndicators();
     }
 
     @Override
