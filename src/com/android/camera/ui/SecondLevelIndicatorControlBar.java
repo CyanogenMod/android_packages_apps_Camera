@@ -106,23 +106,31 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         if (x > width) x = width;
 
         int index = getTouchViewIndex((int) x, width);
-        View b = getChildAt(index);
-        if (b == null) return true;
-        dispatchRelativeTouchEvent(b, event);
-        if ((mSelectedIndex != -1) && (index != mSelectedIndex)) {
-            View v = getChildAt(mSelectedIndex);
-            if (v instanceof AbstractIndicatorButton) {
-                AbstractIndicatorButton c = (AbstractIndicatorButton) v;
-                event.setAction(MotionEvent.ACTION_CANCEL);
-                dispatchRelativeTouchEvent(c, event);
-                c.dismissPopup();
-            }
 
-            if (action == MotionEvent.ACTION_MOVE) {
-                event.setAction(MotionEvent.ACTION_DOWN);
-                dispatchRelativeTouchEvent(b, event);
+        // Cancel the previous target if we moved out of it
+        if ((mSelectedIndex != -1) && (index != mSelectedIndex)) {
+            View p = getChildAt(mSelectedIndex);
+
+            int oldAction = event.getAction();
+            event.setAction(MotionEvent.ACTION_CANCEL);
+            dispatchRelativeTouchEvent(p, event);
+            event.setAction(oldAction);
+
+            if (p instanceof AbstractIndicatorButton) {
+                AbstractIndicatorButton b = (AbstractIndicatorButton) p;
+                b.dismissPopup();
             }
         }
+
+        // Send event to the target
+        View v = getChildAt(index);
+        if (v == null) return true;
+
+        // Change MOVE to DOWN if this is a new target
+        if (mSelectedIndex != index && action == MotionEvent.ACTION_MOVE) {
+            event.setAction(MotionEvent.ACTION_DOWN);
+        }
+        dispatchRelativeTouchEvent(v, event);
         mSelectedIndex = index;
         return true;
     }
