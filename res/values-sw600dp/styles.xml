@@ -43,6 +43,14 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="OnScreenIndicator">
+        <item name="android:layout_height">28dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:focusable">false</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_marginRight">8dp</item>
+    </style>
     <style name="ReviewThumbnail">
         <item name="android:layout_width">86dp</item>
         <item name="android:layout_height">86dp</item>
