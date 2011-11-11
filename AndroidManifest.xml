@@ -20,7 +20,6 @@
     <application android:icon="@mipmap/ic_launcher_camera"
             android:name="com.android.camera.CameraAppImpl"
             android:label="@string/camera_label"
-            android:taskAffinity=""
             android:theme="@style/ThemeCamera"
             android:hardwareAccelerated="true">
         <uses-library android:name="com.google.android.media.effects" android:required="false" />
