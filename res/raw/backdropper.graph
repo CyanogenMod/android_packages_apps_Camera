@@ -61,6 +61,7 @@
 @filter BackDropperFilter replacer {
   autowbToggle = 1;
   learningDoneListener = $learningDoneListener;
+  orientation = $orientation;
 }
 
 // Display output
