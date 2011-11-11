@@ -1402,8 +1402,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // If the user wants to do a snapshot while the previous one is still
         // in progress, remember the fact and do it after we finish the previous
-        // one and re-start the preview.
-        if (mCameraState == SNAPSHOT_IN_PROGRESS) {
+        // one and re-start the preview. Snapshot in progress also includes the
+        // state that autofocus is focusing and a picture will be taken when
+        // focus callback arrives.
+        if (mFocusManager.isFocusingSnapOnFinish() || mCameraState == SNAPSHOT_IN_PROGRESS) {
             mSnapshotOnIdle = true;
             return;
         }
@@ -1765,13 +1767,15 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         setPreviewDisplay(mSurfaceHolder);
         setDisplayOrientation();
 
-        mFocusManager.setAeAwbLock(false); // Unlock AE and AWB.
-        setCameraParameters(UPDATE_PARAM_ALL);
-        // If the focus mode is continuous autofocus, call cancelAutoFocus to
-        // resume it because it may have been paused by autoFocus call.
-        if (Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mParameters.getFocusMode())) {
-            mCameraDevice.cancelAutoFocus();
+        if (!mSnapshotOnIdle) {
+            // If the focus mode is continuous autofocus, call cancelAutoFocus to
+            // resume it because it may have been paused by autoFocus call.
+            if (Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusManager.getFocusMode())) {
+                mCameraDevice.cancelAutoFocus();
+            }
+            mFocusManager.setAeAwbLock(false); // Unlock AE and AWB.
         }
+        setCameraParameters(UPDATE_PARAM_ALL);
 
         // Inform the mainthread to go on the UI initialization.
         if (mCameraPreviewThread != null) {
