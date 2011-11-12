@@ -514,6 +514,13 @@ public class EffectsRecorder {
                 Filter backgroundSrc = mRunner.getGraph().getFilter("background");
                 backgroundSrc.setInputValue("sourceUrl",
                                             (String)mEffectParameter);
+                // For front camera, the background video needs to be mirrored in the
+                // backdropper filter
+                if (mCameraFacing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    Filter replacer = mRunner.getGraph().getFilter("replacer");
+                    replacer.setInputValue("mirrorBg", true);
+                    if (mLogVerbose) Log.v(TAG, "Setting the background to be mirrored");
+                }
                 break;
             default:
                 break;
