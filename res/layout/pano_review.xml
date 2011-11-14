@@ -50,11 +50,15 @@
         </com.android.camera.ui.RotateLayout>
     </RelativeLayout>
 
-    <ImageView android:id="@+id/pano_reviewarea"
-            android:rotation="90"
-            android:scaleType="fitCenter"
-            android:layout_height="match_parent"
-            android:layout_width="@dimen/pano_mosaic_surface_height" />
+    <com.android.camera.ui.RotateLayout
+            android:id="@+id/pano_rotate_reviewarea"
+            android:layout_width="@dimen/pano_mosaic_surface_height"
+            android:layout_height="match_parent">
+        <ImageView android:id="@+id/pano_reviewarea"
+                android:scaleType="fitCenter"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent" />
+    </com.android.camera.ui.RotateLayout>
 
     <LinearLayout android:id="@+id/pano_review_control"
             style="@style/PanoViewHorizontalBar"
