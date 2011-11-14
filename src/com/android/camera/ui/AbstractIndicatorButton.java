@@ -44,8 +44,8 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
 
     public AbstractIndicatorButton(Context context) {
         super(context);
-        mFadeIn = AnimationUtils.loadAnimation(context, R.anim.grow_fade_in_from_right);
-        mFadeOut = AnimationUtils.loadAnimation(context, R.anim.shrink_fade_out_from_right);
+        mFadeIn = AnimationUtils.loadAnimation(context, R.anim.setting_popup_grow_fade_in);
+        mFadeOut = AnimationUtils.loadAnimation(context, R.anim.setting_popup_shrink_fade_out);
         HIGHLIGHT_COLOR = context.getResources().getColor(R.color.review_control_pressed_color);
         setScaleType(ImageView.ScaleType.CENTER);
         PopupManager.getInstance(context).setOnOtherPopupShowedListener(this);
