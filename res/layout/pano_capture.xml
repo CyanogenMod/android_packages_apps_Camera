@@ -71,7 +71,8 @@
 
             <RelativeLayout
                     android:layout_gravity="center"
-                    android:layout_width="@dimen/pano_mosaic_surface_height"
+                    android:layout_weight="1.67"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent">
                 <com.android.camera.panorama.MosaicRendererSurfaceView
                         android:id="@+id/pano_renderer"
