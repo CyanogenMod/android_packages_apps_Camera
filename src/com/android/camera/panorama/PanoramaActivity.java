@@ -710,6 +710,7 @@ public class PanoramaActivity extends ActivityBase implements
                     (Rotatable) findViewById(R.id.pano_review_saving_indication_layout),
                     (Rotatable) findViewById(R.id.pano_saving_progress_bar_layout),
                     (Rotatable) findViewById(R.id.pano_review_cancel_button_layout),
+                    (Rotatable) findViewById(R.id.pano_rotate_reviewarea),
                     (Rotatable) mRotateDialog,
                     (Rotatable) mCaptureIndicator,
                     (Rotatable) mModePicker,
