@@ -48,7 +48,6 @@
                 android:src="@drawable/ic_gallery_play"
                 android:visibility="gone"
                 android:onClick="onReviewPlayClicked"/>
-        <include layout="@layout/first_hint_toast"/>
     </com.android.camera.PreviewFrameLayout>
 
     <!-- Fill up the space below preview frame with black. -->
