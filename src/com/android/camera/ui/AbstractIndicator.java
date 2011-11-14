@@ -62,6 +62,7 @@ abstract class AbstractIndicator extends GLView {
                         p.left + (width - icon.getWidth()) / 2,
                         p.top + (height - icon.getHeight()) / 2);
             }
+            icon.deleteFromGL();
         }
     }
 
