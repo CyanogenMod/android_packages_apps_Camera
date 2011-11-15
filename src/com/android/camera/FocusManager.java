@@ -26,6 +26,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera.Area;
 import android.hardware.Camera.Parameters;
+import android.hardware.Camera.Sound;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -59,7 +60,6 @@ public class FocusManager {
     private boolean mLockAeAwbNeeded;
     private boolean mAeAwbLock;
     private Matrix mMatrix;
-    private SoundPlayer mSoundPlayer;
     private View mFocusIndicatorRotateLayout;
     private FocusIndicatorView mFocusIndicator;
     private View mPreviewFrame;
@@ -81,6 +81,7 @@ public class FocusManager {
         public void startFaceDetection();
         public void stopFaceDetection();
         public void setFocusParameters();
+        public void playSound(int soundId);
     }
 
     private class MainHandler extends Handler {
@@ -221,9 +222,9 @@ public class FocusManager {
                 // Do not play the sound in continuous autofocus mode. It does
                 // not do a full scan. The focus callback arrives before doSnap
                 // so the state is always STATE_FOCUSING.
-                if (!Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)
-                        && mSoundPlayer != null) {
-                    mSoundPlayer.play();
+                if (!Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.
+                        equals(mFocusMode)) {
+                    mListener.playSound(Sound.FOCUS_COMPLETE);
                 }
             } else {
                 mState = STATE_FAIL;
@@ -345,18 +346,6 @@ public class FocusManager {
             mHandler.removeMessages(RESET_TOUCH_FOCUS);
         }
     }
-
-    public void initializeSoundPlayer(AssetFileDescriptor fd) {
-        mSoundPlayer = new SoundPlayer(fd);
-    }
-
-    public void releaseSoundPlayer() {
-        if (mSoundPlayer != null) {
-            mSoundPlayer.release();
-            mSoundPlayer = null;
-        }
-    }
-
 
     // This can only be called after mParameters is initialized.
     public String getFocusMode() {
