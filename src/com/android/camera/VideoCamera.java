@@ -1386,6 +1386,11 @@ public class VideoCamera extends ActivityBase
         mCurrentVideoValues.put(Video.Media.RESOLUTION,
                 Integer.toString(mProfile.videoFrameWidth) + "x" +
                 Integer.toString(mProfile.videoFrameHeight));
+        Location loc = mLocationManager.getCurrentLocation();
+        if (loc != null) {
+            mCurrentVideoValues.put(Video.Media.LATITUDE, loc.getLatitude());
+            mCurrentVideoValues.put(Video.Media.LONGITUDE, loc.getLongitude());
+        }
         Log.v(TAG, "New video filename: " + mVideoFilename);
     }
 
