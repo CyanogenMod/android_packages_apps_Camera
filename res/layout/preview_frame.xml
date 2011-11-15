@@ -32,7 +32,6 @@
                 android:visibility="gone"/>
         <include layout="@layout/focus_indicator"/>
         <include layout="@layout/priority_indicators"/>
-        <include layout="@layout/first_hint_toast"/>
     </com.android.camera.PreviewFrameLayout>
     <include layout="@layout/indicator_bar" />
 </RelativeLayout>
