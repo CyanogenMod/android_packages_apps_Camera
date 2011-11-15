@@ -18,6 +18,7 @@ package com.android.camera;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.AutoFocusCallback;
+import android.hardware.Camera.AutoFocusMoveCallback;
 import android.hardware.Camera.ErrorCallback;
 import android.hardware.Camera.FaceDetectionListener;
 import android.hardware.Camera.OnZoomChangeListener;
@@ -43,6 +44,7 @@ public interface CameraDevice {
     public void addCallbackBuffer(byte[] callbackBuffer);
     public void autoFocus(AutoFocusCallback cb);
     public void cancelAutoFocus();
+    public void setAutoFocusMoveCallback(AutoFocusMoveCallback cb);
     public void takePicture(ShutterCallback shutter, PictureCallback raw,
             PictureCallback postview, PictureCallback jpeg);
     public void startSmoothZoom(int value);
