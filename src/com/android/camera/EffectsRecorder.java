@@ -73,6 +73,7 @@ public class EffectsRecorder {
     public static final int  EFFECT_MSG_SWITCHING_EFFECT = 2;
     public static final int  EFFECT_MSG_EFFECTS_STOPPED  = 3;
     public static final int  EFFECT_MSG_RECORDING_DONE   = 4;
+    public static final int  EFFECT_MSG_PREVIEW_RUNNING  = 5;
 
     private Context mContext;
     private Handler mHandler;
@@ -634,6 +635,9 @@ public class EffectsRecorder {
                 mState = STATE_PREVIEW;
 
                 if (mLogVerbose) Log.v(TAG, "Start preview/effect switch complete");
+
+                // Sending a message to listener that preview is complete
+                sendMessage(mCurrentEffect, EFFECT_MSG_PREVIEW_RUNNING);
             }
         }
     };
