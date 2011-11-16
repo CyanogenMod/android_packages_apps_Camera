@@ -432,6 +432,16 @@ public class VideoCamera extends ActivityBase
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
 
+        // Disable the shutter button if effects are ON since it might take
+        // a little more time for the effects preview to be ready. We do not
+        // want to allow recording before that happens. The shutter button
+        // will be enabled when we get the message from effectsrecorder that
+        // the preview is running. This becomes critical when the camera is
+        // swapped.
+        if (effectsActive()) {
+            mShutterButton.setEnabled(false);
+        }
+
         mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
         mRecordingTimeRect = (RotateLayout) findViewById(R.id.recording_time_rect);
         mOrientationListener = new MyOrientationEventListener(this);
@@ -641,6 +651,7 @@ public class VideoCamera extends ActivityBase
     @Override
     public void onShutterButtonClick() {
         if (collapseCameraControls()) return;
+
         boolean stop = mMediaRecorderRecording;
 
         if (stop) {
@@ -1997,6 +2008,9 @@ public class VideoCamera extends ActivityBase
                 }
             }
             mEffectsDisplayResult = false;
+        } else if (effectMsg == EffectsRecorder.EFFECT_MSG_PREVIEW_RUNNING) {
+            // Enable the shutter button once the preview is complete.
+            mShutterButton.setEnabled(true);
         } else if (effectId == EffectsRecorder.EFFECT_BACKDROPPER) {
             switch (effectMsg) {
                 case EffectsRecorder.EFFECT_MSG_STARTED_LEARNING:
