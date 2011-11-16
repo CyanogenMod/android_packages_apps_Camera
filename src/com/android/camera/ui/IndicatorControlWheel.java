@@ -204,32 +204,36 @@ public class IndicatorControlWheel extends IndicatorControl implements
         if (mInAnimation) return -1;
         int count = getChildCountByLevel(mCurrentLevel);
         if (count == 0) return -1;
-        int startIndex = 0;
         int sectors = count - 1;
+        int startIndex = (mCurrentLevel == 0) ? 0 : mSecondLevelStartIndex;
+        int endIndex;
+        if (mCurrentLevel == 0) {
+            // Skip the first component if it is zoom control, as we will
+            // deal with it specifically.
+            if (mZoomControl != null) startIndex++;
+            endIndex = mSecondLevelStartIndex - 1;
+        } else {
+            endIndex = getChildCount() - 1;
+        }
         // Check which indicator is touched.
-        if ((delta >= (mStartVisibleRadians[mCurrentLevel] - HIGHLIGHT_RADIANS / 2)) &&
-            (delta <= (mEndVisibleRadians[mCurrentLevel] + HIGHLIGHT_RADIANS / 2))) {
+        double halfTouchSectorRadians = mTouchSectorRadians[mCurrentLevel];
+        if ((delta >= (mChildRadians[startIndex] - halfTouchSectorRadians)) &&
+                (delta <= (mChildRadians[endIndex] + halfTouchSectorRadians))) {
             int index = 0;
-            if (mCurrentLevel == 0) {
-                // Skip the first component if it is zoom control, as we will
-                // deal with it specifically.
-                if (mZoomControl != null) startIndex++;
-            } else {
-                startIndex = mSecondLevelStartIndex;
-                index = (int) ((delta - mStartVisibleRadians[mCurrentLevel])
+            if (mCurrentLevel == 1) {
+                index = (int) ((delta - mChildRadians[startIndex])
                         / mSectorRadians[mCurrentLevel]);
                 // greater than the center of ending indicator
                 if (index > sectors) return (startIndex + sectors);
                 // less than the center of starting indicator
                 if (index < 0) return startIndex;
             }
-
             if (delta <= (mChildRadians[startIndex + index]
-                    + mTouchSectorRadians[mCurrentLevel] / 2)) {
+                    + halfTouchSectorRadians)) {
                 return (startIndex + index);
             }
             if (delta >= (mChildRadians[startIndex + index + 1]
-                    - mTouchSectorRadians[mCurrentLevel] / 2)) {
+                    - halfTouchSectorRadians)) {
                 return (startIndex + index + 1);
             }
 
