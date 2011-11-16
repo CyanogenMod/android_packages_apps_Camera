@@ -140,11 +140,6 @@ public class PanoramaActivity extends ActivityBase implements
     private int mTraversedAngleX;
     private int mTraversedAngleY;
     private long mTimestamp;
-    // Control variables for the terminate condition.
-    private int mMinAngleX;
-    private int mMaxAngleX;
-    private int mMinAngleY;
-    private int mMaxAngleY;
 
     private RotateImageView mThumbnailView;
     private Thumbnail mThumbnail;
@@ -165,6 +160,7 @@ public class PanoramaActivity extends ActivityBase implements
     private boolean mCancelComputation;
     private float[] mTransformMatrix;
     private float mHorizontalViewAngle;
+    private float mVerticalViewAngle;
 
     // Prefer FOCUS_MODE_INFINITY to FOCUS_MODE_CONTINUOUS_VIDEO because of
     // getting a better image quality by the former.
@@ -410,8 +406,8 @@ public class PanoramaActivity extends ActivityBase implements
 
         parameters.setRecordingHint(false);
 
-        mHorizontalViewAngle = (((mDeviceOrientation / 90) % 2) == 0) ?
-                parameters.getHorizontalViewAngle() : parameters.getVerticalViewAngle();
+        mHorizontalViewAngle = parameters.getHorizontalViewAngle();
+        mVerticalViewAngle =  parameters.getVerticalViewAngle();
     }
 
     public int getPreviewBufSize() {
@@ -546,22 +542,23 @@ public class PanoramaActivity extends ActivityBase implements
 
         mCompassValueXStart = mCompassValueXStartBuffer;
         mCompassValueYStart = mCompassValueYStartBuffer;
-        mMinAngleX = 0;
-        mMaxAngleX = 0;
-        mMinAngleY = 0;
-        mMaxAngleY = 0;
         mTimestamp = 0;
 
         mMosaicFrameProcessor.setProgressListener(new MosaicFrameProcessor.ProgressListener() {
             @Override
             public void onProgress(boolean isFinished, float panningRateX, float panningRateY,
                     float progressX, float progressY) {
+                float accumulatedHorizontalAngle = progressX * mHorizontalViewAngle;
+                float accumulatedVerticalAngle = progressY * mVerticalViewAngle;
                 if (isFinished
-                        || (mMaxAngleX - mMinAngleX >= DEFAULT_SWEEP_ANGLE)
-                        || (mMaxAngleY - mMinAngleY >= DEFAULT_SWEEP_ANGLE)) {
+                        || (Math.abs(accumulatedHorizontalAngle) >= DEFAULT_SWEEP_ANGLE)
+                        || (Math.abs(accumulatedVerticalAngle) >= DEFAULT_SWEEP_ANGLE)) {
                     stopCapture(false);
                 } else {
-                    updateProgress(panningRateX, progressX, progressY);
+                    float panningRateXInDegree = panningRateX * mHorizontalViewAngle;
+                    float panningRateYInDegree = panningRateY * mVerticalViewAngle;
+                    updateProgress(panningRateXInDegree, panningRateYInDegree,
+                            accumulatedHorizontalAngle, accumulatedVerticalAngle);
                 }
             }
         });
@@ -630,19 +627,25 @@ public class PanoramaActivity extends ActivityBase implements
         mRightIndicator.setEnabled(false);
     }
 
-    private void updateProgress(float panningRate, float progressX, float progressY) {
+    private void updateProgress(float panningRateXInDegree, float panningRateYInDegree,
+            float progressHorizontalAngle, float progressVerticalAngle) {
         mMosaicView.setReady();
         mMosaicView.requestRender();
 
         // TODO: Now we just display warning message by the panning speed.
         // Since we only support horizontal panning, we should display a warning message
         // in UI when there're significant vertical movements.
-        if (Math.abs(panningRate * mHorizontalViewAngle) > PANNING_SPEED_THRESHOLD) {
+        if ((Math.abs(panningRateXInDegree) > PANNING_SPEED_THRESHOLD)
+            || (Math.abs(panningRateYInDegree) > PANNING_SPEED_THRESHOLD)) {
             showTooFastIndication();
         } else {
             hideTooFastIndication();
         }
-        mPanoProgressBar.setProgress((int) (progressX * mHorizontalViewAngle));
+        int angleInMajorDirection =
+                (Math.abs(progressHorizontalAngle) > Math.abs(progressVerticalAngle))
+                ? (int) progressHorizontalAngle
+                : (int) progressVerticalAngle;
+        mPanoProgressBar.setProgress((angleInMajorDirection));
     }
 
     private void createContentView() {
