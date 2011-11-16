@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"카메라 기본 설정값을 복원하시겠습니까?"</string>
     <string name="review_play" msgid="6378271587740884696">"재생"</string>
     <string name="review_cancel" msgid="8188009385853399254">"취소"</string>
-    <!-- outdated translation 4750691949877864726 -->     <string name="review_ok" msgid="1156261588693116433">"확인"</string>
+    <string name="review_ok" msgid="1156261588693116433">"완료"</string>
     <string name="review_retake" msgid="7804864054896088338">"다시 촬영"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"갤러리"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"카메라 방향 전환"</string>
@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"동영상을 촬영하는 동안 미리보기 화면을 터치하여 사진을 찍을 수 있습니다."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"특수 효과가 설정되어 있으면 동영상 스냅샷이 사용 중지됩니다."</string>
     <string name="clear_effects" msgid="5485339175014139481">"효과 제거"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"웃긴 얼굴"</string>
-    <string name="effect_background" msgid="6909716214852487679">"배경"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"웃긴 얼굴"</string>
+    <string name="effect_background" msgid="6579360207378171022">"배경"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"셔터 버튼"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"최근 사진"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"전방 및 후방 카메라 전환"</string>

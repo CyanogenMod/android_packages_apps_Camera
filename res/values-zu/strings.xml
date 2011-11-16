@@ -67,7 +67,7 @@
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Okuzenzakalelayo"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Vuliwe"</string>
     <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Valiwe"</string>
-    <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Ukulingana okumhlophe"</string>
+    <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Bhalansa ubumhlophe"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Okuzenzakalelayo"</string>
     <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Mhlophe komlilo"</string>
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Emini"</string>
@@ -78,7 +78,7 @@
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Isenzo"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Ebusuku"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Ukushona kwelanga"</string>
-    <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Inhlangano"</string>
+    <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Phathi"</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Akukhetheki esimweni sokubuka"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Izilungiselelo zekhamera"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Buyisela esimeni okumisiwe"</string>
@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Thatha isithombe ngesikhathi sokuqoshwa kwevidyo ngokuchofoza eskrinini sokubuka ngaphambili kokudlala."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Umfanekiso wevidyo awusebenzi uma izinandisi ezikhethekile zivuliwe."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Izinandisi ezicacile"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"Ubuso obungasile"</string>
-    <string name="effect_background" msgid="6909716214852487679">"Ingemuva"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"UBUSO OBUNGASILE"</string>
+    <string name="effect_background" msgid="6579360207378171022">"INGEMUVA"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Inkinobho Yokuvala"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Isithombe sakamuva"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Iswishi yekhamera yangaphambili kanye nangemuva"</string>
