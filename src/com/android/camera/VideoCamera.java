@@ -192,6 +192,7 @@ public class VideoCamera extends ActivityBase
     private String mPrefVideoEffectDefault;
     private boolean mResetEffect = true;
     public static final String RESET_EFFECT_EXTRA = "reset_effect";
+    public static final String BACKGROUND_URI_GALLERY_EXTRA = "background_uri_gallery";
 
     private boolean mMediaRecorderRecording = false;
     private long mRecordingStartTime;
@@ -371,6 +372,9 @@ public class VideoCamera extends ActivityBase
         // Do not reset the effect if users are switching between back and front
         // cameras.
         mResetEffect = getIntent().getBooleanExtra(RESET_EFFECT_EXTRA, true);
+        // If background replacement was on when the camera was switched, the
+        // background uri will be sent via the intent.
+        mEffectUriFromGallery = getIntent().getStringExtra(BACKGROUND_URI_GALLERY_EXTRA);
         resetEffect();
 
         /*
@@ -2093,14 +2097,19 @@ public class VideoCamera extends ActivityBase
                 // Restart the activity to have a crossfade animation.
                 // TODO: Use SurfaceTexture to implement a better and faster
                 // animation.
+                Intent intent;
                 if (mIsVideoCaptureIntent) {
                     // If the intent is video capture, stay in video capture mode.
-                    Intent intent = getIntent();
-                    intent.putExtra(RESET_EFFECT_EXTRA, false);
-                    MenuHelper.gotoVideoMode(this, intent);
+                    intent = getIntent();
                 } else {
-                    MenuHelper.gotoVideoMode(this, false);
+                    intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
                 }
+                // To maintain the same background in background replacer, we
+                // need to send the background video uri via the Intent (apart
+                // from the condition that the effects should not be reset).
+                intent.putExtra(BACKGROUND_URI_GALLERY_EXTRA, mEffectUriFromGallery);
+                intent.putExtra(RESET_EFFECT_EXTRA, false);
+                MenuHelper.gotoVideoMode(this, intent);
                 finish();
             } else {
                 readVideoPreferences();
