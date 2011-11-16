@@ -825,6 +825,7 @@ public class PanoramaActivity extends ActivityBase implements
                                 Math.max(widthRatio, heightRatio));
                         mThumbnail = Thumbnail.createThumbnail(
                                 jpeg.data, orientation, inSampleSize, uri);
+                        Util.broadcastNewPicture(PanoramaActivity.this, uri);
                     }
                     mMainHandler.sendMessage(
                             mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL));
