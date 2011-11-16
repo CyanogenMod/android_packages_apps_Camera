@@ -52,6 +52,7 @@ import android.hardware.Camera.Size;
 import android.hardware.Camera.Sound;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -70,6 +71,7 @@ import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -172,6 +174,8 @@ public class PanoramaActivity extends ActivityBase implements
     // The value could be 0, 90, 180, 270 for the 4 different orientations measured in clockwise
     // respectively.
     private int mDeviceOrientation;
+    private int mDeviceOrientationAtCapture;
+    private int mCameraOrientation;
     private int mOrientationCompensation;
 
     private RotateDialogController mRotateDialog;
@@ -338,7 +342,9 @@ public class PanoramaActivity extends ActivityBase implements
 
     private void openCamera() {
         try {
-            mCameraDevice = Util.openCamera(this, CameraHolder.instance().getBackCameraId());
+            int backCameraId = CameraHolder.instance().getBackCameraId();
+            mCameraDevice = Util.openCamera(this, backCameraId);
+            mCameraOrientation = Util.getCameraOrientation(backCameraId);
         } catch (CameraHardwareException e) {
             Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
             return;
@@ -568,6 +574,7 @@ public class PanoramaActivity extends ActivityBase implements
         mPanoProgressBar.setIndicatorWidth(20);
         mPanoProgressBar.setMaxProgress(DEFAULT_SWEEP_ANGLE);
         mPanoProgressBar.setVisibility(View.VISIBLE);
+        mDeviceOrientationAtCapture = mDeviceOrientation;
         keepScreenOn();
     }
 
@@ -799,7 +806,13 @@ public class PanoramaActivity extends ActivityBase implements
                 } else if (!jpeg.isValid) {  // Error when generating mosaic.
                     mMainHandler.sendEmptyMessage(MSG_GENERATE_FINAL_MOSAIC_ERROR);
                 } else {
-                    int orientation = Exif.getOrientation(jpeg.data);
+                    // The panorama image returned from the library is orientated based on the
+                    // natural orientation of a camera. We need to set an orientation for the image
+                    // in its EXIF header, so the image can be displayed correctly.
+                    // The orientation is calculated from compensating the
+                    // device orientation at capture and the camera orientation respective to
+                    // the natural orientation of the device.
+                    int orientation = (mDeviceOrientationAtCapture + mCameraOrientation) % 360;
                     Uri uri = savePanorama(jpeg.data, jpeg.width, jpeg.height, orientation);
                     if (uri != null) {
                         // Create a thumbnail whose width or height is equal or bigger
@@ -889,12 +902,40 @@ public class PanoramaActivity extends ActivityBase implements
 
     private Uri savePanorama(byte[] jpegData, int width, int height, int orientation) {
         if (jpegData != null) {
-            String imagePath = PanoUtil.createName(
+            String filename = PanoUtil.createName(
                     getResources().getString(R.string.pano_file_name_format), mTimeTaken);
-            return Storage.addImage(getContentResolver(), imagePath, mTimeTaken, null,
+            Uri uri = Storage.addImage(getContentResolver(), filename, mTimeTaken, null,
                     orientation, jpegData, width, height);
+            if (uri != null && orientation != 0) {
+                String filepath = Storage.generateFilepath(filename);
+                try {
+                    // Save the orientation in EXIF.
+                    ExifInterface exif = new ExifInterface(filepath);
+                    exif.setAttribute(ExifInterface.TAG_ORIENTATION,
+                            getExifOrientation(orientation));
+                    exif.saveAttributes();
+                } catch (IOException e) {
+                    Log.e(TAG, "cannot set exif data: " + filepath);
+                }
+            }
+            return uri;
         }
         return null;
+    }
+
+    private static String getExifOrientation(int orientation) {
+        switch (orientation) {
+            case 0:
+                return String.valueOf(ExifInterface.ORIENTATION_NORMAL);
+            case 90:
+                return String.valueOf(ExifInterface.ORIENTATION_ROTATE_90);
+            case 180:
+                return String.valueOf(ExifInterface.ORIENTATION_ROTATE_180);
+            case 270:
+                return String.valueOf(ExifInterface.ORIENTATION_ROTATE_270);
+            default:
+                throw new AssertionError("invalid: " + orientation);
+        }
     }
 
     private void clearMosaicFrameProcessorIfNeeded() {

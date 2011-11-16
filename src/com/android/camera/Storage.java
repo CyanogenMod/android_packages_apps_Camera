@@ -52,7 +52,7 @@ public class Storage {
     public static Uri addImage(ContentResolver resolver, String title, long date,
                 Location location, int orientation, byte[] jpeg, int width, int height) {
         // Save the image.
-        String path = DIRECTORY + '/' + title + ".jpg";
+        String path = generateFilepath(title);
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(path);
@@ -96,6 +96,10 @@ public class Storage {
             Log.e(TAG, "Failed to write MediaStore" + th);
         }
         return uri;
+    }
+
+    public static String generateFilepath(String title) {
+        return DIRECTORY + '/' + title + ".jpg";
     }
 
     public static long getAvailableSpace() {
