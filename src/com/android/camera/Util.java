@@ -350,6 +350,12 @@ public class Util {
         return result;
     }
 
+    public static int getCameraOrientation(int cameraId) {
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        Camera.getCameraInfo(cameraId, info);
+        return info.orientation;
+    }
+
     public static int roundOrientation(int orientation, int orientationHistory) {
         boolean changeOrientation = false;
         if (orientationHistory == OrientationEventListener.ORIENTATION_UNKNOWN) {
