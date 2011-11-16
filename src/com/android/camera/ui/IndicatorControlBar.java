@@ -57,7 +57,9 @@ public class IndicatorControlBar extends IndicatorControl implements
 
         // Add CameraPicker control.
         initializeCameraPicker();
-        mCameraPicker.setBackgroundResource(R.drawable.bg_pressed);
+        if (mCameraPicker != null) {
+            mCameraPicker.setBackgroundResource(R.drawable.bg_pressed);
+        }
 
         // Add the ZoomControl if supported.
         if (zoomSupported) {
