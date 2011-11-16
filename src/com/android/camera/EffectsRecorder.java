@@ -798,7 +798,13 @@ public class EffectsRecorder {
                 if (result == GraphRunner.RESULT_ERROR) {
                     // Handle error case
                     Log.e(TAG, "Error running filter graph!");
-                    raiseError(mRunner == null ? null : mRunner.getError());
+                    Exception e = null;
+                    if (mRunner != null) {
+                        e = mRunner.getError();
+                    } else if (mOldRunner != null) {
+                        e = mOldRunner.getError();
+                    }
+                    raiseError(e);
                 }
                 if (mOldRunner != null) {
                     // Tear down old graph if available
