@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"Ipanumbalik ang mga default na setting ng camera?"</string>
     <string name="review_play" msgid="6378271587740884696">"I-play"</string>
     <string name="review_cancel" msgid="8188009385853399254">"KANSELAHIN"</string>
-    <!-- outdated translation 4750691949877864726 -->     <string name="review_ok" msgid="1156261588693116433">"Ok"</string>
+    <string name="review_ok" msgid="1156261588693116433">"TAPOS NA"</string>
     <string name="review_retake" msgid="7804864054896088338">"KUHANIN MULI"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Gallery"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Lumipat ng Camera"</string>
@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Kumuha ng isang larawan habang nagre-record ng video sa pamamagitan ng pagpindot sa screen ng preview."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Hindi pinapagana ang snapshot sa video kapag naka-on ang mga espesyal na effect."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Mga clear na effect"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"Mga katawa-tawang mukha"</string>
-    <string name="effect_background" msgid="6909716214852487679">"Background"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"MGA KATAWA-TAWANG MUKHA"</string>
+    <string name="effect_background" msgid="6579360207378171022">"BACKGROUND"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Button ng shutter"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Pinakakamakailang larawan"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Switch ng camera sa harap at likod"</string>

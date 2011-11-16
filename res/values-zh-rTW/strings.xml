@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"要還原相機預設值嗎？"</string>
     <string name="review_play" msgid="6378271587740884696">"播放"</string>
     <string name="review_cancel" msgid="8188009385853399254">"取消"</string>
-    <!-- outdated translation 4750691949877864726 -->     <string name="review_ok" msgid="1156261588693116433">"確定"</string>
+    <string name="review_ok" msgid="1156261588693116433">"完成"</string>
     <string name="review_retake" msgid="7804864054896088338">"重拍"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"圖庫"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"切換相機"</string>
@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"影片錄製期間，只要輕觸預覽畫面即可拍攝相片。"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"特殊效果啟用時無法使用影片快照。"</string>
     <string name="clear_effects" msgid="5485339175014139481">"清除效果"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"耍笨臉"</string>
-    <string name="effect_background" msgid="6909716214852487679">"背景"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"耍笨臉"</string>
+    <string name="effect_background" msgid="6579360207378171022">"背景"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"[快門] 按鈕"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"最近的相片"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"前置和後置鏡頭開關"</string>
