@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Scatta una foto durante il video toccando lo schermo di anteprima."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Istantanea video disabilitata se gli effetti speciali sono attivi."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Cancella effetti"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"Faccine"</string>
-    <string name="effect_background" msgid="6909716214852487679">"Sfondo"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"FACCINE"</string>
+    <string name="effect_background" msgid="6579360207378171022">"SFONDO"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Pulsante di scatto"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Foto più recente"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Interruttore fotocamera anteriore e posteriore"</string>

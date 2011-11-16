@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"カメラをデフォルト設定に戻しますか？"</string>
     <string name="review_play" msgid="6378271587740884696">"再生"</string>
     <string name="review_cancel" msgid="8188009385853399254">"キャンセル"</string>
-    <!-- outdated translation 4750691949877864726 -->     <string name="review_ok" msgid="1156261588693116433">"OK"</string>
+    <string name="review_ok" msgid="1156261588693116433">"完了"</string>
     <string name="review_retake" msgid="7804864054896088338">"撮り直し"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"ギャラリー"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"カメラを切り替え"</string>
@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"動画の録画中にプレビュー画面をタップすると静止画を撮影できます。"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"動画スナップショットは特殊効果がONのときは無効です。"</string>
     <string name="clear_effects" msgid="5485339175014139481">"効果設定をクリア"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"変な顔"</string>
-    <string name="effect_background" msgid="6909716214852487679">"背景"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"変な顔"</string>
+    <string name="effect_background" msgid="6579360207378171022">"背景"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"シャッターボタン"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"最近の写真"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"前後カメラの切り替え"</string>

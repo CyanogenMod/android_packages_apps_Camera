@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"Pulihkan setelan bawaan Kamera?"</string>
     <string name="review_play" msgid="6378271587740884696">"Putar"</string>
     <string name="review_cancel" msgid="8188009385853399254">"BATAL"</string>
-    <!-- outdated translation 4750691949877864726 -->     <string name="review_ok" msgid="1156261588693116433">"Ok"</string>
+    <string name="review_ok" msgid="1156261588693116433">"SELESAI"</string>
     <string name="review_retake" msgid="7804864054896088338">"AMBIL ULANG"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galeri"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Ubah Kamera"</string>
@@ -113,13 +113,13 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Mthari trbenam"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Plh mlik sndri"</string>
-    <string name="bg_replacement_message" msgid="6828585054971662284">"Setel perangkat Anda ke bawah"\n"Keluarkan dari tampilan untuk beberapa saat"</string>
+    <string name="bg_replacement_message" msgid="6828585054971662284">"Letakkan perangkat Anda"\n"Menyingkirlah sejenak dari bidang bidik"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Tidak dapat dipilih jika efek dinyalakan."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Ambil foto saat merekam video dengan menyentuh layar pratinjau."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Cuplikan video dinonaktifkan bila efek khusus aktif."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Hapus efek"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"Wajah konyol"</string>
-    <string name="effect_background" msgid="6909716214852487679">"Latar belakang"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"WAJAH KONYOL"</string>
+    <string name="effect_background" msgid="6579360207378171022">"LATAR BELAKANG"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Tombol rana"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Foto terbaru"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Beralih kamera depan dan belakang"</string>

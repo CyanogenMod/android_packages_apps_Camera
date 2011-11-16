@@ -36,7 +36,7 @@
     <string name="confirm_restore_message" msgid="6649481842684452641">"Kas taastada kaamera vaikeseaded?"</string>
     <string name="review_play" msgid="6378271587740884696">"Esita"</string>
     <string name="review_cancel" msgid="8188009385853399254">"TÜHISTA"</string>
-    <!-- outdated translation 4750691949877864726 -->     <string name="review_ok" msgid="1156261588693116433">"Ok"</string>
+    <string name="review_ok" msgid="1156261588693116433">"VALMIS"</string>
     <string name="review_retake" msgid="7804864054896088338">"TEE UUESTI"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galerii"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Vaheta kaamerat"</string>
@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Videot salvestades foto jäädvustamiseks koputage eelvaate kuval."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Kui eriefektid on sisse lülitatud, on video hetktõmmis keelatud."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Nulli efektid"</string>
-    <string name="effect_silly_faces" msgid="3214174716769421248">"Naljakad näod"</string>
-    <string name="effect_background" msgid="6909716214852487679">"Taust"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"NALJAKAD NÄOD"</string>
+    <string name="effect_background" msgid="6579360207378171022">"TAUST"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Päästiku nupp"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Viimane foto"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Eesmise ja tagumise kaamera lüliti"</string>
