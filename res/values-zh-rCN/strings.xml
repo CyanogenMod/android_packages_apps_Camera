@@ -62,12 +62,13 @@
     <string name="pref_camera_picturesize_entry_2048x1536">3 百万像素</string>
     <string name="pref_camera_picturesize_entry_2048x1216">2.5 百万像素（宽屏）</string>
     <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
-    <string name="pref_camera_picturesize_entry_1600x1200">UXGA</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">2 百万像素</string>
+    <string name="pref_camera_picturesize_entry_1600x960">1.5 百万像素 (宽屏)</string>
     <string name="pref_camera_picturesize_entry_1280x1024">SXGA</string>
     <string name="pref_camera_picturesize_entry_1280x960">SXGA (4:3)</string>
     <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
     <string name="pref_camera_picturesize_entry_1280x720">HD720</string>
-    <string name="pref_camera_picturesize_entry_1024x768">XGA</string>
+    <string name="pref_camera_picturesize_entry_1024x768">1 百万像素</string>
     <string name="pref_camera_picturesize_entry_800x600">SVGA</string>
     <string name="pref_camera_picturesize_entry_800x480">WVGA</string>
     <string name="pref_camera_picturesize_entry_640x480">VGA</string>
@@ -114,6 +115,8 @@
     <string name="pref_camera_focusmode_entry_normal">正常</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"无限远"</string>
     <string name="pref_camera_focusmode_entry_touch">触控</string>
+    <string name="pref_camera_focusmode_entry_fixed">固定</string>
+    <string name="pref_camera_focusmode_entry_facedetect">脸部检测</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"微距"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"闪光模式"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"自动"</string>
@@ -152,8 +155,14 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"日落"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"防抖"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"烟火"</string>
+    <string name="pref_camera_scenemode_entry_sports">运动</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"派对"</string>
     <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"烛光"</string>
+    <string name="pref_camera_scenemode_entry_backlight">背光</string>
+    <string name="pref_camera_scenemode_entry_flowers">花朵</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">黄昏</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">秋色</string>
+    <string name="pref_camera_scenemode_entry_text">文字</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"相机设置"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"还原默认设置"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"曝光"</string>
@@ -200,6 +209,7 @@
     <string name="pref_camera_autoexposure_entry_frameaverage">平均测光</string>
     <string name="pref_camera_autoexposure_entry_centerweighted">中心测光</string>
     <string name="pref_camera_autoexposure_entry_spotmetering">点测光</string>
+    <string name="pref_camera_autoexposure_entry_matrixmetering">矩阵测光</string>
 
     <!-- Settings screen, Capture mode title -->
     <string name="pref_camera_capturemode_title">拍摄方式</string>
