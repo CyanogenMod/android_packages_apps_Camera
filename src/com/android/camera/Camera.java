@@ -175,6 +175,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private ImageView mSceneIndicator;
     private ImageView mWhiteBalanceIndicator;
     private ImageView mFocusIndicator;
+    // A view group that contains all the small indicators.
+    private Rotatable mOnScreenIndicators;
 
     // We use a thread in ImageSaver to do the work of saving images and
     // generating thumbnails. This reduces the shot-to-shot time.
@@ -647,10 +649,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
         if (Parameters.FLASH_MODE_AUTO.equals(value)) {
             mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_auto);
+            mFlashIndicator.setVisibility(View.VISIBLE);
         } else if (Parameters.FLASH_MODE_ON.equals(value)) {
             mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_on);
+            mFlashIndicator.setVisibility(View.VISIBLE);
         } else if (Parameters.FLASH_MODE_OFF.equals(value)) {
-            mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_off);
+            mFlashIndicator.setVisibility(View.GONE);
         }
     }
 
@@ -1178,6 +1182,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
+        mOnScreenIndicators = (Rotatable) findViewById(R.id.on_screen_indicators);
         mLocationManager = new LocationManager(this, this);
 
         mBackCameraId = CameraHolder.instance().getBackCameraId();
@@ -1306,7 +1311,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void setOrientationIndicator(int orientation) {
         Rotatable[] indicators = {mThumbnailView, mModePicker, mSharePopup,
                 mIndicatorControlContainer, mZoomControl, mFocusAreaIndicator, mFaceView,
-                mReviewCancelButton, mReviewDoneButton, mRotateDialog};
+                mReviewCancelButton, mReviewDoneButton, mRotateDialog, mOnScreenIndicators};
         for (Rotatable indicator : indicators) {
             if (indicator != null) indicator.setOrientation(orientation);
         }
