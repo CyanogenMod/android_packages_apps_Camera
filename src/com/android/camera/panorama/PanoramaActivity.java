@@ -320,7 +320,7 @@ public class PanoramaActivity extends ActivityBase implements
         };
     }
 
-    private void setupCamera() {
+    private void setupCamera() throws CameraHardwareException, CameraDisabledException {
         openCamera();
         Parameters parameters = mCameraDevice.getParameters();
         setupCaptureParams(parameters);
@@ -336,18 +336,10 @@ public class PanoramaActivity extends ActivityBase implements
         }
     }
 
-    private void openCamera() {
-        try {
-            int backCameraId = CameraHolder.instance().getBackCameraId();
-            mCameraDevice = Util.openCamera(this, backCameraId);
-            mCameraOrientation = Util.getCameraOrientation(backCameraId);
-        } catch (CameraHardwareException e) {
-            Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
-            return;
-        } catch (CameraDisabledException e) {
-            Util.showErrorAndFinish(this, R.string.camera_disabled);
-            return;
-        }
+    private void openCamera() throws CameraHardwareException, CameraDisabledException {
+        int backCameraId = CameraHolder.instance().getBackCameraId();
+        mCameraDevice = Util.openCamera(this, backCameraId);
+        mCameraOrientation = Util.getCameraOrientation(backCameraId);
     }
 
     private boolean findBestPreviewSize(List<Size> supportedSizes, boolean need4To3,
@@ -994,15 +986,21 @@ public class PanoramaActivity extends ActivityBase implements
         mOrientationEventListener.enable();
 
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
-        setupCamera();
+        try {
+            setupCamera();
 
-        // Camera must be initialized before MosaicFrameProcessor is initialized. The preview size
-        // has to be decided by camera device.
-        initMosaicFrameProcessorIfNeeded();
-        mMosaicView.onResume();
+            // Camera must be initialized before MosaicFrameProcessor is initialized.
+            // The preview size has to be decided by camera device.
+            initMosaicFrameProcessorIfNeeded();
+            mMosaicView.onResume();
 
-        initThumbnailButton();
-        keepScreenOnAwhile();
+            initThumbnailButton();
+            keepScreenOnAwhile();
+        } catch (CameraHardwareException e) {
+            Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
+        } catch (CameraDisabledException e) {
+            Util.showErrorAndFinish(this, R.string.camera_disabled);
+        }
     }
 
     /**
