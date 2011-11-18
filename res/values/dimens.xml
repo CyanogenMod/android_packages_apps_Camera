@@ -51,4 +51,6 @@
     <dimen name="effect_setting_clear_text_size">20dp</dimen>
     <dimen name="effect_setting_clear_text_min_height">45dp</dimen>
     <dimen name="effect_setting_type_text_left_padding">16dp</dimen>
+    <dimen name="onscreen_indicators_height">28dp</dimen>
+    <dimen name="onscreen_exposure_indicator_text_size">15dp</dimen>
 </resources>
