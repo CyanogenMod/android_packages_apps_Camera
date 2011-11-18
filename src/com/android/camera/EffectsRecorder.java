@@ -32,6 +32,7 @@ import android.filterpacks.videosrc.SurfaceTextureSource.SurfaceTextureSourceLis
 
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.hardware.CameraSound;
 import android.media.MediaRecorder;
 import android.media.CamcorderProfile;
 import android.os.Handler;
@@ -117,6 +118,7 @@ public class EffectsRecorder {
 
     private boolean mLogVerbose = Log.isLoggable(TAG, Log.VERBOSE);
     private static final String TAG = "effectsrecorder";
+    private CameraSound mCameraSound;
 
     /** Determine if a given effect is supported at runtime
      * Some effects require libraries not available on all devices
@@ -136,6 +138,7 @@ public class EffectsRecorder {
         if (mLogVerbose) Log.v(TAG, "EffectsRecorder created (" + this + ")");
         mContext = context;
         mHandler = new Handler(Looper.getMainLooper());
+        mCameraSound = new CameraSound();
     }
 
     public void setCamera(Camera cameraDevice) {
@@ -690,7 +693,7 @@ public class EffectsRecorder {
         recorder.setInputValue("maxFileSize", mMaxFileSize);
         recorder.setInputValue("maxDurationMs", mMaxDurationMs);
         recorder.setInputValue("recording", true);
-        mCameraDevice.playSound(Camera.Sound.START_VIDEO_RECORDING);
+        mCameraSound.playSound(CameraSound.START_VIDEO_RECORDING);
         mState = STATE_RECORD;
     }
 
@@ -710,7 +713,7 @@ public class EffectsRecorder {
         }
         Filter recorder = mRunner.getGraph().getFilter("recorder");
         recorder.setInputValue("recording", false);
-        mCameraDevice.playSound(Camera.Sound.STOP_VIDEO_RECORDING);
+        mCameraSound.playSound(CameraSound.STOP_VIDEO_RECORDING);
         mState = STATE_PREVIEW;
     }
 
@@ -740,6 +743,7 @@ public class EffectsRecorder {
         } catch(IOException e) {
             throw new RuntimeException("Unable to connect camera to effect input", e);
         }
+        mCameraSound.release();
 
         mState = STATE_CONFIGURE;
         mOldRunner = mRunner;
