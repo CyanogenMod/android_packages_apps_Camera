@@ -1712,7 +1712,15 @@ public class Camera extends BaseCamera implements View.OnClickListener,
             // focus here.
             mFocusState = FOCUSING_SNAP_ON_FINISH;
         } else if (mFocusState == FOCUS_NOT_STARTED) {
-            // Focus key down event is dropped for some reasons. Just ignore.
+            // Special case: some devices have a one-stage-only camera button.
+            // In those cases, a simple push has to do the trick.
+            if (getResources().getBoolean(R.bool.isOneStageButton)) {
+                doFocus(true);
+                mFocusState = FOCUSING_SNAP_ON_FINISH;
+            }
+
+            // Most of the time, the focus key down event will be invoked
+            // for some reason. Just ignore.
         }
     }
 
