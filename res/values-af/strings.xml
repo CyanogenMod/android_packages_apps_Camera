@@ -59,11 +59,11 @@
     <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1M pixels"</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
-    <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Fokus-modus"</string>
+    <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Fokus"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Outo"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Oneindig"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
-    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Flash-modus"</string>
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Flits-modus"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Outo"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Aan"</string>
     <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Af"</string>
@@ -82,7 +82,7 @@
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Kan nie in toneelmodus gekies word nie."</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Kamera-instellings"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Laai verstek instellings terug"</string>
-    <string name="pref_exposure_title" msgid="1229093066434614811">"Blootstelling"</string>
+    <string name="pref_exposure_title" msgid="1229093066434614811">"Beligting"</string>
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Jou USB-berging se stoorspasie raak min. Verander die gehalte-instelling of vee \'n paar prente of ander lêers uit."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Jou SD-kaart raak vol. Verander die gehalte-instelling of vee \'n paar prente of ander lêers uit."</string>
@@ -90,12 +90,12 @@
     <string name="switch_to_camera_label" msgid="9148663083850199582">"Skakel oor na kamera"</string>
     <string name="switch_to_video_label" msgid="1167994386902254398">"Skakel oor na video"</string>
     <string name="switch_to_panorama_label" msgid="858801335653517864">"Skakel oor na panorama"</string>
-    <string name="share_picture_via" msgid="1375127849431890447">"Deel prent via"</string>
-    <string name="share_video_via" msgid="5152302809166549015">"Deel video via"</string>
+    <string name="share_picture_via" msgid="1375127849431890447">"Deel prent met"</string>
+    <string name="share_video_via" msgid="5152302809166549015">"Deel video met"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"Geen prent om te deel nie."</string>
     <string name="no_video_to_share" msgid="7567298642707627096">"Geen video om te deel nie."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Te vinnig"</string>
-    <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Berei panorame voor"</string>
+    <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Berei panorama voor"</string>
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Kon nie panorama stoor nie."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
     <string name="pano_capture_indication" msgid="8248825828264374507">"Lê panorama vas"</string>
