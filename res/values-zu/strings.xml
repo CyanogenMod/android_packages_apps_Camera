@@ -33,7 +33,7 @@
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Yehlulekile ukufinyelela kwindawo egcina i-USB."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Yehlukekile ukufinyelela kwikhadi le-SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Buyisela esimweni okuzenzakalelayo"</string>
-    <string name="confirm_restore_message" msgid="6649481842684452641">"Buyisela Izisetho zekhamera?"</string>
+    <string name="confirm_restore_message" msgid="6649481842684452641">"Buyisela izilungiselelo zekhamera?"</string>
     <string name="review_play" msgid="6378271587740884696">"Dlala"</string>
     <string name="review_cancel" msgid="8188009385853399254">"KHANSELA"</string>
     <string name="review_ok" msgid="1156261588693116433">"KUQEDIWE"</string>
