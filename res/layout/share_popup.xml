@@ -25,7 +25,7 @@
     <FrameLayout android:id="@+id/root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left|center">
+            android:layout_gravity="top|center">
         <com.android.camera.ui.RotateLayout
                 android:id="@+id/thumbnail_rotate_layout"
                 android:layout_width="wrap_content"
