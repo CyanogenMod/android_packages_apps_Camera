@@ -17,3 +17,7 @@
 -keep class * extends android.app.Activity {
   @com.android.camera.OnClickAttr <methods>;
 }
+
+-keep class com.android.camera.CameraHolder {
+  public static void injectMockCamera(...);
+}

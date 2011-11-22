@@ -1190,7 +1190,7 @@ public class VideoCamera extends ActivityBase
 
         // Unlock the camera object before passing it to media recorder.
         mCameraDevice.unlock();
-        mMediaRecorder.setCamera(mCameraDevice);
+        mMediaRecorder.setCamera(mCameraDevice.getCamera());
         if (!mCaptureTimeLapse) {
             mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
         }
@@ -1281,7 +1281,7 @@ public class VideoCamera extends ActivityBase
         // TODO: Confirm none of the foll need to go to initializeEffectsRecording()
         // and none of these change even when the preview is not refreshed.
         mEffectsRecorder.setAppToLandscape(inLandscape);
-        mEffectsRecorder.setCamera(mCameraDevice);
+        mEffectsRecorder.setCamera(mCameraDevice.getCamera());
         mEffectsRecorder.setCameraFacing(info.facing);
         mEffectsRecorder.setProfile(mProfile);
         mEffectsRecorder.setEffectsListener(this);
