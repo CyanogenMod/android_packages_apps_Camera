@@ -49,7 +49,7 @@ import android.graphics.SurfaceTexture;
 import android.graphics.YuvImage;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
-import android.hardware.Camera.Sound;
+import android.hardware.CameraSound;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.media.ExifInterface;
@@ -176,6 +176,8 @@ public class PanoramaActivity extends ActivityBase implements
 
     private RotateDialogController mRotateDialog;
 
+    private CameraSound mCameraSound;
+
     private class MosaicJpeg {
         public MosaicJpeg(byte[] data, int width, int height) {
             this.data = data;
@@ -271,6 +273,7 @@ public class PanoramaActivity extends ActivityBase implements
         mDialogOkString = getResources().getString(R.string.dialog_ok);
         mDialogPanoramaFailedString =
                 getResources().getString(R.string.pano_dialog_panorama_failed);
+        mCameraSound = new CameraSound();
 
         mMainHandler = new Handler() {
             @Override
@@ -733,11 +736,11 @@ public class PanoramaActivity extends ActivityBase implements
         // right now.
         switch (mCaptureState) {
             case CAPTURE_STATE_VIEWFINDER:
-                mCameraDevice.playSound(Sound.START_VIDEO_RECORDING);
+                mCameraSound.playSound(CameraSound.START_VIDEO_RECORDING);
                 startCapture();
                 break;
             case CAPTURE_STATE_MOSAIC:
-                mCameraDevice.playSound(Sound.STOP_VIDEO_RECORDING);
+                mCameraSound.playSound(CameraSound.STOP_VIDEO_RECORDING);
                 stopCapture(false);
         }
     }
@@ -977,6 +980,7 @@ public class PanoramaActivity extends ActivityBase implements
         clearMosaicFrameProcessorIfNeeded();
         mOrientationEventListener.disable();
         resetScreenOn();
+        mCameraSound.release();
         System.gc();
     }
 
