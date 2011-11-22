@@ -42,6 +42,7 @@ import android.hardware.Camera.FaceDetectionListener;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
+import android.hardware.CameraSound;
 import android.location.Location;
 import android.media.CameraProfile;
 import android.net.Uri;
@@ -181,6 +182,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // We use a thread in ImageSaver to do the work of saving images and
     // generating thumbnails. This reduces the shot-to-shot time.
     private ImageSaver mImageSaver;
+
+    private CameraSound mCameraSound;
 
     private Runnable mDoSnapRunnable = new Runnable() {
         public void run() {
@@ -1062,7 +1065,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void playSound(int soundId) {
-        mCameraDevice.playSound(soundId);
+        mCameraSound.playSound(soundId);
     }
 
     private boolean saveDataToFile(String filePath, byte[] data) {
@@ -1200,6 +1203,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Do this after starting preview because it depends on camera
         // parameters.
         initializeIndicatorControl();
+        mCameraSound = new CameraSound();
 
         // Make sure preview is started.
         try {
@@ -1571,6 +1575,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
+        mCameraSound.release();
         resetScreenOn();
 
         // Clear UI.
