@@ -579,6 +579,13 @@ int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
     // Blend
     PerformFinalBlending(imgMos, cropping_rect);
 
+    if (cropping_rect.Width() <= 0 || cropping_rect.Height() <= 0)
+    {
+        LOGE("Size of the cropping_rect is invaid - (width, height): (%d, %d)",
+                cropping_rect.Width(), cropping_rect.Height());
+        return BLEND_RET_ERROR;
+    }
+
     if (m_pMosaicVPyr) free(m_pMosaicVPyr);
     if (m_pMosaicUPyr) free(m_pMosaicUPyr);
     if (m_pMosaicYPyr) free(m_pMosaicYPyr);
