@@ -30,6 +30,7 @@ import com.android.camera.ShutterButton;
 import com.android.camera.Storage;
 import com.android.camera.Thumbnail;
 import com.android.camera.Util;
+import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
@@ -1002,9 +1003,13 @@ public class PanoramaActivity extends ActivityBase implements
             keepScreenOnAwhile();
         } catch (CameraHardwareException e) {
             Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
+            return;
         } catch (CameraDisabledException e) {
             Util.showErrorAndFinish(this, R.string.camera_disabled);
+            return;
         }
+        // Dismiss open menu if exists.
+        PopupManager.getInstance(this).notifyShowPopup(null);
     }
 
     /**
