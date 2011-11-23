@@ -19,6 +19,7 @@ package com.android.camera;
 import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.IndicatorControlContainer;
 import com.android.camera.ui.IndicatorControlWheelContainer;
+import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
@@ -886,6 +887,8 @@ public class VideoCamera extends ActivityBase
             mOnResumeTime = SystemClock.uptimeMillis();
             mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
         }
+        // Dismiss open menu if exists.
+        PopupManager.getInstance(this).notifyShowPopup(null);
     }
 
     private void setPreviewDisplay(SurfaceHolder holder) {
