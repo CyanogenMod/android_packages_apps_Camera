@@ -581,7 +581,7 @@ int Blend::DoMergeAndBlend(MosaicFrame **frames, int nsite,
 
     if (cropping_rect.Width() <= 0 || cropping_rect.Height() <= 0)
     {
-        LOGE("Size of the cropping_rect is invaid - (width, height): (%d, %d)",
+        LOGE("Size of the cropping_rect is invalid - (width, height): (%d, %d)",
                 cropping_rect.Width(), cropping_rect.Height());
         return BLEND_RET_ERROR;
     }
