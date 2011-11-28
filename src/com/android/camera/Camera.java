@@ -55,7 +55,6 @@ import android.os.MessageQueue;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -66,9 +65,7 @@ import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -143,7 +140,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private ContentProviderClient mMediaProviderClient;
     private SurfaceHolder mSurfaceHolder = null;
     private ShutterButton mShutterButton;
-    private GestureDetector mPopupGestureDetector;
     private boolean mOpenCameraFail = false;
     private boolean mCameraDisabled = false;
     private boolean mFaceDetectionStarted = false;
@@ -548,33 +544,29 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private class PopupGestureListener
-            extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onDown(MotionEvent e) {
-            // Check if the popup window is visible.
-            View popup = mIndicatorControlContainer.getActiveSettingPopup();
-            if (popup == null) return false;
-
-
-            // Let popup window, indicator control or preview frame handle the
-            // event by themselves. Dismiss the popup window if users touch on
-            // other areas.
-            if (!Util.pointInView(e.getX(), e.getY(), popup)
-                    && !Util.pointInView(e.getX(), e.getY(), mIndicatorControlContainer)
-                    && !Util.pointInView(e.getX(), e.getY(), mPreviewFrame)) {
-                mIndicatorControlContainer.dismissSettingPopup();
-                // Let event fall through.
-            }
-            return false;
-        }
-    }
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         // Check if the popup window should be dismissed first.
-        if (mPopupGestureDetector != null && mPopupGestureDetector.onTouchEvent(m)) {
-            return true;
+        if (m.getAction() == MotionEvent.ACTION_DOWN) {
+            float x = m.getX();
+            float y = m.getY();
+            // Dismiss the mode selection window if the ACTION_DOWN event is out
+            // of its view area.
+            if (!Util.pointInView(x, y, mModePicker)) {
+                mModePicker.dismissModeSelection();
+            }
+            // Check if the popup window is visible.
+            View popup = mIndicatorControlContainer.getActiveSettingPopup();
+            if (popup != null) {
+                // Let popup window, indicator control or preview frame handle the
+                // event by themselves. Dismiss the popup window if users touch on
+                // other areas.
+                if (!Util.pointInView(x, y, popup)
+                        && !Util.pointInView(x, y, mIndicatorControlContainer)
+                        && !Util.pointInView(x, y, mPreviewFrame)) {
+                    mIndicatorControlContainer.dismissSettingPopup();
+                }
+            }
         }
 
         return super.dispatchTouchEvent(m);
