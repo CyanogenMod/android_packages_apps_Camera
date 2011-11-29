@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"در حین ضبط ویدیو با لمس کردن صفحه پیش‌نمایش یک عکس بگیرید."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"هنگام فعال بودن جلوه‌های ویژه، عکس فوری از ویدیو غیرفعال است."</string>
     <string name="clear_effects" msgid="5485339175014139481">"پاک کردن جلوه‌ها"</string>
-    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"چهره‌های احمقانه"</string>
-    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"پس‌زمینه"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"چهره‌های احمقانه"</string>
+    <string name="effect_background" msgid="6579360207378171022">"پس‌زمینه"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"دکمه شاتر"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"جدیدترین عکس"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"کلید دوربین جلو و عقب"</string>

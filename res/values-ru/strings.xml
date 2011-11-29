@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Чтобы сделать снимок при видеосъемке, нажмите на экран просмотра."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Невозможно сделать снимок при включенных спецэффектах."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Убрать эффекты"</string>
-    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"Смешные рожицы"</string>
-    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"Фон"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"СМЕШНЫЕ РОЖИЦЫ"</string>
+    <string name="effect_background" msgid="6579360207378171022">"ФОН"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Кнопка \"Затвор\""</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Недавние фото"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Переключение на переднюю или заднюю камеру"</string>
