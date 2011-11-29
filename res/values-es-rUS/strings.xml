@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Toca la pant. de vista prev. mientras grabas para tomar una foto."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Las instantáneas de video se inhabilitan al activar los efectos."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Borrar efectos"</string>
-    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"Caras graciosas"</string>
-    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"Fondo"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"CARAS GRACIOSAS"</string>
+    <string name="effect_background" msgid="6579360207378171022">"FONDO"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Botón del obturador"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Foto más reciente"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Selector de cámara delantera y trasera"</string>

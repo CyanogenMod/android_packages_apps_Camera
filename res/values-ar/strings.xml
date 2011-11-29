@@ -24,7 +24,7 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"صور الكاميرا"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"مقاطع فيديو الكاميرا"</string>
     <string name="wait" msgid="8600187532323801552">"يرجى الانتظار…"</string>
-    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"حمِّل وحدة تخزين USB قبل استخدام الكاميرا."</string>
+    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"حمِّل وحدة تخزين USB قبل استخدام الكاميرا."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"أدرج بطاقة SD قبل استخدام الكاميرا."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"وحدة تخزين USB ممتلئة."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"بطاقة SD ممتلئة."</string>
@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"يمكنك التقاط صورة أثناء تسجيل الفيديو من خلال لمس شاشة المعاينة."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"يتم تعطيل لقطة الفيديو عند تشغيل التأثيرات الخاصة."</string>
     <string name="clear_effects" msgid="5485339175014139481">"محو التأثيرات"</string>
-    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"وجوه مضحكة"</string>
-    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"الخلفية"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"وجوه مضحكة"</string>
+    <string name="effect_background" msgid="6579360207378171022">"الخلفية"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"زر المصراع"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"أحدث صورة"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"مفتاح التبديل بين الأمام والخلف"</string>

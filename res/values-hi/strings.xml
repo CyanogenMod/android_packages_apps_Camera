@@ -115,11 +115,11 @@
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"स्‍वयं का चुनें"</string>
     <string name="bg_replacement_message" msgid="6828585054971662284">"अपने उपकरण को सेट करें"\n"कुछ समय के लिए दृश्य से बाहर निकलें"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"प्रभाव के चालू होने पर चयन योग्‍य नहीं."</string>
-    <string name="video_snapshot_hint" msgid="8159602664271448241">"वीडियो रिकॉ. के समय पूर्वावलोकन स्‍क्रीन स्‍पर्श करके फ़ोटो लें."</string>
+    <string name="video_snapshot_hint" msgid="8159602664271448241">"वीडियो रिकॉ. के समय पूर्वावलोकन स्‍क्रीन स्‍पर्श करके फ़ोटो लें."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"विशेष प्रभावों के चालू होने पर वीडियो स्‍नेपशॉट अक्षम हो जाता है."</string>
     <string name="clear_effects" msgid="5485339175014139481">"प्रभाव साफ़ करें"</string>
-    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"मज़ाकिया चेहरे"</string>
-    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"पृष्ठभूमि"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"मज़ाकिया चेहरे"</string>
+    <string name="effect_background" msgid="6579360207378171022">"पृष्ठभूमि"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"शटर बटन"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"हाल ही का फ़ोटो"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"अगला और पिछला कैमरा स्‍विच"</string>
