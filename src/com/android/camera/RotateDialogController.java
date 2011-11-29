@@ -78,9 +78,9 @@ public class RotateDialogController implements Rotatable {
     }
 
     @Override
-    public void setOrientation(int orientation) {
+    public void setOrientation(int orientation, boolean animation) {
         inflateDialogLayout();
-        mRotateDialog.setOrientation(orientation);
+        mRotateDialog.setOrientation(orientation, animation);
     }
 
     public void resetRotateDialog() {

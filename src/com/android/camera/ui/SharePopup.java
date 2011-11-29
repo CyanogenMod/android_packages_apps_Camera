@@ -84,7 +84,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         public View getView(int position, View convertView, ViewGroup parent) {
             View v = super.getView(position, convertView, parent);
             RotateLayout r = (RotateLayout) v.findViewById(R.id.share_icon_rotate_layout);
-            r.setOrientation(mOrientation);
+            r.setOrientation(mOrientation, false);
             return v;
         }
     }
@@ -155,7 +155,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         setHeight(WindowManager.LayoutParams.MATCH_PARENT);
         setBackgroundDrawable(new ColorDrawable());
         setContentView(sharePopup);
-        setOrientation(orientation);
+        setOrientation(orientation, false);
         setFocusable(true);
         setAnimationStyle(R.style.AnimationPopup);
         createShareMenu();
@@ -190,7 +190,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         mThumbnailRotateLayout.setLayoutParams(lpNew);
     }
 
-    public void setOrientation(int orientation) {
+    public void setOrientation(int orientation, boolean animation) {
         mOrientation = orientation;
 
         int hPaddingRootView = mRootView.getPaddingLeft() + mRootView.getPaddingRight();
@@ -226,16 +226,17 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         }
         mThumbnail.setLayoutParams(params);
 
-        if (mThumbnailRotateLayout != null) mThumbnailRotateLayout.setOrientation(orientation);
+        if (mThumbnailRotateLayout != null)
+            mThumbnailRotateLayout.setOrientation(orientation, true);
 
         int count = mShareList.getChildCount();
         for (int i = 0; i < count; i++) {
             ViewGroup f = (ViewGroup) mShareList.getChildAt(i);
             RotateLayout r = (RotateLayout) f.findViewById(R.id.share_icon_rotate_layout);
-            r.setOrientation(orientation);
+            r.setOrientation(orientation, animation);
         }
 
-        mGotoGalleryRotate.setOrientation(orientation);
+        mGotoGalleryRotate.setOrientation(orientation, animation);
 
         adjustThumbnailPosition();
     }

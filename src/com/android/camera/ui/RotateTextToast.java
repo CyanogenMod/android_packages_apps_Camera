@@ -39,7 +39,7 @@ public class RotateTextToast {
         mToast = (RotateLayout) v.findViewById(R.id.rotate_toast);
         TextView tv = (TextView) mToast.findViewById(R.id.message);
         tv.setText(textResourceId);
-        mToast.setOrientation(orientation);
+        mToast.setOrientation(orientation, false);
         mHandler = new Handler();
     }
 

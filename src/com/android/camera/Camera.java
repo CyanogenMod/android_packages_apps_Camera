@@ -377,7 +377,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Initialize focus UI.
         mPreviewFrame = findViewById(R.id.camera_preview);
         mPreviewFrame.setOnTouchListener(this);
-        mFocusAreaIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
         CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
         boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
         mFocusManager.initialize(mFocusAreaIndicator, mPreviewFrame, mFaceView, this,
@@ -521,7 +520,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mFaceDetectionStarted || mCameraState != IDLE) return;
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mFaceDetectionStarted = true;
-            mFaceView = (FaceView) findViewById(R.id.face_view);
             mFaceView.clear();
             mFaceView.setVisibility(View.VISIBLE);
             mFaceView.setDisplayOrientation(mDisplayOrientation);
@@ -1177,12 +1175,16 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
         }
 
+        mFocusAreaIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
+
         mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
         mOnScreenIndicators = (Rotatable) findViewById(R.id.on_screen_indicators);
         mLocationManager = new LocationManager(this, this);
 
         mBackCameraId = CameraHolder.instance().getBackCameraId();
         mFrontCameraId = CameraHolder.instance().getFrontCameraId();
+
+        mFaceView = (FaceView) findViewById(R.id.face_view);
 
         // Wait until the camera settings are retrieved.
         synchronized (mCameraPreviewThread) {
@@ -1294,7 +1296,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     + Util.getDisplayRotation(Camera.this);
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
-                setOrientationIndicator(mOrientationCompensation);
+                setOrientationIndicator(mOrientationCompensation, true);
             }
 
             // Show the toast after getting the first orientation changed.
@@ -1305,12 +1307,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private void setOrientationIndicator(int orientation) {
+    private void setOrientationIndicator(int orientation, boolean animation) {
         Rotatable[] indicators = {mThumbnailView, mModePicker, mSharePopup,
                 mIndicatorControlContainer, mZoomControl, mFocusAreaIndicator, mFaceView,
                 mReviewCancelButton, mReviewDoneButton, mRotateDialog, mOnScreenIndicators};
         for (Rotatable indicator : indicators) {
-            if (indicator != null) indicator.setOrientation(orientation);
+            if (indicator != null) indicator.setOrientation(orientation, animation);
         }
     }
 
@@ -1562,6 +1564,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
         // Dismiss open menu if exists.
         PopupManager.getInstance(this).notifyShowPopup(null);
+
+        setOrientationIndicator(getIntent().getIntExtra(
+                IntentExtras.INITIAL_ORIENTATION_EXTRA, 0), false);
     }
 
     @Override
@@ -2179,7 +2184,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private boolean switchToOtherMode(int mode) {
         if (isFinishing()) return false;
         if (mImageSaver != null) mImageSaver.waitDone();
-        MenuHelper.gotoMode(mode, Camera.this);
+        MenuHelper.gotoMode(mode, Camera.this, mOrientationCompensation);
         mHandler.removeMessages(FIRST_TIME_INIT);
         finish();
         return true;
@@ -2208,9 +2213,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             // animation.
             if (mIsImageCaptureIntent) {
                 // If the intent is camera capture, stay in camera capture mode.
+                Intent it = getIntent();
+                it.putExtra(IntentExtras.INITIAL_ORIENTATION_EXTRA, mOrientationCompensation);
                 MenuHelper.gotoCameraMode(this, getIntent());
             } else {
-                MenuHelper.gotoCameraMode(this);
+                MenuHelper.gotoCameraMode(this, mOrientationCompensation);
             }
 
             finish();

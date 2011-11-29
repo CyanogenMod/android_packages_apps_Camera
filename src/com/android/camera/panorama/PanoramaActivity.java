@@ -21,6 +21,7 @@ import com.android.camera.CameraDisabledException;
 import com.android.camera.CameraHardwareException;
 import com.android.camera.CameraHolder;
 import com.android.camera.Exif;
+import com.android.camera.IntentExtras;
 import com.android.camera.MenuHelper;
 import com.android.camera.ModePicker;
 import com.android.camera.OnClickAttr;
@@ -222,7 +223,7 @@ public class PanoramaActivity extends ActivityBase implements
     }
 
     private void setOrientationIndicator(int degree) {
-        if (mSharePopup != null) mSharePopup.setOrientation(degree);
+        if (mSharePopup != null) mSharePopup.setOrientation(degree, true);
     }
 
     @Override
@@ -432,7 +433,7 @@ public class PanoramaActivity extends ActivityBase implements
         if (isFinishing()) {
             return false;
         }
-        MenuHelper.gotoMode(mode, this);
+        MenuHelper.gotoMode(mode, this, mOrientationCompensation);
         finish();
         return true;
     }
@@ -734,7 +735,7 @@ public class PanoramaActivity extends ActivityBase implements
                     (Rotatable) mModePicker,
                     (Rotatable) mThumbnailView};
             for (Rotatable r : rotateLayout) {
-                r.setOrientation(270);
+                r.setOrientation(270, false);
             }
         }
     }
@@ -1021,6 +1022,9 @@ public class PanoramaActivity extends ActivityBase implements
         }
         // Dismiss open menu if exists.
         PopupManager.getInstance(this).notifyShowPopup(null);
+
+        mOrientationEventListener.onOrientationChanged(
+                getIntent().getIntExtra(IntentExtras.INITIAL_ORIENTATION_EXTRA, 0));
     }
 
     /**

@@ -166,8 +166,8 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
     }
 
     @Override
-    public void setOrientation(int orientation) {
-        mIndicatorControlWheel.setOrientation(orientation);
+    public void setOrientation(int orientation, boolean animation) {
+        mIndicatorControlWheel.setOrientation(orientation, animation);
     }
 
     public void startTimeLapseAnimation(int timeLapseInterval, long startTime) {

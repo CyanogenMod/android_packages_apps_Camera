@@ -62,7 +62,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         setPreferenceGroup(group);
         mNonIndicatorButtonCount = getChildCount();
         addControls(keys, otherSettingKeys);
-        if (mOrientation != 0) setOrientation(mOrientation);
+        if (mOrientation != 0) setOrientation(mOrientation, false);
     }
 
     public void onClick(View view) {
@@ -163,9 +163,9 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     }
 
     @Override
-    public void setOrientation(int orientation) {
+    public void setOrientation(int orientation, boolean animation) {
         mOrientation = orientation;
-        super.setOrientation(orientation);
+        super.setOrientation(orientation, animation);
     }
 
     @Override

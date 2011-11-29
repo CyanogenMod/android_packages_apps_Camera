@@ -61,13 +61,14 @@ public abstract class IndicatorControl extends RelativeLayout implements
         super(context, attrs);
     }
 
-    public void setOrientation(int orientation) {
+    @Override
+    public void setOrientation(int orientation, boolean animation) {
         mOrientation = orientation;
         int count = getChildCount();
         for (int i = 0 ; i < count ; ++i) {
             View view = getChildAt(i);
             if (view instanceof Rotatable) {
-                ((Rotatable) view).setOrientation(orientation);
+                ((Rotatable) view).setOrientation(orientation, animation);
             }
         }
     }
