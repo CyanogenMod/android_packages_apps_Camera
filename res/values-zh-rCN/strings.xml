@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"录制视频时触摸预览屏幕可拍照。"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"启用特殊效果时停用视频快照。"</string>
     <string name="clear_effects" msgid="5485339175014139481">"清除效果"</string>
-    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"趣味表情"</string>
-    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"背景"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"趣味表情"</string>
+    <string name="effect_background" msgid="6579360207378171022">"背景"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"“快门”按钮"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"最新照片"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"前视和后视相机开关"</string>

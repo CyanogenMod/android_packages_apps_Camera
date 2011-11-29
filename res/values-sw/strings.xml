@@ -25,7 +25,7 @@
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Video za kamera"</string>
     <string name="wait" msgid="8600187532323801552">"Tafadhali subiri…"</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Pachika hifadhi ya USB kabla ya kutumia kamera."</string>
-    <string name="no_storage" product="default" msgid="5137703033746873624">"Tafadhali chomeka kadi ya SD kabla ya kutumia kamera."</string>
+    <string name="no_storage" product="default" msgid="5137703033746873624">"Chomeka kadi ya SD kabla ya kutumia kamera."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Hifadhi yako ya USB imejaa."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Kadi yako ya SD imejaa"</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Inaandaa hifadhi ya USB..."</string>
@@ -33,7 +33,7 @@
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Haikuweza kufikia hifadhi ya USB."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Haikuweza kufikia kadi ya SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Rejesha kwa chaguo-msingi"</string>
-    <string name="confirm_restore_message" msgid="6649481842684452641">"Rejesha mipangilio ya chaguo-msingi ya kamera?"</string>
+    <string name="confirm_restore_message" msgid="6649481842684452641">"Rejesha mipangilio chaguo-msingi ya kamera?"</string>
     <string name="review_play" msgid="6378271587740884696">"Cheza"</string>
     <string name="review_cancel" msgid="8188009385853399254">"GHAIRI"</string>
     <string name="review_ok" msgid="1156261588693116433">"IMEFANYWA"</string>
@@ -79,7 +79,7 @@
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Usiku"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Machweo"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Karamu"</string>
-    <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Haiwezi kuchaguliwa ikiwa katika hali-tumizi ya mandhari."</string>
+    <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Haiwezi kuchaguliwa ikiwa katika hali ya mandhari."</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Mipangilio ya kamera"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Rejesha kwa chaguo misingi"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Mfichuo"</string>
@@ -92,8 +92,8 @@
     <string name="switch_to_panorama_label" msgid="858801335653517864">"Badili Mwonekano"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Shiriki picha kupitia"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Shiriki video kupitia"</string>
-    <string name="no_picture_to_share" msgid="5352574090121328815">"Hakuna picha ya kugawa"</string>
-    <string name="no_video_to_share" msgid="7567298642707627096">"Hakuna video ya kugawa."</string>
+    <string name="no_picture_to_share" msgid="5352574090121328815">"Hakuna picha ya kushiriki"</string>
+    <string name="no_video_to_share" msgid="7567298642707627096">"Hakuna video ya kushiriki."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Haraka mno"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Panorama inaandaliwa"</string>
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Haikuweza kuhifadhi Picha ya mandhari."</string>
@@ -104,10 +104,10 @@
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Athari"</string>
     <string name="effect_none" msgid="3601545724573307541">"Hamna"</string>
     <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Finya"</string>
-    <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"Macho Makubwa"</string>
-    <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"Mdomo Mkubwa"</string>
-    <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"Mdomo Mdogo"</string>
-    <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"pua kubwa"</string>
+    <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"Macho makubwa"</string>
+    <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"Mdomo mkubwa"</string>
+    <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"Mdomo mdogo"</string>
+    <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"Pua kubwa"</string>
     <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"Macho Madogo"</string>
     <string name="effect_backdropper_space" msgid="7935661090723068402">"Kwenya nafasi"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Jua kutua"</string>
@@ -115,15 +115,15 @@
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Chagua yako mwenyewe"</string>
     <string name="bg_replacement_message" msgid="6828585054971662284">"Weka kifaa chako chini "\n" Toka nje ya muonekano kwa muda"</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"Haiwezi kuchaguliwa wakati athari imewashwa."</string>
-    <string name="video_snapshot_hint" msgid="8159602664271448241">"Chukua picha wakati wa kurekodi video kwa kugusa skrini ya hakiki."</string>
+    <string name="video_snapshot_hint" msgid="8159602664271448241">"Piga picha wakati wa kurekodi video kwa kugusa skrini ya uhakikishaji."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Picha ya video imelemazwa wakati athari maalum imewashwa."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Athari Wazi"</string>
-    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"Sura pumbavu"</string>
-    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"Mandhari nyuma"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"SURA PUMBAVU"</string>
+    <string name="effect_background" msgid="6579360207378171022">"USULI"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Kitufe cha kilango cha kamera"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Picha ya hivi karibuni"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Swichi ya mbele na nyuma ya kamera"</string>
-    <string name="accessibility_mode_picker" msgid="3278002189966833100">"Kamera, video au Picha ya mandhari"</string>
+    <string name="accessibility_mode_picker" msgid="3278002189966833100">"Kichagua kamera, video au Picha ya mandhari"</string>
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Vidhibiti zaidi vya mpangilio"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Funga vidhibiti mipangilio"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Dhibiti kukuza"</string>

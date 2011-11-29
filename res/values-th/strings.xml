@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"ถ่ายภาพระหว่างการบันทึกวิดีโอโดยการแตะหน้าจอดูตัวอย่าง"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"การจับภาพวิดีโอจะถูกปิดใช้งานเมื่อเปิดใช้เอฟเฟ็กต์พิเศษ"</string>
     <string name="clear_effects" msgid="5485339175014139481">"ล้างเอฟเฟ็กต์"</string>
-    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"หน้าตลก"</string>
-    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"พื้นหลัง"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"หน้าตลก"</string>
+    <string name="effect_background" msgid="6579360207378171022">"พื้นหลัง"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"ปุ่มชัตเตอร์"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"ภาพล่าสุด"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"สลับระหว่างกล้องด้านหน้าและด้านหลัง"</string>

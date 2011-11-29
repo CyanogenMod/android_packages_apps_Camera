@@ -45,7 +45,7 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Traseira"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Frontal"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Armazenar localização"</string>
-    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Desactivado"</string>
+    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Desativado"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Activado"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualidade de vídeo"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervalo de lapso de tempo"</string>
@@ -66,7 +66,7 @@
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Modo flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automático"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Activado"</string>
-    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Desactivado"</string>
+    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Desativado"</string>
     <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Equilíbrio dos brancos"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Automático"</string>
     <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Incandescente"</string>
@@ -118,8 +118,8 @@
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Tire fotografia durante grav. vídeo tocando no ecrã pré-visual."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Instantâneo vídeo desat. quando efeitos especiais estão ativos."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Limpar efeitos"</string>
-    <!-- outdated translation 3214174716769421248 -->     <string name="effect_silly_faces" msgid="8107732405347155777">"Caretas"</string>
-    <!-- outdated translation 6909716214852487679 -->     <string name="effect_background" msgid="6579360207378171022">"Fundo"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"CARETAS"</string>
+    <string name="effect_background" msgid="6579360207378171022">"FUNDO"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Botão Obturador"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Fotografia mais recente"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Interruptor da câmara frontal e posterior"</string>
