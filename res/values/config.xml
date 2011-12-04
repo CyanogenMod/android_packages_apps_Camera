@@ -50,4 +50,7 @@
 
 	<!-- Samsung Special Settings -->
 	<bool name="needsSamsungSpecialSettings">false</bool>
+
+	<!-- is OMAP4 camera -->
+	<bool name="isOMAP4Camera">false</bool>
 </resources>

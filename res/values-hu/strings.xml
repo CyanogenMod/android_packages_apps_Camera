@@ -42,7 +42,7 @@
     <string name="pref_camera_id_title" msgid="6023059405578511534">"Webkamera kiválasztása"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Vissza"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Előre néző"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Tárhely"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Koordináta"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Ki"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Be"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Videó minősége"</string>
@@ -63,7 +63,10 @@
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normál"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Fókuszálás módja"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatikus"</string>
+    <string name="pref_camera_focusmode_entry_normal">Normál</string>
+    <string name="pref_camera_focusmode_entry_macro">Makró</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Végtelen"</string>
+    <string name="pref_camera_focusmode_entry_touch">Érintés</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makró"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Vakumód"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatikus"</string>
@@ -75,6 +78,7 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Nappali fény"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fénycső"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Felhős"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Felhős nappal</string>
     <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Színhatás"</string>
     <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Semelyik"</string>
     <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Fekete-fehér"</string>
@@ -107,10 +111,53 @@
     <string name="pref_restore_detail" msgid="5732490002291044791">"Alapbeállítások"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Expozíció"</string>
     <string name="details_ok" msgid="6848594369924424312">"OK"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Az USB-táron kezd elfogyni a hely. Módosítsa a minőségi beállításokat, vagy töröljön néhány képet vagy egyéb fájlt."</string>
-    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Az SD-kártyán kezd elfogyni a hely. Módosítsa a minőségi beállításokat, vagy töröljön néhány képet vagy egyéb fájlt."</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Az SD-kártyán kezd elfogyni a hely! Módosítsa a minőségi beállításokat, vagy töröljön néhány képet vagy egyéb fájlt!"</string>
+    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Az SD-kártyán kezd elfogyni a hely! Módosítsa a minőségi beállításokat, vagy töröljön néhány képet vagy egyéb fájlt!"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"A videó elérte a méretkorlátot."</string>
     <string name="zoom_control_title" msgid="6532562653386981815">"Nagyítás/kicsinyítés"</string>
     <string name="switch_to_camera_lable" msgid="8248495141797448471">"Váltás kamerára"</string>
     <string name="switch_to_video_lable" msgid="4525451949497982385">"Váltás videóra"</string>
+    <string name="pref_camera_capturemode_title">Felvétel módja</string>
+    <string name="pref_camera_capturemode_entry_default">Azonnal</string>
+    <string name="pref_camera_capturemode_entry_timer">Időzített</string>
+     <string name="pref_camera_lensshading_title">Objektív árnyékolás</string>
+     <string name="pref_camera_lensshading_entry_enable">Be</string>
+     <string name="pref_camera_lensshading_entry_disable">Ki</string>
+     <string name="pref_camera_antibanding_title">Vibrálás csökkentés</string>
+     <string name="pref_camera_antibanding_entry_0">Ki</string>
+     <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+     <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+     <string name="pref_camera_antibanding_entry_3">Automatikus</string>
+    <string name="pref_camera_sharpness_title">Élesség</string>
+    <string name="pref_camera_contrast_title">Kontraszt</string>
+    <string name="pref_camera_saturation_title">Telítettség</string>
+    <string name="advanced_options_label">Haladó beállítások</string>
+    <string name="pref_camera_vol_shutter_title">Hangerő gomb - kioldó</string>
+    <string name="pref_camera_vol_up_shutter">Hangerő-fel</string>
+    <string name="pref_camera_vol_up_shutter_summary">Kép készítése a hangerő-fel gomb megnyomásakor</string>
+    <string name="pref_camera_vol_down_shutter">Hangerő-le</string>
+    <string name="pref_camera_vol_down_shutter_summary">Kép készítése a hangerő-le gomb megnyomásakor</string>
+    <string name="pref_camera_search_shutter_title">Keresés gomb - kioldó</string>
+    <string name="pref_camera_search_shutter">Keresés gomb</string>
+    <string name="pref_camera_search_shutter_summary">Kép készítése a keresés gomb megnyomásakor</string>
+    <string name="pref_camera_power_shutter_title">Bekapcsoló gomb - kioldó</string>
+    <string name="pref_camera_power_shutter">Bekapcsoló gomb</string>
+    <string name="pref_camera_power_shutter_summary">Kép vagy videó készítése a bekapcsoló gomb megnyomásakor</string>
+    <string name="pref_camera_vol_zoom_title">Hangerő gomb - nagyítás</string>
+    <string name="pref_camera_vol_zoom">Nagyítás hangerő gombokkal</string>
+    <string name="pref_camera_vol_zoom_summary">Hangerő-fel gombra közelít, hangerő-le gombra távolít</string>
+    <string name="pref_camera_settings_focus_title">Fókusz</string>
+    <string name="pref_camera_settings_focus">Újrafókuszálás</string>
+    <string name="pref_camera_settings_focus_summary">Újrafókuszál a kép elkészítése előtt</string>
+    <string name="pref_camera_settings_long_focus">Hosszú fókuszálás</string>
+    <string name="pref_camera_settings_long_focus_summary">Gomb nyomvatartásakor fókuszál, elengedésekor kiold</string>
+    <string name="pref_camera_other_settings_title">Egyéb beállítások</string>
+    <string name="pref_camera_timer_duration">Időzítő</string>
+    <string name="pref_camera_timer_duration_summary">Időzítő időtartamának kiválasztása</string>
+    <string name="pref_camera_capturemode_entry_10">10 másodperc</string>
+    <string name="pref_camera_capturemode_entry_20">20 másodperc</string>
+    <string name="pref_camera_capturemode_entry_30">30 másodperc</string>
+    <string name="pref_camera_capturemode_entry_40">40 másodperc</string>
+    <string name="pref_camera_capturemode_entry_50">50 másodperc</string>
+    <string name="pref_camera_capturemode_entry_60">60 másodperc</string>
 </resources>

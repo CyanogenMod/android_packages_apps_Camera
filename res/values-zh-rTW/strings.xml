@@ -123,6 +123,8 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"後置鏡頭"</string>
     <!-- In select camera setting, front-facing camera. [CHAR LIMIT=14] -->
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"前置鏡頭"</string>
+    <!-- In select camera setting, dual camera. [CHAR LIMIT=14] -->
+    <string name="pref_camera_id_entry_dual">3D 雙鏡頭</string>
 
     <!-- Settings screen, setting title text -->
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"儲存位置"</string>
@@ -155,6 +157,7 @@
 
     <!-- Settings screen, Picture size dialog radio button choices -->
     <string name="pref_camera_picturesize_entry_3264x2448">8 百萬像素</string>
+    <string name="pref_camera_picturesize_entry_3264x1968">6.5 百萬像素 (寬螢幕)</string>
     <string name="pref_camera_picturesize_entry_3264x1952">6 百萬像素 (寬螢幕)</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 百萬像素"</string>
     <string name="pref_camera_picturesize_entry_2592x1552">4 百萬像素 (寬螢幕)</string>
