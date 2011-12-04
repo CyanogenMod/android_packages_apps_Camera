@@ -301,7 +301,7 @@ public class CameraSettings {
         sTouchFocusParameter = mContext.getResources().getString(R.string.touchFocusParameter);
         sTouchFocusNeedsRect = mContext.getResources().getBoolean(R.bool.touchFocusNeedsRect);
 
-        if (sTouchFocusParameter != null && sTouchFocusParameter.length() != 0) {
+        if (sTouchFocusParameter != null) {
             return true;
         } else {
             return false;
