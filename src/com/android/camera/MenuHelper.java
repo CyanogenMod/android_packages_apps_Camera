@@ -171,7 +171,7 @@ public class MenuHelper {
             int mediaTypes) {
         Uri target = Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
                 .appendQueryParameter("bucketId",
-                ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
+                ImageManager.CAMERA_IMAGE_BUCKET_ID()).build();
         Intent intent = new Intent(Intent.ACTION_VIEW, target);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("windowTitle", activity.getString(windowTitleId));
