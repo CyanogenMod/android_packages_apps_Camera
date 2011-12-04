@@ -64,7 +64,6 @@
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Fókuszálás módja"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatikus"</string>
     <string name="pref_camera_focusmode_entry_normal">Normál</string>
-    <string name="pref_camera_focusmode_entry_macro">Makró</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Végtelen"</string>
     <string name="pref_camera_focusmode_entry_touch">Érintés</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makró"</string>
