@@ -68,7 +68,8 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
         if (LOGV) Log.v(TAG, "mDisplayOrientation=" + orientation);
     }
 
-    public void setOrientation(int orientation) {
+    @Override
+    public void setOrientation(int orientation, boolean animation) {
         mOrientation = orientation;
         invalidate();
     }

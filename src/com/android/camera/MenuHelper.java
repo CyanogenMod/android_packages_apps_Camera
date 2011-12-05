@@ -96,7 +96,7 @@ public class MenuHelper {
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    public static void gotoMode(int mode, Activity activity) {
+    public static void gotoMode(int mode, Activity activity, int orientation) {
         String action, className;
         switch (mode) {
             case ModePicker.MODE_PANORAMA:
@@ -115,17 +115,20 @@ public class MenuHelper {
                 Log.e(TAG, "unknown camera mode:" + mode);
                 return;
         }
-        startCameraActivity(activity, new Intent(action), className);
+        Intent it = new Intent(action);
+        it.putExtra(IntentExtras.INITIAL_ORIENTATION_EXTRA, orientation);
+        startCameraActivity(activity, it, className);
     }
 
     public static void gotoVideoMode(Activity activity, boolean resetEffect) {
         Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
-        intent.putExtra(VideoCamera.RESET_EFFECT_EXTRA, resetEffect);
+        intent.putExtra(IntentExtras.RESET_EFFECT_EXTRA, resetEffect);
         startCameraActivity(activity, intent, VIDEO_CAMERA_CLASS);
     }
 
-    public static void gotoCameraMode(Activity activity) {
+    public static void gotoCameraMode(Activity activity, int orientation) {
         Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+        intent.putExtra(IntentExtras.INITIAL_ORIENTATION_EXTRA, orientation);
         startCameraActivity(activity, intent, CAMERA_CLASS);
     }
 

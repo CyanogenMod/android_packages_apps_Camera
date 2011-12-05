@@ -190,8 +190,6 @@ public class VideoCamera extends ActivityBase
     private String mEffectUriFromGallery = null;
     private String mPrefVideoEffectDefault;
     private boolean mResetEffect = true;
-    public static final String RESET_EFFECT_EXTRA = "reset_effect";
-    public static final String BACKGROUND_URI_GALLERY_EXTRA = "background_uri_gallery";
 
     private boolean mMediaRecorderRecording = false;
     private long mRecordingStartTime;
@@ -368,10 +366,10 @@ public class VideoCamera extends ActivityBase
         mPrefVideoEffectDefault = getString(R.string.pref_video_effect_default);
         // Do not reset the effect if users are switching between back and front
         // cameras.
-        mResetEffect = getIntent().getBooleanExtra(RESET_EFFECT_EXTRA, true);
+        mResetEffect = getIntent().getBooleanExtra(IntentExtras.RESET_EFFECT_EXTRA, true);
         // If background replacement was on when the camera was switched, the
         // background uri will be sent via the intent.
-        mEffectUriFromGallery = getIntent().getStringExtra(BACKGROUND_URI_GALLERY_EXTRA);
+        mEffectUriFromGallery = getIntent().getStringExtra(IntentExtras.BACKGROUND_URI_GALLERY_EXTRA);
         resetEffect();
 
         /*
@@ -558,7 +556,7 @@ public class VideoCamera extends ActivityBase
                 // Do not rotate the icons during recording because the video
                 // orientation is fixed after recording.
                 if (!mMediaRecorderRecording) {
-                    setOrientationIndicator(mOrientationCompensation);
+                    setOrientationIndicator(mOrientationCompensation, true);
                 }
             }
 
@@ -570,12 +568,12 @@ public class VideoCamera extends ActivityBase
         }
     }
 
-    private void setOrientationIndicator(int orientation) {
+    private void setOrientationIndicator(int orientation, boolean animation) {
         Rotatable[] indicators = {mThumbnailView, mModePicker, mSharePopup,
                 mBgLearningMessageRotater, mIndicatorControlContainer,
                 mReviewDoneButton, mReviewPlayButton, mReviewCancelButton, mRotateDialog};
         for (Rotatable indicator : indicators) {
-            if (indicator != null) indicator.setOrientation(orientation);
+            if (indicator != null) indicator.setOrientation(orientation, animation);
         }
 
         // We change the orientation of the linearlayout only for phone UI because when in portrait
@@ -587,7 +585,7 @@ public class VideoCamera extends ActivityBase
                 mLabelsLinearLayout.setOrientation(mLabelsLinearLayout.HORIZONTAL);
             }
         }
-        mRecordingTimeRect.setOrientation(mOrientationCompensation);
+        mRecordingTimeRect.setOrientation(mOrientationCompensation, animation);
     }
 
     private void startPlayVideoActivity() {
@@ -883,6 +881,9 @@ public class VideoCamera extends ActivityBase
         }
         // Dismiss open menu if exists.
         PopupManager.getInstance(this).notifyShowPopup(null);
+
+        setOrientationIndicator(getIntent().getIntExtra(
+                IntentExtras.INITIAL_ORIENTATION_EXTRA, 0), false);
     }
 
     private void setPreviewDisplay(SurfaceHolder holder) {
@@ -1719,7 +1720,7 @@ public class VideoCamera extends ActivityBase
             }
             // The orientation was fixed during video recording. Now make it
             // reflect the device orientation as video recording is stopped.
-            setOrientationIndicator(mOrientationCompensation);
+            setOrientationIndicator(mOrientationCompensation, true);
             keepScreenOnAwhile();
             if (shouldAddToMediaStoreNow) {
                 addVideoToMediaStore();
@@ -1952,7 +1953,7 @@ public class VideoCamera extends ActivityBase
 
     private boolean switchToOtherMode(int mode) {
         if (isFinishing()) return false;
-        MenuHelper.gotoMode(mode, this);
+        MenuHelper.gotoMode(mode, this, mOrientationCompensation);
         finish();
         return true;
     }
@@ -2123,8 +2124,9 @@ public class VideoCamera extends ActivityBase
                 // To maintain the same background in background replacer, we
                 // need to send the background video uri via the Intent (apart
                 // from the condition that the effects should not be reset).
-                intent.putExtra(BACKGROUND_URI_GALLERY_EXTRA, mEffectUriFromGallery);
-                intent.putExtra(RESET_EFFECT_EXTRA, false);
+                intent.putExtra(IntentExtras.BACKGROUND_URI_GALLERY_EXTRA, mEffectUriFromGallery);
+                intent.putExtra(IntentExtras.RESET_EFFECT_EXTRA, false);
+                intent.putExtra(IntentExtras.INITIAL_ORIENTATION_EXTRA, mOrientationCompensation);
                 MenuHelper.gotoVideoMode(this, intent);
                 finish();
             } else {

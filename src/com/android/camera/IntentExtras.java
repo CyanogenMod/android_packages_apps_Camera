@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.android.camera.ui;
+package com.android.camera;
 
-public interface Rotatable {
-    // Set parameter 'animation' to true to have animation when rotation.
-    public void setOrientation(int orientation, boolean animation);
+/** This class collects all the extras used in the intent by Camera, VideoCamera and Panorama. */
+public class IntentExtras {
+    public static final String RESET_EFFECT_EXTRA = "reset_effect";
+    public static final String BACKGROUND_URI_GALLERY_EXTRA = "background_uri_gallery";
+    public static final String INITIAL_ORIENTATION_EXTRA = "initial_orientation";
 }

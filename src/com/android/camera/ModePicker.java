@@ -189,11 +189,12 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         return true;
     }
 
-    public void setOrientation(int orientation) {
+    @Override
+    public void setOrientation(int orientation, boolean animation) {
         for (int i = 0; i < MODE_NUM; ++i) {
-            mModeSelectionIcon[i].setOrientation(orientation);
+            mModeSelectionIcon[i].setOrientation(orientation, animation);
             if (mCurrentModeFrame != null) {
-                mCurrentModeIcon[i].setOrientation(orientation);
+                mCurrentModeIcon[i].setOrientation(orientation, animation);
             }
         }
     }

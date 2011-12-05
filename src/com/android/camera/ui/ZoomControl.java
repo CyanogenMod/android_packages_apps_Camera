@@ -207,13 +207,14 @@ public abstract class ZoomControl extends RelativeLayout implements Rotatable {
         return true;
     }
 
-    public void setOrientation(int orientation) {
+    @Override
+    public void setOrientation(int orientation, boolean animation) {
         mOrientation = orientation;
         int count = getChildCount();
         for (int i = 0 ; i < count ; ++i) {
             View view = getChildAt(i);
             if (view instanceof RotateImageView) {
-                ((RotateImageView) view).setOrientation(orientation);
+                ((RotateImageView) view).setOrientation(orientation, animation);
             }
         }
     }

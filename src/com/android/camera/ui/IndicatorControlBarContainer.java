@@ -75,9 +75,10 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer {
                 secondLevelKeys, secondLevelOtherSettingKeys);
     }
 
-    public void setOrientation(int orientation) {
-        mIndicatorControlBar.setOrientation(orientation);
-        mSecondLevelIndicatorControlBar.setOrientation(orientation);
+    @Override
+    public void setOrientation(int orientation, boolean animation) {
+        mIndicatorControlBar.setOrientation(orientation, animation);
+        mSecondLevelIndicatorControlBar.setOrientation(orientation, animation);
     }
 
     @Override

@@ -115,10 +115,10 @@ public class ZoomControlBar extends ZoomControl {
     }
 
     @Override
-    public void setOrientation(int orientation) {
+    public void setOrientation(int orientation, boolean animation) {
         // layout for the left-hand camera control
         if ((orientation == 90) || (mOrientation == 90)) requestLayout();
-        super.setOrientation(orientation);
+        super.setOrientation(orientation, animation);
     }
 
     @Override
