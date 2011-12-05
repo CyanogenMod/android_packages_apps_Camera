@@ -251,7 +251,8 @@ public class PanoramaActivity extends ActivityBase implements
         // Dismiss the mode selection window if the ACTION_DOWN event is out of
         // its view area.
         if (m.getAction() == MotionEvent.ACTION_DOWN) {
-            if (!Util.pointInView(m.getX(), m.getY(), mModePicker)) {
+            if ((mModePicker != null)
+                    && !Util.pointInView(m.getX(), m.getY(), mModePicker)) {
                 mModePicker.dismissModeSelection();
             }
         }

@@ -2225,7 +2225,7 @@ public class VideoCamera extends ActivityBase
             float y = m.getY();
             // Dismiss the mode selection window if the ACTION_DOWN event is out
             // of its view area.
-            if (!Util.pointInView(x, y, mModePicker)) {
+            if ((mModePicker != null) && !Util.pointInView(x, y, mModePicker)) {
                 mModePicker.dismissModeSelection();
             }
             // Check if the popup window is visible.
