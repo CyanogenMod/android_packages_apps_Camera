@@ -55,7 +55,6 @@ import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -68,7 +67,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -243,8 +241,6 @@ public class VideoCamera extends ActivityBase
     private int mCameraId;
     private int mFrontCameraId;
     private int mBackCameraId;
-
-    private GestureDetector mPopupGestureDetector;
 
     private MyOrientationEventListener mOrientationListener;
     // The degrees of the device rotated clockwise from its natural orientation.
@@ -526,8 +522,6 @@ public class VideoCamera extends ActivityBase
         mIndicatorControlContainer.initialize(this, mPreferenceGroup,
                 mParameters.isZoomSupported(), SETTING_KEYS, OTHER_SETTING_KEYS);
         mIndicatorControlContainer.setListener(this);
-        mPopupGestureDetector = new GestureDetector(this,
-                new PopupGestureListener());
 
         if (effectsActive()) {
             mIndicatorControlContainer.overrideSettings(
@@ -2226,31 +2220,28 @@ public class VideoCamera extends ActivityBase
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         // Check if the popup window should be dismissed first.
-        if (mPopupGestureDetector != null && mPopupGestureDetector.onTouchEvent(m)) {
-            return true;
+        if (m.getAction() == MotionEvent.ACTION_DOWN) {
+            float x = m.getX();
+            float y = m.getY();
+            // Dismiss the mode selection window if the ACTION_DOWN event is out
+            // of its view area.
+            if (!Util.pointInView(x, y, mModePicker)) {
+                mModePicker.dismissModeSelection();
+            }
+            // Check if the popup window is visible.
+            View popup = mIndicatorControlContainer.getActiveSettingPopup();
+            if (popup != null) {
+                // Let popup window, indicator control or preview frame handle the
+                // event by themselves. Dismiss the popup window if users touch on
+                // other areas.
+                if (!Util.pointInView(x, y, popup)
+                        && !Util.pointInView(x, y, mIndicatorControlContainer)) {
+                    mIndicatorControlContainer.dismissSettingPopup();
+                }
+            }
         }
 
         return super.dispatchTouchEvent(m);
-    }
-
-    private class PopupGestureListener extends
-            GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onDown(MotionEvent e) {
-            // Check if the popup window is visible.
-            View popup = mIndicatorControlContainer.getActiveSettingPopup();
-            if (popup == null) return false;
-
-            // Let popup window or indicator wheel handle the event by
-            // themselves. Dismiss the popup window if users touch on other
-            // areas.
-            if (!Util.pointInView(e.getX(), e.getY(), popup)
-                    && !Util.pointInView(e.getX(), e.getY(), mIndicatorControlContainer)) {
-                mIndicatorControlContainer.dismissSettingPopup();
-                // Let event fall through.
-            }
-            return false;
-        }
     }
 
     private class ZoomChangeListener implements ZoomControl.OnZoomChangedListener {

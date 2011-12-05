@@ -117,7 +117,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
 
     @Override
     public void onOtherPopupShowed() {
-        if (mSelectionEnabled) enableModeSelection(false);
+        dismissModeSelection();
     }
 
     private AnimationListener mAnimationListener = new AnimationListener() {
@@ -265,5 +265,10 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
                     (l + padding + iconWidth),
                     (bottom - top));
         }
+    }
+
+    public void dismissModeSelection() {
+        // Dismiss the selection if exists.
+        if (mSelectionEnabled) enableModeSelection(false);
     }
 }

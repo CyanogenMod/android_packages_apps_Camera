@@ -38,7 +38,6 @@ import com.android.camera.ui.SharePopup;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -58,13 +57,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -246,6 +244,18 @@ public class PanoramaActivity extends ActivityBase implements
                 switchToOtherMode(ModePicker.MODE_VIDEO);
             }
         });
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent m) {
+        // Dismiss the mode selection window if the ACTION_DOWN event is out of
+        // its view area.
+        if (m.getAction() == MotionEvent.ACTION_DOWN) {
+            if (!Util.pointInView(m.getX(), m.getY(), mModePicker)) {
+                mModePicker.dismissModeSelection();
+            }
+        }
+        return super.dispatchTouchEvent(m);
     }
 
     @Override
