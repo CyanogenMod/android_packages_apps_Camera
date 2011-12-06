@@ -26,6 +26,7 @@ public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
 {
     private static final String TAG = "MosaicRendererSurfaceViewRenderer";
     private boolean mIsLandscapeOrientation;
+    private boolean mEnabled;
 
     private MosaicSurfaceCreateListener mSurfaceCreateListener;
 
@@ -41,6 +42,7 @@ public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
 
     @Override
     public void onDrawFrame(GL10 gl) {
+        if (!mEnabled) return;
         MosaicRenderer.step();
     }
 
@@ -59,6 +61,10 @@ public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
         if (mSurfaceCreateListener != null) {
             mSurfaceCreateListener.onMosaicSurfaceCreated(MosaicRenderer.init());
         }
+    }
+
+    public void setEnabled(boolean enabled) {
+        mEnabled = enabled;
     }
 
     public void setMosaicSurfaceCreateListener(MosaicSurfaceCreateListener listener) {

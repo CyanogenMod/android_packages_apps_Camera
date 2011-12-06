@@ -345,6 +345,7 @@ public class PanoramaActivity extends ActivityBase implements
 
     private void releaseCamera() {
         if (mCameraDevice != null) {
+            mMosaicView.setRenderEnabled(false);
             mCameraDevice.setPreviewCallbackWithBuffer(null);
             CameraHolder.instance().release();
             mCameraDevice = null;
@@ -503,6 +504,8 @@ public class PanoramaActivity extends ActivityBase implements
         // Frames might still be available after the activity is paused. If we call onFrameAvailable
         // after pausing, the GL thread will crash.
         if (mPausing) return;
+
+        mMosaicView.setRenderEnabled(true);
 
         // Updating the texture should be done in the GL thread which mMosaicView is attached.
         mMosaicView.queueEvent(new Runnable() {
@@ -1111,6 +1114,7 @@ public class PanoramaActivity extends ActivityBase implements
             Log.v(TAG, "stopPreview");
             mCameraDevice.stopPreview();
         }
+        mMosaicView.setRenderEnabled(false);
         mCameraState = PREVIEW_STOPPED;
     }
 
