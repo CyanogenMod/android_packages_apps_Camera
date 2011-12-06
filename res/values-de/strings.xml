@@ -120,7 +120,7 @@
     <string name="clear_effects" msgid="5485339175014139481">"Effekte löschen"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"Lustige Gesichter"</string>
     <string name="effect_background" msgid="6579360207378171022">"Hintergrund"</string>
-    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Schaltfläche für Blende"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Auslöseknopf"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Neuestes Foto"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Zwischen Kamera auf der Vorder- und Rückseite wechseln"</string>
     <string name="accessibility_mode_picker" msgid="3278002189966833100">"Auswahl: Kamera, Video oder Panorama"</string>
