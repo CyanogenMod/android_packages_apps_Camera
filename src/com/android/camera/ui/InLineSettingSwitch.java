@@ -57,13 +57,16 @@ public class InLineSettingSwitch extends InLineSettingItem {
                 R.string.accessibility_switch, mPreference.getTitle()));
     }
 
+    @Override
     protected void updateView() {
+        mSwitch.setOnCheckedChangeListener(null);
         if (mOverrideValue == null) {
             mSwitch.setChecked(mIndex == 1);
         } else {
             int index = mPreference.findIndexOfValue(mOverrideValue);
             mSwitch.setChecked(index == 1);
         }
+        mSwitch.setOnCheckedChangeListener(mCheckedChangeListener);
     }
 
     @Override
