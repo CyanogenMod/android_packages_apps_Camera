@@ -62,7 +62,7 @@
 
     <!-- Confirmation dialog when restoring settings -->
     <string name="confirm_restore_title">Restore defaults</string>
-    <string name="confirm_restore_message">Restore Camera default settings?</string>
+    <string name="confirm_restore_message">Do you want to restore camera default settings?</string>
 
     <!-- button in review mode indicating that the video just taken should be played [CHAR LIMIT=10] -->
     <string name="review_play">Play</string>
@@ -80,13 +80,13 @@
     <string name="camera_gallery_photos_text">Gallery</string>
 
     <!-- Button indicating to switch to another camera -->
-    <string name="switch_camera_id">Switch Camera</string>
+    <string name="switch_camera_id">Switch camera</string>
 
     <!-- A lable that overlays on top of the preview frame to indicate the camcorder is in time lapse mode [CHAR LIMIT=35] -->
     <string name="time_lapse_title">Time lapse recording</string>
 
     <!-- Settings screen, camera selection dialog title. Users can select a camera from the phone (front-facing or back-facing). [CHAR LIMIT=20] -->
-    <string name="pref_camera_id_title">Select camera</string>
+    <string name="pref_camera_id_title">Choose camera</string>
 
     <string name="pref_camera_id_default" translatable="false">0</string>
 
@@ -307,10 +307,10 @@
     <string name="effect_backdropper_gallery">Choose your own</string>
 
     <!-- Message displayed in overlay during background replacement training [CHAR LIMIT=180]-->
-    <string name="bg_replacement_message">Set your device down\nStep out of view for a moment</string>
+    <string name="bg_replacement_message">Set your device down.\nStep out of view for a moment.</string>
 
     <!-- Toast after trying to select a setting that is not allowed to change in effect [CHAR LIMIT=50] -->
-    <string name="not_selectable_in_effect">Not selectable when the effect is on.</string>
+    <string name="not_selectable_in_effect">Not selectable when effect is on.</string>
 
     <!-- Toast telling users tapping on the viewfinder will take a picture [CHAR LIMIT=65] -->
     <string name="video_snapshot_hint">Take a photo during video recording by touching the preview screen.</string>
