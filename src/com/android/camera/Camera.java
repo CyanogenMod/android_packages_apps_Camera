@@ -54,6 +54,7 @@ import android.os.MessageQueue;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.FloatMath;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -97,6 +98,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private static final int CHECK_DISPLAY_ROTATION = 5;
     private static final int SHOW_TAP_TO_FOCUS_TOAST = 6;
     private static final int UPDATE_THUMBNAIL = 7;
+    private static final int FINISH_PINCH_TO_ZOOM = 8;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -120,6 +122,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private int mZoomMax;
     private int mTargetZoomValue;
     private ZoomControl mZoomControl;
+
+    private boolean mStartZoom = false;
+    private float oldDistance = 1f;
 
     private Parameters mParameters;
     private Parameters mInitialParams;
@@ -316,6 +321,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
                 case UPDATE_THUMBNAIL: {
                     mImageSaver.updateThumbnail();
+                    break;
+                }
+
+                case FINISH_PINCH_TO_ZOOM: {
+                    mStartZoom = false;
                     break;
                 }
             }
@@ -1665,18 +1675,72 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // Preview area is touched. Handle touch focus.
     @Override
     public boolean onTouch(View v, MotionEvent e) {
+
         if (mPausing || mCameraDevice == null || !mFirstTimeInitialized
                 || mCameraState == SNAPSHOT_IN_PROGRESS) {
             return false;
         }
 
-        // Do not trigger touch focus if popup window is opened.
+        // Do not trigger touch focus or Pinch zoom if popup window is opened.
         if (collapseCameraControls()) return false;
 
         // Check if metering area or focus area is supported.
         if (!mFocusAreaSupported && !mMeteringAreaSupported) return false;
 
+        // Do Pinch zoom
+        if (e.getAction() > 1) {
+            switch (e.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_POINTER_DOWN:
+                   oldDistance = getDistance(e);
+                   mStartZoom = true;
+                   break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_POINTER_UP:
+                   mHandler.sendEmptyMessageDelayed(FINISH_PINCH_TO_ZOOM, 250);
+                   break;
+                case MotionEvent.ACTION_MOVE:
+                   if (mStartZoom) {
+                       float newDistance = getDistance(e);
+
+                       // Perform zoom only when preview is started and snapshot is not in
+                       // progress.
+                       if (mPausing || !isCameraIdle() || mCameraState == PREVIEW_STOPPED
+                                    || mZoomState != ZOOM_STOPPED) {
+                           break;
+                       }
+                       if ( newDistance > oldDistance + 10 && mZoomValue < mZoomMax) {
+                           mZoomValue = mZoomValue + 1;
+                           setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
+                           mZoomControl.setZoomIndex(mZoomValue);
+                           oldDistance = newDistance;
+                       }
+                       if ( newDistance < oldDistance -10 && mZoomValue > 0) {
+                           mZoomValue = mZoomValue - 1;
+                           setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
+                           mZoomControl.setZoomIndex(mZoomValue);
+                           oldDistance = newDistance;
+                       }
+
+                   }
+                   break;
+            }
+            return true;
+        }
+
+        // Do not trigger a focus during a pinch-to-zoom operation
+        if (mStartZoom)
+            return false;
+
         return mFocusManager.onTouch(e);
+    }
+
+    // Determine the space between the two touch points
+    private float getDistance(MotionEvent e) {
+       if (e.getPointerCount() < 2)
+           return 0;
+       float x = e.getX(0) - e.getX(1);
+       float y = e.getY(0) - e.getY(1);
+       return FloatMath.sqrt(x * x + y * y);
     }
 
     @Override
