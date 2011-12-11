@@ -42,7 +42,7 @@
     <string name="pref_camera_id_title" msgid="6023059405578511534">"Webkamera kiválasztása"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Vissza"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Előre néző"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Koordináta"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Földrajzi hely"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Ki"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Be"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Videó minősége"</string>
