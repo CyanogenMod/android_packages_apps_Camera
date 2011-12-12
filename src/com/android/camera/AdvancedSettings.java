@@ -23,6 +23,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
+import android.os.Environment;
 
 public class AdvancedSettings extends PreferenceActivity implements Preference.OnPreferenceChangeListener {
 
@@ -32,6 +33,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
     private static final String KEY_VOL_ZOOM = "vol_zoom_enabled";
     private static final String KEY_LONG_FOCUS = "long_focus_enabled";
     private static final String KEY_PRE_FOCUS = "pre_focus_enabled";
+    private static final String KEY_STORE_EXTSD = "store_on_external_sd";
 
     CheckBoxPreference volUpShutter = null;
     CheckBoxPreference volDownShutter = null;
@@ -39,6 +41,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
     CheckBoxPreference volZoom = null;
     CheckBoxPreference longFocus = null;
     CheckBoxPreference preFocus = null;
+    CheckBoxPreference storeExtSd = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,13 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
         volZoom = (CheckBoxPreference) preferenceScreen.findPreference(KEY_VOL_ZOOM);
         longFocus = (CheckBoxPreference) preferenceScreen.findPreference(KEY_LONG_FOCUS);
         preFocus = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PRE_FOCUS);
+        storeExtSd = (CheckBoxPreference) preferenceScreen.findPreference(KEY_STORE_EXTSD);
+        // Hide this preference if there is no removable external storage at all
+        // for this device.
+        if (!Environment.isExternalStorageRemovable()) {
+            preferenceScreen.removePreference(storeExtSd);
+            storeExtSd = null;
+        }
 
         checkBoxes();
 
@@ -66,6 +76,8 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
             volZoom.setOnPreferenceChangeListener(this);
             longFocus.setOnPreferenceChangeListener(this);
             preFocus.setOnPreferenceChangeListener(this);
+            if (storeExtSd != null)
+                storeExtSd.setOnPreferenceChangeListener(this);
         } else {
             volUpShutter.setOnPreferenceChangeListener(null);
             volDownShutter.setOnPreferenceChangeListener(null);
@@ -73,6 +85,8 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
             volZoom.setOnPreferenceChangeListener(null);
             longFocus.setOnPreferenceChangeListener(null);
             preFocus.setOnPreferenceChangeListener(null);
+            if (storeExtSd != null)
+                storeExtSd.setOnPreferenceChangeListener(null);
         }
     }
 
@@ -124,6 +138,11 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
         } else {
             longFocus.setEnabled(true);
         }
+
+        // Check if we have both removable SD card and internal phone memory.
+        // If so, enable storeExtSd
+        if (storeExtSd != null)
+            storeExtSd.setEnabled(ImageManager.enableExtSdOption());
     }
 
     @Override
@@ -150,7 +169,8 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
             preFocus.setEnabled(!checked);
         } else if (checkBox == preFocus) {
             longFocus.setEnabled(!checked);
-        }
+        } else if (checkBox == storeExtSd)
+            ImageManager.setUseRemovableMemPref(checked);
         return true;
     }
 }
