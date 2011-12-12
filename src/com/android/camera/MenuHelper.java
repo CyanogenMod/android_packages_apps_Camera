@@ -171,7 +171,7 @@ public class MenuHelper {
             int mediaTypes) {
         Uri target = Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
                 .appendQueryParameter("bucketId",
-                ImageManager.CAMERA_IMAGE_BUCKET_ID).build();
+                ImageManager.GALLERY_IMAGE_BUCKET_ID).build();
         Intent intent = new Intent(Intent.ACTION_VIEW, target);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("windowTitle", activity.getString(windowTitleId));
@@ -184,13 +184,13 @@ public class MenuHelper {
         }
     }
 
-    public static int calculatePicturesRemaining() {
+    public static int calculatePicturesRemaining(Context context) {
         try {
             if (!ImageManager.hasStorage()) {
                 return NO_STORAGE_ERROR;
             } else {
                 String storageDirectory =
-                        Environment.getExternalStorageDirectory().toString();
+                        ImageManager.getStorageDirectory();
                 StatFs stat = new StatFs(storageDirectory);
                 final int PICTURE_BYTES = 1500000;
                 float remaining = ((float) stat.getAvailableBlocks()
