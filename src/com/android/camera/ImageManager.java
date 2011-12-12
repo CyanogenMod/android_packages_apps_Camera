@@ -25,6 +25,8 @@ import com.android.camera.gallery.VideoList;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -36,8 +38,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.OrientationEventListener;
+import android.os.SystemProperties;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,6 +63,89 @@ public class ImageManager {
 
     private ImageManager() {
     }
+
+    private static String removableDir = null;
+    private static String internalDir = null;
+    private static String storageDir = Environment.getExternalStorageDirectory().toString();
+    private static boolean isSwitchedExternal = false;
+
+    static {
+        String switchablePair = SystemProperties.get("ro.vold.switchablepair");
+        if (switchablePair != null) {
+            String[] pair = switchablePair.split(",");
+            if (pair.length == 2) {
+                isSwitchedExternal =
+                        SystemProperties.getInt("persist.sys.vold.switchexternal", 0) == 1;
+
+                internalDir = isSwitchedExternal ? pair[0] : pair[1];
+                removableDir = isSwitchedExternal ? pair[1] : pair[0];
+
+                if (!checkFsWritable(internalDir)) {
+                    internalDir = null;
+                }
+                if (!checkFsWritable(removableDir)) {
+                    removableDir = null;
+                }
+            }
+        }
+    }
+
+    public static String getInternalDir() {
+        return internalDir;
+    }
+
+    public static String getRemovableDir() {
+        return removableDir;
+    }
+
+    public static boolean hasSwitchableStorage() {
+        return !TextUtils.isEmpty(internalDir) && !TextUtils.isEmpty(removableDir);
+    }
+
+    public static boolean isStorageSwitchedToInternal() {
+        return hasSwitchableStorage() && isSwitchedExternal;
+    }
+
+    public static void updateStorageDirectory(final Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("com.android.camera_preferences", 0);
+        boolean useRemovableStorage = prefs.getBoolean("store_on_external_sd",
+                !isStorageSwitchedToInternal());
+        if (useRemovableStorage && !TextUtils.isEmpty(removableDir)) {
+            storageDir = removableDir;
+        }
+        else if (!TextUtils.isEmpty(internalDir)) {
+            storageDir = internalDir;
+        }
+        else {
+            storageDir = Environment.getExternalStorageDirectory().toString();
+        }
+    }
+
+    public static String getStorageDirectory() {
+        return storageDir;
+    }
+
+    /**
+     * Matches code in MediaProvider.computeBucketValues. Should be a common
+     * function.
+     */
+    public static String getBucketId(String path) {
+        return String.valueOf(path.toLowerCase().hashCode());
+    }
+
+    public static String getCameraImageDirectory() {
+        return getStorageDirectory() + "/DCIM/Camera";
+    }
+
+    public static String getCameraImageBucketId() {
+        return getBucketId(getCameraImageDirectory());
+    }
+
+    public static final String GALLERY_IMAGE_BUCKET_NAME =
+            Environment.getExternalStorageDirectory().toString()
+            + "/DCIM/Camera";
+    public static final String GALLERY_IMAGE_BUCKET_ID =
+            getBucketId(GALLERY_IMAGE_BUCKET_NAME);
 
     /**
      * {@code ImageListParam} specifies all the parameters we need to create an
@@ -127,28 +213,13 @@ public class ImageManager {
     public static final int SORT_ASCENDING = 1;
     public static final int SORT_DESCENDING = 2;
 
-    public static final String CAMERA_IMAGE_BUCKET_NAME =
-            Environment.getExternalStorageDirectory().toString()
-            + "/DCIM/Camera";
-    public static final String CAMERA_IMAGE_BUCKET_ID =
-            getBucketId(CAMERA_IMAGE_BUCKET_NAME);
-
-    /**
-     * Matches code in MediaProvider.computeBucketValues. Should be a common
-     * function.
-     */
-    public static String getBucketId(String path) {
-        return String.valueOf(path.toLowerCase().hashCode());
-    }
-
     /**
      * OSX requires plugged-in USB storage to have path /DCIM/NNNAAAAA to be
      * imported. This is a temporary fix for bug#1655552.
      */
     public static void ensureOSXCompatibleFolder() {
         File nnnAAAAA = new File(
-            Environment.getExternalStorageDirectory().toString()
-            + "/DCIM/100ANDRO");
+            getStorageDirectory() + "/DCIM/100ANDRO");
         if ((!nnnAAAAA.exists()) && (!nnnAAAAA.mkdir())) {
             Log.e(TAG, "create NNNAAAAA file: " + nnnAAAAA.getPath()
                     + " failed");
@@ -330,19 +401,31 @@ public class ImageManager {
         return makeImageList(cr, param);
     }
 
-    private static boolean checkFsWritable() {
+    private static boolean checkFsWritable(String directoryName) {
         // Create a temporary file to see whether a volume is really writeable.
         // It's important not to put it in the root directory which may have a
         // limit on the number of files.
-        String directoryName =
-                Environment.getExternalStorageDirectory().toString() + "/DCIM";
+        if (TextUtils.isEmpty(directoryName)) {
+            return false;
+        }
+        boolean created = false;
+        directoryName += "/DCIM";
         File directory = new File(directoryName);
         if (!directory.isDirectory()) {
             if (!directory.mkdirs()) {
                 return false;
             }
+            created = true;
         }
-        return directory.canWrite();
+        boolean ret = directory.canWrite();
+        if (created) {
+            directory.delete();
+        }
+        return ret;
+    }
+
+    private static boolean checkFsWritable() {
+        return checkFsWritable(getStorageDirectory());
     }
 
     public static boolean hasStorage() {

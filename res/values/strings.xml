@@ -211,6 +211,11 @@
     <string name="pref_camera_other_settings_title">Other settings</string>
     <string name="pref_camera_timer_duration">Timer duration</string>
     <string name="pref_camera_timer_duration_summary">Select duration for camera timer</string>
+    <string name="pref_camera_storage_external">Use external SD card</string>
+    <string name="pref_camera_storage_external_summary_off">Store photos and videos on internal phone memory (free space: %s)</string>
+    <string name="pref_camera_storage_external_summary_on">Store photos and videos on removable SD card (free space: %s)</string>
+    <string name="pref_camera_mega_bytes">MB</string>
+    <string name="pref_camera_giga_bytes">GB</string>
 
     <!-- More Settings screen, search button title -->
     <string name="pref_camera_search_shutter_title">Search Shutter</string>
