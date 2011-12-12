@@ -359,7 +359,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
         MessageQueue queue = Looper.myQueue();
         queue.addIdleHandler(new MessageQueue.IdleHandler() {
             public boolean queueIdle() {
-                ImageManager.ensureOSXCompatibleFolder();
+                ImageManager.ensureOSXCompatibleFolder(Camera.this);
                 return false;
             }
         });
@@ -761,7 +761,8 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                         title,
                         dateTaken,
                         loc, // location from gps/network
-                        ImageManager.CAMERA_IMAGE_BUCKET_NAME, filename,
+                        ImageManager.getCameraImageDirectory(Camera.this),
+                        filename,
                         null, data,
                         degree);
                 return degree[0];
@@ -1828,11 +1829,11 @@ public class Camera extends BaseCamera implements View.OnClickListener,
 
     private void updateLastImage() {
         IImageList list = ImageManager.makeImageList(
-            mContentResolver,
+            this,
             dataLocation(),
             ImageManager.INCLUDE_IMAGES,
             ImageManager.SORT_ASCENDING,
-            ImageManager.CAMERA_IMAGE_BUCKET_ID);
+            ImageManager.getCameraImageBucketId(this));
         int count = list.getCount();
         if (count > 0) {
             IImage image = list.getImageAt(count - 1);
@@ -2321,7 +2322,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
     }
 
     private int calculatePicturesRemaining() {
-        mPicturesRemaining = MenuHelper.calculatePicturesRemaining();
+        mPicturesRemaining = MenuHelper.calculatePicturesRemaining(this);
         return mPicturesRemaining;
     }
 

@@ -999,13 +999,13 @@ public class VideoCamera extends BaseCamera
      *
      * @return number of bytes available, or an ERROR code.
      */
-    private static long getAvailableStorage() {
+    private long getAvailableStorage() {
         try {
-            if (!ImageManager.hasStorage()) {
+            if (!ImageManager.hasStorage(this)) {
                 return NO_STORAGE_ERROR;
             } else {
                 String storageDirectory =
-                        Environment.getExternalStorageDirectory().toString();
+                        ImageManager.getStorageDirectory(this);
                 StatFs stat = new StatFs(storageDirectory);
                 return (long) stat.getAvailableBlocks()
                         * (long) stat.getBlockSize();
@@ -1155,7 +1155,7 @@ public class VideoCamera extends BaseCamera
         String title = createName(dateTaken);
         String filename = title + 
             (MediaRecorder.OutputFormat.MPEG_4 == mProfile.fileFormat ? ".m4v" : ".3gp"); // Used when emailing.
-        String cameraDirPath = ImageManager.CAMERA_IMAGE_BUCKET_NAME;
+        String cameraDirPath = ImageManager.getCameraImageDirectory(this);
         String filePath = cameraDirPath + "/" + filename;
         File cameraDir = new File(cameraDirPath);
         cameraDir.mkdirs();
@@ -1527,11 +1527,11 @@ public class VideoCamera extends BaseCamera
 
     private void updateLastVideo() {
         IImageList list = ImageManager.makeImageList(
-                        mContentResolver,
+                        this,
                         dataLocation(),
                         ImageManager.INCLUDE_VIDEOS,
                         ImageManager.SORT_ASCENDING,
-                        ImageManager.CAMERA_IMAGE_BUCKET_ID);
+                        ImageManager.getCameraImageBucketId(this));
         int count = list.getCount();
         if (count > 0) {
             IImage image = list.getImageAt(count - 1);

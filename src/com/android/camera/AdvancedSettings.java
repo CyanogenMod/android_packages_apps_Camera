@@ -18,6 +18,7 @@
 package com.android.camera;
 
 import com.android.camera.R;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -32,6 +33,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
     private static final String KEY_VOL_ZOOM = "vol_zoom_enabled";
     private static final String KEY_LONG_FOCUS = "long_focus_enabled";
     private static final String KEY_PRE_FOCUS = "pre_focus_enabled";
+    private static final String KEY_STORE_EXTSD = "store_on_external_sd";
 
     CheckBoxPreference volUpShutter = null;
     CheckBoxPreference volDownShutter = null;
@@ -39,19 +41,34 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
     CheckBoxPreference volZoom = null;
     CheckBoxPreference longFocus = null;
     CheckBoxPreference preFocus = null;
+    CheckBoxPreference storeExtSd = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.camera_advanced_settings);
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
-        
+
         volUpShutter = (CheckBoxPreference) preferenceScreen.findPreference(KEY_VOL_UP_SHUTTER);
         volDownShutter = (CheckBoxPreference) preferenceScreen.findPreference(KEY_VOL_DOWN_SHUTTER);
         searchShutter = (CheckBoxPreference) preferenceScreen.findPreference(KEY_SEARCH_SHUTTER);
         volZoom = (CheckBoxPreference) preferenceScreen.findPreference(KEY_VOL_ZOOM);
         longFocus = (CheckBoxPreference) preferenceScreen.findPreference(KEY_LONG_FOCUS);
         preFocus = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PRE_FOCUS);
+        storeExtSd = (CheckBoxPreference) preferenceScreen.findPreference(KEY_STORE_EXTSD);
+
+        // Hide the 'Use external SD' preference if the device doesn't have an internal storage
+        if (!ImageManager.hasSwitchableStorage()) {
+            preferenceScreen.removePreference(storeExtSd);
+            storeExtSd = null;
+        } else {
+            Resources r = getResources();
+            int summaryResId = R.string.pref_camera_storage_external_summary_off;
+            int typeResId = ImageManager.isStorageSwitchedToInternal() ?
+                    R.string.storage_internal : R.string.storage_external;
+
+            storeExtSd.setSummaryOff(r.getString(summaryResId, r.getString(typeResId)));
+        }
 
         checkBoxes();
 
