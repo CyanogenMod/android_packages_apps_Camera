@@ -211,8 +211,6 @@
     <string name="pref_camera_other_settings_title">Other settings</string>
     <string name="pref_camera_timer_duration">Timer duration</string>
     <string name="pref_camera_timer_duration_summary">Select duration for camera timer</string>
-    <string name="pref_camera_storage_external">Use external SD card</string>
-    <string name="pref_camera_storage_external_summary">Store photos and videos on external (removable) SD card</string>
 
     <!-- More Settings screen, search button title -->
     <string name="pref_camera_search_shutter_title">Search Shutter</string>
