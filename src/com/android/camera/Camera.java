@@ -379,6 +379,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
         // Start orientation listener as soon as possible because it takes
         // some time to get first orientation.
         mOrientationListener.enable();
+        ImageManager.mUseRemovableMem = prefs.getBoolean("store_on_external_sd", ImageManager.mUseRemovableMem);
 
         // Start location update if needed.
         mRecordLocation = RecordLocationPreference.get(
@@ -755,7 +756,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                         title,
                         dateTaken,
                         loc, // location from gps/network
-                        ImageManager.CAMERA_IMAGE_BUCKET_NAME, filename,
+                        ImageManager.getCameraImageDirectory(), filename,
                         null, data,
                         degree);
                 return degree[0];
@@ -921,6 +922,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         prefs = getSharedPreferences("com.android.camera_preferences", 0);
+        ImageManager.mUseRemovableMem = prefs.getBoolean("store_on_external_sd", ImageManager.mUseRemovableMem);
         powerShutter(prefs);
         setContentView(R.layout.camera);
         mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
@@ -1826,7 +1828,7 @@ public class Camera extends BaseCamera implements View.OnClickListener,
             dataLocation(),
             ImageManager.INCLUDE_IMAGES,
             ImageManager.SORT_ASCENDING,
-            ImageManager.CAMERA_IMAGE_BUCKET_ID);
+            ImageManager.getCameraImageBucketId());
         int count = list.getCount();
         if (count > 0) {
             IImage image = list.getImageAt(count - 1);
