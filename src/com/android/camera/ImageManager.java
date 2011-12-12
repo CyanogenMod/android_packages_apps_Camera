@@ -36,8 +36,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.OrientationEventListener;
+import android.os.SystemProperties;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,6 +48,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 /**
  * {@code ImageManager} is used to retrieve and store images
@@ -60,6 +66,81 @@ public class ImageManager {
 
     private ImageManager() {
     }
+
+    private static String removableDir;
+    private static String internalDir;
+    private static boolean isSwitchedExternal;
+    private static boolean useRemovableMem;
+
+    static {
+        isSwitchedExternal = (SystemProperties.getInt("persist.sys.vold.switchexternal", 0) == 1);
+
+        internalDir = System.getenv("PHONE_STORAGE");  // usually /mnt/emmc
+        if (internalDir == null)
+            internalDir = "/mnt/emmc";
+
+        removableDir = Environment.getExternalStorageDirectory().toString(); // usually /mnt/sdcard
+
+        if (isSwitchedExternal) {
+            String s = internalDir;
+            internalDir = removableDir;
+            removableDir = s;
+        }
+
+        if (!checkFsWritable(internalDir))
+            internalDir = "";
+        if (!checkFsWritable(removableDir))
+            removableDir = "";
+        useRemovableMem = !isSwitchedExternal;
+    }
+
+    public static void setUseRemovableMemPref(boolean b) {
+        useRemovableMem = b;
+    }
+
+    public static boolean getUseRemovableMemPref() {
+        return useRemovableMem;
+    }
+
+    public static boolean enableExtSdOption() {
+        return !TextUtils.isEmpty(removableDir) &&
+                !TextUtils.isEmpty(internalDir) &&
+                !removableDir.equals(internalDir);
+    }
+
+    public static String getStorageDirectory() {
+        String s;
+        //Log.d("CamImgMgr", "getStorageDirectory 1, mUseRemovableMem=" + mUseRemovableMem);
+        if (useRemovableMem && !TextUtils.isEmpty(removableDir))
+            s = removableDir;
+        else if (!TextUtils.isEmpty(internalDir))
+            s = internalDir;
+        else
+            s = Environment.getExternalStorageDirectory().toString();
+        return s;
+    }
+
+    /**
+     * Matches code in MediaProvider.computeBucketValues. Should be a common
+     * function.
+     */
+    public static String getBucketId(String path) {
+        return String.valueOf(path.toLowerCase().hashCode());
+    }
+
+    public static String getCameraImageDirectory() {
+        return getStorageDirectory() + "/DCIM/Camera";
+    }
+
+    public static String getCameraImageBucketId() {
+        return getBucketId(getCameraImageDirectory());
+    }
+
+    public static final String GALLERY_IMAGE_BUCKET_NAME =
+            Environment.getExternalStorageDirectory().toString()
+            + "/DCIM/Camera";
+    public static final String GALLERY_IMAGE_BUCKET_ID =
+            getBucketId(GALLERY_IMAGE_BUCKET_NAME);
 
     /**
      * {@code ImageListParam} specifies all the parameters we need to create an
@@ -127,28 +208,13 @@ public class ImageManager {
     public static final int SORT_ASCENDING = 1;
     public static final int SORT_DESCENDING = 2;
 
-    public static final String CAMERA_IMAGE_BUCKET_NAME =
-            Environment.getExternalStorageDirectory().toString()
-            + "/DCIM/Camera";
-    public static final String CAMERA_IMAGE_BUCKET_ID =
-            getBucketId(CAMERA_IMAGE_BUCKET_NAME);
-
-    /**
-     * Matches code in MediaProvider.computeBucketValues. Should be a common
-     * function.
-     */
-    public static String getBucketId(String path) {
-        return String.valueOf(path.toLowerCase().hashCode());
-    }
-
     /**
      * OSX requires plugged-in USB storage to have path /DCIM/NNNAAAAA to be
      * imported. This is a temporary fix for bug#1655552.
      */
     public static void ensureOSXCompatibleFolder() {
         File nnnAAAAA = new File(
-            Environment.getExternalStorageDirectory().toString()
-            + "/DCIM/100ANDRO");
+            getStorageDirectory() + "/DCIM/100ANDRO");
         if ((!nnnAAAAA.exists()) && (!nnnAAAAA.mkdir())) {
             Log.e(TAG, "create NNNAAAAA file: " + nnnAAAAA.getPath()
                     + " failed");
@@ -330,20 +396,29 @@ public class ImageManager {
         return makeImageList(cr, param);
     }
 
-    private static boolean checkFsWritable() {
+    private static boolean checkFsWritable(String directoryName) {
         // Create a temporary file to see whether a volume is really writeable.
         // It's important not to put it in the root directory which may have a
         // limit on the number of files.
-        String directoryName =
-                Environment.getExternalStorageDirectory().toString() + "/DCIM";
+        if (TextUtils.isEmpty(directoryName))
+            return false;
+        boolean created = false;
+        directoryName += "/DCIM";
         File directory = new File(directoryName);
         if (!directory.isDirectory()) {
             if (!directory.mkdirs()) {
                 return false;
             }
+            created = true;
         }
-        return directory.canWrite();
+        boolean ret = directory.canWrite();
+        if (created)
+            directory.delete();
+        return ret;
     }
+
+    private static boolean checkFsWritable() {
+        return checkFsWritable(getStorageDirectory());    }
 
     public static boolean hasStorage() {
         return hasStorage(true);
