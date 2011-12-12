@@ -47,6 +47,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+
 /**
  * {@code ImageManager} is used to retrieve and store images
  * in the media content provider.
@@ -61,6 +65,105 @@ public class ImageManager {
     private ImageManager() {
     }
 
+ 	// The mess below is due to all methods in android.os.SystemProperties being hidden,
+ 	// even as trivial method as GetInt(name, defVal)... Have to use Java reflection to
+ 	// read "persist.sys.vold.switchexternal" Cynogen setting.
+ 	private static int sysProps_GetInt(String name, int defVal) {
+ 		int retVal = defVal;
+	 	try {
+		 	Class<?> c = Class.forName("android.os.SystemProperties");
+		    Object t = c.newInstance();
+		    Class partypes[] = new Class[2];
+            partypes[0] = String.class;          
+            partypes[1] = Integer.TYPE;
+            Method SysProp_getInt = c.getDeclaredMethod("getInt", partypes);
+            Object[] argObjects = {name, defVal};
+            retVal = ((Integer)SysProp_getInt.invoke(null, argObjects)).intValue();
+
+	 	} catch (NoSuchMethodException x) {
+	 		Log.d("CamImgMgr", "No method: getInt()");
+	    } catch (ClassNotFoundException x) {
+	    	Log.d("CamImgMgr", "Class not found exception");
+	    } catch (InstantiationException x) {
+	    	Log.d("CamImgMgr", "InstantiationException");
+	    } catch (IllegalAccessException x) {
+	    	Log.d("CamImgMgr", "IllegalAccessException");
+	    } catch (IllegalArgumentException x) {
+	    	Log.d("CamImgMgr", "IllegalArgumentException");
+	    } catch (InvocationTargetException x) {
+	    	Log.d("CamImgMgr", "InvocationTargetException");
+	    }
+	 	
+	 	return retVal;
+ 	}
+ 	
+ 	private static String removableDir = "";
+ 	private static String internalDir = "";
+ 	private static final boolean isSwitchedExternal = (sysProps_GetInt("persist.sys.vold.switchexternal", 0) == 1);
+    
+ 	static {
+ 		internalDir = System.getenv("PHONE_STORAGE");  // usually /mnt/emmc on Cyanogen
+ 		removableDir = Environment.getExternalStorageDirectory().toString(); // usually /mnt/sdcard on Cyanogen
+	 	
+	 	if (isSwitchedExternal) {
+	 		//Log.d("CamImgMgr", "external IS switched");
+	 		String s = internalDir;
+	 		internalDir = removableDir;
+	 		removableDir = s;
+	 	} 
+	 	//else
+	 	//	Log.d("CamImgMgr", "external IS NOT switched");
+	 	
+	 	File directory = new File(internalDir);
+	 	if (!checkFsWritable(internalDir))
+	 		internalDir = "";
+	 	if (!checkFsWritable(removableDir))
+	 		removableDir = "";
+	 	
+	 	//Log.d("CamImgMgr", "removableDir=" + removableDir);
+	 	//Log.d("CamImgMgr", "internalDir=" + internalDir);
+ 	}
+ 	
+ 	public static boolean enableExtSdOption() {
+    	return !"".equals(removableDir) && !"".equals(internalDir) && !removableDir.equals(internalDir);
+ 	}
+ 	
+ 	public static boolean mUseRemovableMem = !isSwitchedExternal;
+    
+    public static String getStorageDirectory() {
+     	String s;
+    	if (mUseRemovableMem && !"".equals(removableDir))
+   			s = removableDir;
+    	else if (!"".equals(internalDir))
+    		s = internalDir;
+    	else
+    		s = Environment.getExternalStorageDirectory().toString();
+    	return s;
+    }
+    
+    /**
+     * Matches code in MediaProvider.computeBucketValues. Should be a common
+     * function.
+     */
+    public static String getBucketId(String path) {
+        return String.valueOf(path.toLowerCase().hashCode());
+    }
+    
+    public static String getCameraImageDirectory() {
+    	return getStorageDirectory() + "/DCIM/Camera";
+    }
+    
+    public static String getCameraImageBucketId() {
+    	return getBucketId(getCameraImageDirectory());
+    }
+    
+    public static final String GALLERY_IMAGE_BUCKET_NAME =
+    		Environment.getExternalStorageDirectory().toString()
+    		+ "/DCIM/Camera";
+    public static final String GALLERY_IMAGE_BUCKET_ID =
+    		getBucketId(GALLERY_IMAGE_BUCKET_NAME);
+    
+ 	
     /**
      * {@code ImageListParam} specifies all the parameters we need to create an
      * image list (we also need a ContentResolver).
@@ -127,28 +230,13 @@ public class ImageManager {
     public static final int SORT_ASCENDING = 1;
     public static final int SORT_DESCENDING = 2;
 
-    public static final String CAMERA_IMAGE_BUCKET_NAME =
-            Environment.getExternalStorageDirectory().toString()
-            + "/DCIM/Camera";
-    public static final String CAMERA_IMAGE_BUCKET_ID =
-            getBucketId(CAMERA_IMAGE_BUCKET_NAME);
-
-    /**
-     * Matches code in MediaProvider.computeBucketValues. Should be a common
-     * function.
-     */
-    public static String getBucketId(String path) {
-        return String.valueOf(path.toLowerCase().hashCode());
-    }
-
     /**
      * OSX requires plugged-in USB storage to have path /DCIM/NNNAAAAA to be
      * imported. This is a temporary fix for bug#1655552.
      */
     public static void ensureOSXCompatibleFolder() {
         File nnnAAAAA = new File(
-            Environment.getExternalStorageDirectory().toString()
-            + "/DCIM/100ANDRO");
+        	getStorageDirectory() + "/DCIM/100ANDRO");
         if ((!nnnAAAAA.exists()) && (!nnnAAAAA.mkdir())) {
             Log.e(TAG, "create NNNAAAAA file: " + nnnAAAAA.getPath()
                     + " failed");
@@ -330,20 +418,29 @@ public class ImageManager {
         return makeImageList(cr, param);
     }
 
-    private static boolean checkFsWritable() {
+    private static boolean checkFsWritable(String directoryName) {
         // Create a temporary file to see whether a volume is really writeable.
         // It's important not to put it in the root directory which may have a
         // limit on the number of files.
-        String directoryName =
-                Environment.getExternalStorageDirectory().toString() + "/DCIM";
+    	if ("".equals(directoryName))
+    		return false;
+    	boolean created = false;
+    	directoryName += "/DCIM";
         File directory = new File(directoryName);
         if (!directory.isDirectory()) {
             if (!directory.mkdirs()) {
                 return false;
             }
+            created = true;
         }
-        return directory.canWrite();
+        boolean ret = directory.canWrite();
+        if (created)
+        	directory.delete();
+        return ret;
     }
+    
+    private static boolean checkFsWritable() {
+    	return checkFsWritable(getStorageDirectory());    }
 
     public static boolean hasStorage() {
         return hasStorage(true);
