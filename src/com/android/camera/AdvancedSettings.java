@@ -18,7 +18,14 @@
 package com.android.camera;
 
 import com.android.camera.R;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.StatFs;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -32,6 +39,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
     private static final String KEY_VOL_ZOOM = "vol_zoom_enabled";
     private static final String KEY_LONG_FOCUS = "long_focus_enabled";
     private static final String KEY_PRE_FOCUS = "pre_focus_enabled";
+    private static final String KEY_STORE_EXTSD = "store_on_external_sd";
 
     CheckBoxPreference volUpShutter = null;
     CheckBoxPreference volDownShutter = null;
@@ -39,19 +47,57 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
     CheckBoxPreference volZoom = null;
     CheckBoxPreference longFocus = null;
     CheckBoxPreference preFocus = null;
+    CheckBoxPreference storeExtSd = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.camera_advanced_settings);
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
-        
+
         volUpShutter = (CheckBoxPreference) preferenceScreen.findPreference(KEY_VOL_UP_SHUTTER);
         volDownShutter = (CheckBoxPreference) preferenceScreen.findPreference(KEY_VOL_DOWN_SHUTTER);
         searchShutter = (CheckBoxPreference) preferenceScreen.findPreference(KEY_SEARCH_SHUTTER);
         volZoom = (CheckBoxPreference) preferenceScreen.findPreference(KEY_VOL_ZOOM);
         longFocus = (CheckBoxPreference) preferenceScreen.findPreference(KEY_LONG_FOCUS);
         preFocus = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PRE_FOCUS);
+        storeExtSd = (CheckBoxPreference) preferenceScreen.findPreference(KEY_STORE_EXTSD);
+
+        // Hide the 'Use external SD' preference if the device doesn't have an internal storage
+        if (!ImageManager.hasSwitchableStorage()) {
+            preferenceScreen.removePreference(storeExtSd);
+            storeExtSd = null;
+        } else {
+            Resources r = getResources();
+            int summaryResId = R.string.pref_camera_storage_external_summary_off;
+            StatFs stat = new StatFs(ImageManager.getInternalDir());
+            float remaining = ((float) stat.getAvailableBlocks()
+                    * (float) stat.getBlockSize())/1048576; // MB
+            String freeSpace;
+            NumberFormat formatter = new DecimalFormat("#0.00");
+            if (remaining >= 1024) {
+                remaining /= 1024; // GB
+                freeSpace = formatter.format(remaining) + " GB";
+            } else {
+                freeSpace = formatter.format(remaining) + " MB";
+            }
+
+            storeExtSd.setSummaryOff(r.getString(summaryResId, freeSpace));
+            
+            summaryResId = R.string.pref_camera_storage_external_summary_on;
+            stat = new StatFs(ImageManager.getRemovableDir());
+            remaining = ((float) stat.getAvailableBlocks()
+                    * (float) stat.getBlockSize())/1048576; // MB
+            if (remaining >= 1024) {
+                remaining /= 1024;
+                freeSpace = formatter.format(remaining) + " GB";
+            } else {
+                freeSpace = formatter.format(remaining) + " MB";
+            }
+
+            storeExtSd.setSummaryOn(r.getString(summaryResId, freeSpace));
+            
+        }
 
         checkBoxes();
 
@@ -66,6 +112,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
             volZoom.setOnPreferenceChangeListener(this);
             longFocus.setOnPreferenceChangeListener(this);
             preFocus.setOnPreferenceChangeListener(this);
+            storeExtSd.setOnPreferenceChangeListener(this);
         } else {
             volUpShutter.setOnPreferenceChangeListener(null);
             volDownShutter.setOnPreferenceChangeListener(null);
@@ -73,6 +120,7 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
             volZoom.setOnPreferenceChangeListener(null);
             longFocus.setOnPreferenceChangeListener(null);
             preFocus.setOnPreferenceChangeListener(null);
+            storeExtSd.setOnPreferenceChangeListener(null);
         }
     }
 
@@ -150,7 +198,10 @@ public class AdvancedSettings extends PreferenceActivity implements Preference.O
             preFocus.setEnabled(!checked);
         } else if (checkBox == preFocus) {
             longFocus.setEnabled(!checked);
+        } else if (checkBox == storeExtSd) {
+            ImageManager.updateStorageDirectory(this);
         }
+
         return true;
     }
 }
