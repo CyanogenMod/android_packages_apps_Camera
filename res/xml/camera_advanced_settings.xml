@@ -82,4 +82,10 @@
                     android:entryValues="@array/pref_camera_timer_duration_values"
                     android:defaultValue="10"/>
 
+            <CheckBoxPreference
+                    android:key="store_on_external_sd"
+                    android:title="@string/pref_camera_storage_external"
+                    android:summaryOn="@string/pref_camera_storage_external_summary_on"
+                    android:persistent="true" />
+
 </PreferenceScreen>
