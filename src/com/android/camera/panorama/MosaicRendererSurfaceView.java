@@ -371,4 +371,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         return mRenderer;
     }
 
+    public void setRenderEnabled(boolean enabled) {
+        mRenderer.setEnabled(enabled);
+    }
 }
