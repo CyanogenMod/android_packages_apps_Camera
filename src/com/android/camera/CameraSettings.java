@@ -572,6 +572,7 @@ public class CameraSettings {
             params.set("cam_mode", on ? "1" : "0");
         } else if (mIsOMAP4Camera) {
             params.set("mode", on ? "video-mode" : "high-quality");
+            params.set("sei-encoding-type", "sei_enc_2010");
         }
 
         if (on && params.get("focus-mode-values").indexOf("continuous-video") != -1) {
