@@ -39,6 +39,7 @@ abstract public class ActivityBase extends Activity {
     private boolean mOnResumePending;
     private Intent mResultDataForTesting;
     protected Camera mCameraDevice;
+    protected AnalyticsTracker mTracker;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -49,6 +50,7 @@ abstract public class ActivityBase extends Activity {
         }
         super.onCreate(icicle);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        mTracker = AnalyticsTracker.instance();
     }
 
     @Override
@@ -87,6 +89,7 @@ abstract public class ActivityBase extends Activity {
         if (LOGV) Log.v(TAG, "onPause");
         super.onPause();
         mOnResumePending = false;
+        mTracker.stop();
     }
 
     // Put the code of onResume in this method.

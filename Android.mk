@@ -12,9 +12,14 @@ LOCAL_JNI_SHARED_LIBRARIES := libjni_mosaic
 
 LOCAL_REQUIRED_MODULES := libjni_mosaic
 
-LOCAL_PROGUARD_FLAG_FILES := proguard.flags
+LOCAL_STATIC_JAVA_LIBRARIES := libGoogleAnalytics
 
+LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 include $(BUILD_PACKAGE)
+
+
+LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := libGoogleAnalytics:libGoogleAnalytics.jar
+include $(BUILD_MULTI_PREBUILT)
 
 ifeq ($(strip $(LOCAL_PACKAGE_OVERRIDES)),)
 # Use the following include to make our test apk.
