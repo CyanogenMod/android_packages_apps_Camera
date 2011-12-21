@@ -828,6 +828,21 @@ public class EffectsRecorder {
                     // Switching effects, start up the new runner
                     if (mLogVerbose) Log.v(TAG, "Previous effect halted, starting new effect.");
                     tryEnable3ALocks(false);
+                    // In case of an error, the graph restarts from beginning and in case
+                    // of the BACKDROPPER effect, the learner re-learns the background.
+                    // Hence, we need to show the learning dialogue to the user
+                    // to avoid recording before the learning is done. Else, the user
+                    // could start recording before the learning is done and the new
+                    // background comes up later leading to an end result video
+                    // with a heterogeneous background.
+                    // For BACKDROPPER effect, this path is also executed sometimes at
+                    // the end of a normal recording session. In such a case, the graph
+                    // does not restart and hence the learner does not re-learn. So we
+                    // do not want to show the learning dialogue then.
+                    if (result == GraphRunner.RESULT_ERROR &&
+                            mCurrentEffect == EFFECT_BACKDROPPER) {
+                        sendMessage(EFFECT_BACKDROPPER, EFFECT_MSG_STARTED_LEARNING);
+                    }
                     mRunner.run();
                 } else if (mState != STATE_RELEASED) {
                     // Shutting down effects
