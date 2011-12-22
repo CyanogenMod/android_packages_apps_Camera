@@ -514,8 +514,7 @@ public class VideoCamera extends ActivityBase
                     CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
                     CameraSettings.KEY_VIDEO_QUALITY};
         final String[] OTHER_SETTING_KEYS = {
-                    CameraSettings.KEY_RECORD_LOCATION,
-                    CameraSettings.KEY_ANALYTICS_PERMISSION};
+                    CameraSettings.KEY_RECORD_LOCATION};
 
         CameraPicker.setImageResourceId(R.drawable.ic_switch_video_facing_holo_light);
         mIndicatorControlContainer.initialize(this, mPreferenceGroup,
@@ -772,7 +771,6 @@ public class VideoCamera extends ActivityBase
         if (mCaptureTimeLapse) quality += 1000;
         mProfile = CamcorderProfile.get(mCameraId, quality);
         getDesiredPreviewSize();
-        mTracker.checkPermission(mPreferences);
     }
 
     private void writeDefaultEffectToPrefs()  {
@@ -881,8 +879,6 @@ public class VideoCamera extends ActivityBase
             mOnResumeTime = SystemClock.uptimeMillis();
             mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
         }
-
-        mTracker.startAnalyticsTracker(mPreferences, mRotateDialog, this, "VideoCamera");
         // Dismiss open menu if exists.
         PopupManager.getInstance(this).notifyShowPopup(null);
 
@@ -1599,13 +1595,6 @@ public class VideoCamera extends ActivityBase
 
         updateRecordingTime();
         keepScreenOn();
-
-        boolean recordLocation = RecordLocationPreference.get(
-                mPreferences, getContentResolver());
-        String effectType = mPreferences.getString(CameraSettings.KEY_VIDEO_EFFECT, "none");
-        mTracker.trackSettings(mParameters, mCameraId, recordLocation);
-        mTracker.trackVideoSettings(mProfile, mTimeBetweenTimeLapseFrameCaptureMs,
-                effectType);
     }
 
     private void showRecordingUI(boolean recording) {

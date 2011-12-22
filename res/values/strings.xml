@@ -64,17 +64,6 @@
     <string name="confirm_restore_title">Restore defaults</string>
     <string name="confirm_restore_message">Do you want to restore camera default settings?</string>
 
-    <!-- Confirmation dialog title about analytics permission. [CHAR LIMIT=36]-->
-    <string name="confirm_analytics_title">Help improve the camera</string>
-    <!-- Confirmation dialog content about analytics permission. [CHAR LIMIT=NONE]-->
-    <string name="confirm_analytics_message">Allow Google to collect anonymous camera settings to improve the camera application. Collection would not contain personal data.</string>
-
-    <!-- Confirmation option for agree. [CHAR LIMIT=10]-->
-    <string name="confirm_agree">Agree</string>
-    <!-- Confirmation option for disagree. [CHAR LIMIT=12]-->
-    <string name="confirm_disagree">Disagree</string>
-
-
     <!-- button in review mode indicating that the video just taken should be played [CHAR LIMIT=10] -->
     <string name="review_play">Play</string>
 
@@ -114,15 +103,6 @@
     <!-- Settings screen, Record location dialog choices -->
     <string name="pref_camera_recordlocation_entry_off">Off</string>
     <string name="pref_camera_recordlocation_entry_on">On</string>
-
-    <!-- Settings screen, setting title text. [CHAR LIMIT=18] -->
-    <string name="pref_analytics_permission_title">Collect data</string>
-    <string name="pref_analytics_permission_default" translatable="false">off</string>
-
-    <!-- Settings screen, turn off for dialog choices [CHAR LIMIT=10] -->
-    <string name="pref_setting_entry_off">Off</string>
-    <!-- Settings screen, turn on for dialog choices [CHAR LIMIT=10] -->
-    <string name="pref_setting_entry_on">On</string>
 
     <!-- The Video quality settings in preference [CHAR LIMIT=21] -->
     <string name="pref_video_quality_title">Video quality</string>

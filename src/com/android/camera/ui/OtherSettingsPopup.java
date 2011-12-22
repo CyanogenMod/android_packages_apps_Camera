@@ -61,8 +61,9 @@ public class OtherSettingsPopup extends AbstractSettingPopup
             // 'Restore setting' in the popup window.
             if (pref == null) return R.layout.in_line_setting_restore;
 
-            if (CameraSettings.KEY_RECORD_LOCATION.equals(pref.getKey()) ||
-                    CameraSettings.KEY_ANALYTICS_PERMISSION.equals(pref.getKey())) {
+            // Currently, the RecordLocationPreference is the only setting
+            // which applies the on/off switch.
+            if (CameraSettings.KEY_RECORD_LOCATION.equals(pref.getKey())) {
                 return R.layout.in_line_setting_switch;
             }
             return R.layout.in_line_setting_knob;

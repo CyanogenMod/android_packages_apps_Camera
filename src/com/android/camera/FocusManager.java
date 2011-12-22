@@ -297,8 +297,6 @@ public class FocusManager {
             mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, RESET_TOUCH_FOCUS_DELAY);
         }
 
-        AnalyticsTracker tracker = AnalyticsTracker.instance();
-        tracker.trackTapToFocus(x, y, mMatrix);
         return true;
     }
 
@@ -340,9 +338,6 @@ public class FocusManager {
         mState = STATE_IDLE;
         updateFocusUI();
         mHandler.removeMessages(RESET_TOUCH_FOCUS);
-
-        AnalyticsTracker tracker = AnalyticsTracker.instance();
-        tracker.cancelTapToFocus();
     }
 
     private void capture() {

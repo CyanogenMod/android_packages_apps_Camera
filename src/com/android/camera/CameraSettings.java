@@ -52,8 +52,6 @@ public class CameraSettings {
     public static final String KEY_CAMERA_ID = "pref_camera_id_key";
     public static final String KEY_CAMERA_FIRST_USE_HINT_SHOWN = "pref_camera_first_use_hint_shown_key";
     public static final String KEY_VIDEO_FIRST_USE_HINT_SHOWN = "pref_video_first_use_hint_shown_key";
-    public static final String KEY_ANALYTICS_CONFIRMATION_SHOWN= "pref_analytics_confirmation_shown_key";
-    public static final String KEY_ANALYTICS_PERMISSION = "pref_analytics_permission_key";
 
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
 
