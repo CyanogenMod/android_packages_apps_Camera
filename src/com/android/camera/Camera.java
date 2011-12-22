@@ -77,6 +77,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Formatter;
 import java.util.List;
 
 /** The Camera activity which can preview and take pictures. */
@@ -186,6 +187,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             onShutterButtonClick();
         }
     };
+
+    private final StringBuilder mBuilder = new StringBuilder();
+    private final Formatter mFormatter = new Formatter(mBuilder);
+    private final Object[] mFormatterArgs = new Object[1];
 
     /**
      * An unpublished intent flag requesting to return as soon as capturing
@@ -382,8 +387,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         initializeZoom();
         updateOnScreenIndicators();
         startFaceDetection();
-        mTracker.startAnalyticsTracker(mPreferences, mRotateDialog, this, "Camera");
-
         // Show the tap to focus toast if this is the first start.
         if (mFocusAreaSupported &&
                 mPreferences.getBoolean(CameraSettings.KEY_CAMERA_FIRST_USE_HINT_SHOWN, true)) {
@@ -625,7 +628,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mExposureIndicator.setVisibility(View.GONE);
         } else {
             float step = mParameters.getExposureCompensationStep();
-            String exposure = Util.exposureFormatString(value * step);
+            mFormatterArgs[0] = value * step;
+            mBuilder.delete(0, mBuilder.length());
+            mFormatter.format("%+1.1f", mFormatterArgs);
+            String exposure = mFormatter.toString();
             mExposureIndicator.setText(exposure);
             mExposureIndicator.setVisibility(View.VISIBLE);
         }
@@ -1040,10 +1046,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
-
-        boolean recordLocation = RecordLocationPreference.get(
-                mPreferences, getContentResolver());
-        mTracker.trackSettings(mParameters, mCameraId, recordLocation);
         return true;
     }
 
@@ -1247,7 +1249,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 CameraSettings.KEY_SCENE_MODE};
         final String[] OTHER_SETTING_KEYS = {
                 CameraSettings.KEY_RECORD_LOCATION,
-                CameraSettings.KEY_ANALYTICS_PERMISSION,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_FOCUS_MODE};
 
@@ -2041,8 +2042,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         } else {
             mFocusManager.overrideFocusMode(mParameters.getFocusMode());
         }
-
-        mTracker.checkPermission(mPreferences);
     }
 
     // We separate the parameters into several subsets, so we can update only

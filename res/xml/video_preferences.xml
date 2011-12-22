@@ -70,10 +70,4 @@
             camera:largeIcons="@array/camera_recordlocation_largeicons"
             camera:entries="@array/pref_camera_recordlocation_entries"
             camera:entryValues="@array/pref_camera_recordlocation_entryvalues" />
-    <ListPreference
-            camera:key="pref_analytics_permission_key"
-            camera:defaultValue="@string/pref_analytics_permission_default"
-            camera:title="@string/pref_analytics_permission_title"
-            camera:entries="@array/pref_analytics_permission_entries"
-            camera:entryValues="@array/pref_analytics_permission_entryvalues" />
 </PreferenceGroup>
