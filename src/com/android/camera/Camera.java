@@ -146,7 +146,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private GestureDetector mPopupGestureDetector;
     private boolean mOpenCameraFail = false;
     private boolean mCameraDisabled = false;
-    private boolean mFaceDetectionStarted = false;
+    private boolean mFaceDetectionStarted = true;
 
     private View mPreviewPanel;  // The container of PreviewFrameLayout.
     private PreviewFrameLayout mPreviewFrameLayout;
