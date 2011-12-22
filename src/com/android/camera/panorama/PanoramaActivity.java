@@ -17,9 +17,11 @@
 package com.android.camera.panorama;
 
 import com.android.camera.ActivityBase;
+import com.android.camera.AnalyticsTracker;
 import com.android.camera.CameraDisabledException;
 import com.android.camera.CameraHardwareException;
 import com.android.camera.CameraHolder;
+import com.android.camera.ComboPreferences;
 import com.android.camera.Exif;
 import com.android.camera.IntentExtras;
 import com.android.camera.MenuHelper;
@@ -161,6 +163,8 @@ public class PanoramaActivity extends ActivityBase implements
     private float[] mTransformMatrix;
     private float mHorizontalViewAngle;
     private float mVerticalViewAngle;
+
+    private ComboPreferences mPreferences;
 
     // Prefer FOCUS_MODE_INFINITY to FOCUS_MODE_CONTINUOUS_VIDEO because of
     // getting a better image quality by the former.
@@ -823,8 +827,10 @@ public class PanoramaActivity extends ActivityBase implements
 
                 if (jpeg == null) {  // Cancelled by user.
                     mMainHandler.sendEmptyMessage(MSG_RESET_TO_PREVIEW);
+                    mTracker.trackEvent("SaveMosaic", "Cancel");
                 } else if (!jpeg.isValid) {  // Error when generating mosaic.
                     mMainHandler.sendEmptyMessage(MSG_GENERATE_FINAL_MOSAIC_ERROR);
+                    mTracker.trackEvent("SaveMosaic", "Error");
                 } else {
                     // The panorama image returned from the library is orientated based on the
                     // natural orientation of a camera. We need to set an orientation for the image
@@ -849,6 +855,8 @@ public class PanoramaActivity extends ActivityBase implements
                     }
                     mMainHandler.sendMessage(
                             mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL));
+                    mTracker.trackEvent("SaveMosaic", "Save");
+                    mTracker.trackEvent("PictureSize", "" + jpeg.width + "x" + jpeg.height);
                 }
             }
         });
@@ -1016,6 +1024,9 @@ public class PanoramaActivity extends ActivityBase implements
 
             initThumbnailButton();
             keepScreenOnAwhile();
+
+            mPreferences = new ComboPreferences(this);
+            mTracker.startAnalyticsTracker(mPreferences, mRotateDialog, this, "Panorama");
         } catch (CameraHardwareException e) {
             Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
             return;

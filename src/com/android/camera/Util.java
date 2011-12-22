@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -85,6 +86,10 @@ public class Util {
     private static boolean sIsTabletUI;
     private static float sPixelDensity = 1;
     private static ImageFileNamer sImageFileNamer;
+
+    private static final StringBuilder sBuilder = new StringBuilder();
+    private static final Formatter sFormatter = new Formatter(sBuilder);
+    private static final Object[] sFormatterArgs = new Object[1];
 
     private Util() {
     }
@@ -683,6 +688,13 @@ public class Util {
             winParams.screenBrightness = DEFAULT_CAMERA_BRIGHTNESS;
             win.setAttributes(winParams);
         }
+    }
+
+    public static String exposureFormatString(float value) {
+        sFormatterArgs[0] = value;
+        sBuilder.delete(0, sBuilder.length());
+        sFormatter.format("%+1.1f", sFormatterArgs);
+        return sFormatter.toString();
     }
 
     private static class ImageFileNamer {

@@ -16,6 +16,7 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.AnalyticsTracker;
 import com.android.camera.R;
 import com.android.camera.Util;
 
@@ -253,6 +254,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         switch (v.getId()) {
             case R.id.goto_gallery_button:
             case R.id.thumbnail_image_frame:
+                AnalyticsTracker.instance().trackEvent(TAG, "Go_to_gallery");
                 Util.viewUri(mUri, mContext);
                 break;
         }
@@ -306,6 +308,8 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int index, long id) {
+        AnalyticsTracker.instance().trackEvent(TAG, mComponent.get(index).getClassName());
+
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType(mMimeType);
         intent.putExtra(Intent.EXTRA_STREAM, mUri);
