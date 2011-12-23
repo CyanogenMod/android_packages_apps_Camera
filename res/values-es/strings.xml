@@ -35,7 +35,7 @@
     <string name="confirm_restore_message" msgid="5239464943578877295">"Se restaurará la configuración de cámara predeterminada."</string>
     <string name="review_play" msgid="6015456244323302817">"REPRODUCIR"</string>
     <string name="review_cancel" msgid="8188009385853399254">"CANCELAR"</string>
-    <string name="review_ok" msgid="5305096180300056529">"Aceptar"</string>
+    <string name="review_ok" msgid="5305096180300056529">"ACEPTAR"</string>
     <string name="review_retake" msgid="7804864054896088338">"VOLVER A REALIZAR"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galería"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Cambiar cámara"</string>
@@ -165,7 +165,7 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Luz natural"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescente"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Nuboso"</string>
-    <string name="pref_camera_whitebalance_entry_cloudydaylight">Nuboso</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Nublado</string>
     <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Efecto de color"</string>
     <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Ninguno"</string>
     <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Mono"</string>
@@ -234,13 +234,13 @@
     <string name="pref_camera_scenemode_entry_sports">Deportes</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Fiesta"</string>
     <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Luz de velas"</string>
-   <string name="pref_camera_scenemode_entry_backlight">Contraluz</string>
+    <string name="pref_camera_scenemode_entry_backlight">Contraluz</string>
     <string name="pref_camera_scenemode_entry_flowers">Naturaleza</string>
     <string name="pref_camera_scenemode_entry_duskdawn">Crepúsculo</string>
     <string name="pref_camera_scenemode_entry_fallcolor">Otoño</string>
     <string name="pref_camera_scenemode_entry_text">Textos</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Configuración de cámara"</string>
-    <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar valores predeterminados"</string>
+    <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposición"</string>
     <string name="details_ok" msgid="6848594369924424312">"Aceptar"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"No queda espacio en el almacenamiento USB. Cambia la configuración de calidad o elimina algunas imágenes u otros archivos."</string>
@@ -267,8 +267,8 @@
     <string name="pref_camera_lensshading_title">Sombreado de lente</string>
 
     <!-- Settings screen, lens shading radio button choices -->
-    <string name="pref_camera_lensshading_entry_enable">Habilitar</string>
-    <string name="pref_camera_lensshading_entry_disable">Deshabilitar</string>
+    <string name="pref_camera_lensshading_entry_enable">Habilitado</string>
+    <string name="pref_camera_lensshading_entry_disable">Deshabilitado</string>
 
     <!-- Settings screen, Anti Banding title -->
     <string name="pref_camera_antibanding_title">Reducción de parpadeo</string>
