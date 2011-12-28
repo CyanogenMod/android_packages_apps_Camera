@@ -50,13 +50,6 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"การตั้งค่ากล้องถ่ายรูป"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"การตั้งค่ากล้องวิดีโอ"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"ขนาดของภาพ"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 ล้านพิกเซล"</string>
-    <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 ล้านพิกเซล"</string>
-    <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 ล้านพิกเซล"</string>
-    <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1.3 ล้านพิกเซล"</string>
-    <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1 ล้านพิกเซล"</string>
-    <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
-    <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"โหมดโฟกัส"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"อัตโนมัติ"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"อินฟินิตี"</string>

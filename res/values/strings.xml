@@ -133,20 +133,30 @@
     <!-- Settings screen, Picture size title -->
     <string name="pref_camera_picturesize_title">Picture size</string>
 
-    <!-- Settings screen, dialog choice for 5 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_2592x1936">5M pixels</string>
-    <!-- Settings screen, dialog choice for 3 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_2048x1536">3M pixels</string>
-    <!-- Settings screen, dialog choice for 2 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_1600x1200">2M pixels</string>
-    <!-- Settings screen, dialog choice for 1.3 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_1280x960">1.3M pixels</string>
-    <!-- Settings screen, dialog choice for 1 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_1024x768">1M pixels</string>
-    <!-- Settings screen, dialog choice for VGA picture size [CHAR LIMIT=15] -->
+    <!-- Settings screen, Picture size dialog radio button choices -->
+    <string name="pref_camera_picturesize_entry_3264x2448">8MP</string>
+    <string name="pref_camera_picturesize_entry_3264x1968">6.5MP(W)</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">6MP(W)</string>
+    <string name="pref_camera_picturesize_entry_2592x1936">5MP</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">4MP(W)</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">4MP</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">4MP</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">3MP</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">2.5MP(W)</string>
+    <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">UXGA</string>
+    <string name="pref_camera_picturesize_entry_1600x960">1.5MP(W)</string>
+    <string name="pref_camera_picturesize_entry_1280x1024">SXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x960">SXGA(4:3)</string>
+    <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
+    <string name="pref_camera_picturesize_entry_1280x720">HD720</string>
+    <string name="pref_camera_picturesize_entry_1024x768">XGA</string>
+    <string name="pref_camera_picturesize_entry_800x600">SVGA</string>
+    <string name="pref_camera_picturesize_entry_800x480">WVGA</string>
     <string name="pref_camera_picturesize_entry_640x480">VGA</string>
-    <!-- Settings screen, dialog choice for QVGA picture size [CHAR LIMIT=15] -->
+    <string name="pref_camera_picturesize_entry_352x288">CIF</string>
     <string name="pref_camera_picturesize_entry_320x240">QVGA</string>
+    <string name="pref_camera_picturesize_entry_176x144">QCIF</string>
 
     <!-- Settings screen, Focus mode title -->
     <string name="pref_camera_focusmode_title">Focus mode</string>
