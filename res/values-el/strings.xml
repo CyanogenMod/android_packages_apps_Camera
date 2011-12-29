@@ -33,15 +33,15 @@
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Δεν ήταν δυνατή η πρόσβαση στο χώρο αποθήκευσης USB."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Δεν ήταν δυνατή η πρόσβαση στην κάρτα SD."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Επαναφορά προεπιλογών"</string>
-    <string name="confirm_restore_message" msgid="6649481842684452641">"Επαναφορά προεπιλεγμένων ρυθμίσεων φωτογραφικής μηχανής;"</string>
+    <string name="confirm_restore_message" msgid="4726518572923160939">"Θέλετε να επαναφέρετε τις προεπιλεγμένες ρυθμίσεις της φωτογραφικής μηχανής;"</string>
     <string name="review_play" msgid="6378271587740884696">"Αναπαρ."</string>
     <string name="review_cancel" msgid="8188009385853399254">"ΑΚΥΡΩΣΗ"</string>
     <string name="review_ok" msgid="1156261588693116433">"ΤΕΛΟΣ"</string>
     <string name="review_retake" msgid="7804864054896088338">"ΝΕΑ ΛΗΨΗ"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Συλλογή"</string>
-    <string name="switch_camera_id" msgid="837545176602471325">"Εναλλαγή κάμερας"</string>
+    <string name="switch_camera_id" msgid="1320673155793151794">"Αλλαγή φωτογραφικής μηχανής"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Εγγραφή παρέλευσης χρόνου"</string>
-    <string name="pref_camera_id_title" msgid="6023059405578511534">"Επιλογή κάμερας"</string>
+    <string name="pref_camera_id_title" msgid="4040791582294635851">"Επιλογή φωτ. μηχανής"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Πίσω"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Μπροστά"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Αποθήκευση τοποθεσίας"</string>
@@ -113,8 +113,8 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Δύση ηλίου"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Ντίσκο"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Επιλέξτε το δικό σας"</string>
-    <string name="bg_replacement_message" msgid="6828585054971662284">"Αφήστε τη συσκευή σας κάτω"\n"Απομακρυνθείτε από το πεδίο προβολής"</string>
-    <string name="not_selectable_in_effect" msgid="7967729203855039239">"Δεν υπάρχει δυνατότητα επιλογής όταν το εφέ είναι ενεργοποιημένο."</string>
+    <string name="bg_replacement_message" msgid="9184270738916564608">"Αφήστε τη συσκευή σας κάτω"\n"Απομακρυνθείτε για λίγο από την εμβέλειά της."</string>
+    <string name="not_selectable_in_effect" msgid="4568604144269499202">"Αδύνατη η επιλογή όταν το εφέ είναι ενεργό."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Βγάλτε μια φωτογραφία κατά τη διάρκεια της εγγραφής βίντεο πατώντας την οθόνη προεπισκόπησης."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Το στιγμιότυπο οθόνης βίντεο απενεργοποιείται με ενεργά τα εφέ."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Διαγραφή εφέ"</string>
