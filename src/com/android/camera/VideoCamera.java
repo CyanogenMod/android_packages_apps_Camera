@@ -719,6 +719,9 @@ public class VideoCamera extends ActivityBase
         } else {  // Driver supports separates outputs for preview and video.
             List<Size> sizes = mParameters.getSupportedPreviewSizes();
             Size preferred = mParameters.getPreferredPreviewSizeForVideo();
+            if (preferred == null) {
+                preferred = sizes.get(0);
+            }
             int product = preferred.width * preferred.height;
             Iterator<Size> it = sizes.iterator();
             // Remove the preview sizes that are not preferred.
@@ -854,8 +857,15 @@ public class VideoCamera extends ActivityBase
             }
         }
 
+<<<<<<< HEAD
         setDisplayOrientation();
         mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
+=======
+        mDisplayRotation = Util.getDisplayRotation(this);
+        int orientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
+        mCameraDevice.setDisplayOrientation(orientation);
+        CameraSettings.setVideoMode(mParameters, true);
+>>>>>>> e62c08c... Fix galaxys2 video recording
         setCameraParameters();
 
         try {
@@ -1776,7 +1786,6 @@ public class VideoCamera extends ActivityBase
         return supported == null ? false : supported.indexOf(value) >= 0;
     }
 
-    @SuppressWarnings("deprecation")
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
 

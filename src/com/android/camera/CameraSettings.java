@@ -68,12 +68,18 @@ public class CameraSettings {
     private final CameraInfo[] mCameraInfo;
     private final int mCameraId;
 
+    // Samsung camcorder mode
+    private static boolean mSamsungCamMode;
+
     public CameraSettings(Activity activity, Parameters parameters,
                           int cameraId, CameraInfo[] cameraInfo) {
         mContext = activity;
         mParameters = parameters;
         mCameraId = cameraId;
         mCameraInfo = cameraInfo;
+
+        mSamsungCamMode = mContext.getResources().getBoolean(R.bool.needsSamsungCamMode);
+
     }
 
     public PreferenceGroup getPreferenceGroup(int preferenceRes) {
@@ -493,6 +499,19 @@ public class CameraSettings {
         }
 
         return supported;
+    }
+
+
+    /**
+     * Enable video mode for certain cameras.
+     *
+     * @param params
+     * @param on
+     */
+    public static void setVideoMode(Parameters params, boolean on) {
+        if (mSamsungCamMode) {
+            params.set("cam_mode", on ? "1" : "0");
+        }
     }
 
     private void initVideoEffect(PreferenceGroup group, ListPreference videoEffect) {

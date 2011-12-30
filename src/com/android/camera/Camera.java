@@ -1940,6 +1940,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mCameraDevice.startPreviewAsync();
 
         mFocusManager.onPreviewStarted();
+        CameraSettings.setVideoMode(mParameters, false);
+        mCameraDevice.setParameters(mParameters);
 
         if (mSnapshotOnIdle) {
             mHandler.post(mDoSnapRunnable);
