@@ -1870,6 +1870,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mZoomState = ZOOM_STOPPED;
         setCameraState(IDLE);
         mFocusManager.onPreviewStarted();
+        CameraSettings.setVideoMode(mParameters, false);
+        mCameraDevice.setParameters(mParameters);
 
         if (mSnapshotOnIdle) {
             mHandler.post(mDoSnapRunnable);

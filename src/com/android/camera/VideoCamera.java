@@ -796,6 +796,9 @@ public class VideoCamera extends ActivityBase
         } else {  // Driver supports separates outputs for preview and video.
             List<Size> sizes = mParameters.getSupportedPreviewSizes();
             Size preferred = mParameters.getPreferredPreviewSizeForVideo();
+            if (preferred == null) {
+                preferred = sizes.get(0);
+            }
             int product = preferred.width * preferred.height;
             Iterator it = sizes.iterator();
             // Remove the preview sizes that are not preferred.
@@ -922,6 +925,7 @@ public class VideoCamera extends ActivityBase
         mDisplayRotation = Util.getDisplayRotation(this);
         int orientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
         mCameraDevice.setDisplayOrientation(orientation);
+        CameraSettings.setVideoMode(mParameters, true);
         setCameraParameters();
 
         if (!effectsActive()) {
@@ -1875,6 +1879,10 @@ public class VideoCamera extends ActivityBase
 
     private static boolean isSupported(String value, List<String> supported) {
         return supported == null ? false : supported.indexOf(value) >= 0;
+    }
+
+    private void setCameraHardwareParameters() {
+        mCameraDevice.setParameters(mParameters);
     }
 
     private void setCameraParameters() {
