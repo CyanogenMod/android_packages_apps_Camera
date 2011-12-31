@@ -54,6 +54,4 @@
 	<!-- is OMAP4 camera -->
 	<bool name="isOMAP4Camera">false</bool>
 
-    <!-- Autofocus on camcorder start -->
-    <bool name="focusCamcorderAtStart">true</bool>
 </resources>
