@@ -756,6 +756,7 @@ public class VideoCamera extends BaseCamera
         setCameraParameters();
 
         CameraSettings.setContinuousAf(mParameters, false);
+        mCameraDevice.autoFocus(null);
         // Enable higher framerate recording on some tegra 2 devices
         CameraSettings.enableHighFrameRateFHD(mParameters);
         CameraSettings.setVideoMode(mParameters, true);
@@ -769,9 +770,7 @@ public class VideoCamera extends BaseCamera
             throw new RuntimeException("startPreview failed", ex);
         }
 
-        if (CameraSettings.isCamcoderFocusAtStart()) {
-            mCameraDevice.autoFocus(null);
-        }
+        mCameraDevice.autoFocus(null);
     }
 
     private void closeCamera() {
@@ -1334,9 +1333,7 @@ public class VideoCamera extends BaseCamera
             return;
         }
 
-        if (CameraSettings.isCamcoderFocusAtStart()) {
-            mCameraDevice.autoFocus(null);
-        }
+        mCameraDevice.autoFocus(null);
         CameraSettings.setContinuousAf(mParameters, true);
         setCameraHardwareParameters();
 
