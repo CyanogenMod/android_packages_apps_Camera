@@ -748,7 +748,13 @@ public class Camera extends BaseCamera implements View.OnClickListener,
             try {
                 long dateTaken = System.currentTimeMillis();
                 String title = createName(dateTaken);
-                String filename = title + ".jpg";
+                String fileExtension = "jpg";
+                String picFormat = mParameters.get("picture-format");
+                if (picFormat != null &&
+                      (picFormat.equals("mpo") || picFormat.equals("jps"))) {
+                    fileExtension = picFormat;
+                }
+                String filename = title + "." + fileExtension;
                 int[] degree = new int[1];
                 mLastContentUri = ImageManager.addImage(
                         mContentResolver,
