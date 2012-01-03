@@ -178,6 +178,8 @@ public class PanoramaActivity extends ActivityBase implements
 
     private CameraSound mCameraSound;
 
+    private Runnable mUpdateTexImageRunnable;
+
     private class MosaicJpeg {
         public MosaicJpeg(byte[] data, int width, int height) {
             this.data = data;
@@ -269,6 +271,16 @@ public class PanoramaActivity extends ActivityBase implements
         Util.initializeScreenBrightness(window, getContentResolver());
 
         createContentView();
+
+        mUpdateTexImageRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Check if the activity is paused here can speed up the onPause() process.
+                if (mPausing) return;
+                mSurfaceTexture.updateTexImage();
+                mSurfaceTexture.getTransformMatrix(mTransformMatrix);
+            }
+        };
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -475,28 +487,6 @@ public class PanoramaActivity extends ActivityBase implements
         });
     }
 
-    public void runViewFinder() {
-        mMosaicView.setWarping(false);
-        // Call preprocess to render it to low-res and high-res RGB textures.
-        mMosaicView.preprocess(mTransformMatrix);
-        mMosaicView.setReady();
-        mMosaicView.requestRender();
-    }
-
-    public void runMosaicCapture() {
-        mMosaicView.setWarping(true);
-        // Call preprocess to render it to low-res and high-res RGB textures.
-        mMosaicView.preprocess(mTransformMatrix);
-        // Lock the conditional variable to ensure the order of transferGPUtoCPU and
-        // mMosaicFrame.processFrame().
-        mMosaicView.lockPreviewReadyFlag();
-        // Now, transfer the textures from GPU to CPU memory for processing
-        mMosaicView.transferGPUtoCPU();
-        // Wait on the condition variable (will be opened when GPU->CPU transfer is done).
-        mMosaicView.waitUntilPreviewReady();
-        mMosaicFrameProcessor.processFrame();
-    }
-
     public synchronized void onFrameAvailable(SurfaceTexture surface) {
         /* This function may be called by some random thread,
          * so let's be safe and use synchronize. No OpenGL calls can be done here.
@@ -508,20 +498,14 @@ public class PanoramaActivity extends ActivityBase implements
         mMosaicView.setRenderEnabled(true);
 
         // Updating the texture should be done in the GL thread which mMosaicView is attached.
-        mMosaicView.queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                // Check if the activity is paused here can speed up the onPause() process.
-                if (mPausing) return;
-                mSurfaceTexture.updateTexImage();
-                mSurfaceTexture.getTransformMatrix(mTransformMatrix);
-            }
-        });
+        mMosaicView.queueEvent(mUpdateTexImageRunnable);
+
         // Update the transformation matrix for mosaic pre-process.
         if (mCaptureState == CAPTURE_STATE_VIEWFINDER) {
-            runViewFinder();
+            mMosaicView.showPreviewFrame(mTransformMatrix);
         } else {
-            runMosaicCapture();
+            mMosaicView.alignFrame(mTransformMatrix);
+            mMosaicFrameProcessor.processFrame();
         }
     }
 
@@ -710,7 +694,7 @@ public class PanoramaActivity extends ActivityBase implements
         mReviewLayout = (View) findViewById(R.id.pano_review_layout);
         mReview = (ImageView) findViewById(R.id.pano_reviewarea);
         mMosaicView = (MosaicRendererSurfaceView) findViewById(R.id.pano_renderer);
-        mMosaicView.getRenderer().setMosaicSurfaceCreateListener(this);
+        mMosaicView.setMosaicSurfaceCreateListener(this);
 
         mModePicker = (ModePicker) findViewById(R.id.mode_picker);
         mModePicker.setVisibility(View.VISIBLE);

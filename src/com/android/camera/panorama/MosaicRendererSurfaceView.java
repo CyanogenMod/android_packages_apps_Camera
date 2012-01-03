@@ -36,6 +36,10 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
     private MosaicRendererSurfaceViewRenderer mRenderer;
     private ConditionVariable mPreviewFrameReadyForProcessing;
     private boolean mIsLandscapeOrientation = true;
+    private float[] mTransformMatrix;
+
+    private Runnable mPreviewRunnable;
+    private Runnable mCaptureRunnable;
 
     public MosaicRendererSurfaceView(Context context) {
         super(context);
@@ -57,6 +61,28 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         getDisplayOrientation(context);
         init(translucent, depth, stencil);
         setZOrderMediaOverlay(true);
+        mPreviewRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mRenderer.setWarping(false);
+                // Call preprocess to render it to low-res and high-res RGB textures.
+                mRenderer.preprocess(mTransformMatrix);
+                mRenderer.setReady();
+                requestRender();
+            }
+        };
+
+        mCaptureRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mRenderer.setWarping(true);
+                // Call preprocess to render it to low-res and high-res RGB textures.
+                mRenderer.preprocess(mTransformMatrix);
+                // Now, transfer the textures from GPU to CPU memory for processing
+                mRenderer.transferGPUtoCPU();
+                mPreviewFrameReadyForProcessing.open();
+            }
+        };
     }
 
     private void getDisplayOrientation(Context context) {
@@ -314,15 +340,18 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         private int[] mValue = new int[1];
     }
 
-    public void lockPreviewReadyFlag() {
+    public void showPreviewFrame(float[] transformMatrix) {
+        mTransformMatrix = transformMatrix;
+        queueEvent(mPreviewRunnable);
+    }
+
+    public void alignFrame(float[] transformMatrix) {
+        mTransformMatrix = transformMatrix;
+        // Lock the conditional variable to ensure the order of transferGPUtoCPU and
+        // MosaicFrameProcessor.processFrame().
         mPreviewFrameReadyForProcessing.close();
-    }
-
-    private void unlockPreviewReadyFlag() {
-        mPreviewFrameReadyForProcessing.open();
-    }
-
-    public void waitUntilPreviewReady() {
+        queueEvent(mCaptureRunnable);
+        // Wait on the condition variable (will be opened when GPU->CPU transfer is done).
         mPreviewFrameReadyForProcessing.block();
     }
 
@@ -336,42 +365,12 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         });
     }
 
-    public void preprocess(final float[] transformMatrix) {
-        queueEvent(new Runnable() {
-
-            @Override
-            public void run() {
-                mRenderer.preprocess(transformMatrix);
-            }
-        });
-    }
-
-    public void transferGPUtoCPU() {
-        queueEvent(new Runnable() {
-
-            @Override
-            public void run() {
-                mRenderer.transferGPUtoCPU();
-                unlockPreviewReadyFlag();
-            }
-        });
-    }
-
-    public void setWarping(final boolean flag) {
-        queueEvent(new Runnable() {
-
-            @Override
-            public void run() {
-                mRenderer.setWarping(flag);
-            }
-        });
-    }
-
-    public MosaicRendererSurfaceViewRenderer getRenderer() {
-        return mRenderer;
-    }
-
     public void setRenderEnabled(boolean enabled) {
         mRenderer.setEnabled(enabled);
+    }
+
+    public void setMosaicSurfaceCreateListener(
+            MosaicRendererSurfaceViewRenderer.MosaicSurfaceCreateListener listener) {
+        mRenderer.setMosaicSurfaceCreateListener(listener);
     }
 }
