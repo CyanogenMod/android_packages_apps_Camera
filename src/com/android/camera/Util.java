@@ -68,11 +68,6 @@ public class Util {
     private static final int DIRECTION_UP = 2;
     private static final int DIRECTION_DOWN = 3;
 
-    // The brightness setting used when it is set to automatic in the system.
-    // The reason why it is set to 0.7 is just because 1.0 is too bright.
-    // Use the same setting among the Camera, VideoCamera and Panorama modes.
-    private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
-
     // Orientation hysteresis amount used in rounding, in degrees
     public static final int ORIENTATION_HYSTERESIS = 5;
 
@@ -672,17 +667,6 @@ public class Util {
         WindowManager.LayoutParams params = window.getAttributes();
         params.systemUiVisibility = View.SYSTEM_UI_FLAG_LOW_PROFILE;
         window.setAttributes(params);
-    }
-
-    public static void initializeScreenBrightness(Window win, ContentResolver resolver) {
-        // Overright the brightness settings if it is automatic
-        int mode = Settings.System.getInt(resolver, Settings.System.SCREEN_BRIGHTNESS_MODE,
-                Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-        if (mode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
-            WindowManager.LayoutParams winParams = win.getAttributes();
-            winParams.screenBrightness = DEFAULT_CAMERA_BRIGHTNESS;
-            win.setAttributes(winParams);
-        }
     }
 
     private static class ImageFileNamer {

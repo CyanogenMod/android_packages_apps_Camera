@@ -266,7 +266,6 @@ public class PanoramaActivity extends ActivityBase implements
 
         Window window = getWindow();
         Util.enterLightsOutMode(window);
-        Util.initializeScreenBrightness(window, getContentResolver());
 
         createContentView();
 

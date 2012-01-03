@@ -101,10 +101,6 @@ public class VideoCamera extends ActivityBase
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
 
-    // The brightness settings used when it is set to automatic in the system.
-    // The reason why it is set to 0.7 is just because 1.0 is too bright.
-    private static final float DEFAULT_CAMERA_BRIGHTNESS = 0.7f;
-
     private static final boolean SWITCH_CAMERA = true;
     private static final boolean SWITCH_VIDEO = false;
 
@@ -346,8 +342,6 @@ public class VideoCamera extends ActivityBase
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-
-        Util.initializeScreenBrightness(getWindow(), getContentResolver());
 
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
