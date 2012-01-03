@@ -382,7 +382,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mFocusManager.initialize(mFocusAreaIndicator, mPreviewFrame, mFaceView, this,
                 mirror, mDisplayOrientation);
         mImageSaver = new ImageSaver();
-        Util.initializeScreenBrightness(getWindow(), getContentResolver());
         installIntentFilter();
         initializeZoom();
         updateOnScreenIndicators();
