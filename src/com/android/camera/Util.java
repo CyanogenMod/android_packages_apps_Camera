@@ -249,7 +249,7 @@ public class Util {
         }
     }
 
-    public static android.hardware.Camera openCamera(Activity activity, int cameraId)
+    public static CameraDevice openCamera(Activity activity, int cameraId)
             throws CameraHardwareException, CameraDisabledException {
         // Check if device policy has disabled the camera.
         DevicePolicyManager dpm = (DevicePolicyManager) activity.getSystemService(
