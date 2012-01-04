@@ -682,7 +682,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mFocusIndicator == null) {
             return;
         }
-        if (Parameters.FOCUS_MODE_INFINITY.equals(value)) {
+        // Do not show the indicator if users cannot choose.
+        if (mPreferenceGroup.findPreference(CameraSettings.KEY_FOCUS_MODE) == null) {
+            mFocusIndicator.setVisibility(View.GONE);
+        } else if (Parameters.FOCUS_MODE_INFINITY.equals(value)) {
             mFocusIndicator.setImageResource(R.drawable.ic_indicators_landscape);
             mFocusIndicator.setVisibility(View.VISIBLE);
         } else if (Parameters.FOCUS_MODE_MACRO.equals(value)) {
