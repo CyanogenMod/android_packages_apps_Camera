@@ -24,6 +24,7 @@ import android.content.pm.ActivityInfo;
 import android.view.View;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
+
 /**
  * A layout which handles the preview aspect ratio.
  */
@@ -34,10 +35,15 @@ public class PreviewFrameLayout extends RelativeLayout {
     }
 
     private double mAspectRatio;
+    private View mBorder;
 
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setAspectRatio(4.0 / 3.0);
+    }
+
+    protected void onFinishInflate() {
+        mBorder = findViewById(R.id.preview_border);
     }
 
     public void setAspectRatio(double ratio) {
@@ -55,8 +61,11 @@ public class PreviewFrameLayout extends RelativeLayout {
     }
 
     public void showBorder(boolean enabled) {
-        findViewById(R.id.preview_border).setVisibility(
-                enabled ? View.VISIBLE : View.INVISIBLE);
+        mBorder.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    public void fadeOutBorder() {
+        Util.fadeOut(mBorder);
     }
 
     @Override

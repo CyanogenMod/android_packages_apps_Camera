@@ -761,6 +761,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Log.v(TAG, "mPictureDisplayedToJpegCallbackTime = "
                     + mPictureDisplayedToJpegCallbackTime + "ms");
 
+            // Not fade out border if user quickly takes two pictures.
+            if (!mSnapshotOnIdle) mPreviewFrameLayout.fadeOutBorder();
+
             if (!mIsImageCaptureIntent) {
                 startPreview();
                 startFaceDetection();
@@ -1045,6 +1048,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
+        mPreviewFrameLayout.showBorder(true);
         return true;
     }
 
@@ -1464,7 +1468,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Log.i(TAG, "Not enough space or storage not ready. remaining=" + mPicturesRemaining);
             return;
         }
-
         Log.v(TAG, "onShutterButtonClick: mCameraState=" + mCameraState);
 
         // If the user wants to do a snapshot while the previous one is still
