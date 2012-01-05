@@ -26,6 +26,11 @@
         <SurfaceView android:id="@+id/camera_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+        <FrameLayout android:id="@+id/preview_border"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:background="@drawable/ic_shot_border" />
         <com.android.camera.ui.FaceView android:id="@+id/face_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
