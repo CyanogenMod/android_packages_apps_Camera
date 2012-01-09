@@ -66,6 +66,7 @@ public class IndicatorControlBar extends IndicatorControl implements
             mZoomControl = (ZoomControlBar) findViewById(R.id.zoom_control);
             mZoomControl.setVisibility(View.VISIBLE);
         }
+        setupFilter();
         requestLayout();
     }
 

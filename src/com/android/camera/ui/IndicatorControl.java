@@ -214,4 +214,15 @@ public abstract class IndicatorControl extends RelativeLayout implements
             }
         }
     }
+
+    public void setupFilter() {
+        // Do not grey out the icons when taking a picture.
+        boolean enabled = (mCurrentMode != MODE_CAMERA);
+        for (int i = 0, count = getChildCount(); i < count; i++) {
+            View v = getChildAt(i);
+            if (v instanceof TwoStateImageView) {
+                ((TwoStateImageView) v).enableFilter(enabled);
+            }
+        }
+    }
 }
