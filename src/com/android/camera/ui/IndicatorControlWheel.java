@@ -183,6 +183,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
         mChildRadians = new double[getChildCount()];
         presetFirstLevelChildRadians();
         presetSecondLevelChildRadians();
+        setupFilter();
         mInitialized = true;
     }
 

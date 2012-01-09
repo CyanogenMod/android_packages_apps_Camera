@@ -19,6 +19,7 @@ package com.android.camera;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
+import com.android.camera.ui.TwoStateImageView;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -181,6 +182,15 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
 
     public void setCurrentMode(int mode) {
         mCurrentMode = mode;
+
+        // Do not grey out the icons when taking a picture.
+        boolean enbaled = true;
+        if (mCurrentMode == MODE_CAMERA) enbaled = false;
+        if (mCurrentModeFrame != null) {
+            for (TwoStateImageView v: mCurrentModeIcon) v.enableFilter(enbaled);
+        }
+        for (TwoStateImageView v: mModeSelectionIcon) v.enableFilter(enbaled);
+
         updateModeState();
     }
 

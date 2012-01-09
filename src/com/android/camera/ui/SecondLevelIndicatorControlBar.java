@@ -63,6 +63,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         mNonIndicatorButtonCount = getChildCount();
         addControls(keys, otherSettingKeys);
         if (mOrientation != 0) setOrientation(mOrientation, false);
+        setupFilter();
     }
 
     public void onClick(View view) {
