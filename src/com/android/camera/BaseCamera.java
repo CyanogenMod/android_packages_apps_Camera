@@ -209,6 +209,8 @@ public abstract class BaseCamera extends NoSearchActivity
     protected void clearTouchFocusAEC() {
         if (mParameters.get("touch-aec") != null) {
             mParameters.set("touch-aec", "off");
+        } else if (mParameters.get("touch-af-aec-values") != null) {
+            mParameters.set("touch-af-aec", "touch-off");
         }
 
         if (CameraSettings.getTouchFocusParameterName() != null) {
@@ -257,6 +259,11 @@ public abstract class BaseCamera extends NoSearchActivity
             mParameters.set(paramName, "1," +
                     focusRect.left + "," + focusRect.top + "," +
                     focusRect.width() + "," + focusRect.height());
+        } else if (mParameters.get("touch-af-aec-values") != null) {
+	    /* special case: Qualcomm uses separate items for focus
+             * and exposure, and both need to be set... */
+            mParameters.set("touch-index-af", focusRect.centerX() + "," + focusRect.centerY());
+            mParameters.set("touch-index-aec", focusRect.centerX() + "," + focusRect.centerY());
         } else {
 	    /* use center point */
             mParameters.set(paramName, focusRect.centerX() + "," + focusRect.centerY());
@@ -267,7 +274,11 @@ public abstract class BaseCamera extends NoSearchActivity
 
     private void enableTouchAEC(boolean enable) {
         Log.d(LOG_TAG, "enableTouchAEC: " + enable);
-        mParameters.set("touch-aec", enable ? "on" : "off");
+        if (mParameters.get("touch-af-aec-values") != null) {
+            mParameters.set("touch-af-aec", enable ? "touch-on" : "touch-off");
+        } else {
+            mParameters.set("touch-aec", enable ? "on" : "off");
+        }
         mCameraDevice.setParameters(mParameters);
     }
 
