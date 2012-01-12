@@ -119,6 +119,7 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Дневной свет"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Лампа дневного света"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Пасмурно"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Пасмурно, дневной свет</string>
     <string name="pref_camera_coloreffect_title" msgid="4152827686267109207">"Цветовые эффекты"</string>
     <string name="pref_camera_coloreffect_entry_none" msgid="4759462740660236565">"Нет"</string>
     <string name="pref_camera_coloreffect_entry_mono" msgid="9068472385922288418">"Монохром"</string>
@@ -257,6 +258,11 @@
     <string name="pref_camera_other_settings_title">Другие настройки</string>
     <string name="pref_camera_timer_duration">Длительность таймера</string>
     <string name="pref_camera_timer_duration_summary">Выберите продолжительность для таймера камеры</string>
+    <string name="pref_camera_storage_external">Использовать внешнюю карту памяти</string>
+    <string name="pref_camera_storage_external_summary_off">Хранить фото и видео во внутренней памяти телефона (свободно: %s)</string>
+    <string name="pref_camera_storage_external_summary_on">Хранить фото и видео на съёмной карте памяти (свободно: %s)</string>
+    <string name="pref_camera_mega_bytes">МБ</string>
+    <string name="pref_camera_giga_bytes">ГБ</string>
 
     <!-- More Settings screen, search button title -->
     <string name="pref_camera_search_shutter_title">Съёмка кнопкой поиск</string>
