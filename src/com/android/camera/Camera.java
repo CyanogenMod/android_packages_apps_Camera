@@ -126,6 +126,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private boolean mMeteringAreaSupported;
     private boolean mAeLockSupported;
     private boolean mAwbLockSupported;
+    private boolean mContinousFocusSupported;
 
     private MyOrientationEventListener mOrientationListener;
     // The degrees of the device rotated clockwise from its natural orientation.
@@ -230,6 +231,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             new RawPictureCallback();
     private final AutoFocusCallback mAutoFocusCallback =
             new AutoFocusCallback();
+    private final AutoFocusMoveCallback mAutoFocusMoveCallback =
+            new AutoFocusMoveCallback();
     private final ZoomListener mZoomListener = new ZoomListener();
     private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
 
@@ -808,6 +811,15 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Log.v(TAG, "mAutoFocusTime = " + mAutoFocusTime + "ms");
             setCameraState(IDLE);
             mFocusManager.onAutoFocus(focused);
+        }
+    }
+
+    private final class AutoFocusMoveCallback
+            implements android.hardware.Camera.AutoFocusMoveCallback {
+        @Override
+        public void onAutoFocusMoving(
+            boolean moving, android.hardware.Camera camera) {
+                mFocusManager.onAutoFocusMoving(moving);
         }
     }
 
@@ -2047,6 +2059,19 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         } else {
             mFocusManager.overrideFocusMode(mParameters.getFocusMode());
         }
+
+        if (mContinousFocusSupported) {
+            try {
+                if (mParameters.getFocusMode().equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                    mCameraDevice.setAutoFocusMoveCallback(mAutoFocusMoveCallback);
+                } else {
+                    mCameraDevice.setAutoFocusMoveCallback(null);
+                }
+            } catch(RuntimeException e) {
+                // Ignore. This can be removed if CTS requires autofocus move
+                // callback.
+            }
+        }
     }
 
     // We separate the parameters into several subsets, so we can update only
@@ -2322,5 +2347,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mMeteringAreaSupported = (mInitialParams.getMaxNumMeteringAreas() > 0);
         mAeLockSupported = mInitialParams.isAutoExposureLockSupported();
         mAwbLockSupported = mInitialParams.isAutoWhiteBalanceLockSupported();
+        mContinousFocusSupported = mInitialParams.getSupportedFocusModes().contains(
+                Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
     }
 }
