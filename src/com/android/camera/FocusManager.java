@@ -59,6 +59,7 @@ public class FocusManager {
     private boolean mFocusAreaSupported;
     private boolean mLockAeAwbNeeded;
     private boolean mAeAwbLock;
+    private boolean mAutoFocusMoving;
     private Matrix mMatrix;
     private View mFocusIndicatorRotateLayout;
     private FocusIndicatorView mFocusIndicator;
@@ -241,6 +242,11 @@ public class FocusManager {
         }
     }
 
+    public void onAutoFocusMoving(boolean moving) {
+        mAutoFocusMoving = moving;
+        updateFocusUI();
+    }
+
     public boolean onTouch(MotionEvent e) {
         if (!mInitialized || mState == STATE_FOCUSING_SNAP_ON_FINISH) return false;
 
@@ -406,12 +412,13 @@ public class FocusManager {
         FocusIndicator focusIndicator = (faceExists) ? mFaceView : mFocusIndicator;
 
         if (mState == STATE_IDLE) {
-            if (mFocusArea == null) {
+            if (mFocusArea == null && !mAutoFocusMoving) {
                 focusIndicator.clear();
             } else {
-                // Users touch on the preview and the indicator represents the
-                // metering area. Either focus area is not supported or
-                // autoFocus call is not required.
+                // Continuous autofocus is in progress. Or users touch on the
+                // preview and the indicator represents the metering area.
+                // Either focus area is not supported or autoFocus call is not
+                // required.
                 focusIndicator.showStart();
             }
         } else if (mState == STATE_FOCUSING || mState == STATE_FOCUSING_SNAP_ON_FINISH) {

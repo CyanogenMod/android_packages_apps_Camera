@@ -18,6 +18,7 @@ package com.android.camera;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.AutoFocusCallback;
+import android.hardware.Camera.AutoFocusMoveCallback;
 import android.hardware.Camera.ErrorCallback;
 import android.hardware.Camera.FaceDetectionListener;
 import android.hardware.Camera.OnZoomChangeListener;
@@ -86,6 +87,10 @@ public class MockCamera implements CameraDevice {
 
     @Override
     public void cancelAutoFocus() {
+    }
+
+    @Override
+    public void setAutoFocusMoveCallback(AutoFocusMoveCallback cb) {
     }
 
     @Override
