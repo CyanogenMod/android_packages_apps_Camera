@@ -51,6 +51,7 @@ import android.os.ParcelFileDescriptor;
 import android.os.Message;
 import android.os.StatFs;
 import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.MediaStore.Video;
@@ -123,6 +124,11 @@ public class VideoCamera extends BaseCamera
     private int mZoomMax;
     private GestureDetector mGestureDetector;
     private final ZoomListener mZoomListener = new ZoomListener();
+
+    // Property that indicates that the device screen is rotated by default
+    // Necesary to adjust the rotation of pictures/movies (0, 90, 180, 270)
+    private static final int mDeviceScreenRotation =
+       SystemProperties.getInt("ro.device.screenrotation", 0);
 
     /**
      * An unpublished intent flag requesting to start recording straight away
@@ -1117,9 +1123,9 @@ public class VideoCamera extends BaseCamera
         if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
             CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
             if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
-                rotation = (info.orientation - mOrientation + 360) % 360;
+                rotation = (info.orientation - mOrientation + mDeviceScreenRotation + 360) % 360;
             } else {  // back-facing camera
-                rotation = (info.orientation + mOrientation) % 360;
+                rotation = (info.orientation + mOrientation - mDeviceScreenRotation) % 360;
             }
         }
         mMediaRecorder.setOrientationHint(rotation);

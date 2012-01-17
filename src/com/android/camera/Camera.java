@@ -49,6 +49,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
+import android.os.SystemProperties;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -123,6 +124,11 @@ public class Camera extends BaseCamera implements View.OnClickListener,
     private static final int ZOOM_STOPPED = 0;
     private static final int ZOOM_START = 1;
     private static final int ZOOM_STOPPING = 2;
+
+    // Property that indicates that the device screen is rotated by default
+    // Necesary to adjust the rotation of pictures/movies (0, 90, 180, 270)
+    private static final int mDeviceScreenRotation =
+       SystemProperties.getInt("ro.device.screenrotation", 0);
 
     private int mZoomState = ZOOM_STOPPED;
     private boolean mSmoothZoomSupported = false;
@@ -815,9 +821,9 @@ public class Camera extends BaseCamera implements View.OnClickListener,
                 CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
                 if (info.facing == CameraInfo.CAMERA_FACING_FRONT &&
                         info.orientation != 90) {
-                    rotation = (info.orientation - mOrientation + 360) % 360;
+                    rotation = (info.orientation - mOrientation + mDeviceScreenRotation + 360) % 360;
                 } else {  // back-facing camera (or acting like it)
-                    rotation = (info.orientation + mOrientation) % 360;
+                    rotation = (info.orientation + mOrientation  - mDeviceScreenRotation) % 360;
                 }
             }
             mParameters.setRotation(rotation);
