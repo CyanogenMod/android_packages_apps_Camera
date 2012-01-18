@@ -20,7 +20,6 @@ import com.android.camera.ActivityBase;
 import com.android.camera.CameraDisabledException;
 import com.android.camera.CameraHardwareException;
 import com.android.camera.CameraHolder;
-import com.android.camera.Exif;
 import com.android.camera.IntentExtras;
 import com.android.camera.MenuHelper;
 import com.android.camera.ModePicker;
@@ -73,7 +72,10 @@ import android.widget.TextView;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Activity to handle panorama capturing.
@@ -100,6 +102,10 @@ public class PanoramaActivity extends ActivityBase implements
     private static final int CAPTURE_STATE_VIEWFINDER = 0;
     private static final int CAPTURE_STATE_MOSAIC = 1;
 
+    private static final String GPS_DATE_FORMAT_STR = "yyyy:MM:dd";
+    private static final String GPS_TIME_FORMAT_STR = "kk/1,mm/1,ss/1";
+    private static final String DATETIME_FORMAT_STR = "yyyy:MM:dd kk:mm:ss";
+
     // Speed is in unit of deg/sec
     private static final float PANNING_SPEED_THRESHOLD = 20f;
 
@@ -122,6 +128,10 @@ public class PanoramaActivity extends ActivityBase implements
     private TextView mTooFastPrompt;
     private ShutterButton mShutterButton;
     private Object mWaitObject = new Object();
+
+    private DateFormat mGPSDateStampFormat;
+    private DateFormat mGPSTimeStampFormat;
+    private DateFormat mDateTimeStampFormat;
 
     private String mPreparePreviewString;
     private String mDialogTitle;
@@ -282,6 +292,13 @@ public class PanoramaActivity extends ActivityBase implements
                 mSurfaceTexture.getTransformMatrix(mTransformMatrix);
             }
         };
+
+        mGPSDateStampFormat = new SimpleDateFormat(GPS_DATE_FORMAT_STR);
+        mGPSTimeStampFormat = new SimpleDateFormat(GPS_TIME_FORMAT_STR);
+        mDateTimeStampFormat = new SimpleDateFormat(DATETIME_FORMAT_STR);
+        TimeZone zUTC = TimeZone.getTimeZone("UTC");
+        mGPSDateStampFormat.setTimeZone(zUTC);
+        mGPSTimeStampFormat.setTimeZone(zUTC);
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -933,16 +950,25 @@ public class PanoramaActivity extends ActivityBase implements
                     getResources().getString(R.string.pano_file_name_format), mTimeTaken);
             Uri uri = Storage.addImage(getContentResolver(), filename, mTimeTaken, null,
                     orientation, jpegData, width, height);
-            if (uri != null && orientation != 0) {
+            if (uri != null) {
                 String filepath = Storage.generateFilepath(filename);
                 try {
-                    // Save the orientation in EXIF.
                     ExifInterface exif = new ExifInterface(filepath);
-                    exif.setAttribute(ExifInterface.TAG_ORIENTATION,
+
+                    exif.setAttribute(ExifInterface.TAG_GPS_DATESTAMP,
+                            mGPSDateStampFormat.format(mTimeTaken));
+                    exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP,
+                            mGPSTimeStampFormat.format(mTimeTaken));
+                    exif.setAttribute(ExifInterface.TAG_DATETIME,
+                            mDateTimeStampFormat.format(mTimeTaken));
+
+                    // Save the orientation in EXIF.
+                    if (orientation != 0) exif.setAttribute(ExifInterface.TAG_ORIENTATION,
                             getExifOrientation(orientation));
+
                     exif.saveAttributes();
                 } catch (IOException e) {
-                    Log.e(TAG, "cannot set exif data: " + filepath);
+                    Log.e(TAG, "Cannot set EXIF for " + filepath, e);
                 }
             }
             return uri;
