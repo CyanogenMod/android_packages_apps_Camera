@@ -46,8 +46,7 @@ public class IndicatorControlBar extends IndicatorControl implements
 
     @Override
     protected void onFinishInflate() {
-        mSecondLevelIcon = (ImageView)
-                findViewById(R.id.second_level_indicator_bar_icon);
+        mSecondLevelIcon = (ImageView) findViewById(R.id.second_level_indicator);
         mSecondLevelIcon.setOnClickListener(this);
     }
 

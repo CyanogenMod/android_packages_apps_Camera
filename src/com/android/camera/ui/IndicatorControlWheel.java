@@ -173,6 +173,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
 
         // Add second-level Indicator Icon.
         mSecondLevelIcon = addImageButton(context, R.drawable.ic_settings_holo_light, true);
+        mSecondLevelIcon.setId(R.id.second_level_indicator);
         mSecondLevelStartIndex = getChildCount();
 
         // Add second-level buttons.
