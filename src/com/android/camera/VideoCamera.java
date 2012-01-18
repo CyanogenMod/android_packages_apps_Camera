@@ -877,7 +877,7 @@ public class VideoCamera extends ActivityBase
         PopupManager.getInstance(this).notifyShowPopup(null);
 
         setOrientationIndicator(getIntent().getIntExtra(
-                IntentExtras.INITIAL_ORIENTATION_EXTRA, 0), false);
+                IntentExtras.INITIAL_ORIENTATION_EXTRA, mOrientationCompensation), false);
     }
 
     private void setPreviewDisplay(SurfaceHolder holder) {
