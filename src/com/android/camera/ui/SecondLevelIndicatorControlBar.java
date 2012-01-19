@@ -151,6 +151,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
                 super.addOtherSettingIndicator(context, resId, keys);
         b.setBackgroundResource(R.drawable.bg_pressed);
         b.setIndicatorChangeListener(this);
+        b.setId(R.id.other_setting_indicator);
         return b;
     }
 

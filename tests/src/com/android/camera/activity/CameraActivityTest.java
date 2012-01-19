@@ -20,11 +20,15 @@ import com.android.camera.Camera;
 import com.android.camera.CameraDevice;
 import com.android.camera.CameraHolder;
 import com.android.camera.IntentExtras;
+import com.android.camera.MockCamera;
+import com.android.camera.R;
 
 import android.app.Instrumentation;
 import android.hardware.Camera.CameraInfo;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.view.MotionEvent;
+import android.view.View;
 
 public class CameraActivityTest extends ActivityInstrumentationTestCase2 <Camera> {
     private static final String TAG = "CameraActivityTest";
@@ -46,6 +50,7 @@ public class CameraActivityTest extends ActivityInstrumentationTestCase2 <Camera
 
     @Override
     protected void tearDown() throws Exception {
+        super.tearDown();
         CameraHolder.injectMockCamera(null,  null);
     }
 
@@ -55,6 +60,42 @@ public class CameraActivityTest extends ActivityInstrumentationTestCase2 <Camera
 
         getActivity();
         Instrumentation inst = getInstrumentation();
+        inst.waitForIdleSync();
+    }
+
+    @LargeTest
+    public void testRestoreDefault() throws Exception {
+        MockCamera[] cameras = new MockCamera[2];
+        cameras[0] = new MockCamera();
+        cameras[1] = new MockCamera();
+        CameraHolder.injectMockCamera(mCameraInfo, cameras);
+
+        getActivity();
+        getInstrumentation().waitForIdleSync();
+        performClick(R.id.second_level_indicator);
+        performClick(R.id.other_setting_indicator);
+        performClick(R.id.restore_default);
+        performClick(R.id.rotate_dialog_button1);
+    }
+
+    private void performClick(final int id) {
+        assertNotNull(getActivity().findViewById(id));
+        Instrumentation inst = getInstrumentation();
+        inst.runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                View v = getActivity().findViewById(id);
+                float x = (v.getLeft() + v.getRight()) / 2;
+                float y = (v.getTop() + v.getBottom()) / 2;
+                MotionEvent down = MotionEvent.obtain(0, 0,
+                        MotionEvent.ACTION_DOWN, x, y, 0, 0, 0, 0, 0, 0, 0);
+                MotionEvent up = MotionEvent.obtain(0, 0,
+                        MotionEvent.ACTION_UP, x, y, 0, 0, 0, 0, 0, 0, 0);
+                View parent = (View) v.getParent();
+                parent.dispatchTouchEvent(down);
+                parent.dispatchTouchEvent(up);
+            }
+        });
         inst.waitForIdleSync();
     }
 }
