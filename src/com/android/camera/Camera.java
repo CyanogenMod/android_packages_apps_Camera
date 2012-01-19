@@ -1583,7 +1583,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         PopupManager.getInstance(this).notifyShowPopup(null);
 
         setOrientationIndicator(getIntent().getIntExtra(
-                IntentExtras.INITIAL_ORIENTATION_EXTRA, 0), false);
+                IntentExtras.INITIAL_ORIENTATION_EXTRA, mOrientationCompensation), false);
     }
 
     @Override

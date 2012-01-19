@@ -1030,7 +1030,8 @@ public class PanoramaActivity extends ActivityBase implements
         PopupManager.getInstance(this).notifyShowPopup(null);
 
         mOrientationEventListener.onOrientationChanged(
-                getIntent().getIntExtra(IntentExtras.INITIAL_ORIENTATION_EXTRA, 0));
+                getIntent().getIntExtra(IntentExtras.INITIAL_ORIENTATION_EXTRA,
+                        mOrientationCompensation));
     }
 
     /**
