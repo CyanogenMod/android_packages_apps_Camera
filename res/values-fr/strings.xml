@@ -262,5 +262,10 @@
     <string name="pref_camera_other_settings_title">Autres paramètres</string>
     <string name="pref_camera_timer_duration">Durée retardateur</string>
     <string name="pref_camera_timer_duration_summary">Durée utilisée pour retarder la prise de vue des photos</string>
+    <string name="pref_camera_storage_external">Utiliser la carte SD amovible</string>
+    <string name="pref_camera_storage_external_summary_off">Stocke les photos et vidéos sur la mémoire interne du téléphone (espace disponible: %s)</string>
+    <string name="pref_camera_storage_external_summary_on">Stocke les photos et vidéos sur la carte SD amovible (espace disponible: %s)</string>
+    <string name="pref_camera_mega_bytes">Mo</string>
+    <string name="pref_camera_giga_bytes">Go</string>
 
 </resources>
