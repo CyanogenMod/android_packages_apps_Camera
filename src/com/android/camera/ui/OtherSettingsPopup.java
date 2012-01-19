@@ -78,6 +78,9 @@ public class OtherSettingsPopup extends AbstractSettingPopup
             int viewLayoutId = getSettingLayoutId(pref);
             InLineSettingItem view = (InLineSettingItem)
                     mInflater.inflate(viewLayoutId, parent, false);
+            if (viewLayoutId == R.layout.in_line_setting_restore) {
+                view.setId(R.id.restore_default);
+            }
 
             view.initialize(pref); // no init for restore one
             view.setSettingChangedListener(OtherSettingsPopup.this);

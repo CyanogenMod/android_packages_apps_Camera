@@ -137,6 +137,7 @@ public abstract class IndicatorControl extends RelativeLayout implements
         b.setSettingChangedListener(this);
         b.setContentDescription(getResources().getString(
                 R.string.pref_camera_settings_category));
+        b.setId(R.id.other_setting_indicator);
         addView(b);
         mIndicators.add(b);
         return b;
