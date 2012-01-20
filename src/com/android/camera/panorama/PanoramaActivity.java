@@ -62,6 +62,7 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewGroup;
@@ -232,6 +233,20 @@ public class PanoramaActivity extends ActivityBase implements
         super.onCreateOptionsMenu(menu);
 
         addBaseMenuItems(menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        // Only show the menu when idle.
+        boolean idle = (mCaptureState == CAPTURE_STATE_VIEWFINDER && !mThreadRunning);
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            item.setVisible(idle);
+            item.setEnabled(idle);
+        }
+
         return true;
     }
 
