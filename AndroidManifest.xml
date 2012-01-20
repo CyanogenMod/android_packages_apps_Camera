@@ -61,11 +61,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <!-- Suppose users enter panorama from launcher, turn off the screen,
+             turn on the screen, and enter the camera from the lock screen.
+             They can switch to panorama from there. Use singleTask so there
+             will be only one panorama activity. -->
         <activity android:name="com.android.camera.panorama.PanoramaActivity"
                 android:label="@string/pano_dialog_title"
                 android:configChanges="orientation|screenSize|keyboardHidden"
                 android:clearTaskOnLaunch="true"
-                android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
+                android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+                android:launchMode="singleTask">
         </activity>
     </application>
 </manifest>
