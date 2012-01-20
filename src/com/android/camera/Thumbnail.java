@@ -52,6 +52,10 @@ public class Thumbnail {
     // whether this thumbnail is read from file
     private boolean mFromFile = false;
 
+    // Camera, VideoCamera, and Panorama share the same thumbnail. Use sLock
+    // to serialize the access.
+    private static Object sLock = new Object();
+
     public Thumbnail(Uri uri, Bitmap bitmap, int orientation) {
         mUri = uri;
         mBitmap = rotateImage(bitmap, orientation);
@@ -100,19 +104,21 @@ public class Thumbnail {
         FileOutputStream f = null;
         BufferedOutputStream b = null;
         DataOutputStream d = null;
-        try {
-            f = new FileOutputStream(file);
-            b = new BufferedOutputStream(f, BUFSIZE);
-            d = new DataOutputStream(b);
-            d.writeUTF(mUri.toString());
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, d);
-            d.close();
-        } catch (IOException e) {
-            Log.e(TAG, "Fail to store bitmap. path=" + file.getPath(), e);
-        } finally {
-            Util.closeSilently(f);
-            Util.closeSilently(b);
-            Util.closeSilently(d);
+        synchronized (sLock) {
+            try {
+                f = new FileOutputStream(file);
+                b = new BufferedOutputStream(f, BUFSIZE);
+                d = new DataOutputStream(b);
+                d.writeUTF(mUri.toString());
+                mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, d);
+                d.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Fail to store bitmap. path=" + file.getPath(), e);
+            } finally {
+                Util.closeSilently(f);
+                Util.closeSilently(b);
+                Util.closeSilently(d);
+            }
         }
     }
 
@@ -124,20 +130,22 @@ public class Thumbnail {
         FileInputStream f = null;
         BufferedInputStream b = null;
         DataInputStream d = null;
-        try {
-            f = new FileInputStream(file);
-            b = new BufferedInputStream(f, BUFSIZE);
-            d = new DataInputStream(b);
-            uri = Uri.parse(d.readUTF());
-            bitmap = BitmapFactory.decodeStream(d);
-            d.close();
-        } catch (IOException e) {
-            Log.i(TAG, "Fail to load bitmap. " + e);
-            return null;
-        } finally {
-            Util.closeSilently(f);
-            Util.closeSilently(b);
-            Util.closeSilently(d);
+        synchronized (sLock) {
+            try {
+                f = new FileInputStream(file);
+                b = new BufferedInputStream(f, BUFSIZE);
+                d = new DataInputStream(b);
+                uri = Uri.parse(d.readUTF());
+                bitmap = BitmapFactory.decodeStream(d);
+                d.close();
+            } catch (IOException e) {
+                Log.i(TAG, "Fail to load bitmap. " + e);
+                return null;
+            } finally {
+                Util.closeSilently(f);
+                Util.closeSilently(b);
+                Util.closeSilently(d);
+            }
         }
         Thumbnail thumbnail = createThumbnail(uri, bitmap, 0);
         if (thumbnail != null) thumbnail.setFromFile(true);
