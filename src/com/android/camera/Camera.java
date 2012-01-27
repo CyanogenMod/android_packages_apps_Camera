@@ -1870,7 +1870,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mZoomState = ZOOM_STOPPED;
         setCameraState(IDLE);
         mFocusManager.onPreviewStarted();
-        CameraSettings.setVideoMode(mParameters, false);
         mCameraDevice.setParameters(mParameters);
 
         if (mSnapshotOnIdle) {
@@ -2056,6 +2055,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mParameters = mCameraDevice.getParameters();
 
         if ((updateSet & UPDATE_PARAM_INITIALIZE) != 0) {
+
+            // Set camera mode
+            CameraSettings.setVideoMode(mParameters, false);
+
             updateCameraParametersInitialize();
         }
 

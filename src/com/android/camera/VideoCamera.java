@@ -925,7 +925,6 @@ public class VideoCamera extends ActivityBase
         mDisplayRotation = Util.getDisplayRotation(this);
         int orientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
         mCameraDevice.setDisplayOrientation(orientation);
-        CameraSettings.setVideoMode(mParameters, true);
         setCameraParameters();
 
         if (!effectsActive()) {
@@ -1887,6 +1886,9 @@ public class VideoCamera extends ActivityBase
 
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
+
+        // Set video mode
+        CameraSettings.setVideoMode(mParameters, true);
 
         mParameters.setPreviewSize(mDesiredPreviewWidth, mDesiredPreviewHeight);
         mParameters.setPreviewFrameRate(mProfile.videoFrameRate);
