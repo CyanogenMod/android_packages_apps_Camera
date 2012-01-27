@@ -1790,9 +1790,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void autoFocus() {
-        mFocusStartTime = System.currentTimeMillis();
-        mCameraDevice.autoFocus(mAutoFocusCallback);
-        setCameraState(FOCUSING);
+        if(mCameraState != SNAPSHOT_IN_PROGRESS) {
+            mFocusStartTime = System.currentTimeMillis();
+            mCameraDevice.autoFocus(mAutoFocusCallback);
+            setCameraState(FOCUSING);
+        }
     }
 
     @Override
