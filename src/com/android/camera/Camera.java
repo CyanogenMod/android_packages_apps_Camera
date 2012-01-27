@@ -2125,6 +2125,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // locking because the preference can be changed from GLThread as well.
     private void setCameraParameters(int updateSet) {
         if ((updateSet & UPDATE_PARAM_INITIALIZE) != 0) {
+
+            // Set camera mode
+            CameraSettings.setVideoMode(mParameters, false);
+
             updateCameraParametersInitialize();
         }
 
