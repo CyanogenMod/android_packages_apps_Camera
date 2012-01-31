@@ -16,16 +16,15 @@
 
 package com.android.camera;
 
-import com.android.camera.ui.CameraPicker;
-import com.android.camera.ui.FaceView;
-import com.android.camera.ui.IndicatorControlContainer;
-import com.android.camera.ui.PopupManager;
-import com.android.camera.ui.Rotatable;
-import com.android.camera.ui.RotateImageView;
-import com.android.camera.ui.RotateLayout;
-import com.android.camera.ui.RotateTextToast;
-import com.android.camera.ui.SharePopup;
-import com.android.camera.ui.ZoomControl;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Formatter;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -66,22 +65,21 @@ import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Formatter;
-import java.util.List;
+import com.android.camera.ui.CameraPicker;
+import com.android.camera.ui.FaceView;
+import com.android.camera.ui.IndicatorControlContainer;
+import com.android.camera.ui.PopupManager;
+import com.android.camera.ui.Rotatable;
+import com.android.camera.ui.RotateImageView;
+import com.android.camera.ui.RotateLayout;
+import com.android.camera.ui.RotateTextToast;
+import com.android.camera.ui.SharePopup;
+import com.android.camera.ui.ZoomControl;
 
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends ActivityBase implements FocusManager.Listener,
@@ -1117,6 +1115,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         getPreferredCameraId();
+        powerShutter(mPreferences);
         String[] defaultFocusModes = getResources().getStringArray(
                 R.array.pref_camera_focusmode_default_array);
         mFocusManager = new FocusManager(mPreferences, defaultFocusModes);
@@ -1255,6 +1254,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 CameraSettings.KEY_SCENE_MODE};
         final String[] OTHER_SETTING_KEYS = {
                 CameraSettings.KEY_RECORD_LOCATION,
+                CameraSettings.KEY_POWER_SHUTTER,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_FOCUS_MODE};
 
@@ -1719,6 +1719,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     mShutterButton.setPressed(true);
                 }
                 return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (mFirstTimeInitialized && event.getRepeatCount() == 0 && powerShutter(mPreferences)) {
+                    onShutterButtonFocus(true);
+                }
+                return true;
         }
 
         return super.onKeyDown(keyCode, event);
@@ -1730,6 +1735,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized) {
                     onShutterButtonFocus(false);
+                }
+                return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (powerShutter(mPreferences)) {
+                    onShutterButtonClick();
                 }
                 return true;
         }

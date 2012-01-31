@@ -358,7 +358,7 @@ public class VideoCamera extends ActivityBase
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
         mCameraId = CameraSettings.readPreferredCameraId(mPreferences);
-
+        powerShutter(mPreferences);
         //Testing purpose. Launch a specific camera through the intent extras.
         int intentCameraId = Util.getCameraFacingIntentExtras(this);
         if (intentCameraId != -1) {
@@ -520,7 +520,8 @@ public class VideoCamera extends ActivityBase
                     CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
                     CameraSettings.KEY_VIDEO_QUALITY};
         final String[] OTHER_SETTING_KEYS = {
-                    CameraSettings.KEY_RECORD_LOCATION};
+                    CameraSettings.KEY_RECORD_LOCATION,
+                    CameraSettings.KEY_POWER_SHUTTER};
 
         CameraPicker.setImageResourceId(R.drawable.ic_switch_video_facing_holo_light);
         mIndicatorControlContainer.initialize(this, mPreferenceGroup,
@@ -1065,6 +1066,11 @@ public class VideoCamera extends ActivityBase
         switch (keyCode) {
             case KeyEvent.KEYCODE_CAMERA:
                 mShutterButton.setPressed(false);
+                return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (powerShutter(mPreferences)) {
+                    onShutterButtonClick();
+                }
                 return true;
         }
         return super.onKeyUp(keyCode, event);
