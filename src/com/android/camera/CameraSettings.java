@@ -52,6 +52,7 @@ public class CameraSettings {
     public static final String KEY_CAMERA_ID = "pref_camera_id_key";
     public static final String KEY_CAMERA_FIRST_USE_HINT_SHOWN = "pref_camera_first_use_hint_shown_key";
     public static final String KEY_VIDEO_FIRST_USE_HINT_SHOWN = "pref_video_first_use_hint_shown_key";
+    public static final String KEY_POWER_SHUTTER = "pref_power_shutter";
 
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
 
@@ -61,6 +62,8 @@ public class CameraSettings {
     public static final int DEFAULT_VIDEO_DURATION = 0; // no limit
 
     private static final String TAG = "CameraSettings";
+    public static final String VALUE_ON = "on";
+    public static final String VALUE_OFF = "off";
 
     private final Context mContext;
     private final Parameters mParameters;
@@ -347,7 +350,7 @@ public class CameraSettings {
         if (version == 2) {
             editor.putString(KEY_RECORD_LOCATION,
                     pref.getBoolean(KEY_RECORD_LOCATION, false)
-                    ? RecordLocationPreference.VALUE_ON
+                    ? CameraSettings.VALUE_ON
                     : RecordLocationPreference.VALUE_NONE);
             version = 3;
         }
