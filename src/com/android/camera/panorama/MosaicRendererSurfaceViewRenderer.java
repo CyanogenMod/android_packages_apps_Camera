@@ -48,8 +48,8 @@ public class MosaicRendererSurfaceViewRenderer implements GLSurfaceView.Renderer
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        MosaicRenderer.reset(width, height, mIsLandscapeOrientation);
         Log.i(TAG, "Renderer: onSurfaceChanged");
+        MosaicRenderer.reset(width, height, mIsLandscapeOrientation);
         if (mSurfaceCreateListener != null) {
             mSurfaceCreateListener.onMosaicSurfaceChanged();
         }
