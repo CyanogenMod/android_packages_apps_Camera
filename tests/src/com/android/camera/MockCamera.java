@@ -145,11 +145,11 @@ public class MockCamera implements CameraDevice {
         p.unflatten("preview-format-values=yuv420sp,yuv420p,yuv422i-yuyv,yuv420p;" +
                 "preview-format=yuv420sp;" +
                 "preview-size-values=800x480;preview-size=800x480;" +
-                "picture-size-values=2592x1944;picture-size=2592x1944" +
+                "picture-size-values=2592x1944;picture-size=2592x1944;" +
                 "jpeg-thumbnail-size-values=320x240,0x0;jpeg-thumbnail-width=320;jpeg-thumbnail-height=240;" +
                 "jpeg-thumbnail-quality=60;jpeg-quality=95;" +
                 "preview-frame-rate-values=30,15;preview-frame-rate=30;" +
-                "focus-mode-values=continuous-video,auto,macro,infinity,continuous-picture;focus-mode=auto" +
+                "focus-mode-values=continuous-video,auto,macro,infinity,continuous-picture;focus-mode=auto;" +
                 "preview-fps-range-values=(15000,30000);preview-fps-range=15000,30000;" +
                 "scene-mode-values=auto,action,night;scene-mode=auto;" +
                 "flash-mode-values=off,on,auto,torch;flash-mode=off;" +
@@ -158,7 +158,8 @@ public class MockCamera implements CameraDevice {
                 "zoom-supported=true;zoom-ratios=100,200,400;max-zoom=2;" +
                 "picture-format-values=jpeg;picture-format=jpeg;" +
                 "min-exposure-compensation=-30;max-exposure-compensation=30;" +
-                "exposure-compensation=0;exposure-compensation-step=0.1");
+                "exposure-compensation=0;exposure-compensation-step=0.1;" +
+                "horizontal-view-angle=40;vertical-view-angle=40;");
         return p;
     }
 }

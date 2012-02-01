@@ -16,27 +16,17 @@
 
 package com.android.camera.activity;
 
-import com.android.camera.Camera;
+import com.android.camera.panorama.PanoramaActivity;
 
 import android.test.suitebuilder.annotation.LargeTest;
 
-public class CameraActivityTest extends CameraTestCase <Camera> {
-    public CameraActivityTest() {
-        super(Camera.class);
+public class PanoramaActivityTest extends CameraTestCase <PanoramaActivity> {
+    public PanoramaActivityTest() {
+        super(PanoramaActivity.class);
     }
 
     @LargeTest
     public void testFailToConnect() throws Exception {
         super.internalTestFailToConnect();
-    }
-
-    @LargeTest
-    public void testRestoreDefault() throws Exception {
-        super.internalTestRestoreDefault();
-    }
-
-    @LargeTest
-    public void testOneCamera() throws Exception {
-        super.internalTestOneCamera();
     }
 }
