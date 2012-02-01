@@ -734,8 +734,9 @@ public class VideoCamera extends ActivityBase
         mEffectType = CameraSettings.readEffectType(mPreferences);
         if (mEffectType != EffectsRecorder.EFFECT_NONE) {
             mEffectParameter = CameraSettings.readEffectParameter(mPreferences);
-            // Set quality to 480p for effects, unless intent is overriding it
-            if (!intent.hasExtra(MediaStore.EXTRA_VIDEO_QUALITY)) {
+            // Set quality to be no higher than 480p.
+            CamcorderProfile profile = CamcorderProfile.get(mCameraId, quality);
+            if (profile.videoFrameHeight > 480) {
                 quality = CamcorderProfile.QUALITY_480P;
             }
             // On initial startup, can get here before indicator control is
