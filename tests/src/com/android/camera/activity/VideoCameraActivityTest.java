@@ -16,13 +16,13 @@
 
 package com.android.camera.activity;
 
-import com.android.camera.Camera;
+import com.android.camera.VideoCamera;
 
 import android.test.suitebuilder.annotation.LargeTest;
 
-public class CameraActivityTest extends CameraTestCase <Camera> {
-    public CameraActivityTest() {
-        super(Camera.class);
+public class VideoCameraActivityTest extends CameraTestCase <VideoCamera> {
+    public VideoCameraActivityTest() {
+        super(VideoCamera.class);
     }
 
     @LargeTest

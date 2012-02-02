@@ -96,6 +96,7 @@ public class CameraHolder {
     public static void injectMockCamera(CameraInfo[] info, CameraDevice[] camera) {
         mMockCameraInfo = info;
         mMockCamera = camera;
+        sHolder = new CameraHolder();
     }
 
     private CameraHolder() {
@@ -105,14 +106,15 @@ public class CameraHolder {
         if (mMockCameraInfo != null) {
             mNumberOfCameras = mMockCameraInfo.length;
             mInfo = mMockCameraInfo;
-            return;
+        } else {
+            mNumberOfCameras = android.hardware.Camera.getNumberOfCameras();
+            mInfo = new CameraInfo[mNumberOfCameras];
+            for (int i = 0; i < mNumberOfCameras; i++) {
+                mInfo[i] = new CameraInfo();
+                android.hardware.Camera.getCameraInfo(i, mInfo[i]);
+            }
         }
-
-        mNumberOfCameras = android.hardware.Camera.getNumberOfCameras();
-        mInfo = new CameraInfo[mNumberOfCameras];
         for (int i = 0; i < mNumberOfCameras; i++) {
-            mInfo[i] = new CameraInfo();
-            android.hardware.Camera.getCameraInfo(i, mInfo[i]);
             if (mBackCameraId == -1 && mInfo[i].facing == CameraInfo.CAMERA_FACING_BACK) {
                 mBackCameraId = i;
             }

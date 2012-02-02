@@ -40,6 +40,7 @@ public class CameraPicker extends RotateImageView implements View.OnClickListene
         setImageResource(mImageResource);
         setContentDescription(getResources().getString(
                 R.string.accessibility_camera_picker));
+        setId(R.id.camera_picker);
     }
 
     public static void setImageResourceId(int imageResource) {
