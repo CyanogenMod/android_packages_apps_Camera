@@ -1026,6 +1026,11 @@ public class PanoramaActivity extends ActivityBase implements
         super.onPause();
 
         mPausing = true;
+        mOrientationEventListener.disable();
+        if (mCameraDevice == null) {
+            // Camera open failed. Nothing should be done here.
+            return;
+        }
         // Stop the capturing first.
         if (mCaptureState == CAPTURE_STATE_MOSAIC) {
             stopCapture(true);
@@ -1038,7 +1043,6 @@ public class PanoramaActivity extends ActivityBase implements
         releaseCamera();
         mMosaicView.onPause();
         clearMosaicFrameProcessorIfNeeded();
-        mOrientationEventListener.disable();
         resetScreenOn();
         mCameraSound.release();
         System.gc();
@@ -1053,13 +1057,6 @@ public class PanoramaActivity extends ActivityBase implements
         try {
             setupCamera();
 
-            // Camera must be initialized before MosaicFrameProcessor is initialized.
-            // The preview size has to be decided by camera device.
-            initMosaicFrameProcessorIfNeeded();
-            mMosaicView.onResume();
-
-            initThumbnailButton();
-            keepScreenOnAwhile();
         } catch (CameraHardwareException e) {
             Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
             return;
@@ -1067,6 +1064,14 @@ public class PanoramaActivity extends ActivityBase implements
             Util.showErrorAndFinish(this, R.string.camera_disabled);
             return;
         }
+
+        // Camera must be initialized before MosaicFrameProcessor is initialized.
+        // The preview size has to be decided by camera device.
+        initMosaicFrameProcessorIfNeeded();
+        mMosaicView.onResume();
+        initThumbnailButton();
+        keepScreenOnAwhile();
+
         // Dismiss open menu if exists.
         PopupManager.getInstance(this).notifyShowPopup(null);
 
@@ -1133,6 +1138,11 @@ public class PanoramaActivity extends ActivityBase implements
     }
 
     private void startCameraPreview() {
+        if (mCameraDevice == null) {
+            // Camera open failed. Return.
+            return;
+        }
+
         // If we're previewing already, stop the preview first (this will blank
         // the screen).
         if (mCameraState != PREVIEW_STOPPED) stopCameraPreview();
