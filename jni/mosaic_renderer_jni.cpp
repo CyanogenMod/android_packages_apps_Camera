@@ -367,8 +367,6 @@ void AllocateTextureMemory(int widthHR, int heightHR, int widthLR, int heightLR)
     gPreviewImageWidth[LR] = widthLR;
     gPreviewImageHeight[LR] = heightLR;
 
-    sem_init(&gPreviewImage_semaphore, 0, 1);
-
     sem_wait(&gPreviewImage_semaphore);
     gPreviewImage[LR] = ImageUtils::allocateImage(gPreviewImageWidth[LR],
             gPreviewImageHeight[LR], 4);
@@ -453,12 +451,12 @@ void FreeTextureMemory()
     ImageUtils::freeImage(gPreviewImage[LR]);
     ImageUtils::freeImage(gPreviewImage[HR]);
     sem_post(&gPreviewImage_semaphore);
-
-    sem_destroy(&gPreviewImage_semaphore);
 }
 
 extern "C"
 {
+    JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved);
+    JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved);
     JNIEXPORT jint JNICALL Java_com_android_camera_panorama_MosaicRenderer_init(
             JNIEnv * env, jobject obj);
     JNIEXPORT void JNICALL Java_com_android_camera_panorama_MosaicRenderer_reset(
@@ -476,6 +474,19 @@ extern "C"
             JNIEnv * env, jobject obj, jboolean flag);
 };
 
+
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
+{
+    sem_init(&gPreviewImage_semaphore, 0, 1);
+
+    return JNI_VERSION_1_4;
+}
+
+
+JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved)
+{
+    sem_destroy(&gPreviewImage_semaphore);
+}
 JNIEXPORT jint JNICALL Java_com_android_camera_panorama_MosaicRenderer_init(
         JNIEnv * env, jobject obj)
 {
