@@ -35,6 +35,7 @@ public abstract class ZoomControl extends RelativeLayout implements Rotatable {
     public static final int ZOOM_OUT = 1;
     public static final int ZOOM_STOP = 2;
 
+    @SuppressWarnings("unused")
     private static final String TAG = "ZoomControl";
     private static final int ZOOMING_INTERVAL = 1000; // milliseconds
 
@@ -59,13 +60,13 @@ public abstract class ZoomControl extends RelativeLayout implements Rotatable {
     protected int mZoomMax, mZoomIndex;
     private boolean mSmoothZoomSupported;
     private OnZoomChangedListener mListener;
-    private OnZoomIndexChangedListener mIndexListener;
 
     protected OnIndicatorEventListener mOnIndicatorEventListener;
     private int mState;
     private int mStep;
 
     protected final Runnable mRunnable = new Runnable() {
+        @Override
         public void run() {
             performZoom(mState, false);
         }

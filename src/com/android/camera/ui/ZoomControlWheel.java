@@ -34,8 +34,8 @@ import android.view.View;
  * which is called in switching between first-level and second-level indicators.
  */
 public class ZoomControlWheel extends ZoomControl {
+    @SuppressWarnings("unused")
     private static final String TAG = "ZoomControlWheel";
-    private static final int HIGHLIGHT_WIDTH = 4;
     private static final int HIGHLIGHT_DEGREES = 30;
     private static final int TRAIL_WIDTH = 2;
     private static final int ZOOM_IN_ICON_DEGREES = 96;
@@ -45,13 +45,10 @@ public class ZoomControlWheel extends ZoomControl {
     private static final int MIN_SLIDER_ANGLE =
             ZOOM_IN_ICON_DEGREES + (HIGHLIGHT_DEGREES / 2);
     private static final int DEFAULT_SLIDER_POSITION = MAX_SLIDER_ANGLE;
-    private static final float EDGE_STROKE_WIDTH = 6f;
-    private static final double BUFFER_RADIANS = Math.toRadians(HIGHLIGHT_DEGREES / 2);
     private static final double SLIDER_RANGE =
             Math.toRadians(MAX_SLIDER_ANGLE - MIN_SLIDER_ANGLE);
     private double mSliderRadians = DEFAULT_SLIDER_POSITION;
 
-    private final int HIGHLIGHT_COLOR;
     private final int TRAIL_COLOR;
 
     // The center of the shutter button.
@@ -75,7 +72,6 @@ public class ZoomControlWheel extends ZoomControl {
 
         mBackgroundRect = new RectF();
         Resources resources = context.getResources();
-        HIGHLIGHT_COLOR = resources.getColor(R.color.review_control_pressed_color);
         TRAIL_COLOR = resources.getColor(R.color.icon_disabled_color);
 
         mShutterButtonRadius = IndicatorControlWheelContainer.SHUTTER_BUTTON_RADIUS;
@@ -150,12 +146,6 @@ public class ZoomControlWheel extends ZoomControl {
         layoutIcon(mZoomOut, Math.toRadians(ZOOM_OUT_ICON_DEGREES));
         layoutIcon(mZoomSlider, getSliderDrawAngle(mSliderRadians));
    }
-
-    private double getZoomIndexAngle() {
-        if (mZoomMax == 0) return Math.PI;
-        return Math.toRadians(MAX_SLIDER_ANGLE -
-                (MAX_SLIDER_ANGLE - MIN_SLIDER_ANGLE) * mZoomIndex / mZoomMax);
-    }
 
     private void drawArc(Canvas canvas, int startAngle, int sweepAngle,
             double radius, int color, int width) {

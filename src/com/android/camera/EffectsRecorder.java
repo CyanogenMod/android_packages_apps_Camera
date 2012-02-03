@@ -875,6 +875,7 @@ public class EffectsRecorder {
     private void sendMessage(final int effect, final int msg) {
         if (mEffectsListener != null) {
             mHandler.post(new Runnable() {
+                @Override
                 public void run() {
                     mEffectsListener.onEffectsUpdate(effect, msg);
                 }
@@ -885,6 +886,7 @@ public class EffectsRecorder {
     private void raiseError(final Exception exception) {
         if (mEffectsListener != null) {
             mHandler.post(new Runnable() {
+                @Override
                 public void run() {
                     if (mFd != null) {
                         mEffectsListener.onEffectsError(exception, null);

@@ -22,7 +22,6 @@ import android.util.Log;
  * Class to handle the processing of each frame by Mosaicer.
  */
 public class MosaicFrameProcessor {
-    private static final boolean LOGV = true;
     private static final String TAG = "MosaicFrameProcessor";
     private static final int NUM_FRAMES_IN_BUFFER = 2;
     private static final int MAX_NUMBER_OF_FRAMES = 100;

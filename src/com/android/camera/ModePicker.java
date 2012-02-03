@@ -23,7 +23,6 @@ import com.android.camera.ui.TwoStateImageView;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -54,7 +53,6 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     }
 
     private final int DISABLED_COLOR;
-    private final int CURRENT_MODE_BACKGROUND;
 
     private OnModeChangeListener mListener;
     private View mModeSelectionFrame;
@@ -71,7 +69,6 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     public ModePicker(Context context, AttributeSet attrs) {
         super(context, attrs);
         DISABLED_COLOR = context.getResources().getColor(R.color.icon_disabled_color);
-        CURRENT_MODE_BACKGROUND = R.drawable.btn_mode_background;
         mFadeIn = AnimationUtils.loadAnimation(
                 context, R.anim.mode_selection_fade_in);
         mFadeOut = AnimationUtils.loadAnimation(
@@ -80,6 +77,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         PopupManager.getInstance(context).setOnOtherPopupShowedListener(this);
     }
 
+    @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
@@ -122,15 +120,18 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     }
 
     private AnimationListener mAnimationListener = new AnimationListener() {
+        @Override
         public void onAnimationEnd(Animation animation) {
             changeToSelectedMode();
             mCurrentModeFrame.setVisibility(View.VISIBLE);
             mModeSelectionFrame.setVisibility(View.GONE);
         }
 
+        @Override
         public void onAnimationRepeat(Animation animation) {
         }
 
+        @Override
         public void onAnimationStart(Animation animation) {
         }
     };
@@ -156,6 +157,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         }
     }
 
+    @Override
     public void onClick(View view) {
         if (view == mCurrentModeFrame) {
             PopupManager.getInstance(getContext()).notifyShowPopup(this);

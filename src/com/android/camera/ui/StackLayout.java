@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 
 // A layout designed to make the children same size as the first child.
 public class StackLayout extends ViewGroup {
+    @SuppressWarnings("unused")
     private static final String TAG = "StackLayout";
 
     public StackLayout(Context context, AttributeSet attrs) {

@@ -125,6 +125,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
 
     private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
         private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
+        @Override
         public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
             Log.w(TAG, "creating OpenGL ES 2.0 context");
             checkEglError("Before eglCreateContext", egl);
@@ -135,6 +136,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
             return context;
         }
 
+        @Override
         public void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context) {
             egl.eglDestroyContext(display, context);
         }
@@ -172,6 +174,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
             EGL10.EGL_NONE
         };
 
+        @Override
         public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
 
             /* Get the number of minimally matching EGL configurations

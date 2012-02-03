@@ -36,7 +36,7 @@ public class PopupManager {
 
     private PopupManager() {}
 
-    private ArrayList<OnOtherPopupShowedListener> mListeners = new ArrayList();
+    private ArrayList<OnOtherPopupShowedListener> mListeners = new ArrayList<OnOtherPopupShowedListener>();
 
     public void notifyShowPopup(View view) {
         for (OnOtherPopupShowedListener listener : mListeners) {

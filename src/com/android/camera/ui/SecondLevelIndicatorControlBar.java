@@ -25,7 +25,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 
 /**
  * A view that contains camera setting indicators which are spread over a
@@ -33,6 +32,7 @@ import android.widget.ImageView;
  */
 public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         View.OnClickListener, AbstractIndicatorButton.IndicatorChangeListener {
+    @SuppressWarnings("unused")
     private static final String TAG = "SecondLevelIndicatorControlBar";
     private static int ICON_SPACING = Util.dpToPixel(16);
     private View mCloseIcon;
@@ -66,6 +66,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         setupFilter();
     }
 
+    @Override
     public void onClick(View view) {
         dismissSettingPopup();
         mOnIndicatorEventListener.onIndicatorEvent(
@@ -101,7 +102,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         int action = event.getAction();
         if (!isEnabled()) return false;
 
-        double x = (double) event.getX();
+        double x = event.getX();
         int width = getWidth();
         if (width == 0) return false; // the event is sent before onMeasure()
         if (x > width) x = width;

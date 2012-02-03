@@ -42,6 +42,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
         View.OnClickListener {
     public static final int HIGHLIGHT_WIDTH = 4;
 
+    @SuppressWarnings("unused")
     private static final String TAG = "IndicatorControlWheel";
     private static final int HIGHLIGHT_DEGREES = 30;
     private static final double HIGHLIGHT_RADIANS = Math.toRadians(HIGHLIGHT_DEGREES);
@@ -55,7 +56,6 @@ public class IndicatorControlWheel extends IndicatorControl implements
     // in the same wheel with larger angle values are visible after rotation.
     private static final int FIRST_LEVEL_START_DEGREES = 74;
     private static final int FIRST_LEVEL_END_DEGREES = 286;
-    private static final int FIRST_LEVEL_SECTOR_DEGREES = 45;
     private static final int SECOND_LEVEL_START_DEGREES = 60;
     private static final int SECOND_LEVEL_END_DEGREES = 300;
     private static final int MAX_ZOOM_CONTROL_DEGREES = 264;
@@ -100,6 +100,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
     private boolean mInAnimation = false;
     private Handler mHandler = new Handler();
     private final Runnable mRunnable = new Runnable() {
+        @Override
         public void run() {
             requestLayout();
         }

@@ -32,11 +32,12 @@ import android.view.View;
  * second-level indicators and a ZoomControlWheel).
  */
 public class IndicatorControlWheelContainer extends IndicatorControlContainer {
+    @SuppressWarnings("unused")
+    private static final String TAG = "IndicatorControlWheelContainer";
+
     public static final int STROKE_WIDTH = 87;
     public static final int SHUTTER_BUTTON_RADIUS = 74;
     public static final int FULL_WHEEL_RADIUS = 93;
-
-    private static final String TAG = "IndicatorControlWheelContainer";
 
     private View mShutterButton;
     private double mShutterButtonRadius;
@@ -56,12 +57,14 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
                 R.id.indicator_control_wheel);
     }
 
+    @Override
     public void initialize(Context context, PreferenceGroup group,
             boolean isZoomSupported, String[] keys, String[] otherSettingKeys) {
         mIndicatorControlWheel.initialize(context, group, isZoomSupported,
                 keys, otherSettingKeys);
     }
 
+    @Override
     public void onIndicatorEvent(int event) {
     }
 

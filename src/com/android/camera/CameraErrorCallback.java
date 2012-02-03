@@ -22,6 +22,7 @@ public class CameraErrorCallback
         implements android.hardware.Camera.ErrorCallback {
     private static final String TAG = "CameraErrorCallback";
 
+    @Override
     public void onError(int error, android.hardware.Camera camera) {
         Log.e(TAG, "Got camera error callback. error=" + error);
         if (error == android.hardware.Camera.CAMERA_ERROR_SERVER_DIED) {

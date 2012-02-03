@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 class PanoProgressBar extends ImageView {
+    @SuppressWarnings("unused")
     private static final String TAG = "PanoProgressBar";
     public static final int DIRECTION_NONE = 0;
     public static final int DIRECTION_LEFT = 1;
@@ -79,6 +80,7 @@ class PanoProgressBar extends ImageView {
         return mDirection;
     }
 
+    @Override
     public void setBackgroundColor(int color) {
         mBackgroundPaint.setColor(color);
         invalidate();
@@ -94,6 +96,7 @@ class PanoProgressBar extends ImageView {
         invalidate();
     }
 
+    @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         mWidth = w;
         mHeight = h;

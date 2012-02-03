@@ -21,9 +21,7 @@ import com.android.camera.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
@@ -33,6 +31,7 @@ public class InLineSettingSwitch extends InLineSettingItem {
     private Switch mSwitch;
 
     OnCheckedChangeListener mCheckedChangeListener = new OnCheckedChangeListener() {
+        @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean desiredState) {
             changeIndex(desiredState ? 1 : 0);
         }

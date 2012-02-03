@@ -37,7 +37,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
-import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -63,10 +62,6 @@ import java.util.StringTokenizer;
  */
 public class Util {
     private static final String TAG = "Util";
-    private static final int DIRECTION_LEFT = 0;
-    private static final int DIRECTION_RIGHT = 1;
-    private static final int DIRECTION_UP = 2;
-    private static final int DIRECTION_DOWN = 3;
 
     // Orientation hysteresis amount used in rounding, in degrees
     public static final int ORIENTATION_HYSTERESIS = 5;
@@ -121,9 +116,9 @@ public class Util {
                 m.postScale(-1, 1);
                 degrees = (degrees + 360) % 360;
                 if (degrees == 0 || degrees == 180) {
-                    m.postTranslate((float) b.getWidth(), 0);
+                    m.postTranslate(b.getWidth(), 0);
                 } else if (degrees == 90 || degrees == 270) {
-                    m.postTranslate((float) b.getHeight(), 0);
+                    m.postTranslate(b.getHeight(), 0);
                 } else {
                     throw new IllegalArgumentException("Invalid degrees=" + degrees);
                 }
@@ -274,6 +269,7 @@ public class Util {
     public static void showErrorAndFinish(final Activity activity, int msgId) {
         DialogInterface.OnClickListener buttonListener =
                 new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int which) {
                 activity.finish();
             }
