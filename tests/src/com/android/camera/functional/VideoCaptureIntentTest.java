@@ -20,27 +20,20 @@ import com.android.camera.VideoCamera;
 import com.android.camera.R;
 
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Process;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video.VideoColumns;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.test.UiThreadTest;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.net.URI;
 
 public class VideoCaptureIntentTest extends ActivityInstrumentationTestCase2 <VideoCamera> {
     private static final String TAG = "VideoCaptureIntentTest";
@@ -245,6 +238,7 @@ public class VideoCaptureIntentTest extends ActivityInstrumentationTestCase2 <Vi
         getInstrumentation().sendCharacterSync(KeyEvent.KEYCODE_CAMERA);
         Thread.sleep(ms);
         getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
             public void run() {
                 // If recording is in progress, stop it. Run these atomically in
                 // UI thread.
@@ -261,6 +255,7 @@ public class VideoCaptureIntentTest extends ActivityInstrumentationTestCase2 <Vi
 
     private void pressDone() {
         getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
             public void run() {
                 getActivity().findViewById(R.id.btn_done).performClick();
             }
@@ -269,6 +264,7 @@ public class VideoCaptureIntentTest extends ActivityInstrumentationTestCase2 <Vi
 
     private void pressRetake() {
         getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
             public void run() {
                 getActivity().findViewById(R.id.btn_retake).performClick();
             }
@@ -277,6 +273,7 @@ public class VideoCaptureIntentTest extends ActivityInstrumentationTestCase2 <Vi
 
     private void pressCancel() {
         getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
             public void run() {
                 getActivity().findViewById(R.id.btn_cancel).performClick();
             }

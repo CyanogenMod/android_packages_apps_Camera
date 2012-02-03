@@ -16,7 +16,6 @@
 
 package com.android.camera.stress;
 
-import com.android.camera.Camera;
 import com.android.camera.VideoCamera;
 import com.android.camera.stress.TestUtil;
 
@@ -25,11 +24,10 @@ import android.app.Instrumentation;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.util.Log;
 import android.view.KeyEvent;
 
-import com.android.camera.stress.ImageCapture;
 import com.android.camera.stress.CameraStressTestRunner;
+
 /**
  * Junit / Instrumentation test case for camera test
  *
@@ -42,7 +40,6 @@ import com.android.camera.stress.CameraStressTestRunner;
  */
 
 public class VideoCapture extends ActivityInstrumentationTestCase2 <VideoCamera> {
-    private String TAG = "VideoCapture";
     private static final long WAIT_FOR_PREVIEW = 1500; //1.5 seconds
     private static final long WAIT_FOR_SWITCH_CAMERA = 3000; //2 seconds
 

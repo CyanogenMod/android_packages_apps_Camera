@@ -20,18 +20,14 @@ import com.android.camera.Camera;
 import com.android.camera.R;
 
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Process;
 import android.provider.MediaStore;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.test.UiThreadTest;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import java.io.BufferedInputStream;
@@ -39,7 +35,6 @@ import java.io.File;
 import java.io.FileInputStream;
 
 public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <Camera> {
-    private static final String TAG = "ImageCaptureIntentTest";
     private Intent mIntent;
 
     public ImageCaptureIntentTest() {
@@ -154,6 +149,7 @@ public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <Ca
 
     private void pressDone() {
         getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
             public void run() {
                 getActivity().findViewById(R.id.btn_done).performClick();
             }
@@ -162,6 +158,7 @@ public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <Ca
 
     private void pressRetake() {
         getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
             public void run() {
                 getActivity().findViewById(R.id.btn_retake).performClick();
             }
@@ -170,6 +167,7 @@ public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <Ca
 
     private void pressCancel() {
         getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
             public void run() {
                 getActivity().findViewById(R.id.btn_cancel).performClick();
             }

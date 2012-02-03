@@ -17,7 +17,6 @@
 package com.android.camera.stress;
 
 import com.android.camera.Camera;
-import com.android.camera.VideoCamera;
 import com.android.camera.stress.CameraStressTestRunner;
 
 import android.app.Instrumentation;
@@ -41,7 +40,6 @@ import android.app.Activity;
 
 public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
     private String TAG = "ImageCapture";
-    private static final int TOTAL_NUMBER_OF_IMAGECAPTURE = 100;
     private static final long WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN = 1500;   //1.5 sedconds
     private static final long WAIT_FOR_SWITCH_CAMERA = 3000; //3 seconds
 

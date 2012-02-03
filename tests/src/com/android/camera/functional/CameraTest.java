@@ -17,7 +17,6 @@
 package com.android.camera.functional;
 
 import com.android.camera.Camera;
-import com.android.camera.R;
 import com.android.camera.VideoCamera;
 
 import android.app.Activity;
@@ -28,16 +27,12 @@ import android.os.Process;
 import android.provider.MediaStore;
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.util.Log;
-import android.view.KeyEvent;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class CameraTest extends InstrumentationTestCase {
-    private static final String TAG = "CameraTest";
-
     @LargeTest
     public void testVideoCaptureIntentFdLeak() throws Exception {
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);

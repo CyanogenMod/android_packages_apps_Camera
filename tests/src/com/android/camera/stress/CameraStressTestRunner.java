@@ -16,11 +16,9 @@
 
 package com.android.camera.stress;
 
-
 import android.os.Bundle;
 import android.test.InstrumentationTestRunner;
 import android.test.InstrumentationTestSuite;
-import android.util.Log;
 import junit.framework.TestSuite;
 
 public class CameraStressTestRunner extends InstrumentationTestRunner {

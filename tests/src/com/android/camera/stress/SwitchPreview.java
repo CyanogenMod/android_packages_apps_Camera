@@ -36,7 +36,7 @@ import java.io.FileWriter;
  *
  * adb shell am instrument \
  *    -e class com.android.camera.stress.SwitchPreview \
- *    -w com.android.camera.tests/com.android.camera.CameraStressTestRunner
+ *    -w com.android.camera.tests/com.android.camera.stress.CameraStressTestRunner
  *
  */
 public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera>{
