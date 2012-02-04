@@ -22,7 +22,6 @@ import com.android.camera.VideoCamera;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.os.Debug;
 import android.os.Environment;
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.LargeTest;

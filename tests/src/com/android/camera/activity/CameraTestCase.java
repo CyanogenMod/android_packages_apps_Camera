@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.hardware.Camera.CameraInfo;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.suitebuilder.annotation.LargeTest;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
