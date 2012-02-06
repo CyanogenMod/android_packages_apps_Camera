@@ -50,8 +50,6 @@ import android.graphics.YuvImage;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.hardware.CameraSound;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -150,8 +148,6 @@ public class PanoramaActivity extends ActivityBase implements
     private int mPreviewHeight;
     private int mCameraState;
     private int mCaptureState;
-    private SensorManager mSensorManager;
-    private Sensor mSensor;
     private PowerManager.WakeLock mPartialWakeLock;
     private ModePicker mModePicker;
     private MosaicFrameProcessor mMosaicFrameProcessor;
@@ -306,11 +302,6 @@ public class PanoramaActivity extends ActivityBase implements
         mGPSDateStampFormat.setTimeZone(tzUTC);
         mGPSTimeStampFormat.setTimeZone(tzUTC);
 
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        if (mSensor == null) {
-            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-        }
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mPartialWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Panorama");
 
