@@ -184,6 +184,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private CameraSound mCameraSound;
 
     private Runnable mDoSnapRunnable = new Runnable() {
+        @Override
         public void run() {
             onShutterButtonClick();
         }
@@ -257,7 +258,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private FocusManager mFocusManager;
     private String mSceneMode;
     private Toast mNotSelectableToast;
-    private Toast mNoShareToast;
 
     private final Handler mHandler = new MainHandler();
     private IndicatorControlContainer mIndicatorControlContainer;
@@ -403,6 +403,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void addIdleHandler() {
         MessageQueue queue = Looper.myQueue();
         queue.addIdleHandler(new MessageQueue.IdleHandler() {
+            @Override
             public boolean queueIdle() {
                 Storage.ensureOSXCompatible();
                 return false;
@@ -709,6 +710,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
     private final class ShutterCallback
             implements android.hardware.Camera.ShutterCallback {
+        @Override
         public void onShutter() {
             mShutterCallbackTime = System.currentTimeMillis();
             mShutterLag = mShutterCallbackTime - mCaptureStartTime;
@@ -718,6 +720,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private final class PostViewPictureCallback implements PictureCallback {
+        @Override
         public void onPictureTaken(
                 byte [] data, android.hardware.Camera camera) {
             mPostViewPictureCallbackTime = System.currentTimeMillis();
@@ -728,6 +731,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private final class RawPictureCallback implements PictureCallback {
+        @Override
         public void onPictureTaken(
                 byte [] rawData, android.hardware.Camera camera) {
             mRawPictureCallbackTime = System.currentTimeMillis();
@@ -743,6 +747,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mLocation = loc;
         }
 
+        @Override
         public void onPictureTaken(
                 final byte [] jpegData, final android.hardware.Camera camera) {
             if (mPausing) {
@@ -803,6 +808,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private final class AutoFocusCallback
             implements android.hardware.Camera.AutoFocusCallback {
+        @Override
         public void onAutoFocus(
                 boolean focused, android.hardware.Camera camera) {
             if (mPausing) return;
@@ -1077,19 +1083,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mCameraSound.playSound(soundId);
     }
 
-    private boolean saveDataToFile(String filePath, byte[] data) {
-        FileOutputStream f = null;
-        try {
-            f = new FileOutputStream(filePath);
-            f.write(data);
-        } catch (IOException e) {
-            return false;
-        } finally {
-            Util.closeSilently(f);
-        }
-        return true;
-    }
-
     private void getPreferredCameraId() {
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
@@ -1103,6 +1096,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     Thread mCameraOpenThread = new Thread(new Runnable() {
+        @Override
         public void run() {
             try {
                 mCameraDevice = Util.openCamera(Camera.this, mCameraId);
@@ -1115,6 +1109,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     });
 
     Thread mCameraPreviewThread = new Thread(new Runnable() {
+        @Override
         public void run() {
             initializeCapabilities();
             startPreview();
@@ -1803,9 +1798,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
+    @Override
     public void surfaceCreated(SurfaceHolder holder) {
     }
 
+    @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         stopPreview();
         mSurfaceHolder = null;
@@ -2116,10 +2113,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private void gotoGallery() {
-        MenuHelper.gotoCameraImageGallery(this);
-    }
-
     private boolean isCameraIdle() {
         return (mCameraState == IDLE) || (mFocusManager.isFocusCompleted());
     }
@@ -2187,11 +2180,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void addBaseMenuItems(Menu menu) {
         MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_VIDEO, new Runnable() {
+            @Override
             public void run() {
                 switchToOtherMode(ModePicker.MODE_VIDEO);
             }
         });
         MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_PANORAMA, new Runnable() {
+            @Override
             public void run() {
                 switchToOtherMode(ModePicker.MODE_PANORAMA);
             }
@@ -2200,6 +2195,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mNumberOfCameras > 1) {
             menu.add(R.string.switch_camera_id)
                     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+                @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     CameraSettings.writePreferredCameraId(mPreferences,
                             ((mCameraId == mFrontCameraId)
@@ -2220,6 +2216,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         return true;
     }
 
+    @Override
     public boolean onModeChanged(int mode) {
         if (mode != ModePicker.MODE_CAMERA) {
             return switchToOtherMode(mode);
@@ -2228,6 +2225,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
+    @Override
     public void onSharedPreferenceChanged() {
         // ignore the events after "onPause()"
         if (mPausing) return;
@@ -2275,9 +2273,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
     }
 
+    @Override
     public void onRestorePreferencesClicked() {
         if (mPausing) return;
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 restorePreferences();
             }
@@ -2305,6 +2305,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
+    @Override
     public void onOverriddenPreferencesClicked() {
         if (mPausing) return;
         if (mNotSelectableToast == null) {

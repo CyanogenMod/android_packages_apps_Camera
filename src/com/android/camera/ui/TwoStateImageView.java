@@ -16,8 +16,6 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.R;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;

@@ -574,9 +574,9 @@ public class VideoCamera extends ActivityBase
         // the width is not enough.
         if (mLabelsLinearLayout != null) {
             if (((orientation / 90) & 1) == 1) {
-                mLabelsLinearLayout.setOrientation(mLabelsLinearLayout.VERTICAL);
+                mLabelsLinearLayout.setOrientation(LinearLayout.VERTICAL);
             } else {
-                mLabelsLinearLayout.setOrientation(mLabelsLinearLayout.HORIZONTAL);
+                mLabelsLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
             }
         }
         mRecordingTimeRect.setOrientation(mOrientationCompensation, animation);
@@ -784,10 +784,10 @@ public class VideoCamera extends ActivityBase
             List<Size> sizes = mParameters.getSupportedPreviewSizes();
             Size preferred = mParameters.getPreferredPreviewSizeForVideo();
             int product = preferred.width * preferred.height;
-            Iterator it = sizes.iterator();
+            Iterator<Size> it = sizes.iterator();
             // Remove the preview sizes that are not preferred.
             while (it.hasNext()) {
-                Size size = (Size) it.next();
+                Size size = it.next();
                 if (size.width * size.height > product) {
                     it.remove();
                 }
@@ -855,6 +855,7 @@ public class VideoCamera extends ActivityBase
         mStorageSpace = Storage.getAvailableSpace();
 
         mHandler.postDelayed(new Runnable() {
+            @Override
             public void run() {
                 showStorageHint();
             }
@@ -1057,6 +1058,7 @@ public class VideoCamera extends ActivityBase
         return super.onKeyUp(keyCode, event);
     }
 
+    @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         // Make sure we have a surface in the holder before proceeding.
         if (holder.getSurface() == null) {
@@ -1099,9 +1101,11 @@ public class VideoCamera extends ActivityBase
         }
     }
 
+    @Override
     public void surfaceCreated(SurfaceHolder holder) {
     }
 
+    @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         mSurfaceHolder = null;
     }
@@ -1456,11 +1460,13 @@ public class VideoCamera extends ActivityBase
 
     private void addBaseMenuItems(Menu menu) {
         MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_CAMERA, new Runnable() {
+            @Override
             public void run() {
                 switchToOtherMode(ModePicker.MODE_CAMERA);
             }
         });
         MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_PANORAMA, new Runnable() {
+            @Override
             public void run() {
                 switchToOtherMode(ModePicker.MODE_PANORAMA);
             }
@@ -1496,6 +1502,7 @@ public class VideoCamera extends ActivityBase
     }
 
     // from MediaRecorder.OnErrorListener
+    @Override
     public void onError(MediaRecorder mr, int what, int extra) {
         Log.e(TAG, "MediaRecorder error. what=" + what + ". extra=" + extra);
         if (what == MediaRecorder.MEDIA_RECORDER_ERROR_UNKNOWN) {
@@ -1506,6 +1513,7 @@ public class VideoCamera extends ActivityBase
     }
 
     // from MediaRecorder.OnInfoListener
+    @Override
     public void onInfo(MediaRecorder mr, int what, int extra) {
         if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
             if (mMediaRecorderRecording) onStopVideoRecording(true);
@@ -1953,6 +1961,7 @@ public class VideoCamera extends ActivityBase
         return true;
     }
 
+    @Override
     public boolean onModeChanged(int mode) {
         if (mode != ModePicker.MODE_VIDEO) {
             return switchToOtherMode(mode);
@@ -1968,7 +1977,7 @@ public class VideoCamera extends ActivityBase
                 if (resultCode == RESULT_OK) {
                     // onActivityResult() runs before onResume(), so this parameter will be
                     // seen by startPreview from onResume()
-                    mEffectUriFromGallery = ((Uri) data.getData()).toString();
+                    mEffectUriFromGallery = data.getData().toString();
                     Log.v(TAG, "Received URI from gallery: " + mEffectUriFromGallery);
                     mResetEffect = false;
                 } else {
@@ -2051,11 +2060,14 @@ public class VideoCamera extends ActivityBase
         super.onConfigurationChanged(config);
     }
 
+    @Override
     public void onOverriddenPreferencesClicked() {
     }
 
+    @Override
     public void onRestorePreferencesClicked() {
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 restorePreferences();
             }
@@ -2088,6 +2100,7 @@ public class VideoCamera extends ActivityBase
         return (mEffectType != EffectsRecorder.EFFECT_NONE);
     }
 
+    @Override
     public void onSharedPreferenceChanged() {
         // ignore the events after "onPause()" or preview has not started yet
         if (mPausing) return;

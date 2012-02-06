@@ -31,6 +31,7 @@ import android.widget.ProgressBar;
 
 public class RotateDialogController implements Rotatable {
 
+    @SuppressWarnings("unused")
     private static final String TAG = "RotateDialogController";
     private static final long ANIM_DURATION = 150;  // millis
 

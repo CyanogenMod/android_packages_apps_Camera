@@ -68,6 +68,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         return mPrefLocal;
     }
 
+    @Override
     public Map<String, ?> getAll() {
         throw new UnsupportedOperationException(); // Can be implemented if needed.
     }
@@ -81,6 +82,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
                 || key.equals(CameraSettings.KEY_VIDEO_EFFECT);
     }
 
+    @Override
     public String getString(String key, String defValue) {
         if (isGlobal(key) || !mPrefLocal.contains(key)) {
             return mPrefGlobal.getString(key, defValue);
@@ -89,6 +91,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         }
     }
 
+    @Override
     public int getInt(String key, int defValue) {
         if (isGlobal(key) || !mPrefLocal.contains(key)) {
             return mPrefGlobal.getInt(key, defValue);
@@ -97,6 +100,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         }
     }
 
+    @Override
     public long getLong(String key, long defValue) {
         if (isGlobal(key) || !mPrefLocal.contains(key)) {
             return mPrefGlobal.getLong(key, defValue);
@@ -105,6 +109,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         }
     }
 
+    @Override
     public float getFloat(String key, float defValue) {
         if (isGlobal(key) || !mPrefLocal.contains(key)) {
             return mPrefGlobal.getFloat(key, defValue);
@@ -113,6 +118,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         }
     }
 
+    @Override
     public boolean getBoolean(String key, boolean defValue) {
         if (isGlobal(key) || !mPrefLocal.contains(key)) {
             return mPrefGlobal.getBoolean(key, defValue);
@@ -122,10 +128,12 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
     }
 
     // This method is not used.
+    @Override
     public Set<String> getStringSet(String key, Set<String> defValues) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean contains(String key) {
         if (mPrefLocal.contains(key)) return true;
         if (mPrefGlobal.contains(key)) return true;
@@ -141,30 +149,35 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
             mEditorLocal = mPrefLocal.edit();
         }
 
+        @Override
         public boolean commit() {
             boolean result1 = mEditorGlobal.commit();
             boolean result2 = mEditorLocal.commit();
             return result1 && result2;
         }
 
+        @Override
         public void apply() {
             mEditorGlobal.apply();
             mEditorLocal.apply();
         }
 
         // Note: clear() and remove() affects both local and global preferences.
+        @Override
         public Editor clear() {
             mEditorGlobal.clear();
             mEditorLocal.clear();
             return this;
         }
 
+        @Override
         public Editor remove(String key) {
             mEditorGlobal.remove(key);
             mEditorLocal.remove(key);
             return this;
         }
 
+        @Override
         public Editor putString(String key, String value) {
             if (isGlobal(key)) {
                 mEditorGlobal.putString(key, value);
@@ -174,6 +187,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
             return this;
         }
 
+        @Override
         public Editor putInt(String key, int value) {
             if (isGlobal(key)) {
                 mEditorGlobal.putInt(key, value);
@@ -183,6 +197,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
             return this;
         }
 
+        @Override
         public Editor putLong(String key, long value) {
             if (isGlobal(key)) {
                 mEditorGlobal.putLong(key, value);
@@ -192,6 +207,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
             return this;
         }
 
+        @Override
         public Editor putFloat(String key, float value) {
             if (isGlobal(key)) {
                 mEditorGlobal.putFloat(key, value);
@@ -201,6 +217,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
             return this;
         }
 
+        @Override
         public Editor putBoolean(String key, boolean value) {
             if (isGlobal(key)) {
                 mEditorGlobal.putBoolean(key, value);
@@ -211,6 +228,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         }
 
         // This method is not used.
+        @Override
         public Editor putStringSet(String key, Set<String> values) {
             throw new UnsupportedOperationException();
         }
@@ -218,20 +236,24 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
 
     // Note the remove() and clear() of the returned Editor may not work as
     // expected because it doesn't touch the global preferences at all.
+    @Override
     public Editor edit() {
         return new MyEditor();
     }
 
+    @Override
     public void registerOnSharedPreferenceChangeListener(
             OnSharedPreferenceChangeListener listener) {
         mListeners.add(listener);
     }
 
+    @Override
     public void unregisterOnSharedPreferenceChangeListener(
             OnSharedPreferenceChangeListener listener) {
         mListeners.remove(listener);
     }
 
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         for (OnSharedPreferenceChangeListener listener : mListeners) {

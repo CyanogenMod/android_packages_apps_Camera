@@ -20,7 +20,6 @@ import com.android.camera.ui.FaceView;
 import com.android.camera.ui.FocusIndicator;
 import com.android.camera.ui.FocusIndicatorView;
 
-import android.content.res.AssetFileDescriptor;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -44,7 +43,6 @@ public class FocusManager {
     private static final String TAG = "FocusManager";
 
     private static final int RESET_TOUCH_FOCUS = 0;
-    private static final int FOCUS_BEEP_VOLUME = 100;
     private static final int RESET_TOUCH_FOCUS_DELAY = 3000;
 
     private int mState = STATE_IDLE;

@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 public class OtherSettingIndicatorButton extends AbstractIndicatorButton {
+    @SuppressWarnings("unused")
     private final String TAG = "OtherSettingIndicatorButton";
     private PreferenceGroup mPreferenceGroup;
     private String[] mPrefKeys;

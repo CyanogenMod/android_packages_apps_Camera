@@ -55,14 +55,13 @@ public class OnScreenHint {
     private final Handler mHandler = new Handler();
 
     /**
-     * Construct an empty OnScreenHint object.  You must call {@link #setView}
-     * before you can call {@link #show}.
+     * Construct an empty OnScreenHint object.
      *
      * @param context  The context to use.  Usually your
      *                 {@link android.app.Application} or
      *                 {@link android.app.Activity} object.
      */
-    public OnScreenHint(Context context) {
+    private OnScreenHint(Context context) {
         mWM = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mY = context.getResources().getDimensionPixelSize(
                 R.dimen.hint_y_offset);
@@ -82,7 +81,7 @@ public class OnScreenHint {
      */
     public void show() {
         if (mNextView == null) {
-            throw new RuntimeException("setView must have been called");
+            throw new RuntimeException("View is not initialized");
         }
         mHandler.post(mShow);
     }
@@ -175,12 +174,14 @@ public class OnScreenHint {
     }
 
     private final Runnable mShow = new Runnable() {
+        @Override
         public void run() {
             handleShow();
         }
     };
 
     private final Runnable mHide = new Runnable() {
+        @Override
         public void run() {
             handleHide();
         }

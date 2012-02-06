@@ -53,6 +53,7 @@ import java.util.Map;
 // A popup window that contains a big thumbnail and a list of apps to share.
 public class SharePopup extends PopupWindow implements View.OnClickListener,
         View.OnTouchListener, AdapterView.OnItemClickListener, Rotatable {
+    @SuppressWarnings("unused")
     private static final String TAG = "SharePopup";
     private static final String ADAPTER_COLUMN_ICON = "icon";
     private Context mContext;
@@ -122,8 +123,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         mShareList = (GridView) sharePopup.findViewById(R.id.share_list);
         mThumbnail = (ImageView) sharePopup.findViewById(R.id.thumbnail);
         mThumbnail.setImageBitmap(bitmap);
-        mImageViewFrame =
-                (View) sharePopup.findViewById(R.id.thumbnail_image_frame);
+        mImageViewFrame = sharePopup.findViewById(R.id.thumbnail_image_frame);
         mImageViewFrame.setOnClickListener(this);
 
 
@@ -190,6 +190,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         mThumbnailRotateLayout.setLayoutParams(lpNew);
     }
 
+    @Override
     public void setOrientation(int orientation, boolean animation) {
         mOrientation = orientation;
 

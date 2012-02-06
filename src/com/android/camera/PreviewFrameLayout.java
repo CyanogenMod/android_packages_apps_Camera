@@ -42,6 +42,7 @@ public class PreviewFrameLayout extends RelativeLayout {
         setAspectRatio(4.0 / 3.0);
     }
 
+    @Override
     protected void onFinishInflate() {
         mBorder = findViewById(R.id.preview_border);
     }

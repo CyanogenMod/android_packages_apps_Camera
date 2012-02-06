@@ -44,6 +44,7 @@ public class RotateTextToast {
     }
 
     private final Runnable mRunnable = new Runnable() {
+        @Override
         public void run() {
             Util.fadeOut(mToast);
             mLayoutRoot.removeView(mToast);

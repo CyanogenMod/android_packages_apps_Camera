@@ -47,8 +47,6 @@ public class Storage {
     public static final long LOW_STORAGE_THRESHOLD= 50000000;
     public static final long PICTURE_SIZE = 1500000;
 
-    private static final int BUFSIZE = 4096;
-
     public static Uri addImage(ContentResolver resolver, String title, long date,
                 Location location, int orientation, byte[] jpeg, int width, int height) {
         // Save the image.
