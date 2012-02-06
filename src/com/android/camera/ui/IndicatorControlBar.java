@@ -31,12 +31,12 @@ import android.widget.ImageView;
  */
 public class IndicatorControlBar extends IndicatorControl implements
         View.OnClickListener {
+    @SuppressWarnings("unused")
     private static final String TAG = "IndicatorControlBar";
 
     // Space between indicator icons.
     public static final int ICON_SPACING = Util.dpToPixel(16);
 
-    private ImageView mZoomIcon;
     private ImageView mSecondLevelIcon;
     private ZoomControlBar mZoomControl;
 
@@ -76,6 +76,7 @@ public class IndicatorControlBar extends IndicatorControl implements
         return true;
     }
 
+    @Override
     public void onClick(View view) {
         dismissSettingPopup();
         // Only for the click on mSecondLevelIcon.

@@ -16,7 +16,6 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.EffectsRecorder;
 import com.android.camera.IconListPreference;
 import com.android.camera.R;
 

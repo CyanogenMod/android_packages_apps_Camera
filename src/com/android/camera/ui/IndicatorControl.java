@@ -36,6 +36,7 @@ import java.util.ArrayList;
  */
 public abstract class IndicatorControl extends RelativeLayout implements
         IndicatorButton.Listener, OtherSettingsPopup.Listener, Rotatable {
+    @SuppressWarnings("unused")
     private static final String TAG = "IndicatorControl";
     public static final int MODE_CAMERA = 0;
     public static final int MODE_VIDEO = 1;

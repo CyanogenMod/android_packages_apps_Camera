@@ -30,6 +30,7 @@ import android.widget.ImageView;
 // This is an indicator button and pressing it opens a popup window. Ex: flash or other settings.
 public abstract class AbstractIndicatorButton extends RotateImageView implements
         PopupManager.OnOtherPopupShowedListener {
+    @SuppressWarnings("unused")
     private final String TAG = "AbstractIndicatorButton";
     protected Animation mFadeIn, mFadeOut;
     protected final int HIGHLIGHT_COLOR;

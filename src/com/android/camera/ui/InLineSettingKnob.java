@@ -25,7 +25,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Button;
 import android.widget.TextView;
@@ -40,6 +39,7 @@ public class InLineSettingKnob extends InLineSettingItem {
     private TextView mEntry;
 
     private final Runnable mRunnable = new Runnable() {
+        @Override
         public void run() {
             if (mNext) {
                 if (changeIndex(mIndex - 1)) {
@@ -59,6 +59,7 @@ public class InLineSettingKnob extends InLineSettingItem {
     }
 
     OnTouchListener mNextTouchListener = new OnTouchListener() {
+        @Override
         public boolean onTouch(View v, MotionEvent event) {
             if (mOverrideValue != null) return true;
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -76,6 +77,7 @@ public class InLineSettingKnob extends InLineSettingItem {
     };
 
     OnTouchListener mPreviousTouchListener = new OnTouchListener() {
+        @Override
         public boolean onTouch(View v, MotionEvent event) {
             if (mOverrideValue != null) return true;
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -112,6 +114,7 @@ public class InLineSettingKnob extends InLineSettingItem {
                 R.string.accessibility_decrement, mPreference.getTitle()));
     }
 
+    @Override
     protected void updateView() {
         if (mOverrideValue == null) {
             mEntry.setText(mPreference.getEntry());

@@ -28,6 +28,7 @@ import android.view.View;
  * A view that contains camera zoom control and its layout.
  */
 public class ZoomControlBar extends ZoomControl {
+    @SuppressWarnings("unused")
     private static final String TAG = "ZoomControlBar";
     private static final int THRESHOLD_FIRST_MOVE = Util.dpToPixel(10); // pixels
     // Space between indicator icon and the zoom-in/out icon.

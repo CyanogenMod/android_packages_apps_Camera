@@ -61,6 +61,7 @@ public class RotateImageView extends TwoStateImageView implements Rotatable {
     }
 
     // Rotate the view counter-clockwise
+    @Override
     public void setOrientation(int degree, boolean animation) {
         mEnableAnimation = animation;
         // make sure in the range of [0, 359]

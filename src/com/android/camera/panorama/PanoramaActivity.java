@@ -110,9 +110,6 @@ public class PanoramaActivity extends ActivityBase implements
     // Speed is in unit of deg/sec
     private static final float PANNING_SPEED_THRESHOLD = 20f;
 
-    // Ratio of nanosecond to second
-    private static final float NS2S = 1.0f / 1000000000.0f;
-
     private boolean mPausing;
 
     private View mPanoLayout;
@@ -142,16 +139,8 @@ public class PanoramaActivity extends ActivityBase implements
     private int mIndicatorColor;
     private int mIndicatorColorFast;
 
-    private float mCompassValueX;
-    private float mCompassValueY;
-    private float mCompassValueXStart;
-    private float mCompassValueYStart;
     private float mCompassValueXStartBuffer;
     private float mCompassValueYStartBuffer;
-    private int mCompassThreshold;
-    private int mTraversedAngleX;
-    private int mTraversedAngleY;
-    private long mTimestamp;
 
     private RotateImageView mThumbnailView;
     private Thumbnail mThumbnail;
@@ -265,11 +254,13 @@ public class PanoramaActivity extends ActivityBase implements
 
     private void addBaseMenuItems(Menu menu) {
         MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_CAMERA, new Runnable() {
+            @Override
             public void run() {
                 switchToOtherMode(ModePicker.MODE_CAMERA);
             }
         });
         MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_VIDEO, new Runnable() {
+            @Override
             public void run() {
                 switchToOtherMode(ModePicker.MODE_VIDEO);
             }
@@ -489,6 +480,7 @@ public class PanoramaActivity extends ActivityBase implements
         return true;
     }
 
+    @Override
     public boolean onModeChanged(int mode) {
         if (mode != ModePicker.MODE_PANORAMA) {
             return switchToOtherMode(mode);
@@ -529,6 +521,7 @@ public class PanoramaActivity extends ActivityBase implements
         });
     }
 
+    @Override
     public synchronized void onFrameAvailable(SurfaceTexture surface) {
         /* This function may be called by some random thread,
          * so let's be safe and use synchronize. No OpenGL calls can be done here.
@@ -582,10 +575,6 @@ public class PanoramaActivity extends ActivityBase implements
         mCaptureIndicator.setVisibility(View.VISIBLE);
         showDirectionIndicators(PanoProgressBar.DIRECTION_NONE);
         mThumbnailView.setEnabled(false);
-
-        mCompassValueXStart = mCompassValueXStartBuffer;
-        mCompassValueYStart = mCompassValueYStartBuffer;
-        mTimestamp = 0;
 
         mMosaicFrameProcessor.setProgressListener(new MosaicFrameProcessor.ProgressListener() {
             @Override
@@ -698,7 +687,7 @@ public class PanoramaActivity extends ActivityBase implements
 
         Resources appRes = getResources();
 
-        mCaptureLayout = (View) findViewById(R.id.pano_capture_layout);
+        mCaptureLayout = findViewById(R.id.pano_capture_layout);
         mPanoProgressBar = (PanoProgressBar) findViewById(R.id.pano_pan_progress_bar);
         mPanoProgressBar.setBackgroundColor(appRes.getColor(R.color.pano_progress_empty));
         mPanoProgressBar.setDoneColor(appRes.getColor(R.color.pano_progress_done));
@@ -715,12 +704,12 @@ public class PanoramaActivity extends ActivityBase implements
                     }
                 });
 
-        mLeftIndicator = (ImageView) findViewById(R.id.pano_pan_left_indicator);
-        mRightIndicator = (ImageView) findViewById(R.id.pano_pan_right_indicator);
+        mLeftIndicator = findViewById(R.id.pano_pan_left_indicator);
+        mRightIndicator = findViewById(R.id.pano_pan_right_indicator);
         mLeftIndicator.setEnabled(false);
         mRightIndicator.setEnabled(false);
         mTooFastPrompt = (TextView) findViewById(R.id.pano_capture_too_fast_textview);
-        mFastIndicationBorder = (View) findViewById(R.id.pano_speed_indication_border);
+        mFastIndicationBorder = findViewById(R.id.pano_speed_indication_border);
 
         mSavingProgressBar = (PanoProgressBar) findViewById(R.id.pano_saving_progress_bar);
         mSavingProgressBar.setIndicatorWidth(0);
@@ -733,7 +722,7 @@ public class PanoramaActivity extends ActivityBase implements
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
         mThumbnailView.enableFilter(false);
 
-        mReviewLayout = (View) findViewById(R.id.pano_review_layout);
+        mReviewLayout = findViewById(R.id.pano_review_layout);
         mReview = (ImageView) findViewById(R.id.pano_reviewarea);
         mMosaicView = (MosaicRendererSurfaceView) findViewById(R.id.pano_renderer);
         mMosaicView.setMosaicSurfaceCreateListener(this);
@@ -759,10 +748,10 @@ public class PanoramaActivity extends ActivityBase implements
                     (Rotatable) findViewById(R.id.pano_saving_progress_bar_layout),
                     (Rotatable) findViewById(R.id.pano_review_cancel_button_layout),
                     (Rotatable) findViewById(R.id.pano_rotate_reviewarea),
-                    (Rotatable) mRotateDialog,
-                    (Rotatable) mCaptureIndicator,
-                    (Rotatable) mModePicker,
-                    (Rotatable) mThumbnailView};
+                    mRotateDialog,
+                    mCaptureIndicator,
+                    mModePicker,
+                    mThumbnailView};
             for (Rotatable r : rotateLayout) {
                 r.setOrientation(270, false);
             }
@@ -810,6 +799,7 @@ public class PanoramaActivity extends ActivityBase implements
                     }
                     // Update the progress bar
                     runOnUiThread(new Runnable() {
+                        @Override
                         public void run() {
                             mSavingProgressBar.setProgress(progress);
                         }

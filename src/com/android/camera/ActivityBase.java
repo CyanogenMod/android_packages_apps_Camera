@@ -23,7 +23,6 @@ import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;

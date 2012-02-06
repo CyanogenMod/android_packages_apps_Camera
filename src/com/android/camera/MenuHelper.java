@@ -17,11 +17,7 @@
 package com.android.camera;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -42,7 +38,6 @@ public class MenuHelper {
     private static final int INCLUDE_IMAGES = (1 << 0);
     private static final int INCLUDE_VIDEOS = (1 << 2);
 
-    private static final int NO_ANIMATION = 0;
     private static final String CAMERA_CLASS = "com.android.camera.Camera";
     private static final String PANORAMA_CLASS = "com.android.camera.panorama.PanoramaActivity";
     private static final String VIDEO_CAMERA_CLASS = "com.android.camera.VideoCamera";
@@ -69,6 +64,7 @@ public class MenuHelper {
         }
         MenuItem item = menu.add(labelId).setOnMenuItemClickListener(
                 new OnMenuItemClickListener() {
+            @Override
             public boolean onMenuItemClick(MenuItem item) {
                 r.run();
                 return true;

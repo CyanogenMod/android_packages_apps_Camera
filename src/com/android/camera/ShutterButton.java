@@ -18,7 +18,6 @@ package com.android.camera;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ImageView;
 
 /**
@@ -84,6 +83,7 @@ public class ShutterButton extends ImageView {
                 // sees events in this sequence:
                 //     pressed(true), optional click, pressed(false)
                 post(new Runnable() {
+                    @Override
                     public void run() {
                         callShutterButtonFocus(pressed);
                     }

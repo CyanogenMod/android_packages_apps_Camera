@@ -36,5 +36,6 @@ public class InLineSettingRestore extends InLineSettingItem {
                 getContext().getString(R.string.pref_restore_detail));
     }
 
+    @Override
     protected void updateView() { }
 }
