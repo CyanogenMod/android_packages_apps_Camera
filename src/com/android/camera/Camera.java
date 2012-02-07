@@ -368,7 +368,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Initialize last picture button.
         if (!mIsImageCaptureIntent) {  // no thumbnail in image capture intent
-            initThumbnailButton();
+            updateThumbnailButton();
         }
 
         // Initialize shutter button.
@@ -410,17 +410,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         });
     }
 
-    private void initThumbnailButton() {
-        // Load the thumbnail from the disk.
-        mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
-        updateThumbnailButton();
-    }
-
     private void updateThumbnailButton() {
-        // Update last image if URI is invalid and the storage is ready.
-        if ((mThumbnail == null || !Util.isUriValid(mThumbnail.getUri(), mContentResolver))
-                && mStorageSpace >= 0) {
-            mThumbnail = Thumbnail.getLastThumbnail(mContentResolver);
+        mThumbnail = ThumbnailHolder.getLastThumbnail(mContentResolver);
+        if (mThumbnail == null) {
+            mThumbnail = Thumbnail.getLastThumbnail(getFilesDir(), mContentResolver);
         }
         if (mThumbnail != null) {
             mThumbnailView.setBitmap(mThumbnail.getBitmap());
@@ -946,7 +939,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 }
                 storeImage(r.data, r.loc, r.width, r.height, r.dateTaken,
                         r.previewWidth);
-                synchronized(this) {
+                synchronized (this) {
                     mQueue.remove(0);
                     notifyAll();  // the main thread may wait in addImage
                 }
@@ -2027,7 +2020,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 } else {
                     mCameraDevice.setAutoFocusMoveCallback(null);
                 }
-            } catch(RuntimeException e) {
+            } catch (RuntimeException e) {
                 // Ignore. This can be removed if CTS requires autofocus move
                 // callback.
             }
@@ -2173,6 +2166,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private boolean switchToOtherMode(int mode) {
         if (isFinishing()) return false;
         if (mImageSaver != null) mImageSaver.waitDone();
+        if (mThumbnail != null) ThumbnailHolder.keep(mThumbnail);
         MenuHelper.gotoMode(mode, Camera.this, mOrientationCompensation);
         mHandler.removeMessages(FIRST_TIME_INIT);
         finish();
