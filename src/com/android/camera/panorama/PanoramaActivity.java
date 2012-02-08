@@ -309,12 +309,11 @@ public class PanoramaActivity extends ActivityBase implements
 
         mTransformMatrix = new float[16];
 
-        mPreparePreviewString =
-                getResources().getString(R.string.pano_dialog_prepare_preview);
-        mDialogTitle = getResources().getString(R.string.pano_dialog_title);
-        mDialogOkString = getResources().getString(R.string.dialog_ok);
-        mDialogPanoramaFailedString =
-                getResources().getString(R.string.pano_dialog_panorama_failed);
+        Resources appRes = getResources();
+        mPreparePreviewString = appRes.getString(R.string.pano_dialog_prepare_preview);
+        mDialogTitle = appRes.getString(R.string.pano_dialog_title);
+        mDialogOkString = appRes.getString(R.string.dialog_ok);
+        mDialogPanoramaFailedString = appRes.getString(R.string.pano_dialog_panorama_failed);
         mCameraSound = new CameraSound();
 
         mMainHandler = new Handler() {
