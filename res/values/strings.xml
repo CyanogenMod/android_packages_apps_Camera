@@ -304,7 +304,7 @@
     <!-- Effect setting item that replaces background with a disco effect. [CHAR LIMIT=14] -->
     <string name="effect_backdropper_disco">Disco</string>
     <!-- Effect setting item that replaces background with video from gallery. [CHAR LIMIT=14] -->
-    <string name="effect_backdropper_gallery">Choose your own</string>
+    <string name="effect_backdropper_gallery">Your video</string>
 
     <!-- Message displayed in overlay during background replacement training [CHAR LIMIT=180]-->
     <string name="bg_replacement_message">Set your device down.\nStep out of view for a moment.</string>
