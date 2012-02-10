@@ -87,9 +87,9 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Место на USB-накопителе заканчивается. Измените настройки качества или удалите ненужные изображения и другие файлы."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Место на вашей SD-карте заканчивается. Измените настройки качества или удалите ненужные изображения и другие файлы."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Достигнут предельный размер видео."</string>
-    <string name="switch_to_camera_label" msgid="9148663083850199582">"Переключиться на камеру"</string>
-    <string name="switch_to_video_label" msgid="1167994386902254398">"Переключить на видео"</string>
-    <string name="switch_to_panorama_label" msgid="858801335653517864">"Переключить в режим панорамы"</string>
+    <string name="switch_to_camera_label" msgid="9148663083850199582">"Режим \"Фото\""</string>
+    <string name="switch_to_video_label" msgid="1167994386902254398">"Режим \"Видео\""</string>
+    <string name="switch_to_panorama_label" msgid="858801335653517864">"Режим \"Панорама\""</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Отправка картинки"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Отправка видео"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"Нет ни одного изображения."</string>

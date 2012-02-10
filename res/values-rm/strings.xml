@@ -17,7 +17,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Errur da la camera"</string>
-    <!-- outdated translation 8029009101380114174 -->     <string name="cannot_connect_camera" msgid="955440687597185163">"Impussibel da connectar cun la camera."</string>
+    <!-- no translation found for cannot_connect_camera (955440687597185163) -->
+    <skip />
     <!-- no translation found for camera_disabled (8923911090533439312) -->
     <skip />
     <string name="camera_label" msgid="6346560772074764302">"Camera"</string>
@@ -25,19 +26,28 @@
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Fotos da la camera"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Videos da la camera"</string>
     <string name="wait" msgid="8600187532323801552">"Spetgar..."</string>
-    <!-- outdated translation 820691042667338625 -->     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Inseri per plaschair ina carta SD avant che utilisar la camera."</string>
-    <!-- outdated translation 820691042667338625 -->     <string name="no_storage" product="default" msgid="5137703033746873624">"Inseri per plaschair ina carta SD avant che utilisar la camera."</string>
-    <!-- outdated translation 6655334407957844653 -->     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Vossa carta SD è plaina."</string>
+    <!-- no translation found for no_storage (7335975356349008814) -->
+    <skip />
+    <!-- no translation found for no_storage (5137703033746873624) -->
+    <skip />
+    <!-- no translation found for not_enough_space (6452370395538050134) -->
+    <skip />
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Vossa carta SD è plaina."</string>
-    <!-- outdated translation 2914969119574812666 -->     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Preparar la carta SD..."</string>
+    <!-- no translation found for preparing_sd (6104019983528341353) -->
+    <skip />
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Preparar la carta SD..."</string>
-    <!-- outdated translation 4427585260986849912 -->     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Impussibel d\'acceder a la carta SD."</string>
-    <!-- outdated translation 4427585260986849912 -->     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Impussibel d\'acceder a la carta SD."</string>
+    <!-- no translation found for access_sd_fail (8147993984037859354) -->
+    <skip />
+    <!-- no translation found for access_sd_fail (1584968646870054352) -->
+    <skip />
     <string name="confirm_restore_title" msgid="1229914538263792180">"Restaurar ils parameters predefinids"</string>
-    <!-- outdated translation 5239464943578877295 -->     <string name="confirm_restore_message" msgid="6649481842684452641">"Ils parameters predefinids da la camera vegnan restaurads."</string>
-    <!-- outdated translation 6015456244323302817 -->     <string name="review_play" msgid="6378271587740884696">"REPRODUCIR"</string>
+    <!-- no translation found for confirm_restore_message (6649481842684452641) -->
+    <skip />
+    <!-- no translation found for review_play (6378271587740884696) -->
+    <skip />
     <string name="review_cancel" msgid="8188009385853399254">"INTERRUMPER"</string>
-    <!-- outdated translation 5305096180300056529 -->     <string name="review_ok" msgid="1156261588693116433">"OK"</string>
+    <!-- no translation found for review_ok (1156261588693116433) -->
+    <skip />
     <string name="review_retake" msgid="7804864054896088338">"AUTRA FOTO"</string>
     <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Catalog"</string>
     <string name="switch_camera_id" msgid="837545176602471325">"Midar la camera"</string>
@@ -55,12 +65,16 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Parameters da la camera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Parameters da la camera da video"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Grondezza dal maletg"</string>
-    <!-- outdated translation 1871154452633783418 -->     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 milliuns pixels"</string>
-    <!-- outdated translation 8763841848102861602 -->     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 milliuns pixels"</string>
-    <!-- outdated translation 3802531502504271124 -->     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 milliuns pixels"</string>
+    <!-- no translation found for pref_camera_picturesize_entry_2592x1936 (6980117304679164339) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_2048x1536 (4391030755438075447) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_1600x1200 (8081839485457681369) -->
+    <skip />
     <!-- no translation found for pref_camera_picturesize_entry_1280x960 (7820672028447972964) -->
     <skip />
-    <!-- outdated translation 6557686202570581693 -->     <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1 milliun pixels"</string>
+    <!-- no translation found for pref_camera_picturesize_entry_1024x768 (3705686683403524018) -->
+    <skip />
     <!-- no translation found for pref_camera_picturesize_entry_640x480 (5557572917973022995) -->
     <skip />
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -88,12 +102,15 @@
     <!-- no translation found for not_selectable_in_scene_mode (2970291701448555126) -->
     <skip />
     <string name="pref_restore_title" msgid="6479274979730178961">"Parameters da la camera"</string>
-    <!-- outdated translation 5326039608800383369 -->     <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar ils parameters predefinids"</string>
+    <!-- no translation found for pref_restore_detail (5732490002291044791) -->
+    <skip />
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposiziun"</string>
     <!-- no translation found for dialog_ok (6263301364153382152) -->
     <skip />
-    <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Vossa carta SD è plaina. Modifitgai il parameter da qualitad u stizzai elements dal catalog."</string>
-    <!-- outdated translation 2848517537672543641 -->     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Vossa carta SD è plaina. Modifitgai il parameter da qualitad u stizzai elements dal catalog."</string>
+    <!-- no translation found for spaceIsLow_content (4401325203349203177) -->
+    <skip />
+    <!-- no translation found for spaceIsLow_content (1732882643101247179) -->
+    <skip />
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Cuntanschì la grondezza maximala."</string>
     <!-- no translation found for switch_to_camera_label (9148663083850199582) -->
     <skip />
