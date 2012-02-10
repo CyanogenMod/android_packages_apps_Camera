@@ -37,6 +37,7 @@ abstract public class ActivityBase extends Activity {
     private int mResultCodeForTesting;
     private boolean mOnResumePending;
     private Intent mResultDataForTesting;
+    private OnScreenHint mStorageHint;
     protected CameraDevice mCameraDevice;
 
     @Override
@@ -85,6 +86,12 @@ abstract public class ActivityBase extends Activity {
     protected void onPause() {
         if (LOGV) Log.v(TAG, "onPause");
         super.onPause();
+
+        if (mStorageHint != null) {
+            mStorageHint.cancel();
+            mStorageHint = null;
+        }
+
         mOnResumePending = false;
     }
 
@@ -142,5 +149,30 @@ abstract public class ActivityBase extends Activity {
         }
         // isKeyguardSecure excludes the slide lock case.
         return (kgm != null) && kgm.isKeyguardLocked() && kgm.isKeyguardSecure();
+    }
+
+    protected void updateStorageHint(long storageSpace) {
+        String message = null;
+        if (storageSpace == Storage.UNAVAILABLE) {
+            message = getString(R.string.no_storage);
+        } else if (storageSpace == Storage.PREPARING) {
+            message = getString(R.string.preparing_sd);
+        } else if (storageSpace == Storage.UNKNOWN_SIZE) {
+            message = getString(R.string.access_sd_fail);
+        } else if (storageSpace < Storage.LOW_STORAGE_THRESHOLD) {
+            message = getString(R.string.spaceIsLow_content);
+        }
+
+        if (message != null) {
+            if (mStorageHint == null) {
+                mStorageHint = OnScreenHint.makeText(this, message);
+            } else {
+                mStorageHint.setText(message);
+            }
+            mStorageHint.show();
+        } else if (mStorageHint != null) {
+            mStorageHint.cancel();
+            mStorageHint = null;
+        }
     }
 }
