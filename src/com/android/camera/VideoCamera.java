@@ -863,7 +863,7 @@ public class VideoCamera extends ActivityBase
 
         // Initialize location sevice.
         boolean recordLocation = RecordLocationPreference.get(
-                mPreferences, getContentResolver());
+                mPreferences, mContentResolver);
         mLocationManager.recordLocation(recordLocation);
 
         if (!mIsVideoCaptureIntent) {
@@ -2110,7 +2110,7 @@ public class VideoCamera extends ActivityBase
             if (mCameraDevice == null) return;
 
             boolean recordLocation = RecordLocationPreference.get(
-                    mPreferences, getContentResolver());
+                    mPreferences, mContentResolver);
             mLocationManager.recordLocation(recordLocation);
 
             // Check if the current effects selection has changed
