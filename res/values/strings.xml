@@ -165,6 +165,8 @@
     <string name="pref_camera_focusmode_entry_auto">Auto</string>
     <string name="pref_camera_focusmode_entry_infinity">Infinity</string>
     <string name="pref_camera_focusmode_entry_macro">Macro</string>
+    <string name="pref_camera_focusmode_entry_fixed">Fixed</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Face detect</string>
 
     <!-- Default flash mode setting.-->
     <string name="pref_camera_flashmode_default" translatable="false">auto</string>
@@ -195,6 +197,7 @@
     <string name="pref_camera_whitebalance_entry_daylight">Daylight</string>
     <string name="pref_camera_whitebalance_entry_fluorescent">Fluorescent</string>
     <string name="pref_camera_whitebalance_entry_cloudy">Cloudy</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Cloudy-Daylight</string>
 
     <!-- Default scene mode setting. -->
     <string name="pref_camera_scenemode_default" translatable="false">auto</string>
@@ -212,6 +215,10 @@
     <string name="pref_camera_scenemode_entry_sunset">Sunset</string>
     <!-- Scene mode optimized for taking indoor low-lights pictures. [CHAR LIMIT=16] -->
     <string name="pref_camera_scenemode_entry_party">Party</string>
+    <string name="pref_camera_scenemode_entry_backlight">Backlight</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Duskdawn</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Fallcolor</string>
+    <string name="pref_camera_scenemode_entry_text">Text</string>
 
     <!-- Toast after trying to select a setting that is not allowed to change in scene mode [CHAR LIMIT=NONE] -->
     <string name="not_selectable_in_scene_mode">Not selectable in scene mode.</string>
