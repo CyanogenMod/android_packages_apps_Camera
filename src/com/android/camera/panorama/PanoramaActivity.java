@@ -110,6 +110,8 @@ public class PanoramaActivity extends ActivityBase implements
 
     private boolean mPausing;
 
+    private ContentResolver mContentResolver;
+
     private View mPanoLayout;
     private View mCaptureLayout;
     private View mReviewLayout;
@@ -284,6 +286,8 @@ public class PanoramaActivity extends ActivityBase implements
         Util.enterLightsOutMode(window);
 
         createContentView();
+
+        mContentResolver = getContentResolver();
 
         mUpdateTexImageRunnable = new Runnable() {
             @Override
@@ -810,9 +814,8 @@ public class PanoramaActivity extends ActivityBase implements
 
     private void updateThumbnailButton() {
         // Update last image if URI is invalid and the storage is ready.
-        ContentResolver contentResolver = getContentResolver();
-        if ((mThumbnail == null || !Util.isUriValid(mThumbnail.getUri(), contentResolver))) {
-            mThumbnail = Thumbnail.getLastThumbnail(contentResolver);
+        if ((mThumbnail == null || !Util.isUriValid(mThumbnail.getUri(), mContentResolver))) {
+            mThumbnail = Thumbnail.getLastThumbnail(mContentResolver);
         }
         if (mThumbnail != null) {
             mThumbnailView.setBitmap(mThumbnail.getBitmap());
@@ -943,7 +946,7 @@ public class PanoramaActivity extends ActivityBase implements
         if (jpegData != null) {
             String filename = PanoUtil.createName(
                     getResources().getString(R.string.pano_file_name_format), mTimeTaken);
-            Uri uri = Storage.addImage(getContentResolver(), filename, mTimeTaken, null,
+            Uri uri = Storage.addImage(mContentResolver, filename, mTimeTaken, null,
                     orientation, jpegData, width, height);
             if (uri != null) {
                 String filepath = Storage.generateFilepath(filename);

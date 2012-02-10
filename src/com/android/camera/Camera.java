@@ -341,7 +341,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // TODO: Utilize mMediaProviderClient instance to replace
         // ContentResolver calls.
         if (mMediaProviderClient == null) {
-            mMediaProviderClient = getContentResolver()
+            mMediaProviderClient = mContentResolver
                     .acquireContentProviderClient(MediaStore.AUTHORITY);
         }
     }
@@ -359,7 +359,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Initialize location sevice.
         boolean recordLocation = RecordLocationPreference.get(
-                mPreferences, getContentResolver());
+                mPreferences, mContentResolver);
         initOnScreenIndicator();
         mLocationManager.recordLocation(recordLocation);
 
@@ -367,7 +367,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         checkStorage();
 
         // Initialize last picture button.
-        mContentResolver = getContentResolver();
         if (!mIsImageCaptureIntent) {  // no thumbnail in image capture intent
             initThumbnailButton();
         }
@@ -439,7 +438,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Start location update if needed.
         boolean recordLocation = RecordLocationPreference.get(
-                mPreferences, getContentResolver());
+                mPreferences, mContentResolver);
         mLocationManager.recordLocation(recordLocation);
 
         installIntentFilter();
@@ -1123,6 +1122,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         String[] defaultFocusModes = getResources().getStringArray(
                 R.array.pref_camera_focusmode_default_array);
         mFocusManager = new FocusManager(mPreferences, defaultFocusModes);
+
+        mContentResolver = getContentResolver();
 
         /*
          * To reduce startup time, we start the camera open and preview threads.
@@ -2231,7 +2232,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mPausing) return;
 
         boolean recordLocation = RecordLocationPreference.get(
-                mPreferences, getContentResolver());
+                mPreferences, mContentResolver);
         mLocationManager.recordLocation(recordLocation);
 
         int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
