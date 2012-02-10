@@ -56,6 +56,8 @@
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Auto"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infini"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
+    <string name="pref_camera_focusmode_entry_fixed">"Fixe"</string>
+    <string name="pref_camera_focusmode_entry_facedetect">"Visage"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Mode Flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatique"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Activé"</string>
@@ -66,12 +68,24 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Lumière du jour"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescent"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Nuageux"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">"Journée nuageuse"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Mode Scène"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatique"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Action"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Nuit"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Coucher de soleil"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Fête"</string>
+    <string name="pref_camera_scenemode_entry_landscape">"Paysage"</string>
+    <string name="pref_camera_scenemode_entry_beach">"Plage"</string>
+    <string name="pref_camera_scenemode_entry_snow">"Neige"</string>
+    <string name="pref_camera_scenemode_entry_fireworks">"Feu d\'artifice"</string>
+    <string name="pref_camera_scenemode_entry_sports">"Sports"</string>
+    <string name="pref_camera_scenemode_entry_candlelight">"Bougie"</string>
+    <string name="pref_camera_scenemode_entry_backlight">"Rétro-éclairé"</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">"Aube"</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">"Crépuscule"</string>
+    <string name="pref_camera_scenemode_entry_text">"Texte"</string>
+    <string name="pref_camera_scenemode_entry_portrait">"Portrait"</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Ce paramètre ne peut pas être sélectionné en mode Scène."</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Paramètres de l\'appareil photo"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Rétablir les paramètres par défaut"</string>
