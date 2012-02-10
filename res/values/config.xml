@@ -22,5 +22,7 @@
 <resources>
     <!-- Samsung Camcorder Mode -->
     <bool name="needsSamsungCamMode">false</bool>
+    <!-- Samsung Camera Settings -->
+    <bool name="hasSamsungCamSettings">false</bool>
 </resources>
 
