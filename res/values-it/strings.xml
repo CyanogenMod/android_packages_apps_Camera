@@ -112,7 +112,8 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"Nello spazio"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Tramonto"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
-    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Scegli il tuo"</string>
+    <!-- no translation found for effect_backdropper_gallery (959158844620991906) -->
+    <skip />
     <string name="bg_replacement_message" msgid="9184270738916564608">"Posa il tuo dispositivo."\n"Esci dalla visualizzazione per un attimo."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Non selezionabile quando l\'effetto è attivo."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Scatta una foto durante il video toccando lo schermo di anteprima."</string>

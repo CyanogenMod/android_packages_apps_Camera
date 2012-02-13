@@ -112,7 +112,8 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"In space"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Sunset"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
-    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Choose your own"</string>
+    <!-- no translation found for effect_backdropper_gallery (959158844620991906) -->
+    <skip />
     <string name="bg_replacement_message" msgid="9184270738916564608">"Set your device down."\n"Move out of view for a moment."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Not selectable when effect is on."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Take a photo during video recording by touching the preview screen."</string>
