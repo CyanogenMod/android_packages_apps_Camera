@@ -112,7 +112,8 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"U svemiru"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Zalazak sunca"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
-    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Odaberite svoj"</string>
+    <!-- no translation found for effect_backdropper_gallery (959158844620991906) -->
+    <skip />
     <string name="bg_replacement_message" msgid="9184270738916564608">"U nastavku postavite ​​uređaj."\n"Odmaknite se na trenutak."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Nije moguće odabrati ako je efekt uključen."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Tijekom snimanja videozapisa dodirom zaslona pregleda snimite fotografiju."</string>

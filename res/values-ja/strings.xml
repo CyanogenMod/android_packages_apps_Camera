@@ -112,7 +112,8 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"宇宙空間"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"夕焼け"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"ディスコ"</string>
-    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"ギャラリーから"</string>
+    <!-- no translation found for effect_backdropper_gallery (959158844620991906) -->
+    <skip />
     <string name="bg_replacement_message" msgid="9184270738916564608">"端末をセッティングします。"\n"少しの間フレームの外に出ます。"</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"効果がONのときは選択できません。"</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"動画の録画中にプレビュー画面をタップすると静止画を撮影できます。"</string>

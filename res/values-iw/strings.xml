@@ -112,7 +112,8 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"בחלל"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"שקיעה"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"דיסקו"</string>
-    <string name="effect_backdropper_gallery" msgid="3271387403091819540">"בחר פריט משלך"</string>
+    <!-- no translation found for effect_backdropper_gallery (959158844620991906) -->
+    <skip />
     <string name="bg_replacement_message" msgid="9184270738916564608">"הנח את המכשיר."\n"צא לרגע מהתמונה."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"לא ניתן לבחירה כאשר מופעל אפקט."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"צלם תמונה במהלך הקלטת סרטון וידאו על ידי נגיעה במסך התצוגה המקדימה."</string>
