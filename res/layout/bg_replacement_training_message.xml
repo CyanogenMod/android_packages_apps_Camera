@@ -40,7 +40,7 @@
 
             <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="1dp"
                     android:background="#aaaaaa" />
 
             <Button android:id="@+id/bg_replace_cancel_button"

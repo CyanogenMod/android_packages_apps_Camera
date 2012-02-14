@@ -55,7 +55,6 @@
                             android:layout_height="wrap_content"
                             android:minHeight="64dp"/>
                     <View android:id="@+id/rotate_dialog_title_divider"
-                            layout_weight="bottom"
                             style="@style/PopupTitleSeperator" />
                 </LinearLayout>
 
