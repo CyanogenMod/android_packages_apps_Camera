@@ -244,7 +244,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private long mRawPictureCallbackTime;
     private long mJpegPictureCallbackTime;
     private long mOnResumeTime;
-    private long mPicturesRemaining;
+    private long mStorageSpace;
     private byte[] mJpegImageData;
 
     // These latency time are for the CameraLatency test.
@@ -419,7 +419,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void updateThumbnailButton() {
         // Update last image if URI is invalid and the storage is ready.
         if ((mThumbnail == null || !Util.isUriValid(mThumbnail.getUri(), mContentResolver))
-                && mPicturesRemaining >= 0) {
+                && mStorageSpace >= 0) {
             mThumbnail = Thumbnail.getLastThumbnail(mContentResolver);
         }
         if (mThumbnail != null) {
@@ -1340,15 +1340,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private void checkStorage() {
-        mPicturesRemaining = Storage.getAvailableSpace();
-        if (mPicturesRemaining > Storage.LOW_STORAGE_THRESHOLD) {
-            mPicturesRemaining = (mPicturesRemaining - Storage.LOW_STORAGE_THRESHOLD)
-                    / Storage.PICTURE_SIZE;
-        } else if (mPicturesRemaining > 0) {
-            mPicturesRemaining = 0;
-        }
-
-        updateStorageHint();
+        mStorageSpace = Storage.getAvailableSpace();
+        updateStorageHint(mStorageSpace);
     }
 
     @OnClickAttr
@@ -1475,8 +1468,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mPausing || collapseCameraControls()) return;
 
         // Do not take the picture if there is not enough storage.
-        if (mPicturesRemaining <= 0) {
-            Log.i(TAG, "Not enough space or storage not ready. remaining=" + mPicturesRemaining);
+        if (mStorageSpace <= Storage.LOW_STORAGE_THRESHOLD) {
+            Log.i(TAG, "Not enough space or storage not ready. remaining=" + mStorageSpace);
             return;
         }
         Log.v(TAG, "onShutterButtonClick: mCameraState=" + mCameraState);
@@ -1493,34 +1486,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         mSnapshotOnIdle = false;
         mFocusManager.doSnap();
-    }
-
-    private OnScreenHint mStorageHint;
-
-    private void updateStorageHint() {
-        String noStorageText = null;
-
-        if (mPicturesRemaining == Storage.UNAVAILABLE) {
-            noStorageText = getString(R.string.no_storage);
-        } else if (mPicturesRemaining == Storage.PREPARING) {
-            noStorageText = getString(R.string.preparing_sd);
-        } else if (mPicturesRemaining == Storage.UNKNOWN_SIZE) {
-            noStorageText = getString(R.string.access_sd_fail);
-        } else if (mPicturesRemaining < 1L) {
-            noStorageText = getString(R.string.not_enough_space);
-        }
-
-        if (noStorageText != null) {
-            if (mStorageHint == null) {
-                mStorageHint = OnScreenHint.makeText(this, noStorageText);
-            } else {
-                mStorageHint.setText(noStorageText);
-            }
-            mStorageHint.show();
-        } else if (mStorageHint != null) {
-            mStorageHint.cancel();
-            mStorageHint = null;
-        }
     }
 
     private void installIntentFilter() {
@@ -1614,11 +1579,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mLocationManager != null) mLocationManager.recordLocation(false);
         updateExposureOnScreenIndicator(0);
 
-        if (mStorageHint != null) {
-            mStorageHint.cancel();
-            mStorageHint = null;
-        }
-
         // If we are in an image capture intent and has taken
         // a picture, we just clear it in onPause.
         mJpegImageData = null;
@@ -1655,7 +1615,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private boolean canTakePicture() {
-        return isCameraIdle() && (mPicturesRemaining > 0);
+        return isCameraIdle() && (mStorageSpace > Storage.LOW_STORAGE_THRESHOLD);
     }
 
     @Override

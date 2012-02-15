@@ -666,36 +666,9 @@ public class VideoCamera extends ActivityBase
         // Do nothing (everything happens in onShutterButtonClick).
     }
 
-    private OnScreenHint mStorageHint;
-
     private void updateAndShowStorageHint() {
         mStorageSpace = Storage.getAvailableSpace();
-        showStorageHint();
-    }
-
-    private void showStorageHint() {
-        String errorMessage = null;
-        if (mStorageSpace == Storage.UNAVAILABLE) {
-            errorMessage = getString(R.string.no_storage);
-        } else if (mStorageSpace == Storage.PREPARING) {
-            errorMessage = getString(R.string.preparing_sd);
-        } else if (mStorageSpace == Storage.UNKNOWN_SIZE) {
-            errorMessage = getString(R.string.access_sd_fail);
-        } else if (mStorageSpace < Storage.LOW_STORAGE_THRESHOLD) {
-            errorMessage = getString(R.string.spaceIsLow_content);
-        }
-
-        if (errorMessage != null) {
-            if (mStorageHint == null) {
-                mStorageHint = OnScreenHint.makeText(this, errorMessage);
-            } else {
-                mStorageHint.setText(errorMessage);
-            }
-            mStorageHint.show();
-        } else if (mStorageHint != null) {
-            mStorageHint.cancel();
-            mStorageHint = null;
-        }
+        updateStorageHint(mStorageSpace);
     }
 
     private void readVideoPreferences() {
@@ -857,7 +830,7 @@ public class VideoCamera extends ActivityBase
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                showStorageHint();
+                updateStorageHint(mStorageSpace);
             }
         }, 200);
 
@@ -991,11 +964,6 @@ public class VideoCamera extends ActivityBase
 
         if (!mIsVideoCaptureIntent && mThumbnail != null && !mThumbnail.fromFile()) {
             mThumbnail.saveTo(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
-        }
-
-        if (mStorageHint != null) {
-            mStorageHint.cancel();
-            mStorageHint = null;
         }
 
         mOrientationListener.disable();
@@ -1548,7 +1516,7 @@ public class VideoCamera extends ActivityBase
         Log.v(TAG, "startVideoRecording");
 
         updateAndShowStorageHint();
-        if (mStorageSpace < Storage.LOW_STORAGE_THRESHOLD) {
+        if (mStorageSpace <= Storage.LOW_STORAGE_THRESHOLD) {
             Log.v(TAG, "Storage issue, ignore the start request");
             return;
         }
