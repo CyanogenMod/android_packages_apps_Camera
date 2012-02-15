@@ -1279,6 +1279,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 && mIndicatorControlContainer.dismissSettingPopup()) {
             return true;
         }
+        if (mModePicker != null && mModePicker.dismissModeSelection()) return true;
         return false;
     }
 

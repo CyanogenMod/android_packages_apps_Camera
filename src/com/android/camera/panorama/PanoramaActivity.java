@@ -1167,6 +1167,7 @@ public class PanoramaActivity extends ActivityBase implements
         // If panorama is generating low res or high res mosaic, ignore back
         // key. So the activity will not be destroyed.
         if (mThreadRunning) return;
+        if (mModePicker != null && mModePicker.dismissModeSelection()) return;
         super.onBackPressed();
     }
 
