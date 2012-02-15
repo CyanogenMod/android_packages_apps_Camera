@@ -112,8 +112,7 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"Космос"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Закат"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Диско"</string>
-    <!-- no translation found for effect_backdropper_gallery (959158844620991906) -->
-    <skip />
+    <string name="effect_backdropper_gallery" msgid="959158844620991906">"Ваше видео"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Установите устройство на твердой поверхности."\n"Затем отойдите, чтобы вас было видно в камеру."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Недоступно при использовании эффекта."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Чтобы сделать снимок при видеосъемке, нажмите на экран просмотра."</string>

@@ -112,8 +112,7 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"우주"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"일몰"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"디스코"</string>
-    <!-- no translation found for effect_backdropper_gallery (959158844620991906) -->
-    <skip />
+    <string name="effect_backdropper_gallery" msgid="959158844620991906">"내 동영상"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"기기를 내려놓습니다."\n"잠시 동안 시야를 벗어납니다."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"효과를 사용 중일 때는 선택할 수 없습니다."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"동영상을 촬영하는 동안 미리보기 화면을 터치하여 사진을 찍을 수 있습니다."</string>

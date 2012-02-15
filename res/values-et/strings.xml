@@ -112,8 +112,7 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"Kosmoses"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Päikeseloojang"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disko"</string>
-    <!-- no translation found for effect_backdropper_gallery (959158844620991906) -->
-    <skip />
+    <string name="effect_backdropper_gallery" msgid="959158844620991906">"Teie video"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Pange seade käest ära."\n"Astuge korraks vaateväljast eemale."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Seda ei saa valida, kui efekt on sees."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Videot salvestades foto jäädvustamiseks koputage eelvaate kuval."</string>
