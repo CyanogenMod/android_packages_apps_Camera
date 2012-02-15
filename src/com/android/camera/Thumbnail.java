@@ -155,16 +155,11 @@ public class Thumbnail {
         return thumbnail;
     }
 
-    public static Thumbnail getLastThumbnail(File dir, ContentResolver resolver) {
-        Thumbnail t = loadFrom(new File(dir, LAST_THUMB_FILENAME), resolver);
-        // Try reading from the file first.
-        if (t != null) return t;
-
-        // No valid thumbnail from file. Try content resolver then.
-        return getThumbnailFromContentResolver(resolver);
+    public static Thumbnail getLastThumbnailFromFile(File dir, ContentResolver resolver) {
+        return loadFrom(new File(dir, LAST_THUMB_FILENAME), resolver);
     }
 
-    private static Thumbnail getThumbnailFromContentResolver(ContentResolver resolver) {
+    public static Thumbnail getLastThumbnailFromContentResolver(ContentResolver resolver) {
         Media image = getLastImageThumbnail(resolver);
         Media video = getLastVideoThumbnail(resolver);
         if (image == null && video == null) return null;

@@ -133,11 +133,6 @@ public class VideoCamera extends ActivityBase
     private ImageView mReviewImage;
     // A popup window that contains a bigger thumbnail and a list of apps to share.
     private SharePopup mSharePopup;
-    // The bitmap of the last captured video thumbnail and the URI of the
-    // original video.
-    private Thumbnail mThumbnail;
-    // An imageview showing showing the last captured picture thumbnail.
-    private RotateImageView mThumbnailView;
     private Rotatable mReviewCancelButton;
     private Rotatable mReviewDoneButton;
     private Rotatable mReviewPlayButton;
@@ -297,7 +292,7 @@ public class VideoCamera extends ActivityBase
                 stopVideoRecording();
             } else if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
                 updateAndShowStorageHint();
-                updateThumbnailButton();
+                getLastThumbnail();
             } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 // SD card unavailable
                 // handled in ACTION_MEDIA_EJECT
@@ -826,7 +821,7 @@ public class VideoCamera extends ActivityBase
         mLocationManager.recordLocation(recordLocation);
 
         if (!mIsVideoCaptureIntent) {
-            updateThumbnailButton();  // Update the last video thumbnail.
+            getLastThumbnail();
             mModePicker.setCurrentMode(ModePicker.MODE_VIDEO);
         }
 
@@ -1700,18 +1695,6 @@ public class VideoCamera extends ActivityBase
     private void keepScreenOn() {
         mHandler.removeMessages(CLEAR_SCREEN_DELAY);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    }
-
-    private void updateThumbnailButton() {
-        mThumbnail = ThumbnailHolder.getLastThumbnail(mContentResolver);
-        if (mThumbnail == null) {
-            mThumbnail = Thumbnail.getLastThumbnail(getFilesDir(), mContentResolver);
-        }
-        if (mThumbnail != null) {
-            mThumbnailView.setBitmap(mThumbnail.getBitmap());
-        } else {
-            mThumbnailView.setBitmap(null);
-        }
     }
 
     private static String millisecondToTimeString(long milliSeconds, boolean displayCentiSeconds) {

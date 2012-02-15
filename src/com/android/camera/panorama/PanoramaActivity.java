@@ -140,8 +140,6 @@ public class PanoramaActivity extends ActivityBase implements
     private int mIndicatorColor;
     private int mIndicatorColorFast;
 
-    private RotateImageView mThumbnailView;
-    private Thumbnail mThumbnail;
     private SharePopup mSharePopup;
 
     private int mPreviewWidth;
@@ -801,18 +799,6 @@ public class PanoramaActivity extends ActivityBase implements
         t.start();
     }
 
-    private void updateThumbnailButton() {
-        mThumbnail = ThumbnailHolder.getLastThumbnail(mContentResolver);
-        if (mThumbnail == null) {
-            mThumbnail = Thumbnail.getLastThumbnail(getFilesDir(), mContentResolver);
-        }
-        if (mThumbnail != null) {
-            mThumbnailView.setBitmap(mThumbnail.getBitmap());
-        } else {
-            mThumbnailView.setBitmap(null);
-        }
-    }
-
     private void saveThumbnailToFile() {
         if (mThumbnail != null && !mThumbnail.fromFile()) {
             mThumbnail.saveTo(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
@@ -1041,7 +1027,7 @@ public class PanoramaActivity extends ActivityBase implements
         // The preview size has to be decided by camera device.
         initMosaicFrameProcessorIfNeeded();
         mMosaicView.onResume();
-        updateThumbnailButton();
+        getLastThumbnail();
         keepScreenOnAwhile();
 
         // Dismiss open menu if exists.
