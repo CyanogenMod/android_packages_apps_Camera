@@ -29,6 +29,7 @@ import com.android.camera.RotateDialogController;
 import com.android.camera.ShutterButton;
 import com.android.camera.Storage;
 import com.android.camera.Thumbnail;
+import com.android.camera.ThumbnailHolder;
 import com.android.camera.Util;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.Rotatable;
@@ -336,7 +337,7 @@ public class PanoramaActivity extends ActivityBase implements
                         if (mPausing) saveThumbnailToFile();
                         // Set the thumbnail bitmap here because mThumbnailView must be accessed
                         // from the UI thread.
-                        updateThumbnailButton();
+                        if (mThumbnail != null) mThumbnailView.setBitmap(mThumbnail.getBitmap());
 
                         // Share popup may still have the reference to the old thumbnail. Clear it.
                         mSharePopup = null;
@@ -466,9 +467,8 @@ public class PanoramaActivity extends ActivityBase implements
     }
 
     private boolean switchToOtherMode(int mode) {
-        if (isFinishing()) {
-            return false;
-        }
+        if (isFinishing()) return false;
+        if (mThumbnail != null) ThumbnailHolder.keep(mThumbnail);
         MenuHelper.gotoMode(mode, this, mOrientationCompensation);
         finish();
         return true;
@@ -804,18 +804,10 @@ public class PanoramaActivity extends ActivityBase implements
         t.start();
     }
 
-    private void initThumbnailButton() {
-        // Load the thumbnail from the disk.
-        if (mThumbnail == null) {
-            mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
-        }
-        updateThumbnailButton();
-    }
-
     private void updateThumbnailButton() {
-        // Update last image if URI is invalid and the storage is ready.
-        if ((mThumbnail == null || !Util.isUriValid(mThumbnail.getUri(), mContentResolver))) {
-            mThumbnail = Thumbnail.getLastThumbnail(mContentResolver);
+        mThumbnail = ThumbnailHolder.getLastThumbnail(mContentResolver);
+        if (mThumbnail == null) {
+            mThumbnail = Thumbnail.getLastThumbnail(getFilesDir(), mContentResolver);
         }
         if (mThumbnail != null) {
             mThumbnailView.setBitmap(mThumbnail.getBitmap());
@@ -1052,7 +1044,7 @@ public class PanoramaActivity extends ActivityBase implements
         // The preview size has to be decided by camera device.
         initMosaicFrameProcessorIfNeeded();
         mMosaicView.onResume();
-        initThumbnailButton();
+        updateThumbnailButton();
         keepScreenOnAwhile();
 
         // Dismiss open menu if exists.

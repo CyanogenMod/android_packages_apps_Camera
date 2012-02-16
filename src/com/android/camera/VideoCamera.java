@@ -379,7 +379,9 @@ public class VideoCamera extends ActivityBase
             mReviewCancelButton = (Rotatable) findViewById(R.id.btn_cancel);
             findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
         } else {
-            initThumbnailButton();
+            mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
+            mThumbnailView.enableFilter(false);
+            mThumbnailView.setVisibility(View.VISIBLE);
             mModePicker = (ModePicker) findViewById(R.id.mode_picker);
             mModePicker.setVisibility(View.VISIBLE);
             mModePicker.setOnModeChangeListener(this);
@@ -1578,10 +1580,10 @@ public class VideoCamera extends ActivityBase
 
     private void getThumbnail() {
         if (mCurrentVideoUri != null) {
-            Bitmap videoFrame = Thumbnail.createVideoThumbnail(mCurrentVideoFilename,
+            Bitmap videoFrame = Thumbnail.createVideoThumbnailBitmap(mCurrentVideoFilename,
                     mPreviewFrameLayout.getWidth());
             if (videoFrame != null) {
-                mThumbnail = new Thumbnail(mCurrentVideoUri, videoFrame, 0);
+                mThumbnail = Thumbnail.createThumbnail(mCurrentVideoUri, videoFrame, 0);
                 mThumbnailView.setBitmap(mThumbnail.getBitmap());
                 // Share popup may still have the reference to the old thumbnail. Clear it.
                 mSharePopup = null;
@@ -1592,10 +1594,10 @@ public class VideoCamera extends ActivityBase
     private void showAlert() {
         Bitmap bitmap = null;
         if (mVideoFileDescriptor != null) {
-            bitmap = Thumbnail.createVideoThumbnail(mVideoFileDescriptor.getFileDescriptor(),
+            bitmap = Thumbnail.createVideoThumbnailBitmap(mVideoFileDescriptor.getFileDescriptor(),
                     mPreviewFrameLayout.getWidth());
         } else if (mCurrentVideoFilename != null) {
-            bitmap = Thumbnail.createVideoThumbnail(mCurrentVideoFilename,
+            bitmap = Thumbnail.createVideoThumbnailBitmap(mCurrentVideoFilename,
                     mPreviewFrameLayout.getWidth());
         }
         if (bitmap != null) {
@@ -1697,17 +1699,10 @@ public class VideoCamera extends ActivityBase
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    private void initThumbnailButton() {
-        mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
-        mThumbnailView.enableFilter(false);
-        mThumbnailView.setVisibility(View.VISIBLE);
-        // Load the thumbnail from the disk.
-        mThumbnail = Thumbnail.loadFrom(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
-    }
-
     private void updateThumbnailButton() {
-        if (mThumbnail == null || !Util.isUriValid(mThumbnail.getUri(), mContentResolver)) {
-            mThumbnail = Thumbnail.getLastThumbnail(mContentResolver);
+        mThumbnail = ThumbnailHolder.getLastThumbnail(mContentResolver);
+        if (mThumbnail == null) {
+            mThumbnail = Thumbnail.getLastThumbnail(getFilesDir(), mContentResolver);
         }
         if (mThumbnail != null) {
             mThumbnailView.setBitmap(mThumbnail.getBitmap());
@@ -1903,6 +1898,7 @@ public class VideoCamera extends ActivityBase
 
     private boolean switchToOtherMode(int mode) {
         if (isFinishing()) return false;
+        if (mThumbnail != null) ThumbnailHolder.keep(mThumbnail);
         MenuHelper.gotoMode(mode, this, mOrientationCompensation);
         finish();
         return true;
