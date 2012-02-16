@@ -280,8 +280,12 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         }
     }
 
-    public void dismissModeSelection() {
+    public boolean dismissModeSelection() {
         // Dismiss the selection if exists.
-        if (mSelectionEnabled) enableModeSelection(false);
+        if (mSelectionEnabled) {
+            enableModeSelection(false);
+            return true;
+        }
+        return false;
     }
 }

@@ -465,6 +465,7 @@ public class VideoCamera extends ActivityBase
                 && mIndicatorControlContainer.dismissSettingPopup()) {
             return true;
         }
+        if (mModePicker != null && mModePicker.dismissModeSelection()) return true;
         return false;
     }
 
