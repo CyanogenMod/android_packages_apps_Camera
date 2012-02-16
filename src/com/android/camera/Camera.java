@@ -1162,7 +1162,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         SurfaceView preview = (SurfaceView) findViewById(R.id.camera_preview);
         SurfaceHolder holder = preview.getHolder();
         holder.addCallback(this);
-        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         // Make sure camera device is opened.
         try {
@@ -1746,6 +1745,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         return super.onKeyUp(keyCode, event);
     }
 
+    @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         // Make sure we have a surface in the holder before proceeding.
         if (holder.getSurface() == null) {
@@ -1903,6 +1903,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         return supported == null ? false : supported.indexOf(value) >= 0;
     }
 
+    @SuppressWarnings("deprecation")
     private void updateCameraParametersInitialize() {
         // Reset preview frame rate to the maximum because it may be lowered by
         // video camera application.

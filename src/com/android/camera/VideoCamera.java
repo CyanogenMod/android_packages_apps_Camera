@@ -101,26 +101,7 @@ public class VideoCamera extends ActivityBase
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
 
-    private static final boolean SWITCH_CAMERA = true;
-    private static final boolean SWITCH_VIDEO = false;
-
     private static final long SHUTTER_BUTTON_TIMEOUT = 500L; // 500ms
-
-    private static final int[] TIME_LAPSE_VIDEO_QUALITY = {
-            CamcorderProfile.QUALITY_TIME_LAPSE_1080P,
-            CamcorderProfile.QUALITY_TIME_LAPSE_720P,
-            CamcorderProfile.QUALITY_TIME_LAPSE_480P,
-            CamcorderProfile.QUALITY_TIME_LAPSE_CIF,
-            CamcorderProfile.QUALITY_TIME_LAPSE_QVGA,
-            CamcorderProfile.QUALITY_TIME_LAPSE_QCIF};
-
-    private static final int[] VIDEO_QUALITY = {
-            CamcorderProfile.QUALITY_1080P,
-            CamcorderProfile.QUALITY_720P,
-            CamcorderProfile.QUALITY_480P,
-            CamcorderProfile.QUALITY_CIF,
-            CamcorderProfile.QUALITY_QVGA,
-            CamcorderProfile.QUALITY_QCIF};
 
     /**
      * An unpublished intent flag requesting to start recording straight away
@@ -148,7 +129,6 @@ public class VideoCamera extends ActivityBase
     private View mReviewControl;
     private RotateDialogController mRotateDialog;
 
-    private Toast mNoShareToast;
     // An review image having same size as preview. It is displayed when
     // recording is stopped in capture intent.
     private ImageView mReviewImage;
@@ -371,6 +351,7 @@ public class VideoCamera extends ActivityBase
          * We make sure the preview is started at the end of onCreate.
          */
         Thread startPreviewThread = new Thread(new Runnable() {
+            @Override
             public void run() {
                 try {
                     mCameraDevice = Util.openCamera(VideoCamera.this, mCameraId);
@@ -416,7 +397,6 @@ public class VideoCamera extends ActivityBase
         SurfaceView preview = (SurfaceView) findViewById(R.id.camera_preview);
         SurfaceHolder holder = preview.getHolder();
         holder.addCallback(this);
-        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         mQuickCapture = getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
 
@@ -1110,10 +1090,6 @@ public class VideoCamera extends ActivityBase
         mSurfaceHolder = null;
     }
 
-    private void gotoGallery() {
-        MenuHelper.gotoCameraVideoGallery(this);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -1475,6 +1451,7 @@ public class VideoCamera extends ActivityBase
         if (mNumberOfCameras > 1) {
             menu.add(R.string.switch_camera_id)
                     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+                @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     CameraSettings.writePreferredCameraId(mPreferences,
                             ((mCameraId == mFrontCameraId)
@@ -1875,6 +1852,7 @@ public class VideoCamera extends ActivityBase
         return supported == null ? false : supported.indexOf(value) >= 0;
     }
 
+    @SuppressWarnings("deprecation")
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
 
