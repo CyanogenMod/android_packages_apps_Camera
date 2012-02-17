@@ -314,8 +314,8 @@
     <!-- Toast after trying to select a setting that is not allowed to change in effect [CHAR LIMIT=50] -->
     <string name="not_selectable_in_effect">Not selectable when effect is on.</string>
 
-    <!-- Toast telling users tapping on the viewfinder will take a picture [CHAR LIMIT=65] -->
-    <string name="video_snapshot_hint">Take a photo during video recording by touching the preview screen.</string>
+    <!-- Toast telling users tapping on the viewfinder will take a picture [CHAR LIMIT=54] -->
+    <string name="video_snapshot_hint">Touch to take photo while recording.</string>
 
     <!-- Toast telling users video snapshot is disabled when the effects are on and a user tries to tap on the viewfinder [CHAR LIMIT=65] -->
     <string name="disable_video_snapshot_hint">Video snapshot is disabled when special effects are on.</string>
