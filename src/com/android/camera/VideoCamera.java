@@ -319,19 +319,23 @@ public class VideoCamera extends ActivityBase
         return dateFormat.format(date);
     }
 
+    private int getPreferredCameraId(ComboPreferences preferences) {
+        int intentCameraId = Util.getCameraFacingIntentExtras(this);
+        if (intentCameraId != -1) {
+            // Testing purpose. Launch a specific camera through the intent
+            // extras.
+            return intentCameraId;
+        } else {
+            return CameraSettings.readPreferredCameraId(preferences);
+        }
+    }
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
-        mCameraId = CameraSettings.readPreferredCameraId(mPreferences);
-
-        //Testing purpose. Launch a specific camera through the intent extras.
-        int intentCameraId = Util.getCameraFacingIntentExtras(this);
-        if (intentCameraId != -1) {
-            mCameraId = intentCameraId;
-        }
+        mCameraId = getPreferredCameraId(mPreferences);
 
         mPreferences.setLocalId(this, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
