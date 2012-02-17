@@ -1075,15 +1075,14 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mCameraSound.playSound(soundId);
     }
 
-    private void getPreferredCameraId() {
-        mPreferences = new ComboPreferences(this);
-        CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
-        mCameraId = CameraSettings.readPreferredCameraId(mPreferences);
-
-        // Testing purpose. Launch a specific camera through the intent extras.
+    private int getPreferredCameraId(ComboPreferences preferences) {
         int intentCameraId = Util.getCameraFacingIntentExtras(this);
         if (intentCameraId != -1) {
-            mCameraId = intentCameraId;
+            // Testing purpose. Launch a specific camera through the intent
+            // extras.
+            return intentCameraId;
+        } else {
+            return CameraSettings.readPreferredCameraId(preferences);
         }
     }
 
@@ -1111,7 +1110,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        getPreferredCameraId();
+        mPreferences = new ComboPreferences(this);
+        CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
+        mCameraId = getPreferredCameraId(mPreferences);
+
         String[] defaultFocusModes = getResources().getStringArray(
                 R.array.pref_camera_focusmode_default_array);
         mFocusManager = new FocusManager(mPreferences, defaultFocusModes);
