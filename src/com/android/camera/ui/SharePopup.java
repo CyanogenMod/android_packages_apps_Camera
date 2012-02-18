@@ -31,7 +31,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,7 +38,6 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -159,38 +157,10 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         setFocusable(true);
         setAnimationStyle(R.style.AnimationPopup);
         createShareMenu();
-
-        adjustThumbnailPosition();
-    }
-
-    private void adjustThumbnailPosition() {
-        FrameLayout.LayoutParams lpOld =
-                (FrameLayout.LayoutParams) mThumbnailRotateLayout.getLayoutParams();
-        FrameLayout.LayoutParams lpNew =
-                new FrameLayout.LayoutParams(lpOld.width, lpOld.height);
-
-        mRootView.setBackgroundDrawable(null);
-        if (mBitmapWidth > mBitmapHeight * 2 || mBitmapHeight > mBitmapWidth * 2) {
-            // panorama image
-            lpNew.gravity = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
-
-            // panorama images block the preview from showing in the background
-            // use a special color here for that.
-            mRootView.setBackgroundColor(
-                    mContext.getResources().getColor(R.color.share_popup_blackout));
-        } else {
-            // landscape or portrait image
-            if (mActivityOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                lpNew.gravity = Gravity.BOTTOM;
-            } else {
-                lpNew.gravity = Gravity.RIGHT;
-            }
-        }
-
-        mThumbnailRotateLayout.setLayoutParams(lpNew);
     }
 
     public void setOrientation(int orientation) {
+        if (isShowing()) return;
         mOrientation = orientation;
 
         int hPaddingRootView = mRootView.getPaddingLeft() + mRootView.getPaddingRight();
@@ -236,8 +206,6 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         }
 
         mGotoGalleryRotate.setOrientation(orientation);
-
-        adjustThumbnailPosition();
     }
 
     @Override
