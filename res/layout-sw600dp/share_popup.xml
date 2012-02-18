@@ -25,12 +25,14 @@
     <FrameLayout android:id="@+id/root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left|center">
+            android:layout_gravity="left|center"
+            android:background="@color/share_popup_blackout">
         <com.android.camera.ui.RotateLayout
                 android:id="@+id/thumbnail_rotate_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true">
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center">
             <!-- The size of the thumbnail is calculated in SharePopup.java -->
             <FrameLayout
                     android:layout_width="wrap_content"
