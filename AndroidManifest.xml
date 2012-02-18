@@ -31,6 +31,7 @@
         <activity android:name="com.android.camera.Camera"
                 android:configChanges="orientation|screenSize|keyboardHidden"
                 android:clearTaskOnLaunch="true"
+                android:screenOrientation="behind"
                 android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,6 +52,7 @@
                 android:configChanges="orientation|screenSize|keyboardHidden"
                 android:icon="@mipmap/ic_launcher_video_camera"
                 android:clearTaskOnLaunch="true"
+                android:screenOrientation="behind"
                 android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
             <intent-filter>
                 <action android:name="android.media.action.VIDEO_CAMERA" />
@@ -69,6 +71,7 @@
                 android:label="@string/pano_dialog_title"
                 android:configChanges="orientation|screenSize|keyboardHidden"
                 android:clearTaskOnLaunch="true"
+                android:screenOrientation="behind"
                 android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
                 android:launchMode="singleTask">
         </activity>
