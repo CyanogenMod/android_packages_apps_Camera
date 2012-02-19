@@ -51,6 +51,9 @@
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"延时间隔"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"相机设置"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"摄像机设置"</string>
+    <!-- More Settings screen, power button title -->
+    <string name="pref_camera_power_shutter_title">电源键快门</string>
+    <string name="pref_camera_power_shutter_default">关闭</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"照片大小"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"对焦方式"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"自动"</string>
