@@ -152,11 +152,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     // A popup window that contains a bigger thumbnail and a list of apps to share.
     private SharePopup mSharePopup;
-    // The bitmap of the last captured picture thumbnail and the URI of the
-    // original picture.
-    private Thumbnail mThumbnail;
-    // An imageview showing showing the last captured picture thumbnail.
-    private RotateImageView mThumbnailView;
     private ModePicker mModePicker;
     private FaceView mFaceView;
     private RotateLayout mFocusAreaIndicator;
@@ -366,11 +361,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         keepMediaProviderInstance();
         checkStorage();
 
-        // Initialize last picture button.
-        if (!mIsImageCaptureIntent) {  // no thumbnail in image capture intent
-            updateThumbnailButton();
-        }
-
         // Initialize shutter button.
         mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
         mShutterButton.setOnShutterButtonListener(this);
@@ -410,18 +400,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         });
     }
 
-    private void updateThumbnailButton() {
-        mThumbnail = ThumbnailHolder.getLastThumbnail(mContentResolver);
-        if (mThumbnail == null) {
-            mThumbnail = Thumbnail.getLastThumbnail(getFilesDir(), mContentResolver);
-        }
-        if (mThumbnail != null) {
-            mThumbnailView.setBitmap(mThumbnail.getBitmap());
-        } else {
-            mThumbnailView.setBitmap(null);
-        }
-    }
-
     // If the activity is paused and resumed, this method will be called in
     // onResume.
     private void initializeSecondTime() {
@@ -442,7 +420,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         hidePostCaptureAlert();
 
         if (!mIsImageCaptureIntent) {
-            updateThumbnailButton();
             mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
         }
     }
@@ -577,7 +554,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
                 checkStorage();
                 if (!mIsImageCaptureIntent) {
-                    updateThumbnailButton();
+                    getLastThumbnail();
                 }
             }
         }
@@ -1519,6 +1496,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 return;
             }
         }
+
+        if (!mIsImageCaptureIntent) getLastThumbnail();
 
         if (mSurfaceHolder != null) {
             // If first time initialization is not finished, put it in the

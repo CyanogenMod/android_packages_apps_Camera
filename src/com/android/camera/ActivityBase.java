@@ -17,16 +17,20 @@
 package com.android.camera;
 
 import com.android.camera.ui.PopupManager;
+import com.android.camera.ui.RotateImageView;
 
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
+import android.view.View;
 
 /**
  * Superclass of Camera and VideoCamera activities.
@@ -39,6 +43,12 @@ abstract public class ActivityBase extends Activity {
     private Intent mResultDataForTesting;
     private OnScreenHint mStorageHint;
     protected CameraDevice mCameraDevice;
+    // The bitmap of the last captured picture thumbnail and the URI of the
+    // original picture.
+    protected Thumbnail mThumbnail;
+    // An imageview showing showing the last captured picture thumbnail.
+    protected RotateImageView mThumbnailView;
+    protected AsyncTask<Void, Void, Thumbnail> mLoadThumbnailTask;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -86,6 +96,11 @@ abstract public class ActivityBase extends Activity {
     protected void onPause() {
         if (LOGV) Log.v(TAG, "onPause");
         super.onPause();
+
+        if (mLoadThumbnailTask != null) {
+            mLoadThumbnailTask.cancel(true);
+            mLoadThumbnailTask = null;
+        }
 
         if (mStorageHint != null) {
             mStorageHint.cancel();
@@ -173,6 +188,54 @@ abstract public class ActivityBase extends Activity {
         } else if (mStorageHint != null) {
             mStorageHint.cancel();
             mStorageHint = null;
+        }
+    }
+
+    private void updateThumbnailView() {
+        if (mThumbnail != null) {
+            mThumbnailView.setBitmap(mThumbnail.getBitmap());
+            mThumbnailView.setVisibility(View.VISIBLE);
+        } else {
+            mThumbnailView.setBitmap(null);
+            mThumbnailView.setVisibility(View.GONE);
+        }
+    }
+
+    protected void getLastThumbnail() {
+        mThumbnail = ThumbnailHolder.getLastThumbnail(getContentResolver());
+        // Suppose users tap the thumbnail view, go to the gallery, delete the
+        // image, and coming back to the camera. Thumbnail file will be invalid.
+        // Since the new thumbnail will be loaded in another thread later, the
+        // view should be set to gone to prevent from opening the invalid image.
+        updateThumbnailView();
+        if (mThumbnail == null) {
+            mLoadThumbnailTask = new LoadThumbnailTask().execute();
+        }
+    }
+
+    protected class LoadThumbnailTask extends AsyncTask<Void, Void, Thumbnail> {
+        public LoadThumbnailTask() {
+        }
+
+        @Override
+        protected Thumbnail doInBackground(Void... params) {
+            // Load the thumbnail from the file.
+            ContentResolver resolver = getContentResolver();
+            Thumbnail t = Thumbnail.getLastThumbnailFromFile(getFilesDir(), resolver);
+
+            if (isCancelled()) return null;
+
+            if (t == null) {
+                // Load the thumbnail from the media provider.
+                t = Thumbnail.getLastThumbnailFromContentResolver(resolver);
+            }
+            return t;
+        }
+
+        @Override
+        protected void onPostExecute(Thumbnail thumbnail) {
+            mThumbnail = thumbnail;
+            updateThumbnailView();
         }
     }
 }
