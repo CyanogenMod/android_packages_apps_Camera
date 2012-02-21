@@ -9,7 +9,7 @@ LOCAL_C_INCLUDES := \
         $(LOCAL_PATH)/feature_mos/src \
         $(LOCAL_PATH)/feature_mos/src/mosaic
 
-LOCAL_CFLAGS := -O3 -DNDEBUG
+LOCAL_CFLAGS := -O3 -DNDEBUG -fstrict-aliasing
 
 LOCAL_SRC_FILES := \
         feature_mos_jni.cpp \
