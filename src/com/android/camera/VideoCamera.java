@@ -37,6 +37,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.filterpacks.videosink.MediaRecorderStopException;
 import android.graphics.Bitmap;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
@@ -78,8 +79,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import android.filterpacks.videosink.MediaRecorderStopException;
 
 /**
  * The Camcorder activity.

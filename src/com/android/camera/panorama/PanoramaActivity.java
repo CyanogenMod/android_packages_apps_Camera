@@ -140,9 +140,6 @@ public class PanoramaActivity extends ActivityBase implements
     private int mIndicatorColor;
     private int mIndicatorColorFast;
 
-    private float mCompassValueXStartBuffer;
-    private float mCompassValueYStartBuffer;
-
     private RotateImageView mThumbnailView;
     private Thumbnail mThumbnail;
     private SharePopup mSharePopup;

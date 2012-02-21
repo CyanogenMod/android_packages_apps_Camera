@@ -24,7 +24,7 @@ import android.os.Message;
 public class ThumbnailHolder {
     private static final int CLEAN_THUMBNAIL = 1;
 
-    private static Thumbnail mLastThumbnail;
+    private static Thumbnail sLastThumbnail;
 
     private static class LazyHandlerHolder {
         private static final HandlerThread sHandlerThread = new HandlerThread("ClearThumbnail");
@@ -37,7 +37,7 @@ public class ThumbnailHolder {
                     public boolean handleMessage(Message msg) {
                         switch(msg.what) {
                             case CLEAN_THUMBNAIL:
-                                setLastThumbnail(null);
+                                cleanLastThumbnail();
                                 break;
                         }
                         return true;
@@ -49,11 +49,10 @@ public class ThumbnailHolder {
     }
 
     public static synchronized Thumbnail getLastThumbnail(ContentResolver resolver) {
-        Thumbnail t;
-        if (mLastThumbnail != null) {  // Thumbnail exists. Checks validity.
+        if (sLastThumbnail != null) {  // Thumbnail exists. Checks validity.
             LazyHandlerHolder.sHandler.removeMessages(CLEAN_THUMBNAIL);
-            t = mLastThumbnail;
-            mLastThumbnail = null;
+            Thumbnail t = sLastThumbnail;
+            sLastThumbnail = null;
             if (Util.isUriValid(t.getUri(), resolver)) {
                 return t;
             }
@@ -62,12 +61,12 @@ public class ThumbnailHolder {
         return null;
     }
 
-    private static synchronized void setLastThumbnail(Thumbnail t) {
-        mLastThumbnail = t;
+    private static synchronized void cleanLastThumbnail() {
+        sLastThumbnail = null;
     }
 
-    public synchronized static void keep(Thumbnail t) {
-        mLastThumbnail = t;
+    public static synchronized void keep(Thumbnail t) {
+        sLastThumbnail = t;
         LazyHandlerHolder.sHandler.removeMessages(CLEAN_THUMBNAIL);
         LazyHandlerHolder.sHandler.sendEmptyMessageDelayed(CLEAN_THUMBNAIL, 3000);
     }
