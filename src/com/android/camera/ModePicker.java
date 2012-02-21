@@ -122,9 +122,9 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     private AnimationListener mAnimationListener = new AnimationListener() {
         @Override
         public void onAnimationEnd(Animation animation) {
-            changeToSelectedMode();
             mCurrentModeFrame.setVisibility(View.VISIBLE);
             mModeSelectionFrame.setVisibility(View.GONE);
+            changeToSelectedMode();
         }
 
         @Override
