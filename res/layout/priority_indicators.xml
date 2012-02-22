@@ -14,11 +14,16 @@
      limitations under the License.
 -->
 <com.android.camera.ui.RotateLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/on_screen_indicators"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         style="@style/OnScreenIndicators">
+
+    <!-- RelativeLayout is used to let the indicators always on the top and left of the viewfinder,
+         and align them vertical center in LinearLayout. -->
     <RelativeLayout
+            tools:ignore="UselessParent"
             android:layout_height="match_parent"
             android:layout_width="match_parent">
         <LinearLayout
@@ -50,3 +55,4 @@
         </LinearLayout>
     </RelativeLayout>
 </com.android.camera.ui.RotateLayout>
+

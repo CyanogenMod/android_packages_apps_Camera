@@ -31,7 +31,6 @@
                 android:id="@+id/thumbnail_rotate_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_gravity="center">
             <!-- The size of the thumbnail is calculated in SharePopup.java -->
             <FrameLayout

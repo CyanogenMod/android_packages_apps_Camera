@@ -64,7 +64,6 @@
             style="@style/PanoViewHorizontalBar"
             android:gravity="bottom"
             android:orientation="vertical"
-            android:layout_alignParentBottom="true"
             android:layout_height="match_parent">
 
         <com.android.camera.ui.RotateLayout

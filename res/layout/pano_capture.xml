@@ -28,6 +28,7 @@
         <LinearLayout android:id="@+id/pano_capture_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:baselineAligned="false"
                 android:orientation="horizontal">
 
             <!-- The bottom bar with progress bar and direction indicators -->

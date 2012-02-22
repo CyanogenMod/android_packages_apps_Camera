@@ -40,6 +40,7 @@ import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
+import android.util.FloatMath;
 import android.util.Log;
 import android.view.Display;
 import android.view.OrientationEventListener;
@@ -306,7 +307,7 @@ public class Util {
     public static float distance(float x, float y, float sx, float sy) {
         float dx = x - sx;
         float dy = y - sy;
-        return (float) Math.sqrt(dx * dx + dy * dy);
+        return FloatMath.sqrt(dx * dx + dy * dy);
     }
 
     public static int clamp(int x, int min, int max) {
