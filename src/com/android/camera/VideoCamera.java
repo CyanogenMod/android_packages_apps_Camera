@@ -943,10 +943,6 @@ public class VideoCamera extends ActivityBase
         }
         resetScreenOn();
 
-        if (!mIsVideoCaptureIntent && mThumbnail != null && !mThumbnail.fromFile()) {
-            mThumbnail.saveTo(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
-        }
-
         mOrientationListener.disable();
         mLocationManager.recordLocation(false);
 

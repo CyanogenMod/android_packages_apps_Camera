@@ -44,7 +44,7 @@ import java.io.IOException;
 public class Thumbnail {
     private static final String TAG = "Thumbnail";
 
-    public static final String LAST_THUMB_FILENAME = "last_thumb";
+    private static final String LAST_THUMB_FILENAME = "last_thumb";
     private static final int BUFSIZE = 4096;
 
     private Uri mUri;
@@ -99,7 +99,8 @@ public class Thumbnail {
     }
 
     // Stores the bitmap to the specified file.
-    public void saveTo(File file) {
+    public void saveLastThumbnailToFile(File filesDir) {
+        File file = new File(filesDir, LAST_THUMB_FILENAME);
         FileOutputStream f = null;
         BufferedOutputStream b = null;
         DataOutputStream d = null;
@@ -123,7 +124,8 @@ public class Thumbnail {
 
     // Loads the data from the specified file.
     // Returns null if failure or the Uri is invalid.
-    private static Thumbnail loadFrom(File file, ContentResolver resolver) {
+    public static Thumbnail getLastThumbnailFromFile(File filesDir, ContentResolver resolver) {
+        File file = new File(filesDir, LAST_THUMB_FILENAME);
         Uri uri = null;
         Bitmap bitmap = null;
         FileInputStream f = null;
@@ -153,10 +155,6 @@ public class Thumbnail {
         Thumbnail thumbnail = createThumbnail(uri, bitmap, 0);
         if (thumbnail != null) thumbnail.setFromFile(true);
         return thumbnail;
-    }
-
-    public static Thumbnail getLastThumbnailFromFile(File dir, ContentResolver resolver) {
-        return loadFrom(new File(dir, LAST_THUMB_FILENAME), resolver);
     }
 
     public static Thumbnail getLastThumbnailFromContentResolver(ContentResolver resolver) {

@@ -32,6 +32,8 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.view.View;
 
+import java.io.File;
+
 /**
  * Superclass of Camera and VideoCamera activities.
  */
@@ -95,6 +97,7 @@ abstract public class ActivityBase extends Activity {
     @Override
     protected void onPause() {
         if (LOGV) Log.v(TAG, "onPause");
+        saveThumbnailToFile();
         super.onPause();
 
         if (mLoadThumbnailTask != null) {
@@ -213,10 +216,7 @@ abstract public class ActivityBase extends Activity {
         }
     }
 
-    protected class LoadThumbnailTask extends AsyncTask<Void, Void, Thumbnail> {
-        public LoadThumbnailTask() {
-        }
-
+    private class LoadThumbnailTask extends AsyncTask<Void, Void, Thumbnail> {
         @Override
         protected Thumbnail doInBackground(Void... params) {
             // Load the thumbnail from the file.
@@ -236,6 +236,24 @@ abstract public class ActivityBase extends Activity {
         protected void onPostExecute(Thumbnail thumbnail) {
             mThumbnail = thumbnail;
             updateThumbnailView();
+        }
+    }
+
+    protected void saveThumbnailToFile() {
+        if (mThumbnail != null && !mThumbnail.fromFile()) {
+            new SaveThumbnailTask().execute(mThumbnail);
+        }
+    }
+
+    private class SaveThumbnailTask extends AsyncTask<Thumbnail, Void, Void> {
+        @Override
+        protected Void doInBackground(Thumbnail... params) {
+            final int n = params.length;
+            final File filesDir = getFilesDir();
+            for (int i = 0; i < n; i++) {
+                params[i].saveLastThumbnailToFile(filesDir);
+            }
+            return null;
         }
     }
 }

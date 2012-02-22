@@ -799,12 +799,6 @@ public class PanoramaActivity extends ActivityBase implements
         t.start();
     }
 
-    private void saveThumbnailToFile() {
-        if (mThumbnail != null && !mThumbnail.fromFile()) {
-            mThumbnail.saveTo(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
-        }
-    }
-
     public void saveHighResMosaic() {
         runBackgroundThread(new Thread() {
             @Override
@@ -995,8 +989,6 @@ public class PanoramaActivity extends ActivityBase implements
             reset();
         }
         if (mSharePopup != null) mSharePopup.dismiss();
-
-        saveThumbnailToFile();
 
         releaseCamera();
         mMosaicView.onPause();
