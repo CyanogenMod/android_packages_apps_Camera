@@ -25,10 +25,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // A popup window that shows one camera setting. The title is the name of the
 // setting (ex: white-balance). The entries are the supported values (ex:
@@ -45,6 +48,23 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
 
     public BasicSettingPopup(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    private class BasicSettingAdapter extends SimpleAdapter {
+        BasicSettingAdapter(Context context, List<? extends Map<String, ?>> data,
+                int resource, String[] from, int[] to) {
+            super(context, data, resource, from, to);
+        }
+
+        @Override
+        public void setViewImage(ImageView v, String value) {
+            if ("".equals(value)) {
+                // Some settings have no icons. Ex: exposure compensation.
+                v.setVisibility(View.GONE);
+            } else {
+                super.setViewImage(v, value);
+            }
+        }
     }
 
     public void initialize(IconListPreference preference) {
@@ -68,7 +88,7 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
             if (iconIds != null) map.put("image", iconIds[i]);
             listItem.add(map);
         }
-        SimpleAdapter listItemAdapter = new SimpleAdapter(context, listItem,
+        SimpleAdapter listItemAdapter = new BasicSettingAdapter(context, listItem,
                 R.layout.setting_item,
                 new String[] {"text", "image"},
                 new int[] {R.id.text, R.id.image});
