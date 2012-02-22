@@ -107,7 +107,7 @@ public class PanoramaActivity extends ActivityBase implements
     private static final String DATETIME_FORMAT_STR = "yyyy:MM:dd kk:mm:ss";
 
     // Speed is in unit of deg/sec
-    private static final float PANNING_SPEED_THRESHOLD = 20f;
+    private static final float PANNING_SPEED_THRESHOLD = 25f;
 
     private boolean mPausing;
 
