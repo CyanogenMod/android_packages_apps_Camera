@@ -2130,13 +2130,21 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         });
 
         if (mNumberOfCameras > 1) {
-            menu.add(R.string.switch_camera_id)
+            int nextCameraId = (mCameraId + 1) % mNumberOfCameras;
+            CameraInfo info = CameraHolder.instance().getCameraInfo()[nextCameraId];
+
+            int switchLabel;
+            if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
+                switchLabel = R.string.front_camera_label;
+            } else {
+                switchLabel = R.string.rear_camera_label;
+            }
+            menu.add(switchLabel)
                     .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     CameraSettings.writePreferredCameraId(mPreferences,
-                            ((mCameraId == mFrontCameraId)
-                            ? mBackCameraId : mFrontCameraId));
+                            (mCameraId + 1) % mNumberOfCameras);
                     onSharedPreferenceChanged();
                     return true;
                 }

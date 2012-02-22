@@ -79,9 +79,6 @@
     <!-- Button indicating to go to the image gallery -->
     <string name="camera_gallery_photos_text">Gallery</string>
 
-    <!-- Button indicating to switch to another camera -->
-    <string name="switch_camera_id">Switch camera</string>
-
     <!-- A lable that overlays on top of the preview frame to indicate the camcorder is in time lapse mode [CHAR LIMIT=35] -->
     <string name="time_lapse_title">Time lapse recording</string>
 
@@ -232,14 +229,20 @@
     <!-- The messsage shown when video record reaches size limit. -->
     <string name="video_reach_size_limit">Size limit reached.</string>
 
-    <!-- The text of menu item to switch the mode to Camera. [CHAR LIMIT=NONE] -->
-    <string name="switch_to_camera_label">Switch to camera</string>
+    <!-- The text of menu item to switch the mode to Camera. [CHAR LIMIT=24] -->
+    <string name="switch_to_camera_label">Switch to photo</string>
 
-    <!-- The text of menu item to switch the mode to Video. [CHAR LIMIT=NONE] -->
+    <!-- The text of menu item to switch the mode to Video. [CHAR LIMIT=24] -->
     <string name="switch_to_video_label">Switch to video</string>
 
-    <!-- The text of menu item to switch the mode to Panorama. [CHAR LIMIT=NONE] -->
+    <!-- The text of menu item to switch the mode to Panorama. [CHAR LIMIT=24] -->
     <string name="switch_to_panorama_label">Switch to panorama</string>
+
+    <!-- The text of menu item to switch to rear camera. [CHAR LIMIT=24]-->
+    <string name="rear_camera_label">Rear camera</string>
+
+    <!-- The text of menu item to switch to front camera. [CHAR LIMIT=24]-->
+    <string name="front_camera_label">Front camera</string>
 
     <string name="setting_increment" translatable="false">&gt;</string>
     <string name="setting_decrement" translatable="false">&lt;</string>
