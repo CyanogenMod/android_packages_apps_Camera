@@ -154,24 +154,30 @@ void PyramidShort::BorderExpandOdd(PyramidShort *in, PyramidShort *out, PyramidS
     // Vertical Filter
     for (j = -off; j < in->height + off; j++) {
         int j2 = j * 2;
-        for (i = -scr->border; i < scr->width + scr->border; i++) {
+        int limit = scr->width + scr->border;
+        for (i = -scr->border; i < limit; i++) {
+            int t1 = in->ptr[j][i];
+            int t2 = in->ptr[j+1][i];
             scr->ptr[j2][i] = (short)
-                ((6 * in->ptr[j][i] + (in->ptr[j-1][i] + in->ptr[j+1][i]) + 4) >> 3);
-            scr->ptr[j2+1][i] = (short)((in->ptr[j][i] + in->ptr[j+1][i] + 1) >> 1);
+                ((6 * t1 + (in->ptr[j-1][i] + t2) + 4) >> 3);
+            scr->ptr[j2+1][i] = (short)((t1 + t2 + 1) >> 1);
         }
     }
 
     BorderSpread(scr, 0, 0, 3, 3);
 
     // Horizontal Filter
-    for (i = -off; i < scr->width + off; i++) {
-        int i2 = i * 2;
-        for (j = -out->border; j < out->height + out->border; j++) {
+    int limit = out->height + out->border;
+    for (j = -out->border; j < limit; j++) {
+        for (i = -off; i < scr->width + off; i++) {
+            int i2 = i * 2;
+            int t1 = scr->ptr[j][i];
+            int t2 = scr->ptr[j][i+1];
             out->ptr[j][i2] = (short) (out->ptr[j][i2] +
-                    (mode * ((6 * scr->ptr[j][i] +
-                              scr->ptr[j][i-1] + scr->ptr[j][i+1] + 4) >> 3)));
+                    (mode * ((6 * t1 +
+                              scr->ptr[j][i-1] + t2 + 4) >> 3)));
             out->ptr[j][i2+1] = (short) (out->ptr[j][i2+1] +
-                    (mode * ((scr->ptr[j][i] + scr->ptr[j][i+1] + 1) >> 1)));
+                    (mode * ((t1 + t2 + 1) >> 1)));
         }
     }
 
