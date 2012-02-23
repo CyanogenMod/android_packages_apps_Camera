@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera;
@@ -375,15 +376,11 @@ public class Util {
         // layout the viewfinder in the portrait orientation and thus get the
         // wrong size of mSurfaceView. When we change the preview size, the
         // new overlay will be created before the old one closed, which causes
-        // an exception. For now, just get the screen size
-
+        // an exception. For now, just get the screen size.
         Display display = currentActivity.getWindowManager().getDefaultDisplay();
-        int targetHeight = Math.min(display.getHeight(), display.getWidth());
-
-        if (targetHeight <= 0) {
-            // We don't know the size of SurfaceView, use screen height
-            targetHeight = display.getHeight();
-        }
+        Point point = new Point();
+        display.getSize(point);
+        int targetHeight = Math.min(point.x, point.y);
 
         // Try to find an size match aspect ratio and size
         for (Size size : sizes) {
@@ -461,7 +458,7 @@ public class Util {
         }
 
         try {
-            Class partypes[] = new Class[0];
+            Class<?> partypes[] = new Class[0];
             Method sIsVoiceCapable = TelephonyManager.class.getMethod(
                     "isVoiceCapable", partypes);
 

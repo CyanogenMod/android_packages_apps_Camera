@@ -48,7 +48,7 @@ public class PanoUtil {
         for (int j = 0, ypd = 0; j < height; j += 4) {
             int uvp = frameSize + (j >> 1) * width, u = 0, v = 0;
             for (int i = 0; i < width; i += 4, ypd++) {
-                int y = (0xff & ((int) yuv420sp[j * width + i])) - 16;
+                int y = (0xff & (yuv420sp[j * width + i])) - 16;
                 if (y < 0) {
                     y = 0;
                 }

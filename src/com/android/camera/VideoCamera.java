@@ -207,8 +207,6 @@ public class VideoCamera extends ActivityBase
     // multiple cameras support
     private int mNumberOfCameras;
     private int mCameraId;
-    private int mFrontCameraId;
-    private int mBackCameraId;
 
     private MyOrientationEventListener mOrientationListener;
     // The degrees of the device rotated clockwise from its natural orientation.
@@ -445,9 +443,6 @@ public class VideoCamera extends ActivityBase
         showTimeLapseUI(mCaptureTimeLapse);
         initializeVideoSnapshot();
         resizeForPreviewAspectRatio();
-
-        mBackCameraId = CameraHolder.instance().getBackCameraId();
-        mFrontCameraId = CameraHolder.instance().getFrontCameraId();
 
         initializeIndicatorControl();
     }

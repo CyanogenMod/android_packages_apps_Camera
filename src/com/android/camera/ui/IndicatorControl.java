@@ -26,7 +26,6 @@ import com.android.camera.R;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -46,7 +45,6 @@ public abstract class IndicatorControl extends RelativeLayout implements
     protected CameraPicker mCameraPicker;
 
     private PreferenceGroup mPreferenceGroup;
-    private int mOrientation = 0;
 
     protected int mCurrentMode = MODE_CAMERA;
 
@@ -64,7 +62,6 @@ public abstract class IndicatorControl extends RelativeLayout implements
 
     @Override
     public void setOrientation(int orientation, boolean animation) {
-        mOrientation = orientation;
         int count = getChildCount();
         for (int i = 0 ; i < count ; ++i) {
             View view = getChildAt(i);

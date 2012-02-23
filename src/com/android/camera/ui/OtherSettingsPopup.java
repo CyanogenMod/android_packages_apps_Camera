@@ -47,7 +47,7 @@ public class OtherSettingsPopup extends AbstractSettingPopup
         public void onRestorePreferencesClicked();
     }
 
-    private class OtherSettingsAdapter extends ArrayAdapter {
+    private class OtherSettingsAdapter extends ArrayAdapter<ListPreference> {
         LayoutInflater mInflater;
 
         OtherSettingsAdapter() {
@@ -105,7 +105,7 @@ public class OtherSettingsPopup extends AbstractSettingPopup
         // Prepare the restore setting line.
         mListItem.add(null);
 
-        ArrayAdapter mListItemAdapter = new OtherSettingsAdapter();
+        ArrayAdapter<ListPreference> mListItemAdapter = new OtherSettingsAdapter();
         ((ListView) mSettingList).setAdapter(mListItemAdapter);
         ((ListView) mSettingList).setOnItemClickListener(this);
         ((ListView) mSettingList).setSelector(android.R.color.transparent);

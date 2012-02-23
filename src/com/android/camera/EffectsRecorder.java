@@ -17,7 +17,6 @@
 package com.android.camera;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.filterfw.GraphEnvironment;
 import android.filterfw.core.Filter;
 import android.filterfw.core.GLEnvironment;
@@ -37,14 +36,10 @@ import android.media.MediaRecorder;
 import android.media.CamcorderProfile;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.io.File;
 import java.lang.Runnable;
 import java.io.FileDescriptor;
 
@@ -76,7 +71,6 @@ public class EffectsRecorder {
 
     private Context mContext;
     private Handler mHandler;
-    private boolean mReleased;
 
     private Camera mCameraDevice;
     private CamcorderProfile mProfile;
@@ -489,8 +483,7 @@ public class EffectsRecorder {
             case EFFECT_BACKDROPPER:
                 tryEnableVideoStabilization(false);
                 Filter backgroundSrc = mRunner.getGraph().getFilter("background");
-                backgroundSrc.setInputValue("sourceUrl",
-                                            (String)mEffectParameter);
+                backgroundSrc.setInputValue("sourceUrl", mEffectParameter);
                 // For front camera, the background video needs to be mirrored in the
                 // backdropper filter
                 if (mCameraFacing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
@@ -556,6 +549,7 @@ public class EffectsRecorder {
 
     private SurfaceTextureSourceListener mSourceReadyCallback =
             new SurfaceTextureSourceListener() {
+        @Override
         public void onSurfaceTextureSourceReady(SurfaceTexture source) {
             if (mLogVerbose) Log.v(TAG, "SurfaceTexture ready callback received");
             synchronized(EffectsRecorder.this) {
@@ -620,6 +614,7 @@ public class EffectsRecorder {
 
     private LearningDoneListener mLearningDoneListener =
             new LearningDoneListener() {
+        @Override
         public void onLearningDone(BackDropperFilter filter) {
             if (mLogVerbose) Log.v(TAG, "Learning done callback triggered");
             // Called in a processing thread, so have to post message back to UI
@@ -633,6 +628,7 @@ public class EffectsRecorder {
     private OnRecordingDoneListener mRecordingDoneListener =
             new OnRecordingDoneListener() {
         // Forward the callback to the VideoCamera object (as an asynchronous event).
+        @Override
         public void onRecordingDone() {
             if (mLogVerbose) Log.v(TAG, "Recording done callback triggered");
             sendMessage(EFFECT_NONE, EFFECT_MSG_RECORDING_DONE);
@@ -791,6 +787,7 @@ public class EffectsRecorder {
 
     private OnRunnerDoneListener mRunnerDoneCallback =
             new OnRunnerDoneListener() {
+        @Override
         public void onRunnerDone(int result) {
             synchronized(EffectsRecorder.this) {
                 if (mLogVerbose) {

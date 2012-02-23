@@ -24,7 +24,6 @@ import com.android.camera.ui.TwoStateImageView;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -42,7 +41,6 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     public static final int MODE_VIDEO = 1;
     public static final int MODE_PANORAMA = 2;
 
-    private static final String TAG = "ModePicker";
     // Total mode number
     private static final int MODE_NUM = 3;
 
