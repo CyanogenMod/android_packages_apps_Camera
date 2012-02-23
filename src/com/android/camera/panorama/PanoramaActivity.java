@@ -461,21 +461,16 @@ public class PanoramaActivity extends ActivityBase implements
         mCameraDevice.setParameters(parameters);
     }
 
-    private boolean switchToOtherMode(int mode) {
-        if (isFinishing()) return false;
+    private void switchToOtherMode(int mode) {
+        if (isFinishing()) return;
         if (mThumbnail != null) ThumbnailHolder.keep(mThumbnail);
         MenuHelper.gotoMode(mode, this, mOrientationCompensation);
         finish();
-        return true;
     }
 
     @Override
-    public boolean onModeChanged(int mode) {
-        if (mode != ModePicker.MODE_PANORAMA) {
-            return switchToOtherMode(mode);
-        } else {
-            return true;
-        }
+    public void onModeChanged(int mode) {
+        if (mode != ModePicker.MODE_PANORAMA) switchToOtherMode(mode);
     }
 
     @Override

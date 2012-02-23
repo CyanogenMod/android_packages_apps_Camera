@@ -261,8 +261,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // multiple cameras support
     private int mNumberOfCameras;
     private int mCameraId;
-    private int mFrontCameraId;
-    private int mBackCameraId;
 
     private boolean mQuickCapture;
 
@@ -1165,9 +1163,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
         mOnScreenIndicators = (Rotatable) findViewById(R.id.on_screen_indicators);
         mLocationManager = new LocationManager(this, this);
-
-        mBackCameraId = CameraHolder.instance().getBackCameraId();
-        mFrontCameraId = CameraHolder.instance().getFrontCameraId();
 
         mFaceView = (FaceView) findViewById(R.id.face_view);
 
@@ -2149,23 +2144,18 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private boolean switchToOtherMode(int mode) {
-        if (isFinishing()) return false;
+    private void switchToOtherMode(int mode) {
+        if (isFinishing()) return;
         if (mImageSaver != null) mImageSaver.waitDone();
         if (mThumbnail != null) ThumbnailHolder.keep(mThumbnail);
         MenuHelper.gotoMode(mode, Camera.this, mOrientationCompensation);
         mHandler.removeMessages(FIRST_TIME_INIT);
         finish();
-        return true;
     }
 
     @Override
-    public boolean onModeChanged(int mode) {
-        if (mode != ModePicker.MODE_CAMERA) {
-            return switchToOtherMode(mode);
-        } else {
-            return true;
-        }
+    public void onModeChanged(int mode) {
+        if (mode != ModePicker.MODE_CAMERA) switchToOtherMode(mode);
     }
 
     @Override

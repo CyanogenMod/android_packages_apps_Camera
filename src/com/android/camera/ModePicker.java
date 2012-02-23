@@ -48,8 +48,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
 
     /** A callback to be called when the user wants to switch activity. */
     public interface OnModeChangeListener {
-        // Returns true if the listener agrees that the mode can be changed.
-        public boolean onModeChanged(int newMode);
+        public void onModeChanged(int newMode);
     }
 
     private final int DISABLED_COLOR;
@@ -150,11 +149,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     }
 
     private void changeToSelectedMode() {
-        if (mListener != null) {
-            if (mListener.onModeChanged(mCurrentMode)) {
-                Log.e(TAG, "failed:onModeChanged:" + mCurrentMode);
-            }
-        }
+        if (mListener != null) mListener.onModeChanged(mCurrentMode);
     }
 
     @Override
