@@ -70,7 +70,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
     private RotateLayout mThumbnailRotateLayout;
     private RotateLayout mGotoGalleryRotate;
     private View mPreviewFrame;
-    private ArrayList<ComponentName> mComponent = new ArrayList<ComponentName>();
+    private ArrayList<ComponentName> mComponents = new ArrayList<ComponentName>();
     private View mImageViewFrame;
 
     private class MySimpleAdapter extends SimpleAdapter {
@@ -124,7 +124,6 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         mImageViewFrame = sharePopup.findViewById(R.id.thumbnail_image_frame);
         mImageViewFrame.setOnClickListener(this);
 
-
         mGotoGalleryRotate =
                 (RotateLayout) sharePopup.findViewById(R.id.goto_gallery_button_rotate);
         sharePopup.findViewById(R.id.goto_gallery_button).setOnClickListener(this);
@@ -136,8 +135,6 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         if (mMimeType.startsWith("video/")) {
             sharePopup.findViewById(R.id.play).setVisibility(View.VISIBLE);
         }
-        mBitmapWidth = bitmap.getWidth();
-        mBitmapHeight = bitmap.getHeight();
 
         Resources res = mContext.getResources();
 
@@ -169,31 +166,30 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
 
         // Calculate the width and the height of the thumbnail. Reserve the
         // space for paddings.
-        float maxWidth = mPreviewFrame.getWidth() - hPaddingRootView;
-        float maxHeight = mPreviewFrame.getHeight() - vPaddingRootView;
-        // Swap the width and height if it is portrait mode.
+        float maxDisplayWidth = mPreviewFrame.getWidth() - hPaddingRootView;
+        float maxDisplayHeight = mPreviewFrame.getHeight() - vPaddingRootView;
+        // Swap the width and height if the device is rotated.
         if (orientation == 90 || orientation == 270) {
-            float temp = maxWidth;
-            maxWidth = maxHeight;
-            maxHeight = temp;
+            float temp = maxDisplayWidth;
+            maxDisplayWidth = maxDisplayHeight;
+            maxDisplayHeight = temp;
         }
-        float actualAspect = maxWidth / maxHeight;
-        float desiredAspect = (float) mBitmapWidth / mBitmapHeight;
+        float displayAspect = maxDisplayWidth / maxDisplayHeight;
+        float imageAspect = (float) mBitmapWidth / mBitmapHeight;
 
         if (mMimeType.startsWith("video/")) {
-            desiredAspect = 4F / 3F;
             mThumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             mThumbnail.setScaleType(ImageView.ScaleType.FIT_CENTER);
         }
 
         LayoutParams params = mThumbnail.getLayoutParams();
-        if (actualAspect > desiredAspect) {
-            params.width = Math.round(maxHeight * desiredAspect);
-            params.height = Math.round(maxHeight);
+        if (displayAspect < imageAspect) {
+            params.width = Math.round(maxDisplayHeight * imageAspect);
+            params.height = Math.round(maxDisplayHeight);
         } else {
-            params.width = Math.round(maxWidth);
-            params.height = Math.round(maxWidth / desiredAspect);
+            params.width = Math.round(maxDisplayWidth);
+            params.height = Math.round(maxDisplayWidth / imageAspect);
         }
         mThumbnail.setLayoutParams(params);
 
@@ -248,7 +244,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
             HashMap<String, Object> map = new HashMap<String, Object>();
             map.put(ADAPTER_COLUMN_ICON, info.loadIcon(packageManager));
             items.add(map);
-            mComponent.add(component);
+            mComponents.add(component);
         }
 
         // On phone UI, we have to know how many icons in the grid view before
@@ -278,7 +274,7 @@ public class SharePopup extends PopupWindow implements View.OnClickListener,
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType(mMimeType);
         intent.putExtra(Intent.EXTRA_STREAM, mUri);
-        intent.setComponent(mComponent.get(index));
+        intent.setComponent(mComponents.get(index));
         mContext.startActivity(intent);
     }
 }
