@@ -86,9 +86,14 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"आपके USB संग्रहण में स्थान कम है. गुणवत्ता सेटिंग बदलें या कुछ छवियां या अन्य फ़ाइलें हटाएं."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"आपके SD कार्ड में स्थान कम है. गुणवत्ता सेटिंग बदलें या कुछ छवियां या अन्य फ़ाइलें हटाएं."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"आकार सीमा पहुंची."</string>
-    <string name="switch_to_camera_label" msgid="9148663083850199582">"कैमरे पर स्विच करें"</string>
+    <!-- no translation found for switch_to_camera_label (5909347213770678326) -->
+    <skip />
     <string name="switch_to_video_label" msgid="1167994386902254398">"वीडियो पर स्विच करें"</string>
     <string name="switch_to_panorama_label" msgid="858801335653517864">"पैनोरमा पर स्विच करें"</string>
+    <!-- no translation found for rear_camera_label (1104543961051437138) -->
+    <skip />
+    <!-- no translation found for front_camera_label (6098010541544579711) -->
+    <skip />
     <string name="share_picture_via" msgid="1375127849431890447">"इससे चित्र साझा करें:"</string>
     <string name="share_video_via" msgid="5152302809166549015">"इससे वीडियो साझा करें:"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"साझा करने हेतु कोई चित्र नहीं."</string>
