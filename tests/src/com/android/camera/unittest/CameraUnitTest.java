@@ -24,7 +24,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 import junit.framework.TestCase;
 
 @SmallTest
-public class CameraTest extends TestCase {
+public class CameraUnitTest extends TestCase {
     public void testRoundOrientation() {
         int h = Util.ORIENTATION_HYSTERESIS;
         assertEquals(0, Util.roundOrientation(0, 0));
