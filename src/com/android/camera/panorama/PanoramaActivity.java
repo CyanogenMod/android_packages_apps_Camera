@@ -928,10 +928,7 @@ public class PanoramaActivity extends ActivityBase implements
                             mGPSTimeStampFormat.format(mTimeTaken));
                     exif.setAttribute(ExifInterface.TAG_DATETIME,
                             mDateTimeStampFormat.format(mTimeTaken));
-
-                    // Save the orientation in EXIF.
-                    if (orientation != 0) exif.setAttribute(ExifInterface.TAG_ORIENTATION,
-                            getExifOrientation(orientation));
+                    exif.setAttribute(ExifInterface.TAG_ORIENTATION, getExifOrientation(orientation));
 
                     exif.saveAttributes();
                 } catch (IOException e) {
