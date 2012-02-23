@@ -157,6 +157,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private RotateLayout mFocusAreaIndicator;
     private Rotatable mReviewCancelButton;
     private Rotatable mReviewDoneButton;
+    private ImageView mCaptureAnimView;
+    private CaptureAnimManager mCaptureAnimMgr;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -381,6 +383,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             // Delay the toast for one second to wait for orientation.
             mHandler.sendEmptyMessageDelayed(SHOW_TAP_TO_FOCUS_TOAST, 1000);
         }
+
+        mCaptureAnimView = (ImageView) findViewById(R.id.capture_anim_view);
+        mCaptureAnimMgr = new CaptureAnimManager(
+                mPreviewTextureView, mCaptureAnimView,
+                mPreviewPanel.getWidth(), mPreviewPanel.getHeight());
 
         mFirstTimeInitialized = true;
         addIdleHandler();
@@ -738,9 +745,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Log.v(TAG, "mPictureDisplayedToJpegCallbackTime = "
                     + mPictureDisplayedToJpegCallbackTime + "ms");
 
-            // Not fade out border if user quickly takes two pictures.
-            if (!mSnapshotOnIdle) mPreviewFrameLayout.fadeOutBorder();
-
             if (!mIsImageCaptureIntent) {
                 startPreview();
                 startFaceDetection();
@@ -1033,9 +1037,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
+        if (!mIsImageCaptureIntent) {
+            mCaptureAnimMgr.startAnimation(
+                    mPreviewTextureView.getBitmap().copy(Bitmap.Config.RGB_565, false),
+                    mOrientationCompensation);
+        }
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
-        mPreviewFrameLayout.showBorder(true);
         return true;
     }
 
