@@ -33,6 +33,11 @@
             android:label="Camera stress test runner">
     </instrumentation>
 
+    <instrumentation android:name="com.android.camera.CameraTestRunner"
+            android:targetPackage="com.android.camera"
+            android:label="Camera continuous test runner">
+    </instrumentation>
+
     <instrumentation android:name="android.test.InstrumentationTestRunner"
              android:targetPackage="com.android.camera"
              android:label="Tests for Camera application."/>
