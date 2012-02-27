@@ -86,14 +86,11 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"V úložišti USB je málo místa. Změňte nastavení kvality nebo smažte některé fotografie či jiné soubory."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Na kartě SD je málo místa. Změňte nastavení kvality nebo smažte některé obrázky či jiné soubory."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Bylo dosaženo limitu velikosti."</string>
-    <!-- no translation found for switch_to_camera_label (5909347213770678326) -->
-    <skip />
+    <string name="switch_to_camera_label" msgid="5909347213770678326">"Přepnout na fotoaparát"</string>
     <string name="switch_to_video_label" msgid="1167994386902254398">"Přepnout do režimu videa"</string>
     <string name="switch_to_panorama_label" msgid="858801335653517864">"Přepnout do panoramatického režimu"</string>
-    <!-- no translation found for rear_camera_label (1104543961051437138) -->
-    <skip />
-    <!-- no translation found for front_camera_label (6098010541544579711) -->
-    <skip />
+    <string name="rear_camera_label" msgid="1104543961051437138">"Zadní fotoaparát"</string>
+    <string name="front_camera_label" msgid="6098010541544579711">"Přední fotoaparát"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Sdílet fotografii pomocí"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Sdílet video pomocí"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"Žádná fotka ke sdílení"</string>
