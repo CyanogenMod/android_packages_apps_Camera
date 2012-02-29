@@ -80,6 +80,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
     private double mChildRadians[];
     private Paint mBackgroundPaint;
     private RectF mBackgroundRect;
+    private Path mFanPath;
     // The index of the child that is being pressed. -1 means no child is being
     // pressed.
     private int mPressedIndex = -1;
@@ -131,6 +132,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
         mBackgroundPaint.setAntiAlias(true);
 
         mBackgroundRect = new RectF();
+        mFanPath = new Path();
     }
 
     private int getChildCountByLevel(int level) {
@@ -455,22 +457,22 @@ public class IndicatorControlWheel extends IndicatorControl implements
                     EDGE_STROKE_WIDTH * 0.5);
 
             // Construct the path of the fan-shaped semi-transparent area.
-            Path fanPath = new Path();
+            mFanPath.rewind();
             mBackgroundRect.set(mCenterX - innerR, mCenterY - innerR,
                     mCenterX + innerR, mCenterY + innerR);
-            fanPath.arcTo(mBackgroundRect, -degree + HIGHLIGHT_DEGREES / 2,
+            mFanPath.arcTo(mBackgroundRect, -degree + HIGHLIGHT_DEGREES / 2,
                     -HIGHLIGHT_DEGREES);
             mBackgroundRect.set(mCenterX - outerR, mCenterY - outerR,
                     mCenterX + outerR, mCenterY + outerR);
-            fanPath.arcTo(mBackgroundRect, -degree - HIGHLIGHT_DEGREES / 2,
+            mFanPath.arcTo(mBackgroundRect, -degree - HIGHLIGHT_DEGREES / 2,
                     HIGHLIGHT_DEGREES);
-            fanPath.close();
+            mFanPath.close();
 
             mBackgroundPaint.setStrokeWidth(HIGHLIGHT_WIDTH);
             mBackgroundPaint.setStrokeCap(Paint.Cap.SQUARE);
             mBackgroundPaint.setStyle(Paint.Style.FILL_AND_STROKE);
             mBackgroundPaint.setColor(HIGHLIGHT_FAN_COLOR);
-            canvas.drawPath(fanPath, mBackgroundPaint);
+            canvas.drawPath(mFanPath, mBackgroundPaint);
 
             // Draw the highlight edge
             mBackgroundPaint.setStyle(Paint.Style.STROKE);
