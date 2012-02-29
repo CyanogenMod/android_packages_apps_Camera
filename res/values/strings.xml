@@ -227,6 +227,13 @@
     <string name="pref_camera_scenemode_entry_duskdawn">Duskdawn</string>
     <string name="pref_camera_scenemode_entry_fallcolor">Fallcolor</string>
     <string name="pref_camera_scenemode_entry_text">Text</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portrait</string>
+    <string name="pref_camera_scenemode_entry_landscape">Landscape</string>
+    <string name="pref_camera_scenemode_entry_beach">Beach</string>
+    <string name="pref_camera_scenemode_entry_snow">Snow</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Fireworks</string>
+    <string name="pref_camera_scenemode_entry_sports">Sports</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Candlelight</string>
 
     <!-- Toast after trying to select a setting that is not allowed to change in scene mode [CHAR LIMIT=NONE] -->
     <string name="not_selectable_in_scene_mode">Not selectable in scene mode.</string>
