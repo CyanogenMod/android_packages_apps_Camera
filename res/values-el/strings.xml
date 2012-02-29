@@ -23,7 +23,7 @@
     <string name="video_camera_label" msgid="2899292505526427293">"Βιντεοκάμ."</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Εικόνες φωτογραφικής μηχανής"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Βίντεο φωτογραφικής μηχανής"</string>
-    <string name="wait" msgid="8600187532323801552">"Περιμένετε..."</string>
+    <string name="wait" msgid="8600187532323801552">"Περιμένετε…"</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Προσαρτήστε τον χώρο αποθήκευσης USB προτού κάνετε χρήση της φωτογραφικής μηχανής."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Εισαγάγετε κάρτα SD πριν χρησιμοποιήσετε τη φωτογραφική μηχανή."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Ο χώρος αποθήκευσης USB είναι πλήρης."</string>
@@ -100,7 +100,7 @@
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Δεν ήταν δυνατή η αποθήκευση του πανοράματος."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Πανόραμα"</string>
     <string name="pano_capture_indication" msgid="8248825828264374507">"Λήψη πανοράματος"</string>
-    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Aποθήκευση..."</string>
+    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Aποθήκευση…"</string>
     <string name="tap_to_focus" msgid="8863427645591903760">"Πατήστε για εστίαση."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Εφέ"</string>
     <string name="effect_none" msgid="3601545724573307541">"Κανένα"</string>

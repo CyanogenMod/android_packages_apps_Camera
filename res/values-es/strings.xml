@@ -23,7 +23,7 @@
     <string name="video_camera_label" msgid="2899292505526427293">"Videocámara"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Imágenes de cámara"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Vídeos de cámara"</string>
-    <string name="wait" msgid="8600187532323801552">"Por favor, espera..."</string>
+    <string name="wait" msgid="8600187532323801552">"Por favor, espera…"</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Para poder usar la cámara, activa el almacenamiento USB."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Para poder usar la cámara, inserta una tarjeta SD."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"El almacenamiento USB está lleno."</string>
@@ -100,7 +100,7 @@
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Error al guardar imagen panorámica"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorámico"</string>
     <string name="pano_capture_indication" msgid="8248825828264374507">"Capturando panorámica"</string>
-    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Guardando..."</string>
+    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Guardando…"</string>
     <string name="tap_to_focus" msgid="8863427645591903760">"Toca para enfocar"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efectos"</string>
     <string name="effect_none" msgid="3601545724573307541">"Ninguno"</string>
