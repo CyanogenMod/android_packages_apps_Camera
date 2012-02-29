@@ -156,12 +156,16 @@
         <item>@string/pref_camera_focusmode_entry_auto</item>
         <item>@string/pref_camera_focusmode_entry_infinity</item>
         <item>@string/pref_camera_focusmode_entry_macro</item>
+        <item>@string/pref_camera_focusmode_entry_fixed</item>
+        <item>@string/pref_camera_focusmode_entry_facedetect</item>
     </string-array>
 
     <string-array name="pref_camera_focusmode_entryvalues" translatable="false">
         <item>auto</item>
         <item>infinity</item>
         <item>macro</item>
+        <item>fixed</item>
+        <item>facedetect</item>
     </string-array>
 
     <!-- Camera Preferences flash mode dialog box entries -->
@@ -237,6 +241,7 @@
         <item>@string/pref_camera_whitebalance_entry_daylight</item>
         <item>@string/pref_camera_whitebalance_entry_fluorescent</item>
         <item>@string/pref_camera_whitebalance_entry_cloudy</item>
+        <item>@string/pref_camera_whitebalance_entry_cloudydaylight</item>
     </string-array>
 
     <string-array name="pref_camera_whitebalance_entryvalues" translatable="false">
@@ -244,7 +249,8 @@
         <item>incandescent</item>
         <item>daylight</item>
         <item>fluorescent</item>
-        <item>cloudy-daylight</item>
+        <item>cloudy</item>
+        <item>cloudydaylight</item>
     </string-array>
 
     <array name="whitebalance_icons" translatable="false">
@@ -253,6 +259,7 @@
         <item>@drawable/ic_white_balance_sunlight_holo_light</item>
         <item>@drawable/ic_white_balance_fluorescent_holo_light</item>
         <item>@drawable/ic_white_balance_cloudy_holo_light</item>
+        <item>@drawable/ic_white_balance_cloudy_holo_light</item> <!-- CLOUDYDAYLIGHT -->
     </array>
 
     <array name="whitebalance_largeicons" translatable="false">
@@ -261,6 +268,7 @@
         <item>@drawable/ic_white_balance_sunlight_holo_light</item>
         <item>@drawable/ic_white_balance_fluorescent_holo_light</item>
         <item>@drawable/ic_white_balance_cloudy_holo_light</item>
+        <item>@drawable/ic_white_balance_cloudy_holo_light</item> <!-- CLOUDYDAYLIGHT -->
     </array>
 
     <!-- Camera Preferences Scene Mode dialog box entries -->
@@ -270,6 +278,10 @@
         <item>@string/pref_camera_scenemode_entry_night</item>
         <item>@string/pref_camera_scenemode_entry_sunset</item>
         <item>@string/pref_camera_scenemode_entry_party</item>
+        <item>@string/pref_camera_scenemode_entry_backlight</item>
+        <item>@string/pref_camera_scenemode_entry_duskdawn</item>
+        <item>@string/pref_camera_scenemode_entry_fallcolor</item>
+        <item>@string/pref_camera_scenemode_entry_text</item>
     </string-array>
 
     <string-array name="pref_camera_scenemode_entryvalues" translatable="false">
@@ -278,6 +290,10 @@
         <item>night</item>
         <item>sunset</item>
         <item>party</item>
+        <item>backlight</item>
+        <item>duskdawn</item>
+        <item>fallcolor</item>
+        <item>text</item>
     </string-array>
 
     <array name="camera_id_entries" translatable="false">
