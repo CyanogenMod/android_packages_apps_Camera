@@ -89,8 +89,8 @@
     <string name="switch_to_camera_label" msgid="5909347213770678326">"Bytt til foto"</string>
     <string name="switch_to_video_label" msgid="1167994386902254398">"Bytt til video"</string>
     <string name="switch_to_panorama_label" msgid="858801335653517864">"Bytt til panorama"</string>
-    <string name="rear_camera_label" msgid="1104543961051437138">"Bakre kamera"</string>
-    <string name="front_camera_label" msgid="6098010541544579711">"Fremre kamera"</string>
+    <string name="rear_camera_label" msgid="1104543961051437138">"Baksidekamera"</string>
+    <string name="front_camera_label" msgid="6098010541544579711">"Frontkamera"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Del bilde via"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Del videoen via"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"Ingen bilder kan deles"</string>

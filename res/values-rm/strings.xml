@@ -25,7 +25,7 @@
     <string name="video_camera_label" msgid="2899292505526427293">"Camera da video"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Fotos da la camera"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Videos da la camera"</string>
-    <string name="wait" msgid="8600187532323801552">"Spetgar…"</string>
+    <string name="wait" msgid="8600187532323801552">"Spetgar..."</string>
     <!-- no translation found for no_storage (7335975356349008814) -->
     <skip />
     <!-- no translation found for no_storage (5137703033746873624) -->
@@ -35,7 +35,7 @@
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"Vossa carta SD è plaina."</string>
     <!-- no translation found for preparing_sd (6104019983528341353) -->
     <skip />
-    <string name="preparing_sd" product="default" msgid="2914969119574812666">"Preparar la carta SD…"</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"Preparar la carta SD..."</string>
     <!-- no translation found for access_sd_fail (8147993984037859354) -->
     <skip />
     <!-- no translation found for access_sd_fail (1584968646870054352) -->

@@ -29,7 +29,7 @@
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"USB atmiņa ir pilna."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"SD karte ir pilna."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Notiek USB atm. sagatavošana"</string>
-    <string name="preparing_sd" product="default" msgid="2914969119574812666">"Notiek SD kartes sagatavošana…"</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"Notiek SD kartes sagatavošana..."</string>
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Nevarēja piekļūt USB atmiņai."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Nevarēja piekļūt SD kartei."</string>
     <string name="confirm_restore_title" msgid="1229914538263792180">"Atjaunot noklusējuma iestatījumus"</string>
@@ -100,7 +100,7 @@
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Nevarēja saglabāt panorāmu."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorāma"</string>
     <string name="pano_capture_indication" msgid="8248825828264374507">"Notiek panorāmas tveršana"</string>
-    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Saglabā…"</string>
+    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Saglabā..."</string>
     <string name="tap_to_focus" msgid="8863427645591903760">"Pieskarieties, lai fokusētu."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efekti"</string>
     <string name="effect_none" msgid="3601545724573307541">"Nav"</string>

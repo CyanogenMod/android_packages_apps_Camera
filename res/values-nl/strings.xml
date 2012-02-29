@@ -23,7 +23,7 @@
     <string name="video_camera_label" msgid="2899292505526427293">"Camcorder"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Camerafoto\'s"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Cameravideo\'s"</string>
-    <string name="wait" msgid="8600187532323801552">"Een ogenblik geduld…"</string>
+    <string name="wait" msgid="8600187532323801552">"Een ogenblik geduld..."</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Koppel de USB-opslag voordat u de camera gebruikt."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Plaats een SD-kaart voordat u de camera gebruikt."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Uw USB-opslag is vol."</string>

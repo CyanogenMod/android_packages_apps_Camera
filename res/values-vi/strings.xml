@@ -23,7 +23,7 @@
     <string name="video_camera_label" msgid="2899292505526427293">"Máy quay video"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Ảnh từ máy ảnh"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Video của máy ảnh"</string>
-    <string name="wait" msgid="8600187532323801552">"Vui lòng đợi…"</string>
+    <string name="wait" msgid="8600187532323801552">"Vui lòng đợi..."</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Kết nối bộ nhớ USB trước khi sử dụng máy ảnh."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Lắp thẻ SD trước khi sử dụng máy ảnh."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Bộ nhớ USB đầy."</string>
