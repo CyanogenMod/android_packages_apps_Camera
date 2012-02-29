@@ -235,6 +235,9 @@ public class VideoModule implements CameraModule,
     private boolean mRestoreFlash;  // This is used to check if we need to restore the flash
                                     // status when going back from gallery.
 
+    private int mVideoWidth;
+    private int mVideoHeight;
+
     protected class CameraOpenThread extends Thread {
         @Override
         public void run() {
@@ -1193,6 +1196,9 @@ public class VideoModule implements CameraModule,
 
         Intent intent = mActivity.getIntent();
         Bundle myExtras = intent.getExtras();
+
+        mVideoWidth = mProfile.videoFrameWidth;
+        mVideoHeight = mProfile.videoFrameHeight;
 
         long requestedSizeLimit = 0;
         closeVideoFileDescriptor();
@@ -2279,7 +2285,9 @@ public class VideoModule implements CameraModule,
             // We need to restart the preview if preview size is changed.
             Size size = mParameters.getPreviewSize();
             if (size.width != mDesiredPreviewWidth
-                    || size.height != mDesiredPreviewHeight) {
+                    || size.height != mDesiredPreviewHeight
+                    || mProfile.videoFrameWidth != mVideoWidth
+                    || mProfile.videoFrameHeight != mVideoHeight) {
                 if (!effectsActive()) {
                     stopPreview();
                 } else {
