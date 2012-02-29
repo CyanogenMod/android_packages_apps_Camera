@@ -14,6 +14,8 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:ignore="UseCompoundDrawables"
         style="@style/EffectSettingItem">
 
         <ImageView android:id="@+id/image"
