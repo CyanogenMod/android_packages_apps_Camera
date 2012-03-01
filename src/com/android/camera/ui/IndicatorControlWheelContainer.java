@@ -201,4 +201,9 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
     public void dismissSecondLevelIndicator() {
         mIndicatorControlWheel.dismissSecondLevelIndicator();
     }
+
+    @Override
+    public void enableFilter(boolean enabled) {
+        mIndicatorControlWheel.setupFilter(enabled);
+    }
 }

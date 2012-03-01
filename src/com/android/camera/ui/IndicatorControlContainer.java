@@ -33,4 +33,6 @@ public abstract class IndicatorControlContainer extends IndicatorControl
     public abstract void enableZoom(boolean enabled);
 
     public abstract void dismissSecondLevelIndicator();
+
+    public abstract void enableFilter(boolean enabled);
 }

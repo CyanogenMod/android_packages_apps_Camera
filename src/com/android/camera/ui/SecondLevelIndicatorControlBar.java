@@ -63,7 +63,9 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         mNonIndicatorButtonCount = getChildCount();
         addControls(keys, otherSettingKeys);
         if (mOrientation != 0) setOrientation(mOrientation, false);
-        setupFilter();
+
+        // Do not grey out the icons when taking a picture.
+        setupFilter(mCurrentMode != MODE_CAMERA);
     }
 
     @Override

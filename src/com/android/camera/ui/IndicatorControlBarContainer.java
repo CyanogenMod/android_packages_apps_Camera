@@ -186,4 +186,10 @@ public class IndicatorControlBarContainer extends IndicatorControlContainer {
             leaveSecondLevelIndicator();
         }
     }
+
+    @Override
+    public void enableFilter(boolean enabled) {
+        mIndicatorControlBar.setupFilter(enabled);
+        mSecondLevelIndicatorControlBar.setupFilter(enabled);
+    }
 }

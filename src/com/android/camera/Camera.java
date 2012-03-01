@@ -1192,10 +1192,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void overrideCameraSettings(final String flashMode,
             final String whiteBalance, final String focusMode) {
         if (mIndicatorControlContainer != null) {
+            mIndicatorControlContainer.enableFilter(true);
             mIndicatorControlContainer.overrideSettings(
                     CameraSettings.KEY_FLASH_MODE, flashMode,
                     CameraSettings.KEY_WHITE_BALANCE, whiteBalance,
                     CameraSettings.KEY_FOCUS_MODE, focusMode);
+            mIndicatorControlContainer.enableFilter(false);
         }
     }
 
