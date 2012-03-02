@@ -25,7 +25,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera.Area;
 import android.hardware.Camera.Parameters;
-import android.hardware.CameraSound;
+import android.media.MediaActionSound;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -223,7 +223,7 @@ public class FocusManager {
                 // so the state is always STATE_FOCUSING.
                 if (!Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.
                         equals(mFocusMode)) {
-                    mListener.playSound(CameraSound.FOCUS_COMPLETE);
+                    mListener.playSound(MediaActionSound.FOCUS_COMPLETE);
                 }
             } else {
                 mState = STATE_FAIL;

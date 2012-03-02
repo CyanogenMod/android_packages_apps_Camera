@@ -50,8 +50,8 @@ import android.graphics.SurfaceTexture;
 import android.graphics.YuvImage;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
-import android.hardware.CameraSound;
 import android.media.ExifInterface;
+import android.media.MediaActionSound;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -171,7 +171,7 @@ public class PanoramaActivity extends ActivityBase implements
 
     private RotateDialogController mRotateDialog;
 
-    private CameraSound mCameraSound;
+    private MediaActionSound mCameraSound;
 
     private Runnable mUpdateTexImageRunnable;
 
@@ -313,7 +313,9 @@ public class PanoramaActivity extends ActivityBase implements
         mDialogTitle = appRes.getString(R.string.pano_dialog_title);
         mDialogOkString = appRes.getString(R.string.dialog_ok);
         mDialogPanoramaFailedString = appRes.getString(R.string.pano_dialog_panorama_failed);
-        mCameraSound = new CameraSound();
+        mCameraSound = new MediaActionSound();
+        mCameraSound.load(MediaActionSound.START_VIDEO_RECORDING);
+        mCameraSound.load(MediaActionSound.STOP_VIDEO_RECORDING);
 
         mMainHandler = new Handler() {
             @Override
@@ -750,11 +752,11 @@ public class PanoramaActivity extends ActivityBase implements
         // right now.
         switch (mCaptureState) {
             case CAPTURE_STATE_VIEWFINDER:
-                mCameraSound.playSound(CameraSound.START_VIDEO_RECORDING);
+                mCameraSound.play(MediaActionSound.START_VIDEO_RECORDING);
                 startCapture();
                 break;
             case CAPTURE_STATE_MOSAIC:
-                mCameraSound.playSound(CameraSound.STOP_VIDEO_RECORDING);
+                mCameraSound.play(MediaActionSound.STOP_VIDEO_RECORDING);
                 stopCapture(false);
         }
     }
