@@ -187,7 +187,9 @@ public class IndicatorControlWheel extends IndicatorControl implements
         mChildRadians = new double[getChildCount()];
         presetFirstLevelChildRadians();
         presetSecondLevelChildRadians();
-        setupFilter();
+
+        // Do not grey out the icons when taking a picture.
+        setupFilter(mCurrentMode != MODE_CAMERA);
         mInitialized = true;
     }
 

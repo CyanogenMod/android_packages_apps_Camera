@@ -65,7 +65,9 @@ public class IndicatorControlBar extends IndicatorControl implements
             mZoomControl = (ZoomControlBar) findViewById(R.id.zoom_control);
             mZoomControl.setVisibility(View.VISIBLE);
         }
-        setupFilter();
+
+        // Do not grey out the icons when taking a picture.
+        setupFilter(mCurrentMode != MODE_CAMERA);
         requestLayout();
     }
 
