@@ -36,7 +36,7 @@ import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.SurfaceHolder;
+import android.view.Surface;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -73,7 +73,7 @@ public class EffectsRecorder {
     private Camera mCameraDevice;
     private CamcorderProfile mProfile;
     private double mCaptureRate = 0;
-    private SurfaceHolder mPreviewSurfaceHolder;
+    private Surface mPreviewSurface;
     private int mPreviewWidth;
     private int mPreviewHeight;
     private MediaRecorder.OnInfoListener mInfoListener;
@@ -239,20 +239,20 @@ public class EffectsRecorder {
         mCaptureRate = fps;
     }
 
-    public void setPreviewDisplay(SurfaceHolder previewSurfaceHolder,
+    public void setPreviewSurface(Surface previewSurface,
                                   int previewWidth,
                                   int previewHeight) {
-        if (mLogVerbose) Log.v(TAG, "setPreviewDisplay (" + this + ")");
+        if (mLogVerbose) Log.v(TAG, "setPreviewSurface (" + this + ")");
         switch (mState) {
             case STATE_RECORD:
-                throw new RuntimeException("setPreviewDisplay cannot be called while recording!");
+                throw new RuntimeException("setPreviewSurface cannot be called while recording!");
             case STATE_RELEASED:
-                throw new RuntimeException("setPreviewDisplay called on an already released recorder!");
+                throw new RuntimeException("setPreviewSurface called on an already released recorder!");
             default:
                 break;
         }
 
-        mPreviewSurfaceHolder = previewSurfaceHolder;
+        mPreviewSurface = previewSurface;
         mPreviewWidth = previewWidth;
         mPreviewHeight = previewHeight;
 
@@ -429,7 +429,7 @@ public class EffectsRecorder {
             }
 
             mGraphEnv.addReferences(
-                    "previewSurface", mPreviewSurfaceHolder.getSurface(),
+                    "previewSurface", mPreviewSurface,
                     "previewWidth", mPreviewWidth,
                     "previewHeight", mPreviewHeight,
                     "orientation", mOrientationHint);
@@ -525,8 +525,8 @@ public class EffectsRecorder {
         if (mProfile == null) {
             throw new RuntimeException("No recording profile provided!");
         }
-        if (mPreviewSurfaceHolder == null) {
-            if (mLogVerbose) Log.v(TAG, "Passed a null surface holder; waiting for valid one");
+        if (mPreviewSurface == null) {
+            if (mLogVerbose) Log.v(TAG, "Passed a null surface; waiting for valid one");
             mState = STATE_WAITING_FOR_SURFACE;
             return;
         }

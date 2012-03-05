@@ -130,7 +130,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private static final String sTempCropFilename = "crop-temp";
 
     private ContentProviderClient mMediaProviderClient;
-    private SurfaceTexture mSurface = null;
     private ShutterButton mShutterButton;
     private boolean mOpenCameraFail = false;
     private boolean mCameraDisabled = false;
@@ -139,6 +138,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private View mPreviewPanel;  // The container of PreviewFrameLayout.
     private PreviewFrameLayout mPreviewFrameLayout;
     private TextureView mPreviewTextureView;  // Preview frame area.
+    private SurfaceTexture mSurfaceTexture;
     private RotateDialogController mRotateDialog;
 
     private ModePicker mModePicker;
@@ -1414,7 +1414,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         if (!mIsImageCaptureIntent) getLastThumbnail();
 
-        if (mSurface != null) {
+        if (mSurfaceTexture != null) {
             // If first time initialization is not finished, put it in the
             // message queue.
             if (!mFirstTimeInitialized) {
@@ -1608,7 +1608,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // We need to save the surface for later use, even when the mCameraDevice
         // is null. This could happen if onResume() is invoked after this
         // function.
-        mSurface = surface;
+        mSurfaceTexture = surface;
 
         // The mCameraDevice will be null if it fails to connect to the camera
         // hardware. In this case we will show a dialog and then finish the
@@ -1651,7 +1651,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         stopPreview();
-        mSurface = null;
+        mSurfaceTexture.release();
+        mSurfaceTexture = null;
         return true;
     }
 
@@ -1701,7 +1702,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // the screen).
         if (mCameraState != PREVIEW_STOPPED) stopPreview();
 
-        setPreviewTexture(mSurface);
+        setPreviewTexture(mSurfaceTexture);
         setDisplayOrientation();
 
         if (!mSnapshotOnIdle) {

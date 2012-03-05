@@ -375,7 +375,7 @@ public class Util {
 
         // Because of bugs of overlay and layout, we sometimes will try to
         // layout the viewfinder in the portrait orientation and thus get the
-        // wrong size of mSurfaceView. When we change the preview size, the
+        // wrong size of preview surface. When we change the preview size, the
         // new overlay will be created before the old one closed, which causes
         // an exception. For now, just get the screen size.
         Display display = currentActivity.getWindowManager().getDefaultDisplay();
