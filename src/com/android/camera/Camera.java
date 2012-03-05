@@ -37,6 +37,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Face;
 import android.hardware.Camera.FaceDetectionListener;
@@ -62,8 +63,7 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -83,7 +83,7 @@ import java.util.List;
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends ActivityBase implements FocusManager.Listener,
         View.OnTouchListener, ShutterButton.OnShutterButtonListener,
-        SurfaceHolder.Callback, ModePicker.OnModeChangeListener,
+        TextureView.SurfaceTextureListener, ModePicker.OnModeChangeListener,
         FaceDetectionListener, CameraPreference.OnPreferenceChangedListener,
         LocationManager.Listener {
 
@@ -139,7 +139,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private static final String sTempCropFilename = "crop-temp";
 
     private ContentProviderClient mMediaProviderClient;
-    private SurfaceHolder mSurfaceHolder = null;
+    private SurfaceTexture mSurface = null;
     private ShutterButton mShutterButton;
     private boolean mOpenCameraFail = false;
     private boolean mCameraDisabled = false;
@@ -147,7 +147,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private View mPreviewPanel;  // The container of PreviewFrameLayout.
     private PreviewFrameLayout mPreviewFrameLayout;
-    private SurfaceView mSurfaceView;
+    private TextureView mPreviewTextureView;  // Preview frame area.
     private RotateDialogController mRotateDialog;
 
     // A popup window that contains a bigger thumbnail and a list of apps to share.
@@ -365,10 +365,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mShutterButton.setVisibility(View.VISIBLE);
 
         // Initialize focus UI.
-        mSurfaceView.setOnTouchListener(this);
+        mPreviewTextureView.setOnTouchListener(this);
         CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
         boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
-        mFocusManager.initialize(mFocusAreaIndicator, mSurfaceView, mFaceView, this,
+        mFocusManager.initialize(mFocusAreaIndicator, mPreviewTextureView, mFaceView, this,
                 mirror, mDisplayOrientation);
         mImageSaver = new ImageSaver();
         installIntentFilter();
@@ -530,7 +530,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 // other areas.
                 if (!Util.pointInView(x, y, popup)
                         && !Util.pointInView(x, y, mIndicatorControlContainer)
-                        && !Util.pointInView(x, y, mSurfaceView)) {
+                        && !Util.pointInView(x, y, mPreviewTextureView)) {
                     mIndicatorControlContainer.dismissSettingPopup();
                 }
             }
@@ -1125,12 +1125,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         Util.enterLightsOutMode(getWindow());
 
-        // don't set mSurfaceHolder here. We have it set ONLY within
-        // surfaceChanged / surfaceDestroyed, other parts of the code
-        // assume that when it is set, the surface is also set.
-        mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
-        SurfaceHolder holder = mSurfaceView.getHolder();
-        holder.addCallback(this);
+        mPreviewTextureView = (TextureView) findViewById(R.id.camera_preview);
+        mPreviewTextureView.setSurfaceTextureListener(this);
 
         // Make sure camera device is opened.
         try {
@@ -1475,7 +1471,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mPausing = false;
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
-        mSurfaceView.setVisibility(View.VISIBLE);
+        mPreviewTextureView.setVisibility(View.VISIBLE);
 
         // Start the preview if it is not started.
         if (mCameraState == PREVIEW_STOPPED) {
@@ -1496,7 +1492,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         if (!mIsImageCaptureIntent) getLastThumbnail();
 
-        if (mSurfaceHolder != null) {
+        if (mSurface != null) {
             // If first time initialization is not finished, put it in the
             // message queue.
             if (!mFirstTimeInitialized) {
@@ -1531,7 +1527,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         collapseCameraControls();
         if (mSharePopup != null) mSharePopup.dismiss();
         if (mFaceView != null) mFaceView.clear();
-        mSurfaceView.setVisibility(View.GONE);
+        mPreviewTextureView.setVisibility(View.GONE);
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
@@ -1676,30 +1672,24 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        // Make sure we have a surface in the holder before proceeding.
-        if (holder.getSurface() == null) {
-            Log.d(TAG, "holder.getSurface() == null");
-            return;
-        }
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int w, int h) {
+        Log.v(TAG, "onSurfaceTextureAvailable. w=" + w + ". h=" + h);
 
-        Log.v(TAG, "surfaceChanged. w=" + w + ". h=" + h);
-
-        // We need to save the holder for later use, even when the mCameraDevice
+        // We need to save the surface for later use, even when the mCameraDevice
         // is null. This could happen if onResume() is invoked after this
         // function.
-        mSurfaceHolder = holder;
+        mSurface = surface;
 
         // The mCameraDevice will be null if it fails to connect to the camera
         // hardware. In this case we will show a dialog and then finish the
         // activity, so it's OK to ignore it.
         if (mCameraDevice == null) return;
 
-        // Sometimes surfaceChanged is called after onPause or before onResume.
+        // Sometimes onSurfaceTextureAvailable is called after onPause or before onResume.
         // Ignore it.
         if (mPausing || isFinishing()) return;
 
-        // Set preview display if the surface is being created. Preview was
+        // Set preview texture if the surface is being created. Preview was
         // already started. Also restart the preview if display rotation has
         // changed. Sometimes this happens when the device is held in portrait
         // and camera app is opened. Rotation animation takes some time and
@@ -1711,12 +1701,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             if (Util.getDisplayRotation(this) != mDisplayRotation) {
                 setDisplayOrientation();
             }
-            if (holder.isCreating()) {
-                // Set preview display if the surface is being created and preview
-                // was already started. That means preview display was set to null
-                // and we need to set it now.
-                setPreviewDisplay(holder);
-            }
+            setPreviewTexture(surface);
         }
 
         // If first time initialization is not finished, send a message to do
@@ -1730,13 +1715,18 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         stopPreview();
-        mSurfaceHolder = null;
+        mSurface = null;
+        return true;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
     }
 
     private void closeCamera() {
@@ -1752,12 +1742,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private void setPreviewDisplay(SurfaceHolder holder) {
+    private void setPreviewTexture(SurfaceTexture surface) {
         try {
-            mCameraDevice.setPreviewDisplay(holder);
+            mCameraDevice.setPreviewTexture(surface);
         } catch (Throwable ex) {
             closeCamera();
-            throw new RuntimeException("setPreviewDisplay failed", ex);
+            throw new RuntimeException("setPreviewTexture failed", ex);
         }
     }
 
@@ -1781,7 +1771,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // the screen).
         if (mCameraState != PREVIEW_STOPPED) stopPreview();
 
-        setPreviewDisplay(mSurfaceHolder);
+        setPreviewTexture(mSurface);
         setDisplayOrientation();
 
         if (!mSnapshotOnIdle) {
