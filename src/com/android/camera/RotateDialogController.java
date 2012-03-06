@@ -113,8 +113,10 @@ public class RotateDialogController implements Rotatable {
                 final Runnable r1, String button2Text, final Runnable r2) {
         resetRotateDialog();
 
-        mRotateDialogTitle.setText(title);
-        mRotateDialogTitleLayout.setVisibility(View.VISIBLE);
+        if (title != null) {
+            mRotateDialogTitle.setText(title);
+            mRotateDialogTitleLayout.setVisibility(View.VISIBLE);
+        }
 
         mRotateDialogText.setText(msg);
 
