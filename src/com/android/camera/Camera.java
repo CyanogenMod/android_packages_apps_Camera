@@ -147,7 +147,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private View mPreviewPanel;  // The container of PreviewFrameLayout.
     private PreviewFrameLayout mPreviewFrameLayout;
-    private View mPreviewFrame;  // Preview frame area.
+    private SurfaceView mSurfaceView;
     private RotateDialogController mRotateDialog;
 
     // A popup window that contains a bigger thumbnail and a list of apps to share.
@@ -365,11 +365,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mShutterButton.setVisibility(View.VISIBLE);
 
         // Initialize focus UI.
-        mPreviewFrame = findViewById(R.id.camera_preview);
-        mPreviewFrame.setOnTouchListener(this);
+        mSurfaceView.setOnTouchListener(this);
         CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
         boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
-        mFocusManager.initialize(mFocusAreaIndicator, mPreviewFrame, mFaceView, this,
+        mFocusManager.initialize(mFocusAreaIndicator, mSurfaceView, mFaceView, this,
                 mirror, mDisplayOrientation);
         mImageSaver = new ImageSaver();
         installIntentFilter();
@@ -531,7 +530,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 // other areas.
                 if (!Util.pointInView(x, y, popup)
                         && !Util.pointInView(x, y, mIndicatorControlContainer)
-                        && !Util.pointInView(x, y, mPreviewFrame)) {
+                        && !Util.pointInView(x, y, mSurfaceView)) {
                     mIndicatorControlContainer.dismissSettingPopup();
                 }
             }
@@ -1129,8 +1128,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceChanged / surfaceDestroyed, other parts of the code
         // assume that when it is set, the surface is also set.
-        SurfaceView preview = (SurfaceView) findViewById(R.id.camera_preview);
-        SurfaceHolder holder = preview.getHolder();
+        mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
+        SurfaceHolder holder = mSurfaceView.getHolder();
         holder.addCallback(this);
 
         // Make sure camera device is opened.
@@ -1476,6 +1475,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mPausing = false;
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
+        mSurfaceView.setVisibility(View.VISIBLE);
 
         // Start the preview if it is not started.
         if (mCameraState == PREVIEW_STOPPED) {
@@ -1531,6 +1531,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         collapseCameraControls();
         if (mSharePopup != null) mSharePopup.dismiss();
         if (mFaceView != null) mFaceView.clear();
+        mSurfaceView.setVisibility(View.GONE);
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();

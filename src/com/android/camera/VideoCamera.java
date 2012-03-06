@@ -121,6 +121,7 @@ public class VideoCamera extends ActivityBase
 
     private View mPreviewPanel;  // The container of PreviewFrameLayout.
     private PreviewFrameLayout mPreviewFrameLayout;
+    private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder = null;
     private IndicatorControlContainer mIndicatorControlContainer;
     private int mSurfaceWidth;
@@ -392,8 +393,8 @@ public class VideoCamera extends ActivityBase
         // don't set mSurfaceHolder here. We have it set ONLY within
         // surfaceCreated / surfaceDestroyed, other parts of the code
         // assume that when it is set, the surface is also set.
-        SurfaceView preview = (SurfaceView) findViewById(R.id.camera_preview);
-        SurfaceHolder holder = preview.getHolder();
+        mSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
+        SurfaceHolder holder = mSurfaceView.getHolder();
         holder.addCallback(this);
 
         mQuickCapture = getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
@@ -762,6 +763,7 @@ public class VideoCamera extends ActivityBase
         mPausing = false;
         mZoomValue = 0;
 
+        mSurfaceView.setVisibility(View.VISIBLE);
         showVideoSnapshotUI(false);
 
         // Start orientation listener as soon as possible because it takes
@@ -931,6 +933,7 @@ public class VideoCamera extends ActivityBase
         closeVideoFileDescriptor();
 
         if (mSharePopup != null) mSharePopup.dismiss();
+        mSurfaceView.setVisibility(View.GONE);
 
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
@@ -2269,7 +2272,7 @@ public class VideoCamera extends ActivityBase
 
     private void initializeVideoSnapshot() {
         if (mParameters.isVideoSnapshotSupported() && !mIsVideoCaptureIntent) {
-            findViewById(R.id.camera_preview).setOnTouchListener(this);
+            mSurfaceView.setOnTouchListener(this);
             // Show the tap to focus toast if this is the first start.
             if (mPreferences.getBoolean(
                         CameraSettings.KEY_VIDEO_FIRST_USE_HINT_SHOWN, true)) {
