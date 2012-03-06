@@ -32,7 +32,6 @@
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Forbereder SD-kort ..."</string>
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Der kunne ikke fås adgang til USB-lagring."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Der kunne ikke fås adgang til SD-kortet."</string>
-    <string name="confirm_restore_title" msgid="1229914538263792180">"Gendan standarder"</string>
     <string name="confirm_restore_message" msgid="4726518572923160939">"Vil du gendanne kameraets standardindstillinger?"</string>
     <string name="review_play" msgid="6378271587740884696">"Afspil"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ANNULLER"</string>

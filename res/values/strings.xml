@@ -61,7 +61,6 @@
     <string name="access_sd_fail" product="default">Couldn\'t access SD card.</string>
 
     <!-- Confirmation dialog when restoring settings -->
-    <string name="confirm_restore_title">Restore defaults</string>
     <string name="confirm_restore_message">Do you want to restore camera default settings?</string>
 
     <!-- button in review mode indicating that the video just taken should be played [CHAR LIMIT=10] -->

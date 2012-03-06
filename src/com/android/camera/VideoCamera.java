@@ -1996,7 +1996,7 @@ public class VideoCamera extends ActivityBase
             }
         };
         mRotateDialog.showAlertDialog(
-                getString(R.string.confirm_restore_title),
+                null,
                 getString(R.string.confirm_restore_message),
                 getString(android.R.string.ok), runnable,
                 getString(android.R.string.cancel), null);

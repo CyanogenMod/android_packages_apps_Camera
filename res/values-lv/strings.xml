@@ -32,7 +32,6 @@
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Notiek SD kartes sagatavošana..."</string>
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Nevarēja piekļūt USB atmiņai."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Nevarēja piekļūt SD kartei."</string>
-    <string name="confirm_restore_title" msgid="1229914538263792180">"Atjaunot noklusējuma iestatījumus"</string>
     <string name="confirm_restore_message" msgid="4726518572923160939">"Vai vēlaties atjaunot kameras noklusējuma iestatījumus?"</string>
     <string name="review_play" msgid="6378271587740884696">"Atskaņot"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ATCELT"</string>
