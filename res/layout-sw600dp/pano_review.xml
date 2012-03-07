@@ -21,29 +21,10 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent">
 
-    <LinearLayout android:id="@+id/pano_review_control"
+    <View android:id="@+id/pano_review_control"
             style="@style/PanoViewHorizontalBar"
             android:gravity="right"
-            android:orientation="horizontal">
-
-        <com.android.camera.ui.RotateLayout
-                android:id="@+id/pano_review_cancel_button_layout"
-                android:layout_gravity="right|center_vertical"
-                android:layout_marginRight="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            <TextView android:id="@+id/pano_review_cancel_button"
-                    android:text="@string/review_cancel"
-                    android:background="@drawable/bg_pressed"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:onClick="onCancelButtonClicked"
-                    android:textSize="12sp"
-                    android:minWidth="@dimen/pano_review_button_width"
-                    android:layout_height="match_parent"
-                    android:layout_width="wrap_content" />
-        </com.android.camera.ui.RotateLayout>
-    </LinearLayout>
+            android:orientation="horizontal" />
 
     <ImageView android:id="@+id/pano_reviewarea"
             android:scaleType="fitCenter"
@@ -76,6 +57,24 @@
                     android:layout_centerInParent="true"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content" />
+        </com.android.camera.ui.RotateLayout>
+
+        <com.android.camera.ui.RotateLayout
+                android:id="@+id/pano_review_cancel_button_layout"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+            <TextView android:id="@+id/pano_review_cancel_button"
+                    android:text="@string/review_cancel"
+                    android:background="@drawable/bg_pressed"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:onClick="onCancelButtonClicked"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:minWidth="@dimen/pano_review_button_width"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
         </com.android.camera.ui.RotateLayout>
     </RelativeLayout>
 </LinearLayout>
