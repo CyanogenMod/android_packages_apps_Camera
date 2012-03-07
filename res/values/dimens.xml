@@ -22,14 +22,8 @@
     <dimen name="share_icon_length">36dp</dimen>
     <dimen name="share_item_width">54dp</dimen>
     <dimen name="share_item_height">54dp</dimen>
-    <dimen name="pano_control_layout_min_width">76dp</dimen>
-    <dimen name="pano_control_start_button_size">70dp</dimen>
     <dimen name="pano_mosaic_surface_height">240dp</dimen>
     <dimen name="pano_review_button_width">70dp</dimen>
-    <dimen name="pano_review_button_height">45dp</dimen>
-    <dimen name="pano_review_saving_indication_size">14sp</dimen>
-    <dimen name="pano_indication_width">150dp</dimen>
-    <dimen name="pano_indication_height">75dp</dimen>
     <dimen name="setting_popup_right_margin">5dp</dimen>
     <dimen name="setting_row_height">50dp</dimen>
     <dimen name="setting_item_text_size">18sp</dimen>
