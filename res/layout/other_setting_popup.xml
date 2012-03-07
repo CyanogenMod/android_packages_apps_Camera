@@ -18,7 +18,6 @@
 -->
 
 <com.android.camera.ui.OtherSettingsPopup xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
         style="@style/SettingPopupWindow">
 
     <LinearLayout android:orientation="vertical"
