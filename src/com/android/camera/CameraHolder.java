@@ -45,13 +45,14 @@ import java.io.IOException;
 public class CameraHolder {
     private static final String TAG = "CameraHolder";
     private CameraDevice mCameraDevice;
-    private long mKeepBeforeTime = 0;  // Keep the Camera before this time.
+    private long mKeepBeforeTime;  // Keep the Camera before this time.
     private final Handler mHandler;
-    private int mUsers = 0;  // number of open() - number of release()
-    private int mNumberOfCameras;
+    private boolean mCameraOpened;  // true if camera is opened
+    private final int mNumberOfCameras;
     private int mCameraId = -1;  // current camera id
-    private int mBackCameraId = -1, mFrontCameraId = -1;
-    private CameraInfo[] mInfo;
+    private int mBackCameraId = -1;
+    private int mFrontCameraId = -1;
+    private final CameraInfo[] mInfo;
     private static CameraDevice mMockCamera[];
     private static CameraInfo mMockCameraInfo[];
 
@@ -86,7 +87,7 @@ public class CameraHolder {
                         // there is a chance that this message has been handled
                         // before being removed. So, we need to add a check
                         // here:
-                        if (CameraHolder.this.mUsers == 0) releaseCamera();
+                        if (!CameraHolder.this.mCameraOpened) releaseCamera();
                     }
                     break;
             }
@@ -114,11 +115,12 @@ public class CameraHolder {
                 android.hardware.Camera.getCameraInfo(i, mInfo[i]);
             }
         }
+
+        // get the first (smallest) back and first front camera id
         for (int i = 0; i < mNumberOfCameras; i++) {
             if (mBackCameraId == -1 && mInfo[i].facing == CameraInfo.CAMERA_FACING_BACK) {
                 mBackCameraId = i;
-            }
-            if (mFrontCameraId == -1 && mInfo[i].facing == CameraInfo.CAMERA_FACING_FRONT) {
+            } else if (mFrontCameraId == -1 && mInfo[i].facing == CameraInfo.CAMERA_FACING_FRONT) {
                 mFrontCameraId = i;
             }
         }
@@ -134,7 +136,7 @@ public class CameraHolder {
 
     public synchronized CameraDevice open(int cameraId)
             throws CameraHardwareException {
-        Assert(mUsers == 0);
+        Assert(!mCameraOpened);
         if (mCameraDevice != null && mCameraId != cameraId) {
             mCameraDevice.release();
             mCameraDevice = null;
@@ -167,7 +169,7 @@ public class CameraHolder {
             }
             mCameraDevice.setParameters(mParameters);
         }
-        ++mUsers;
+        mCameraOpened = true;
         mHandler.removeMessages(RELEASE_CAMERA);
         mKeepBeforeTime = 0;
         return mCameraDevice;
@@ -179,7 +181,7 @@ public class CameraHolder {
      */
     public synchronized CameraDevice tryOpen(int cameraId) {
         try {
-            return mUsers == 0 ? open(cameraId) : null;
+            return !mCameraOpened ? open(cameraId) : null;
         } catch (CameraHardwareException e) {
             // In eng build, we throw the exception so that test tool
             // can detect it and report it
@@ -191,14 +193,14 @@ public class CameraHolder {
     }
 
     public synchronized void release() {
-        Assert(mUsers == 1);
-        --mUsers;
+        Assert(mCameraOpened);
+        mCameraOpened = false;
         mCameraDevice.stopPreview();
         releaseCamera();
     }
 
     private synchronized void releaseCamera() {
-        Assert(mUsers == 0);
+        Assert(!mCameraOpened);
         Assert(mCameraDevice != null);
         long now = System.currentTimeMillis();
         if (now < mKeepBeforeTime) {
@@ -215,10 +217,10 @@ public class CameraHolder {
     }
 
     public synchronized void keep() {
-        // We allow (mUsers == 0) for the convenience of the calling activity.
+        // We allow mCameraOpened in either state for the convenience of the calling activity.
         // The activity may not have a chance to call open() before the user
         // choose the menu item to switch to another activity.
-        Assert(mUsers == 1 || mUsers == 0);
+
         // Keep the camera instance for 3 seconds.
         mKeepBeforeTime = System.currentTimeMillis() + 3000;
     }
