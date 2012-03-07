@@ -25,8 +25,7 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-        <LinearLayout android:id="@+id/pano_capture_preview"
-                android:layout_width="match_parent"
+        <LinearLayout android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
@@ -88,8 +87,7 @@
             </RelativeLayout>
 
             <!-- The top bar with capture indication -->
-            <FrameLayout android:id="@+id/pano_capture_indicator_layout"
-                    style="@style/PanoViewHorizontalBar"
+            <FrameLayout style="@style/PanoViewHorizontalBar"
                     android:padding="5dp">
 
                 <com.android.camera.ui.RotateLayout

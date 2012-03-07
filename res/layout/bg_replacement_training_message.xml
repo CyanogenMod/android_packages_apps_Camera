@@ -43,8 +43,7 @@
                     android:layout_height="1dp"
                     android:background="#aaaaaa" />
 
-            <Button android:id="@+id/bg_replace_cancel_button"
-                    android:layout_width="match_parent"
+            <Button android:layout_width="match_parent"
                     android:layout_height="48dip"
                     android:layout_gravity="center"
                     android:textAppearance="?android:attr/textAppearanceMedium"
