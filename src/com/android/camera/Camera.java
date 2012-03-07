@@ -44,9 +44,9 @@ import android.hardware.Camera.FaceDetectionListener;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
-import android.hardware.CameraSound;
 import android.location.Location;
 import android.media.CameraProfile;
+import android.media.MediaActionSound;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -176,7 +176,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // generating thumbnails. This reduces the shot-to-shot time.
     private ImageSaver mImageSaver;
 
-    private CameraSound mCameraSound;
+    private MediaActionSound mCameraSound;
 
     private Runnable mDoSnapRunnable = new Runnable() {
         @Override
@@ -1046,7 +1046,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void playSound(int soundId) {
-        mCameraSound.playSound(soundId);
+        mCameraSound.play(soundId);
     }
 
     private int getPreferredCameraId(ComboPreferences preferences) {
@@ -1173,7 +1173,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Do this after starting preview because it depends on camera
         // parameters.
         initializeIndicatorControl();
-        mCameraSound = new CameraSound();
+        mCameraSound = new MediaActionSound();
+        // Not required, but reduces latency when playback is requested later.
+        mCameraSound.load(MediaActionSound.FOCUS_COMPLETE);
 
         // Make sure preview is started.
         try {
