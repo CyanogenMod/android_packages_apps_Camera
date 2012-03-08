@@ -15,7 +15,7 @@
 -->
 
 <PreferenceGroup
-        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
+        xmlns:camera="http://schemas.android.com/apk/res/com.android.gallery3d"
         camera:title="@string/pref_camera_settings_category">
     <IconListPreference
             camera:key="pref_camera_flashmode_key"
