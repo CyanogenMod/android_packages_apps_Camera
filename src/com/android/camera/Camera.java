@@ -1173,9 +1173,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Do this after starting preview because it depends on camera
         // parameters.
         initializeIndicatorControl();
-        mCameraSound = new MediaActionSound();
-        // Not required, but reduces latency when playback is requested later.
-        mCameraSound.load(MediaActionSound.FOCUS_COMPLETE);
 
         // Make sure preview is started.
         try {
@@ -1514,6 +1511,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         setOrientationIndicator(getIntent().getIntExtra(
                 IntentExtras.INITIAL_ORIENTATION_EXTRA, mOrientationCompensation), false);
+
+        if (mCameraSound == null) {
+            mCameraSound = new MediaActionSound();
+            // Not required, but reduces latency when playback is requested later.
+            mCameraSound.load(MediaActionSound.FOCUS_COMPLETE);
+        }
     }
 
     @Override
@@ -1522,7 +1525,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
-        if (mCameraSound != null) mCameraSound.release();
+        if (mCameraSound != null) {
+            mCameraSound.release();
+            mCameraSound = null;
+        }
         resetScreenOn();
 
         // Clear UI.
