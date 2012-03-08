@@ -313,9 +313,6 @@ public class PanoramaActivity extends ActivityBase implements
         mDialogTitle = appRes.getString(R.string.pano_dialog_title);
         mDialogOkString = appRes.getString(R.string.dialog_ok);
         mDialogPanoramaFailedString = appRes.getString(R.string.pano_dialog_panorama_failed);
-        mCameraSound = new MediaActionSound();
-        mCameraSound.load(MediaActionSound.START_VIDEO_RECORDING);
-        mCameraSound.load(MediaActionSound.STOP_VIDEO_RECORDING);
 
         mMainHandler = new Handler() {
             @Override
@@ -987,7 +984,10 @@ public class PanoramaActivity extends ActivityBase implements
         mMosaicView.onPause();
         clearMosaicFrameProcessorIfNeeded();
         resetScreenOn();
-        mCameraSound.release();
+        if (mCameraSound != null) {
+            mCameraSound.release();
+            mCameraSound = null;
+        }
         System.gc();
     }
 
@@ -1007,6 +1007,11 @@ public class PanoramaActivity extends ActivityBase implements
             Util.showErrorAndFinish(this, R.string.camera_disabled);
             return;
         }
+
+        // Set up sound playback for shutter button
+        mCameraSound = new MediaActionSound();
+        mCameraSound.load(MediaActionSound.START_VIDEO_RECORDING);
+        mCameraSound.load(MediaActionSound.STOP_VIDEO_RECORDING);
 
         // Camera must be initialized before MosaicFrameProcessor is initialized.
         // The preview size has to be decided by camera device.

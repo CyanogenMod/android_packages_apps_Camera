@@ -741,7 +741,6 @@ public class EffectsRecorder {
         } catch(IOException e) {
             throw new RuntimeException("Unable to connect camera to effect input", e);
         }
-        mCameraSound.release();
 
         mState = STATE_CONFIGURE;
         mOldRunner = mRunner;
@@ -866,6 +865,10 @@ public class EffectsRecorder {
                 stopPreview();
                 // Fall-through
             default:
+                if (mCameraSound != null) {
+                    mCameraSound.release();
+                    mCameraSound = null;
+                }
                 mState = STATE_RELEASED;
                 break;
         }
