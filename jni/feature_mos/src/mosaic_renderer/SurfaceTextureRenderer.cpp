@@ -178,17 +178,22 @@ const char* SurfaceTextureRenderer::VertexShaderSource() const
 const char* SurfaceTextureRenderer::FragmentShaderSource() const
 {
     static const char gFragmentShader[] =
+#ifndef MISSING_EGL_EXTERNAL_IMAGE
         "#extension GL_OES_EGL_image_external : require\n"
         "precision mediump float;\n"
         "varying vec2 vTextureNormCoord;\n"
-#ifdef MISSING_EGL_EXTERNAL_IMAGE
-        "uniform sampler2D sTexture;\n"
-#else
         "uniform samplerExternalOES sTexture;\n"
-#endif
         "void main() {\n"
         "  gl_FragColor = texture2D(sTexture, vTextureNormCoord);\n"
         "}\n";
+#else
+        "precision mediump float;\n"
+        "varying vec2 vTextureNormCoord;\n"
+        "uniform sampler2D sTexture;\n"
+        "void main() {\n"
+        "  gl_FragColor = texture2D(sTexture, vTextureNormCoord);\n"
+        "}\n";
+#endif
 
     return gFragmentShader;
 }
