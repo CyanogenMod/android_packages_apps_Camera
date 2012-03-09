@@ -66,6 +66,7 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Дневной свет"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Лампа дневного света"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Пасмурно"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Пасмурно, дневной свет</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Режим съемки"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Авто"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Действие"</string>
@@ -123,4 +124,5 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"Уменьшить %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Увеличить %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"Переключить %1$s"</string>
+    <string name="pref_camera_power_shutter_title">Съёмка питанием</string>
 </resources>
