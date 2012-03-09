@@ -15,7 +15,7 @@
 -->
 
 <PreferenceGroup
-        xmlns:camera="http://schemas.android.com/apk/res/com.android.camera"
+        xmlns:camera="http://schemas.android.com/apk/res/com.android.gallery3d"
         camera:title="@string/pref_camcorder_settings_category">
     <IconListPreference
             camera:key="pref_video_quality_key"
