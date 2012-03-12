@@ -45,7 +45,7 @@
                 android:id="@+id/btn_play"
                 style="@style/ReviewControlIcon"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ic_gallery_play"
+                android:src="@drawable/ic_gallery_play_big"
                 android:visibility="gone"
                 android:onClick="onReviewPlayClicked"/>
     </com.android.camera.PreviewFrameLayout>

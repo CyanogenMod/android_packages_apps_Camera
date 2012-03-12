@@ -44,7 +44,7 @@
                 android:id="@+id/btn_play"
                 style="@style/ReviewControlIcon"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ic_gallery_play"
+                android:src="@drawable/ic_gallery_play_big"
                 android:background="@drawable/bg_pressed"
                 android:visibility="gone"
                 android:onClick="onReviewPlayClicked" />
