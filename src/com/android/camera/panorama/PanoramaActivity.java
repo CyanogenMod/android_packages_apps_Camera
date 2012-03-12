@@ -383,9 +383,14 @@ public class PanoramaActivity extends ActivityBase implements
     }
 
     private void openCamera() throws CameraHardwareException, CameraDisabledException {
-        int backCameraId = CameraHolder.instance().getBackCameraId();
-        mCameraDevice = Util.openCamera(this, backCameraId);
-        mCameraOrientation = Util.getCameraOrientation(backCameraId);
+        int cameraId = CameraHolder.instance().getBackCameraId();
+        // If there is no back camera, use the first camera. Camera id starts
+        // from 0. Currently if a camera is not back facing, it is front facing.
+        // This is also forward compatible if we have a new facing other than
+        // back or front in the future.
+        if (cameraId == -1) cameraId = 0;
+        mCameraDevice = Util.openCamera(this, cameraId);
+        mCameraOrientation = Util.getCameraOrientation(cameraId);
     }
 
     private boolean findBestPreviewSize(List<Size> supportedSizes, boolean need4To3,
