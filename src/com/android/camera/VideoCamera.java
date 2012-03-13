@@ -52,6 +52,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
 import android.util.Log;
@@ -109,6 +110,8 @@ public class VideoCamera extends ActivityBase
 
     private static final boolean SWITCH_CAMERA = true;
     private static final boolean SWITCH_VIDEO = false;
+
+    static final String PREVIEW_PROPERTY = "ro.camera.preview";
 
     private static final long SHUTTER_BUTTON_TIMEOUT = 500L; // 500ms
 
@@ -1111,7 +1114,12 @@ public class VideoCamera extends ActivityBase
         // display rotation in onCreate may not be what we want.
         if (mPreviewing && (Util.getDisplayRotation(this) == mDisplayRotation)
                 && holder.isCreating()) {
-            setPreviewDisplay(holder);
+            boolean mPreviewOverride = SystemProperties.get(PREVIEW_PROPERTY).equalsIgnoreCase("true");
+            if (mPreviewOverride) {
+                startPreview();
+            } else {
+                setPreviewDisplay(holder);
+            }
         } else {
             stopVideoRecording();
             startPreview();

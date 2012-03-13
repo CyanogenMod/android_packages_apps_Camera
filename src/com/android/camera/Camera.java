@@ -52,6 +52,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
 import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -103,6 +104,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private static final int UPDATE_PARAM_ZOOM = 2;
     private static final int UPDATE_PARAM_PREFERENCE = 4;
     private static final int UPDATE_PARAM_ALL = -1;
+
+    static final String PREVIEW_PROPERTY = "ro.camera.preview";
+
 
     // When setCameraParametersWhenIdle() is called, we accumulate the subsets
     // needed to be updated in mUpdateSet.
@@ -1785,7 +1789,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 // Set preview display if the surface is being created and preview
                 // was already started. That means preview display was set to null
                 // and we need to set it now.
-                setPreviewDisplay(holder);
+                boolean mPreviewOverride = SystemProperties.get(PREVIEW_PROPERTY).equalsIgnoreCase("true");
+                if (mPreviewOverride) {
+                    startPreview();
+                } else {
+                    setPreviewDisplay(holder);
+                }
             }
         }
 
