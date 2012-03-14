@@ -86,6 +86,7 @@ public class CaptureAnimManager implements
     public void startAnimation(Bitmap bitmap, int animOrientation) {
         mAnimOrientation = animOrientation;
         // Reset the views before the animation begins.
+        mCaptureAnim.cancel();
         mCaptureAnim.setValues(mReviewSlideValue[mAnimOrientation / 90]);
         switch (mAnimOrientation) {
             case 0:
