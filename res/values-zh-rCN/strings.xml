@@ -115,7 +115,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"您的视频"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"把设备放好。"\n"离开镜头前片刻。"</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"无法在启用效果时选择。"</string>
-    <string name="video_snapshot_hint" msgid="8159602664271448241">"录制视频时触摸预览屏幕可拍照。"</string>
+    <!-- no translation found for video_snapshot_hint (18833576851372483) -->
+    <skip />
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"启用特殊效果时停用视频快照。"</string>
     <string name="clear_effects" msgid="5485339175014139481">"清除效果"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"趣味表情"</string>

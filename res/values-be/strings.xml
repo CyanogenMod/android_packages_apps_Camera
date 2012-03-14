@@ -115,7 +115,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Вашы відэа"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Наладзьце прыладу."\n"На хвіліну выйдзіце з поля зроку."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Немагчыма выбраць, калі ўключаны эфект."</string>
-    <string name="video_snapshot_hint" msgid="8159602664271448241">"Зрабіце фота падчас запiсу вiдэа, дакрануўшыся да экрану папярэдняга прагляду."</string>
+    <!-- no translation found for video_snapshot_hint (18833576851372483) -->
+    <skip />
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Капiяванне кадра з відэа адключаецца, калі ўключаны спецэфекты."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Выдалiць эфекты"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"ПАЦЕШНЫЯ СМАЙЛIКI"</string>

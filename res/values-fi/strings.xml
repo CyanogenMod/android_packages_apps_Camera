@@ -115,7 +115,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Oma videosi"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Aseta laite alustalle."\n"Astu hetkeksi pois kuvasta."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Ei valittavissa, kun tehoste on käytössä."</string>
-    <string name="video_snapshot_hint" msgid="8159602664271448241">"Ota kuva videokuvauksen aikana koskettamalla esikatseluruutua."</string>
+    <!-- no translation found for video_snapshot_hint (18833576851372483) -->
+    <skip />
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Videon kuvakaappausta ei voi käyttää erikoistehosteiden kanssa."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Tyhjennä tehosteet"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"HAUSKAT KASVOT"</string>

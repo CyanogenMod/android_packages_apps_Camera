@@ -115,7 +115,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Το βίντεό σας"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Αφήστε τη συσκευή σας κάτω"\n"Απομακρυνθείτε για λίγο από την εμβέλειά της."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Αδύνατη η επιλογή όταν το εφέ είναι ενεργό."</string>
-    <string name="video_snapshot_hint" msgid="8159602664271448241">"Βγάλτε μια φωτογραφία κατά τη διάρκεια της εγγραφής βίντεο πατώντας την οθόνη προεπισκόπησης."</string>
+    <!-- no translation found for video_snapshot_hint (18833576851372483) -->
+    <skip />
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Το στιγμιότυπο οθόνης βίντεο απενεργοποιείται με ενεργά τα εφέ."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Διαγραφή εφέ"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"ΑΣΤΕΙΑ ΠΡΟΣΩΠΑ"</string>

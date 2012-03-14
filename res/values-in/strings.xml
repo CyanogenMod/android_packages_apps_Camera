@@ -115,7 +115,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Video Anda"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Letakkan perangkat Anda."\n"Menyingkirlah sejenak dari bidang bidik."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Tidak dapat dipilih jika efek dinyalakan."</string>
-    <string name="video_snapshot_hint" msgid="8159602664271448241">"Ambil foto saat merekam video dengan menyentuh layar pratinjau."</string>
+    <!-- no translation found for video_snapshot_hint (18833576851372483) -->
+    <skip />
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Cuplikan video dinonaktifkan bila efek khusus aktif."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Hapus efek"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"WAJAH KONYOL"</string>

@@ -115,7 +115,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Ваше відео"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Покладіть свій пристрій."\n"На декілька секунд вийдіть із поля зору."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Неможливо вибрати, якщо ввімкнено ефект."</string>
-    <string name="video_snapshot_hint" msgid="8159602664271448241">"Зробіть фото під час відеозйомки, торкнувшись екрана перегляду."</string>
+    <!-- no translation found for video_snapshot_hint (18833576851372483) -->
+    <skip />
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Функцію миттєвого знімка відео вимкнено, коли ввімк. спецефекти."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Очистити ефекти"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"КУМЕДНІ ОБЛИЧЧЯ"</string>

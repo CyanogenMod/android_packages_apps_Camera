@@ -115,7 +115,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"ویدیوی شما"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"دستگاه خود را کنار بگذارید."\n"برای یک لحظه از دید خارج شوید."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"وقتی جلوه روشن است، قابل انتخاب نیست."</string>
-    <string name="video_snapshot_hint" msgid="8159602664271448241">"در حین ضبط ویدیو با لمس کردن صفحه پیش‌نمایش یک عکس بگیرید."</string>
+    <!-- no translation found for video_snapshot_hint (18833576851372483) -->
+    <skip />
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"هنگام فعال بودن جلوه‌های ویژه، عکس فوری از ویدیو غیرفعال است."</string>
     <string name="clear_effects" msgid="5485339175014139481">"پاک کردن جلوه‌ها"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"چهره‌های احمقانه"</string>
