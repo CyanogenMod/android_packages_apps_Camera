@@ -50,12 +50,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="64dp"/>
-                <View android:id="@+id/rotate_dialog_title_divider"
-                        style="@style/PopupTitleSeperator" />
+                <View style="@style/PopupTitleSeperator" />
             </LinearLayout>
 
             <LinearLayout
-                    android:id="@+id/dialog_layout"
                     android:orientation="horizontal"
                     android:background="@color/popup_background"
                     android:padding="9dp"

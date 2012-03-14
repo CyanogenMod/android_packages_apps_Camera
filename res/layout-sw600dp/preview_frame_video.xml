@@ -33,7 +33,7 @@
             android:background="@drawable/ic_snapshot_border" />
         <com.android.camera.ui.RotateLayout android:id="@+id/recording_time_rect"
                 style="@style/ViewfinderLableLayout">
-            <include layout="@layout/viewfinder_labels_video" android:id="@+id/labels_w1024" />
+            <include layout="@layout/viewfinder_labels_video" />
         </com.android.camera.ui.RotateLayout>
         <ImageView android:id="@+id/review_image"
                 android:layout_width="match_parent"

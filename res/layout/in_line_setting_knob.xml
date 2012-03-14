@@ -15,7 +15,6 @@
 -->
 
 <com.android.camera.ui.InLineSettingKnob xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/setting_item"
         style="@style/SettingRow">
     <TextView android:id="@+id/title"
             style="@style/SettingItemTitle" />

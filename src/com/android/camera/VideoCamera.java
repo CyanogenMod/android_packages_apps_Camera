@@ -418,8 +418,8 @@ public class VideoCamera extends ActivityBase
         mRecordingTimeRect = (RotateLayout) findViewById(R.id.recording_time_rect);
         mOrientationListener = new MyOrientationEventListener(this);
         mTimeLapseLabel = findViewById(R.id.time_lapse_label);
-        // The R.id.labels can only be found in phone layout. For tablet, the id is
-        // R.id.labels_w1024. That is, mLabelsLinearLayout should be null in tablet layout.
+        // The R.id.labels can only be found in phone layout.
+        // That is, mLabelsLinearLayout should be null in tablet layout.
         mLabelsLinearLayout = (LinearLayout) findViewById(R.id.labels);
 
         mBgLearningMessageRotater = (RotateLayout) findViewById(R.id.bg_replace_message);

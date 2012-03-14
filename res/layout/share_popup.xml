@@ -78,16 +78,15 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_gallery" />
             </com.android.camera.ui.RotateLayout>
-            <View
-                    android:id="@+id/gallery_button_divider"
+            <View android:id="@+id/gallery_button_divider"
                     android:layout_toLeftOf="@+id/goto_gallery_button_rotate"
                     android:layout_height="match_parent"
                     android:layout_margin="8dp"
                     android:layout_width="1dp"
                     android:background="#5affffff" />
 
-            <com.android.camera.ui.RightAlignedHorizontalScrollView android:id="@+id/share_list_container"
-                    android:layout_toLeftOf="@+id/gallery_button_divider"
+            <com.android.camera.ui.RightAlignedHorizontalScrollView
+                    android:layout_toLeftOf="@id/gallery_button_divider"
                     android:layout_height="match_parent"
                     android:layout_width="wrap_content">
                 <com.android.camera.ui.OneRowGridView android:id="@+id/share_list"

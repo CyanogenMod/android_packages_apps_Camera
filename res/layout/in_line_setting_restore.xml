@@ -15,7 +15,6 @@
 -->
 
 <com.android.camera.ui.InLineSettingRestore xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/setting_item"
         style="@style/SettingRow"
         android:background="@drawable/bg_pressed_exit_fading">
     <TextView android:id="@+id/title"

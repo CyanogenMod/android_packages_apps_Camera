@@ -39,8 +39,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-            <TextView android:id="@+id/pano_review_saving_indication"
-                    android:text="@string/pano_review_saving_indication_str"
+            <TextView android:text="@string/pano_review_saving_indication_str"
                     android:textAppearance="?android:textAppearanceMedium"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content" />

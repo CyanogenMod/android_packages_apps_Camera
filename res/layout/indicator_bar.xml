@@ -21,7 +21,6 @@
         android:layout_alignParentBottom="true">
 
     <RelativeLayout
-            android:id="@+id/control_bars"
             android:layout_height="@dimen/indicator_bar_width"
             android:layout_width="match_parent">
         <com.android.camera.ui.IndicatorControlBar
