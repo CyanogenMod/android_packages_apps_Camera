@@ -102,6 +102,11 @@ public class RotateLayout extends ViewGroup implements Rotatable {
         mChild.setRotation(-mOrientation);
     }
 
+    @Override
+    public boolean shouldDelayChildPressedState() {
+        return false;
+    }
+
     // Rotate the view counter-clockwise
     @Override
     public void setOrientation(int orientation, boolean animation) {
