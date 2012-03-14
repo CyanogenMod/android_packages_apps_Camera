@@ -19,20 +19,28 @@ package com.android.camera.activity;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.hardware.Camera.CameraInfo;
+import android.hardware.Camera.Parameters;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.camera.CameraHolder;
-import com.android.camera.MockCamera;
+import com.android.camera.CameraDevice;
 import com.android.camera.R;
+
+import static com.google.testing.littlemock.LittleMock.mock;
+import static com.google.testing.littlemock.LittleMock.doReturn;
+import com.google.testing.littlemock.AppDataDirGuesser;
+
+import java.io.File;
 
 public class CameraTestCase<T extends Activity> extends ActivityInstrumentationTestCase2<T> {
     protected CameraInfo mCameraInfo[];
-    protected MockCamera mMockCamera[];
+    protected CameraDevice mMockCamera[];
     protected CameraInfo mOneCameraInfo[];
-    protected MockCamera mOneMockCamera[];
+    protected CameraDevice mOneMockCamera[];
+    private static Parameters mParameters;
 
     public CameraTestCase(Class<T> activityClass) {
         super(activityClass);
@@ -41,20 +49,30 @@ public class CameraTestCase<T extends Activity> extends ActivityInstrumentationT
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        AppDataDirGuesser.setInstance(new AppDataDirGuesser() {
+            @Override
+            public File guessSuitableDirectoryForGeneratedClasses() {
+                return getInstrumentation().getTargetContext().getCacheDir();
+            }
+        });
+        AppDataDirGuesser.getsInstance().guessSuitableDirectoryForGeneratedClasses();
         mCameraInfo = new CameraInfo[2];
         mCameraInfo[0] = new CameraInfo();
         mCameraInfo[0].facing = CameraInfo.CAMERA_FACING_BACK;
         mCameraInfo[1] = new CameraInfo();
         mCameraInfo[1].facing = CameraInfo.CAMERA_FACING_FRONT;
-        mMockCamera = new MockCamera[2];
-        mMockCamera[0] = new MockCamera();
-        mMockCamera[1] = new MockCamera();
+        mMockCamera = new CameraDevice[2];
+        mMockCamera[0] = mock(CameraDevice.class);
+        mMockCamera[1] = mock(CameraDevice.class);
+        doReturn(getParameters()).when(mMockCamera[0]).getParameters();
+        doReturn(getParameters()).when(mMockCamera[1]).getParameters();
 
         mOneCameraInfo = new CameraInfo[1];
         mOneCameraInfo[0] = new CameraInfo();
         mOneCameraInfo[0].facing = CameraInfo.CAMERA_FACING_BACK;
-        mOneMockCamera = new MockCamera[1];
-        mOneMockCamera[0] = new MockCamera();
+        mOneMockCamera = new CameraDevice[1];
+        mOneMockCamera[0] = mock(CameraDevice.class);
+        doReturn(getParameters()).when(mOneMockCamera[0]).getParameters();
     }
 
     @Override
@@ -118,5 +136,32 @@ public class CameraTestCase<T extends Activity> extends ActivityInstrumentationT
         Activity activity = getActivity();
         getInstrumentation().waitForIdleSync();
         assertNull(activity.findViewById(id));
+    }
+
+    protected static Parameters getParameters() {
+        synchronized (CameraTestCase.class) {
+            if (mParameters == null) {
+                mParameters = android.hardware.Camera.getEmptyParameters();
+                mParameters.unflatten("preview-format-values=yuv420sp,yuv420p,yuv422i-yuyv,yuv420p;" +
+                        "preview-format=yuv420sp;" +
+                        "preview-size-values=800x480;preview-size=800x480;" +
+                        "picture-size-values=2592x1944;picture-size=2592x1944;" +
+                        "jpeg-thumbnail-size-values=320x240,0x0;jpeg-thumbnail-width=320;jpeg-thumbnail-height=240;" +
+                        "jpeg-thumbnail-quality=60;jpeg-quality=95;" +
+                        "preview-frame-rate-values=30,15;preview-frame-rate=30;" +
+                        "focus-mode-values=continuous-video,auto,macro,infinity,continuous-picture;focus-mode=auto;" +
+                        "preview-fps-range-values=(15000,30000);preview-fps-range=15000,30000;" +
+                        "scene-mode-values=auto,action,night;scene-mode=auto;" +
+                        "flash-mode-values=off,on,auto,torch;flash-mode=off;" +
+                        "whitebalance-values=auto,daylight,fluorescent,incandescent;whitebalance=auto;" +
+                        "effect-values=none,mono,sepia;effect=none;" +
+                        "zoom-supported=true;zoom-ratios=100,200,400;max-zoom=2;" +
+                        "picture-format-values=jpeg;picture-format=jpeg;" +
+                        "min-exposure-compensation=-30;max-exposure-compensation=30;" +
+                        "exposure-compensation=0;exposure-compensation-step=0.1;" +
+                        "horizontal-view-angle=40;vertical-view-angle=40;");
+            }
+        }
+        return mParameters;
     }
 }

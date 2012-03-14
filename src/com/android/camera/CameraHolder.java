@@ -148,7 +148,7 @@ public class CameraHolder {
                 if (mMockCameraInfo == null) {
                     android.hardware.Camera camera = android.hardware.Camera.open(cameraId);
                     if (camera != null)
-                        mCameraDevice = new RealCamera(camera);
+                        mCameraDevice = new CameraDevice(camera);
                 } else {
                     if (mMockCamera == null)
                         throw new RuntimeException();
