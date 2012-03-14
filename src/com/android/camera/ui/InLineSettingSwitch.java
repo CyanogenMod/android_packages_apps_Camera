@@ -16,15 +16,15 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.ListPreference;
-import com.android.camera.R;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
+
+import com.android.camera.ListPreference;
+import com.android.camera.R;
 
 /* A switch setting control which turns on/off the setting. */
 public class InLineSettingSwitch extends InLineSettingItem {

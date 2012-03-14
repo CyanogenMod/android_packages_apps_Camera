@@ -16,12 +16,12 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.PreferenceGroup;
-import com.android.camera.R;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
+import com.android.camera.PreferenceGroup;
+import com.android.camera.R;
 
 public class OtherSettingIndicatorButton extends AbstractIndicatorButton {
     @SuppressWarnings("unused")

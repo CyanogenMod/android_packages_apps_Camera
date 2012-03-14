@@ -16,13 +16,11 @@
 
 package com.android.camera;
 
-import com.android.camera.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.view.View;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 /**

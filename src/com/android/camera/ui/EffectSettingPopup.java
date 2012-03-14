@@ -16,9 +16,6 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.IconListPreference;
-import com.android.camera.R;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -26,6 +23,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
+
+import com.android.camera.IconListPreference;
+import com.android.camera.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

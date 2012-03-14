@@ -16,9 +16,6 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.ListPreference;
-import com.android.camera.R;
-
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -28,6 +25,9 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.android.camera.ListPreference;
+import com.android.camera.R;
 
 /* A knob setting control. */
 public class InLineSettingKnob extends InLineSettingItem {

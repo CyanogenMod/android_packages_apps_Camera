@@ -16,6 +16,11 @@
 
 package com.android.camera;
 
+import android.content.Context;
+import android.util.AttributeSet;
+import android.util.Xml;
+import android.view.InflateException;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -23,11 +28,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import android.content.Context;
-import android.util.AttributeSet;
-import android.util.Xml;
-import android.view.InflateException;
 
 /**
  * Inflate <code>CameraPreference</code> from XML resource.

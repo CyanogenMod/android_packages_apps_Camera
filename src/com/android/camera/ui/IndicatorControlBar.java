@@ -16,15 +16,15 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.PreferenceGroup;
-import com.android.camera.R;
-import com.android.camera.Util;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.android.camera.PreferenceGroup;
+import com.android.camera.R;
+import com.android.camera.Util;
 
 /**
  * A view that contains the top-level indicator control.

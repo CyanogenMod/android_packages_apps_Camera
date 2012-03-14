@@ -16,9 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.ui.Rotatable;
-import com.android.camera.ui.RotateLayout;
-
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +23,11 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.android.camera.ui.Rotatable;
+import com.android.camera.ui.RotateLayout;
 
 public class RotateDialogController implements Rotatable {
 

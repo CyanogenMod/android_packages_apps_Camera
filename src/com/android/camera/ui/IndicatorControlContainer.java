@@ -16,10 +16,10 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.PreferenceGroup;
-
 import android.content.Context;
 import android.util.AttributeSet;
+
+import com.android.camera.PreferenceGroup;
 
 public abstract class IndicatorControlContainer extends IndicatorControl
         implements OnIndicatorEventListener {

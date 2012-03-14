@@ -16,9 +16,6 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.R;
-import com.android.camera.Util;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -27,6 +24,9 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.android.camera.R;
+import com.android.camera.Util;
 
 /**
  * A view that contains camera zoom control and its layout. In addition to the

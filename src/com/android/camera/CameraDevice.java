@@ -24,8 +24,8 @@ import android.hardware.Camera.ErrorCallback;
 import android.hardware.Camera.FaceDetectionListener;
 import android.hardware.Camera.OnZoomChangeListener;
 import android.hardware.Camera.Parameters;
-import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.PictureCallback;
+import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.ShutterCallback;
 import android.view.SurfaceHolder;
 

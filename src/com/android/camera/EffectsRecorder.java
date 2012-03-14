@@ -28,20 +28,18 @@ import android.filterpacks.videoproc.BackDropperFilter;
 import android.filterpacks.videoproc.BackDropperFilter.LearningDoneListener;
 import android.filterpacks.videosink.MediaEncoderFilter.OnRecordingDoneListener;
 import android.filterpacks.videosrc.SurfaceTextureSource.SurfaceTextureSourceListener;
-
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.media.MediaRecorder;
-import android.media.MediaActionSound;
 import android.media.CamcorderProfile;
+import android.media.MediaActionSound;
+import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import java.io.IOException;
-import java.lang.Runnable;
 import java.io.FileDescriptor;
+import java.io.IOException;
 
 
 /**

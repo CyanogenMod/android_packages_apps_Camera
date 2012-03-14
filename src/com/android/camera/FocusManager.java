@@ -16,10 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.ui.FaceView;
-import com.android.camera.ui.FocusIndicator;
-import com.android.camera.ui.FocusIndicatorView;
-
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -33,6 +29,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
+import com.android.camera.ui.FaceView;
+import com.android.camera.ui.FocusIndicator;
+import com.android.camera.ui.FocusIndicatorView;
 
 import java.util.ArrayList;
 import java.util.List;

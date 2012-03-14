@@ -16,17 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.ui.CameraPicker;
-import com.android.camera.ui.FaceView;
-import com.android.camera.ui.IndicatorControlContainer;
-import com.android.camera.ui.PopupManager;
-import com.android.camera.ui.Rotatable;
-import com.android.camera.ui.RotateImageView;
-import com.android.camera.ui.RotateLayout;
-import com.android.camera.ui.RotateTextToast;
-import com.android.camera.ui.SharePopup;
-import com.android.camera.ui.ZoomControl;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentProviderClient;
@@ -69,6 +58,17 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.camera.ui.CameraPicker;
+import com.android.camera.ui.FaceView;
+import com.android.camera.ui.IndicatorControlContainer;
+import com.android.camera.ui.PopupManager;
+import com.android.camera.ui.Rotatable;
+import com.android.camera.ui.RotateImageView;
+import com.android.camera.ui.RotateLayout;
+import com.android.camera.ui.RotateTextToast;
+import com.android.camera.ui.SharePopup;
+import com.android.camera.ui.ZoomControl;
 
 import java.io.File;
 import java.io.FileNotFoundException;

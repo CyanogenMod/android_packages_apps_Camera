@@ -16,21 +16,21 @@
 
 package com.android.camera;
 
-import com.android.camera.ui.PopupManager;
-import com.android.camera.ui.RotateImageView;
-
 import android.app.Activity;
 import android.app.KeyguardManager;
-import android.content.Context;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.WindowManager;
 import android.view.View;
+import android.view.WindowManager;
+
+import com.android.camera.ui.PopupManager;
+import com.android.camera.ui.RotateImageView;
 
 import java.io.File;
 

@@ -16,11 +16,11 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.R;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.android.camera.R;
 
 // A view that indicates the focus area or the metering area.
 public class FocusIndicatorView extends View implements FocusIndicator {

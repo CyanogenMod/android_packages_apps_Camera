@@ -16,9 +16,6 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.R;
-import com.android.camera.Util;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -28,6 +25,9 @@ import android.hardware.Camera.Face;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+
+import com.android.camera.R;
+import com.android.camera.Util;
 
 public class FaceView extends View implements FocusIndicator, Rotatable {
     private final String TAG = "FaceView";

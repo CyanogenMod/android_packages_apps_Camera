@@ -16,14 +16,14 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.R;
-
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.android.camera.R;
 
 /**
  * A view that contains camera zoom control which could adjust the zoom in/out

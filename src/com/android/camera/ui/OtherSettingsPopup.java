@@ -16,19 +16,19 @@
 
 package com.android.camera.ui;
 
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
 import com.android.camera.CameraSettings;
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
-
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.View;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 

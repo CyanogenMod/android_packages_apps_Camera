@@ -16,11 +16,6 @@
 
 package com.android.camera;
 
-import com.android.camera.ui.PopupManager;
-import com.android.camera.ui.Rotatable;
-import com.android.camera.ui.RotateImageView;
-import com.android.camera.ui.TwoStateImageView;
-
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
@@ -30,6 +25,11 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.android.camera.ui.PopupManager;
+import com.android.camera.ui.Rotatable;
+import com.android.camera.ui.RotateImageView;
+import com.android.camera.ui.TwoStateImageView;
 
 /**
  * A widget that includes three mode selections {@code RotateImageView}'s and

@@ -16,10 +16,6 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.PreferenceGroup;
-import com.android.camera.R;
-import com.android.camera.Util;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -32,6 +28,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.android.camera.PreferenceGroup;
+import com.android.camera.R;
+import com.android.camera.Util;
 
 /**
  * A view that contains camera setting indicators in two levels. The first-level

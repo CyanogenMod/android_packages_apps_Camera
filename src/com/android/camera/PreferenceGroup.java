@@ -16,10 +16,10 @@
 
 package com.android.camera;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.util.AttributeSet;
+
+import java.util.ArrayList;
 
 /**
  * A collection of <code>CameraPreference</code>s. It may contain other

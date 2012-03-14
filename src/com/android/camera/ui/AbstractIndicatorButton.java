@@ -16,8 +16,6 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.R;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -26,6 +24,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
+import com.android.camera.R;
 
 // This is an indicator button and pressing it opens a popup window. Ex: flash or other settings.
 public abstract class AbstractIndicatorButton extends RotateImageView implements

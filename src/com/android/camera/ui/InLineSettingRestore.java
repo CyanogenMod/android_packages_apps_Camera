@@ -16,12 +16,12 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.R;
-import com.android.camera.ListPreference;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
+
+import com.android.camera.ListPreference;
+import com.android.camera.R;
 
 /* A restore setting is simply showing the restore title. */
 public class InLineSettingRestore extends InLineSettingItem {

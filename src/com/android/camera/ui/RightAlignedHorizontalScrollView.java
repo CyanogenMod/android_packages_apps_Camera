@@ -17,8 +17,8 @@
 package com.android.camera.ui;
 
 import android.content.Context;
-import android.view.View;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.HorizontalScrollView;
 
 public class RightAlignedHorizontalScrollView extends HorizontalScrollView {

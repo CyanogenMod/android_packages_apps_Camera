@@ -16,9 +16,6 @@
 
 package com.android.camera.ui;
 
-import com.android.camera.R;
-import com.android.camera.Util;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -42,6 +39,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
+
+import com.android.camera.R;
+import com.android.camera.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
