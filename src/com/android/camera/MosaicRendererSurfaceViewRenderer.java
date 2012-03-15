@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.camera.panorama;
+package com.android.camera;
 
 import android.opengl.GLSurfaceView;
 import android.util.Log;

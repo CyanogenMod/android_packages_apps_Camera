@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.camera.panorama;
+package com.android.camera;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -48,21 +48,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.camera.ActivityBase;
-import com.android.camera.CameraDisabledException;
-import com.android.camera.CameraHardwareException;
-import com.android.camera.CameraHolder;
-import com.android.camera.IntentExtras;
-import com.android.camera.MenuHelper;
-import com.android.camera.ModePicker;
-import com.android.camera.OnClickAttr;
 import com.android.camera.R;
-import com.android.camera.RotateDialogController;
-import com.android.camera.ShutterButton;
-import com.android.camera.Storage;
-import com.android.camera.Thumbnail;
-import com.android.camera.ThumbnailHolder;
-import com.android.camera.Util;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;

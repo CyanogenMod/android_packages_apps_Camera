@@ -31,7 +31,7 @@ public class DisableCameraReceiver extends BroadcastReceiver {
     private static final Class ACTIVITIES[] = {
         com.android.camera.Camera.class,
         com.android.camera.VideoCamera.class,
-        com.android.camera.panorama.PanoramaActivity.class,
+        com.android.camera.PanoramaActivity.class,
     };
 
     @Override
