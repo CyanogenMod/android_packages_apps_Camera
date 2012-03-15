@@ -16,7 +16,7 @@
 
 package com.android.camera.activity;
 
-import com.android.camera.panorama.PanoramaActivity;
+import com.android.camera.PanoramaActivity;
 
 import android.test.suitebuilder.annotation.LargeTest;
 
