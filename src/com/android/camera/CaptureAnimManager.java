@@ -87,7 +87,7 @@ public class CaptureAnimManager implements
         mAnimOrientation = animOrientation;
         // Reset the views before the animation begins.
         mCaptureAnim.cancel();
-        mCaptureAnim.setValues(mReviewSlideValue[mAnimOrientation / 90]);
+        mCaptureAnim.setValues(mReviewSlideValue[(mAnimOrientation / 90) % 4]);
         switch (mAnimOrientation) {
             case 0:
                 mPreview.setTranslationX(-mXDeltaScaled);
