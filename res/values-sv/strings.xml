@@ -115,8 +115,7 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Din video"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Lägg ned enheten"\n"Ställ dig utom synhåll för ett ögonblick."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Det går inte att välja detta när effekten är på."</string>
-    <!-- no translation found for video_snapshot_hint (18833576851372483) -->
-    <skip />
+    <string name="video_snapshot_hint" msgid="18833576851372483">"Tryck om du vill ta ett foto medan du spelar in."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Ögonblicksbilden av en video inaktiveras när specialeffekter är aktiverade."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Ta bort effekter"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"ROLIGA GRIMASER"</string>
