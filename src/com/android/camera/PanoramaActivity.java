@@ -37,7 +37,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -48,12 +47,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.camera.R;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
-import com.android.camera.ui.SharePopup;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -124,8 +121,6 @@ public class PanoramaActivity extends ActivityBase implements
 
     private int mIndicatorColor;
     private int mIndicatorColorFast;
-
-    private SharePopup mSharePopup;
 
     private int mPreviewWidth;
     private int mPreviewHeight;
@@ -200,13 +195,8 @@ public class PanoramaActivity extends ActivityBase implements
                     + Util.getDisplayRotation(PanoramaActivity.this);
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
-                setOrientationIndicator(mOrientationCompensation);
             }
         }
-    }
-
-    private void setOrientationIndicator(int degree) {
-        if (mSharePopup != null) mSharePopup.setOrientation(degree, true);
     }
 
     @Override
@@ -318,8 +308,6 @@ public class PanoramaActivity extends ActivityBase implements
                         // from the UI thread.
                         if (mThumbnail != null) mThumbnailView.setBitmap(mThumbnail.getBitmap());
 
-                        // Share popup may still have the reference to the old thumbnail. Clear it.
-                        mSharePopup = null;
                         resetToPreview();
                         break;
                     case MSG_GENERATE_FINAL_MOSAIC_ERROR:
@@ -854,20 +842,9 @@ public class PanoramaActivity extends ActivityBase implements
 
     @OnClickAttr
     public void onThumbnailClicked(View v) {
-        if (mPausing || mThreadRunning || mSurfaceTexture == null) return;
-        showSharePopup();
-    }
-
-    private void showSharePopup() {
-        if (mThumbnail == null) return;
-        Uri uri = mThumbnail.getUri();
-        if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
-            // The orientation compensation is set to 0 here because we only support landscape.
-            mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(),
-                    mOrientationCompensation,
-                    findViewById(R.id.frame_layout));
-        }
-        mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
+        if (mPausing || mThreadRunning || mSurfaceTexture == null
+                || mThumbnail == null) return;
+        gotoGallery();
     }
 
     private void reset() {
@@ -969,7 +946,6 @@ public class PanoramaActivity extends ActivityBase implements
             stopCapture(true);
             reset();
         }
-        if (mSharePopup != null) mSharePopup.dismiss();
 
         releaseCamera();
         mMosaicView.onPause();

@@ -25,9 +25,6 @@
     <color name="review_control_pressed_fan_color">#3F33B5E5</color>
     <color name="icon_disabled_color">#DD777777</color>
     <color name="time_lapse_arc">#FFC5C5C5</color>
-    <color name="share_popup_background">#DA000000</color>
-    <color name="share_popup_blackout">#ff090909</color>
-    <color name="share_icon_background">#80000000</color>
     <color name="indicator_background">#40000000</color>
     <color name="popup_title_color">#ff33b5e5</color>
     <color name="popup_background">#ff282828</color>

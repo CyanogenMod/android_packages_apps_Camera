@@ -45,7 +45,6 @@ import android.os.MessageQueue;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -67,7 +66,6 @@ import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
-import com.android.camera.ui.SharePopup;
 import com.android.camera.ui.ZoomControl;
 
 import java.io.File;
@@ -150,8 +148,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private TextureView mPreviewTextureView;  // Preview frame area.
     private RotateDialogController mRotateDialog;
 
-    // A popup window that contains a bigger thumbnail and a list of apps to share.
-    private SharePopup mSharePopup;
     private ModePicker mModePicker;
     private FaceView mFaceView;
     private RotateLayout mFocusAreaIndicator;
@@ -347,12 +343,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void initializeFirstTime() {
         if (mFirstTimeInitialized) return;
 
-        // Create orientation listenter. This should be done first because it
+        // Create orientation listener. This should be done first because it
         // takes some time to get first orientation.
         mOrientationListener = new MyOrientationEventListener(Camera.this);
         mOrientationListener.enable();
 
-        // Initialize location sevice.
+        // Initialize location service.
         boolean recordLocation = RecordLocationPreference.get(
                 mPreferences, mContentResolver);
         initOnScreenIndicator();
@@ -838,19 +834,16 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // yet. The main thread puts the request into the queue. The saver thread
     // gets it from the queue, does the work, and removes it from the queue.
     //
-    // There are several cases the main thread needs to wait for the saver
-    // thread to finish all the work in the queue:
-    // (1) When the activity's onPause() is called, we need to finish all the
-    // work, so other programs (like Gallery) can see all the images.
-    // (2) When we need to show the SharePop, we need to finish all the work
-    // too, because we want to show the thumbnail of the last image taken.
+    // The main thread needs to wait for the saver thread to finish all the work
+    // in the queue, when the activity's onPause() is called, we need to finish
+    // all the work, so other programs (like Gallery) can see all the images.
     //
     // If the queue becomes too long, adding a new request will block the main
     // thread until the queue length drops below the threshold (QUEUE_LIMIT).
     // If we don't do this, we may face several problems: (1) We may OOM
     // because we are holding all the jpeg data in memory. (2) We may ANR
     // when we need to wait for saver thread finishing all the work (in
-    // onPause() or showSharePopup()) because the time to finishing a long queue
+    // onPause() or gotoGallery()) because the time to finishing a long queue
     // of work may be too long.
     private class ImageSaver extends Thread {
         private static final int QUEUE_LIMIT = 3;
@@ -966,8 +959,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 mThumbnail = t;
                 mThumbnailView.setBitmap(mThumbnail.getBitmap());
             }
-            // Share popup may still have the reference to the old thumbnail. Clear it.
-            mSharePopup = null;
         }
 
         // Runs in saver thread
@@ -1293,7 +1284,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private void setOrientationIndicator(int orientation, boolean animation) {
-        Rotatable[] indicators = {mThumbnailView, mModePicker, mSharePopup,
+        Rotatable[] indicators = {mThumbnailView, mModePicker,
                 mIndicatorControlContainer, mZoomControl, mFocusAreaIndicator, mFaceView,
                 mReviewCancelButton, mReviewDoneButton, mRotateDialog, mOnScreenIndicators};
         for (Rotatable indicator : indicators) {
@@ -1318,7 +1309,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     @OnClickAttr
     public void onThumbnailClicked(View v) {
         if (isCameraIdle() && mThumbnail != null) {
-            showSharePopup();
+            mImageSaver.waitDone();
+            gotoGallery();
         }
     }
 
@@ -1541,7 +1533,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Clear UI.
         collapseCameraControls();
-        if (mSharePopup != null) mSharePopup.dismiss();
         if (mFaceView != null) mFaceView.clear();
         mPreviewTextureView.setVisibility(View.GONE);
 
@@ -1800,7 +1791,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
         setCameraParameters(UPDATE_PARAM_ALL);
 
-        // Inform the mainthread to go on the UI initialization.
+        // Inform the main thread to go on the UI initialization.
         if (mCameraPreviewThread != null) {
             synchronized (mCameraPreviewThread) {
                 mCameraPreviewThread.notify();
@@ -1912,7 +1903,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mParameters.setPreviewSize(optimalSize.width, optimalSize.height);
 
             // Zoom related settings will be changed for different preview
-            // sizes, so set and read the parameters to get lastest values
+            // sizes, so set and read the parameters to get latest values
             mCameraDevice.setParameters(mParameters);
             mParameters = mCameraDevice.getParameters();
         }
@@ -2255,17 +2246,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mNotSelectableToast = Toast.makeText(Camera.this, str, Toast.LENGTH_SHORT);
         }
         mNotSelectableToast.show();
-    }
-
-    private void showSharePopup() {
-        mImageSaver.waitDone();
-        Uri uri = mThumbnail.getUri();
-        if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
-            // SharePopup window takes the mPreviewPanel as its size reference.
-            mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(),
-                    mOrientationCompensation, mPreviewPanel);
-        }
-        mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
     }
 
     @Override

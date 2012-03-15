@@ -45,7 +45,6 @@ import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,7 +69,6 @@ import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
-import com.android.camera.ui.SharePopup;
 import com.android.camera.ui.ZoomControl;
 
 import java.io.File;
@@ -132,8 +130,6 @@ public class VideoCamera extends ActivityBase
     // An review image having same size as preview. It is displayed when
     // recording is stopped in capture intent.
     private ImageView mReviewImage;
-    // A popup window that contains a bigger thumbnail and a list of apps to share.
-    private SharePopup mSharePopup;
     private Rotatable mReviewCancelButton;
     private Rotatable mReviewDoneButton;
     private Rotatable mReviewPlayButton;
@@ -540,7 +536,7 @@ public class VideoCamera extends ActivityBase
     }
 
     private void setOrientationIndicator(int orientation, boolean animation) {
-        Rotatable[] indicators = {mThumbnailView, mModePicker, mSharePopup,
+        Rotatable[] indicators = {mThumbnailView, mModePicker,
                 mBgLearningMessageRotater, mIndicatorControlContainer,
                 mReviewDoneButton, mReviewPlayButton, mReviewCancelButton, mRotateDialog};
         for (Rotatable indicator : indicators) {
@@ -572,7 +568,7 @@ public class VideoCamera extends ActivityBase
     @OnClickAttr
     public void onThumbnailClicked(View v) {
         if (!mMediaRecorderRecording && mThumbnail != null) {
-            showSharePopup();
+            gotoGallery();
         }
     }
 
@@ -932,7 +928,6 @@ public class VideoCamera extends ActivityBase
         finishRecorderAndCloseCamera();
         closeVideoFileDescriptor();
 
-        if (mSharePopup != null) mSharePopup.dismiss();
         mSurfaceView.setVisibility(View.GONE);
 
         if (mReceiver != null) {
@@ -1585,8 +1580,6 @@ public class VideoCamera extends ActivityBase
             if (videoFrame != null) {
                 mThumbnail = Thumbnail.createThumbnail(mCurrentVideoUri, videoFrame, 0);
                 mThumbnailView.setBitmap(mThumbnail.getBitmap());
-                // Share popup may still have the reference to the old thumbnail. Clear it.
-                mSharePopup = null;
             }
         }
     }
@@ -2144,15 +2137,6 @@ public class VideoCamera extends ActivityBase
         }
     }
 
-    private void showSharePopup() {
-        Uri uri = mThumbnail.getUri();
-        if (mSharePopup == null || !uri.equals(mSharePopup.getUri())) {
-            mSharePopup = new SharePopup(this, uri, mThumbnail.getBitmap(),
-                    mOrientationCompensation, mPreviewPanel);
-        }
-        mSharePopup.showAtLocation(mThumbnailView, Gravity.NO_GRAVITY, 0, 0);
-    }
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         // Check if the popup window should be dismissed first.
@@ -2349,8 +2333,6 @@ public class VideoCamera extends ActivityBase
             if (mThumbnail != null) {
                 mThumbnailView.setBitmap(mThumbnail.getBitmap());
             }
-            // Share popup may still have the reference to the old thumbnail. Clear it.
-            mSharePopup = null;
             Util.broadcastNewPicture(this, uri);
         }
     }
