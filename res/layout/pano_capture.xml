@@ -39,7 +39,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true">
-                    <com.android.camera.panorama.PanoProgressBar
+                    <com.android.camera.PanoProgressBar
                             android:id="@+id/pano_pan_progress_bar"
                             android:visibility="gone"
                             android:src="@drawable/ic_pan_progression"
@@ -74,7 +74,7 @@
                     android:layout_weight="1.67"
                     android:layout_width="0dp"
                     android:layout_height="match_parent">
-                <com.android.camera.panorama.MosaicRendererSurfaceView
+                <com.android.camera.MosaicRendererSurfaceView
                         android:id="@+id/pano_renderer"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />

@@ -40,7 +40,7 @@
                 android:layout_centerInParent="true"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content">
-            <com.android.camera.panorama.PanoProgressBar
+            <com.android.camera.PanoProgressBar
                     android:id="@+id/pano_saving_progress_bar"
                     android:src="@drawable/ic_pan_progression"
                     android:layout_centerInParent="true"
