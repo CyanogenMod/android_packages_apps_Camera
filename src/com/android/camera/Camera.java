@@ -231,7 +231,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
 
     private long mFocusStartTime;
-    private long mCaptureStartTime;
     private long mShutterCallbackTime;
     private long mPostViewPictureCallbackTime;
     private long mRawPictureCallbackTime;
@@ -246,6 +245,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     public long mShutterToPictureDisplayedTime;
     public long mPictureDisplayedToJpegCallbackTime;
     public long mJpegCallbackFinishTime;
+    public long mCaptureStartTime;
 
     // This handles everything about focus.
     private FocusManager mFocusManager;
