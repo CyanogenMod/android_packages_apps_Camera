@@ -67,12 +67,6 @@
     <style name="PanoCustomDialogText">
         <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
     </style>
-    <style name="OneColumnGrid">
-        <item name="android:columnWidth">@dimen/share_item_width</item>
-        <item name="android:numColumns">1</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-    </style>
     <style name="ViewfinderLableLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>

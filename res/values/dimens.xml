@@ -19,9 +19,6 @@
 -->
 <resources>
     <dimen name="hint_y_offset">64dp</dimen>
-    <dimen name="share_icon_length">36dp</dimen>
-    <dimen name="share_item_width">54dp</dimen>
-    <dimen name="share_item_height">54dp</dimen>
     <dimen name="pano_mosaic_surface_height">240dp</dimen>
     <dimen name="pano_review_button_width">70dp</dimen>
     <dimen name="setting_popup_right_margin">5dp</dimen>

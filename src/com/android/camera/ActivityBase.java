@@ -239,6 +239,10 @@ abstract public class ActivityBase extends Activity {
         }
     }
 
+    protected void gotoGallery() {
+        Util.viewUri(mThumbnail.getUri(), this);
+    }
+
     protected void saveThumbnailToFile() {
         if (mThumbnail != null && !mThumbnail.fromFile()) {
             new SaveThumbnailTask().execute(mThumbnail);

@@ -189,10 +189,6 @@
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_centerVertical">true</item>
     </style>
-    <style name="AnimationPopup" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/share_popup_enter</item>
-        <item name="android:windowExitAnimation">@anim/share_popup_exit</item>
-    </style>
     <style name="EffectSettingGrid">
         <item name="android:layout_marginLeft">@dimen/setting_item_list_margin</item>
         <item name="android:layout_marginRight">@dimen/setting_item_list_margin</item>

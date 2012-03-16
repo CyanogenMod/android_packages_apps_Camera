@@ -18,9 +18,6 @@
 */
 -->
 <resources>
-    <dimen name="share_icon_length">48dp</dimen>
-    <dimen name="share_item_width">70dp</dimen>
-    <dimen name="share_item_height">70dp</dimen>
     <dimen name="pano_mosaic_surface_height">480dp</dimen>
     <dimen name="pano_review_button_width">180dp</dimen>
     <dimen name="setting_row_height">50dp</dimen>
