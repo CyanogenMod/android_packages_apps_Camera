@@ -797,14 +797,12 @@ public class PanoramaActivity extends ActivityBase implements
                     int orientation = (mDeviceOrientationAtCapture + mCameraOrientation) % 360;
                     Uri uri = savePanorama(jpeg.data, jpeg.width, jpeg.height, orientation);
                     if (uri != null) {
-                        // Create a thumbnail whose width or height is equal or bigger
-                        // than the screen's width or height.
-                        int widthRatio = (int) Math.ceil((double) jpeg.width
-                                / mPanoLayout.getWidth());
-                        int heightRatio = (int) Math.ceil((double) jpeg.height
-                                / mPanoLayout.getHeight());
-                        int inSampleSize = Integer.highestOneBit(
-                                Math.max(widthRatio, heightRatio));
+                        // Create a thumbnail whose width and height is equal or bigger
+                        // than the thumbnail view's width.
+                        int ratio = (int) Math.ceil(
+                                (double) (jpeg.height > jpeg.width ? jpeg.width : jpeg.height)
+                                / mThumbnailView.getWidth());
+                        int inSampleSize = Integer.highestOneBit(ratio);
                         mThumbnail = Thumbnail.createThumbnail(
                                 jpeg.data, orientation, inSampleSize, uri);
                         Util.broadcastNewPicture(PanoramaActivity.this, uri);
