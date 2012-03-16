@@ -115,8 +115,7 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Videoklips"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Novietojiet ierīci uz leju."\n"Uz brīdi izejiet no kameras skata."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Šo iestat. nevar atlasīt, kad ir ieslēgts efekts."</string>
-    <!-- no translation found for video_snapshot_hint (18833576851372483) -->
-    <skip />
+    <string name="video_snapshot_hint" msgid="18833576851372483">"Pieskarieties, lai uzņemtu fotoattēlu ieraksta laikā."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Video momentuzņēmums ir atspējots, ja ir ieslēgti specefekti."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Noņemt efektus"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"SMIEKL. SEJAS IZTEIKSMES"</string>

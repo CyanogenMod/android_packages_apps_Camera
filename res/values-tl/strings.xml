@@ -115,8 +115,7 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Iyong video"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Huwag munang gamitin ang iyong device."\n"Umalis muna nang ilang sandali."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Hindi mapipili kapag naka-on ang effect."</string>
-    <!-- no translation found for video_snapshot_hint (18833576851372483) -->
-    <skip />
+    <string name="video_snapshot_hint" msgid="18833576851372483">"Pindutin upang kumuha ng larawan habang nagre-record."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Hindi pinapagana ang snapshot sa video kapag naka-on ang mga espesyal na effect."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Mga clear na effect"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"MGA KATAWA-TAWANG MUKHA"</string>

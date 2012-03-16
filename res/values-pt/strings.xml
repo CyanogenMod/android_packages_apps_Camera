@@ -115,8 +115,7 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Seu vídeo"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Abaixe seu dispositivo."\n"Saia de vista por um momento."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Não pode ser selecionado com o efeito ativado."</string>
-    <!-- no translation found for video_snapshot_hint (18833576851372483) -->
-    <skip />
+    <string name="video_snapshot_hint" msgid="18833576851372483">"Toque para tirar uma foto durante a gravação."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"O instant. de vídeo é desat. quando os efeitos esp. estão ativad."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Clarear efeitos"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"CARETAS"</string>
