@@ -63,16 +63,22 @@ public class MosaicFrameProcessor {
     private int mPreviewHeight;
     private int mPreviewBufferSize;
 
+    private static MosaicFrameProcessor sMosaicFrameProcessor; // singleton
+
     public interface ProgressListener {
         public void onProgress(boolean isFinished, float panningRateX, float panningRateY,
                 float progressX, float progressY);
     }
 
-    public MosaicFrameProcessor(int previewWidth, int previewHeight, int bufSize) {
+    public static MosaicFrameProcessor getInstance() {
+        if (sMosaicFrameProcessor == null) {
+            sMosaicFrameProcessor = new MosaicFrameProcessor();
+        }
+        return sMosaicFrameProcessor;
+    }
+
+    private MosaicFrameProcessor() {
         mMosaicer = new Mosaic();
-        mPreviewWidth = previewWidth;
-        mPreviewHeight = previewHeight;
-        mPreviewBufferSize = bufSize;
     }
 
     public void setProgressListener(ProgressListener listener) {
@@ -83,7 +89,10 @@ public class MosaicFrameProcessor {
         return mMosaicer.reportProgress(hires, cancel);
     }
 
-    public void initialize() {
+    public void initialize(int previewWidth, int previewHeight, int bufSize) {
+        mPreviewWidth = previewWidth;
+        mPreviewHeight = previewHeight;
+        mPreviewBufferSize = bufSize;
         setupMosaicer(mPreviewWidth, mPreviewHeight, mPreviewBufferSize);
         setStripType(Mosaic.STRIPTYPE_WIDE);
         reset();
@@ -91,9 +100,16 @@ public class MosaicFrameProcessor {
 
     public void clear() {
         if (mIsMosaicMemoryAllocated) {
-            mIsMosaicMemoryAllocated = false;
             mMosaicer.freeMosaicMemory();
+            mIsMosaicMemoryAllocated = false;
         }
+        synchronized (this) {
+            notify();
+        }
+    }
+
+    public boolean isMosaicMemoryAllocated() {
+        return mIsMosaicMemoryAllocated;
     }
 
     public void setStripType(int type) {
@@ -102,8 +118,10 @@ public class MosaicFrameProcessor {
 
     private void setupMosaicer(int previewWidth, int previewHeight, int bufSize) {
         Log.v(TAG, "setupMosaicer w, h=" + previewWidth + ',' + previewHeight + ',' + bufSize);
-        mMosaicer.allocateMosaicMemory(previewWidth, previewHeight);
+
+        if (mIsMosaicMemoryAllocated) throw new RuntimeException("MosaicFrameProcessor in use!");
         mIsMosaicMemoryAllocated = true;
+        mMosaicer.allocateMosaicMemory(previewWidth, previewHeight);
 
         mFillIn = 0;
         if  (mMosaicer != null) {
