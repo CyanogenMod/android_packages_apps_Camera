@@ -115,7 +115,7 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"ቪዲዮህ"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"መሳሪያህን ወደታች አኑር።"\n"  ለትንሽ ቆይታ ከዕይታ ውጪ ሁን።"</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"ተዕፅኖ ማድረጊያው በሚበራበት ጊዜ ሊመረጥ አይችልም።"</string>
-    <string name="video_snapshot_hint" msgid="18833576851372483">"እየቀዳህ ፎቶ ለማንሳት ንካ፡፡"</string>
+    <string name="video_snapshot_hint" msgid="18833576851372483">"እየቀዳህ ፎቶ ለማንሳት ንካ።"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"ቪዲዮ ማንሻ ልዩ ማሳመሪያዎች ሲበሩ ይቦዝናል::"</string>
     <string name="clear_effects" msgid="5485339175014139481">"ማሳመሪያዎች አጽዳ"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"ሞኛሞኝ ፊቶች"</string>
