@@ -1576,7 +1576,7 @@ public class VideoCamera extends ActivityBase
     private void getThumbnail() {
         if (mCurrentVideoUri != null) {
             Bitmap videoFrame = Thumbnail.createVideoThumbnailBitmap(mCurrentVideoFilename,
-                    mPreviewFrameLayout.getWidth());
+                    mThumbnailView.getWidth());
             if (videoFrame != null) {
                 mThumbnail = Thumbnail.createThumbnail(mCurrentVideoUri, videoFrame, 0);
                 mThumbnailView.setBitmap(mThumbnail.getBitmap());

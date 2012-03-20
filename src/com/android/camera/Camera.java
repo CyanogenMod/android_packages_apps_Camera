@@ -827,7 +827,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         Location loc;
         int width, height;
         long dateTaken;
-        int previewWidth;
+        int thumbnailWidth;
     }
 
     // We use a queue to store the SaveRequests that have not been completed
@@ -868,11 +868,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             r.width = width;
             r.height = height;
             r.dateTaken = System.currentTimeMillis();
-            if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                r.previewWidth = mPreviewFrameLayout.getHeight();
-            } else {
-                r.previewWidth = mPreviewFrameLayout.getWidth();
-            }
+            r.thumbnailWidth = mThumbnailView.getWidth();
             synchronized (this) {
                 while (mQueue.size() >= QUEUE_LIMIT) {
                     try {
@@ -909,7 +905,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     r = mQueue.get(0);
                 }
                 storeImage(r.data, r.loc, r.width, r.height, r.dateTaken,
-                        r.previewWidth);
+                        r.thumbnailWidth);
                 synchronized (this) {
                     mQueue.remove(0);
                     notifyAll();  // the main thread may wait in addImage
@@ -963,7 +959,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Runs in saver thread
         private void storeImage(final byte[] data, Location loc, int width,
-                int height, long dateTaken, int previewWidth) {
+                int height, long dateTaken, int thumbnailWidth) {
             String title = Util.createJpegName(dateTaken);
             int orientation = Exif.getOrientation(data);
             Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
@@ -979,8 +975,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 }
                 if (needThumbnail) {
                     // Create a thumbnail whose width is equal or bigger than
-                    // that of the preview.
-                    int ratio = (int) Math.ceil((double) width / previewWidth);
+                    // that of the thumbnail view.
+                    int ratio = (int) Math.ceil((double) width / thumbnailWidth);
                     int inSampleSize = Integer.highestOneBit(ratio);
                     Thumbnail t = Thumbnail.createThumbnail(
                                 data, orientation, inSampleSize, uri);
