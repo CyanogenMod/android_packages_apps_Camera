@@ -115,7 +115,7 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Ваш видео"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Спустите уређај."\n"Изађите из кадра на тренутак."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Ово не може да се изабере када је ефекат укључен."</string>
-    <string name="video_snapshot_hint" msgid="18833576851372483">"Додирните да бисте снимили фотографију током снимања."</string>
+    <string name="video_snapshot_hint" msgid="18833576851372483">"Додирните да бисте направили фотографију током снимања."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Видео снимак је онемогућен када су специјални ефекти укључени."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Обриши ефекте"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"СМЕШНА ЛИЦА"</string>
