@@ -546,7 +546,7 @@ public class VideoCamera extends ActivityBase
         // We change the orientation of the linearlayout only for phone UI because when in portrait
         // the width is not enough.
         if (mLabelsLinearLayout != null) {
-            if (((orientation / 90) & 1) == 1) {
+            if (((orientation / 90) & 1) == 0) {
                 mLabelsLinearLayout.setOrientation(LinearLayout.VERTICAL);
             } else {
                 mLabelsLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
