@@ -23,7 +23,7 @@
     <string name="video_camera_label" msgid="2899292505526427293">"Videokamera"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Kamerabilleder"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Kameravideoer"</string>
-    <string name="wait" msgid="8600187532323801552">"Vent ..."</string>
+    <string name="wait" msgid="8600187532323801552">"Vent..."</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Isæt USB-lager, før du tager kameraet i brug."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Indsæt et SD-kort, før kameraet tages i brug."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Dit USB-lager er fyldt."</string>
