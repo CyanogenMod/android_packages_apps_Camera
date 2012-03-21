@@ -58,6 +58,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     private RotateImageView mCurrentModeIcon[];
     private View mCurrentModeBar;
     private boolean mSelectionEnabled;
+    private boolean mModeChanged;
 
 
     private int mCurrentMode = 0;
@@ -119,7 +120,14 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     private AnimationListener mAnimationListener = new AnimationListener() {
         @Override
         public void onAnimationEnd(Animation animation) {
-            mCurrentModeFrame.setVisibility(View.VISIBLE);
+            if (mModeChanged) {
+                // There is a new activity created when changing mode. Fade-in animation at
+                // old activity would be interrupted and new mode picker appears.
+                // It looks weird so fade-in animation is not used here.
+                mCurrentModeFrame.setVisibility(View.VISIBLE);
+            } else {
+                Util.fadeIn(mCurrentModeFrame, 0.3F, 1F, 400);
+            }
             mModeSelectionFrame.setVisibility(View.GONE);
             changeToSelectedMode();
         }
@@ -148,6 +156,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
 
     private void changeToSelectedMode() {
         if (mListener != null) mListener.onModeChanged(mCurrentMode);
+        mModeChanged = false;
     }
 
     @Override
@@ -160,6 +169,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
             for (int i = 0; i < MODE_NUM; ++i) {
                 if (view == mModeSelectionIcon[i] && (mCurrentMode != i)) {
                     setCurrentMode(i);
+                    mModeChanged = true;
                     break;
                 }
             }

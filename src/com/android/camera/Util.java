@@ -586,13 +586,17 @@ public class Util {
         context.sendBroadcast(new Intent("com.android.camera.NEW_PICTURE", uri));
     }
 
-    public static void fadeIn(View view) {
+    public static void fadeIn(View view, float startAlpha, float endAlpha, long duration) {
         if (view.getVisibility() == View.VISIBLE) return;
 
         view.setVisibility(View.VISIBLE);
-        Animation animation = new AlphaAnimation(0F, 1F);
-        animation.setDuration(400);
+        Animation animation = new AlphaAnimation(startAlpha, endAlpha);
+        animation.setDuration(duration);
         view.startAnimation(animation);
+    }
+
+    public static void fadeIn(View view) {
+        fadeIn(view, 0F, 1F, 400);
     }
 
     public static void fadeOut(View view) {
