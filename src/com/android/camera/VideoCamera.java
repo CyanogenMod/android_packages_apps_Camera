@@ -214,17 +214,9 @@ public class VideoCamera extends ActivityBase
     // The orientation compenstaion when we start recording.
     private int mOrientationCompensationAtRecordStart;
 
-    private static final int ZOOM_STOPPED = 0;
-    private static final int ZOOM_START = 1;
-    private static final int ZOOM_STOPPING = 2;
-
-    private int mZoomState = ZOOM_STOPPED;
-    private boolean mSmoothZoomSupported = false;
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
-    private int mTargetZoomValue;
     private ZoomControl mZoomControl;
-    private final ZoomListener mZoomListener = new ZoomListener();
 
     // This Handler is used to post message back onto the main thread of the
     // application
@@ -876,7 +868,6 @@ public class VideoCamera extends ActivityBase
             mEffectsRecorder.startPreview();
         }
 
-        mZoomState = ZOOM_STOPPED;
         mPreviewing = true;
     }
 
@@ -2168,26 +2159,11 @@ public class VideoCamera extends ActivityBase
         // only for immediate zoom
         @Override
         public void onZoomValueChanged(int index) {
-            VideoCamera.this.onZoomValueChanged(index);
-        }
-
-        // only for smooth zoom
-        @Override
-        public void onZoomStateChanged(int state) {
+            // Not useful to change zoom value when the activity is paused.
             if (mPausing) return;
 
-            Log.v(TAG, "zoom picker state=" + state);
-            if (state == ZoomControl.ZOOM_IN) {
-                VideoCamera.this.onZoomValueChanged(mZoomMax);
-            } else if (state == ZoomControl.ZOOM_OUT){
-                VideoCamera.this.onZoomValueChanged(0);
-            } else {
-                mTargetZoomValue = -1;
-                if (mZoomState == ZOOM_START) {
-                    mZoomState = ZOOM_STOPPING;
-                    mCameraDevice.stopSmoothZoom();
-                }
-            }
+            mZoomValue = index;
+            setCameraParameters();
         }
     }
 
@@ -2202,56 +2178,7 @@ public class VideoCamera extends ActivityBase
         // there is no plan to take advantage of the smooth zoom.
         mZoomControl.setZoomMax(mZoomMax);
         mZoomControl.setZoomIndex(mParameters.getZoom());
-        mZoomControl.setSmoothZoomSupported(mSmoothZoomSupported);
         mZoomControl.setOnZoomChangeListener(new ZoomChangeListener());
-        mCameraDevice.setZoomChangeListener(mZoomListener);
-    }
-
-    private final class ZoomListener
-            implements android.hardware.Camera.OnZoomChangeListener {
-        @Override
-        public void onZoomChange(int value, boolean stopped, android.hardware.Camera camera) {
-            Log.v(TAG, "Zoom changed: value=" + value + ". stopped=" + stopped);
-            mZoomValue = value;
-
-            // Update the UI when we get zoom value.
-            mZoomControl.setZoomIndex(value);
-
-            // Keep mParameters up to date. We do not getParameter again in
-            // takePicture. If we do not do this, wrong zoom value will be set.
-            mParameters.setZoom(value);
-
-            if (stopped && mZoomState != ZOOM_STOPPED) {
-                if (mTargetZoomValue != -1 && value != mTargetZoomValue) {
-                    mCameraDevice.startSmoothZoom(mTargetZoomValue);
-                    mZoomState = ZOOM_START;
-                } else {
-                    mZoomState = ZOOM_STOPPED;
-                }
-            }
-        }
-    }
-
-    private void onZoomValueChanged(int index) {
-        // Not useful to change zoom value when the activity is paused.
-        if (mPausing) return;
-
-        if (mSmoothZoomSupported) {
-            if (mTargetZoomValue != index && mZoomState != ZOOM_STOPPED) {
-                mTargetZoomValue = index;
-                if (mZoomState == ZOOM_START) {
-                    mZoomState = ZOOM_STOPPING;
-                    mCameraDevice.stopSmoothZoom();
-                }
-            } else if (mZoomState == ZOOM_STOPPED && mZoomValue != index) {
-                mTargetZoomValue = index;
-                mCameraDevice.startSmoothZoom(index);
-                mZoomState = ZOOM_START;
-            }
-        } else {
-            mZoomValue = index;
-            setCameraParameters();
-        }
     }
 
     private void initializeVideoSnapshot() {
