@@ -26,7 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.camera.CameraHolder;
-import com.android.camera.CameraDevice;
+import com.android.camera.CameraManager.CameraProxy;
 import com.android.camera.R;
 
 import static com.google.testing.littlemock.LittleMock.mock;
@@ -37,9 +37,9 @@ import java.io.File;
 
 public class CameraTestCase<T extends Activity> extends ActivityInstrumentationTestCase2<T> {
     protected CameraInfo mCameraInfo[];
-    protected CameraDevice mMockCamera[];
+    protected CameraProxy mMockCamera[];
     protected CameraInfo mOneCameraInfo[];
-    protected CameraDevice mOneMockCamera[];
+    protected CameraProxy mOneMockCamera[];
     private static Parameters mParameters;
 
     public CameraTestCase(Class<T> activityClass) {
@@ -61,17 +61,17 @@ public class CameraTestCase<T extends Activity> extends ActivityInstrumentationT
         mCameraInfo[0].facing = CameraInfo.CAMERA_FACING_BACK;
         mCameraInfo[1] = new CameraInfo();
         mCameraInfo[1].facing = CameraInfo.CAMERA_FACING_FRONT;
-        mMockCamera = new CameraDevice[2];
-        mMockCamera[0] = mock(CameraDevice.class);
-        mMockCamera[1] = mock(CameraDevice.class);
+        mMockCamera = new CameraProxy[2];
+        mMockCamera[0] = mock(CameraProxy.class);
+        mMockCamera[1] = mock(CameraProxy.class);
         doReturn(getParameters()).when(mMockCamera[0]).getParameters();
         doReturn(getParameters()).when(mMockCamera[1]).getParameters();
 
         mOneCameraInfo = new CameraInfo[1];
         mOneCameraInfo[0] = new CameraInfo();
         mOneCameraInfo[0].facing = CameraInfo.CAMERA_FACING_BACK;
-        mOneMockCamera = new CameraDevice[1];
-        mOneMockCamera[0] = mock(CameraDevice.class);
+        mOneMockCamera = new CameraProxy[1];
+        mOneMockCamera[0] = mock(CameraProxy.class);
         doReturn(getParameters()).when(mOneMockCamera[0]).getParameters();
     }
 

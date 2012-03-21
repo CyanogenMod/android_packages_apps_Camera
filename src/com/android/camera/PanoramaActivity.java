@@ -160,6 +160,19 @@ public class PanoramaActivity extends ActivityBase implements
 
     private Runnable mUpdateTexImageRunnable;
 
+    private class SetupCameraThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                setupCamera();
+            } catch (CameraHardwareException e) {
+                mOpenCameraFail = true;
+            } catch (CameraDisabledException e) {
+                mCameraDisabled = true;
+            }
+        }
+    }
+
     private class MosaicJpeg {
         public MosaicJpeg(byte[] data, int width, int height) {
             this.data = data;
@@ -975,13 +988,19 @@ public class PanoramaActivity extends ActivityBase implements
         mOrientationEventListener.enable();
 
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
-        try {
-            setupCamera();
 
-        } catch (CameraHardwareException e) {
+        SetupCameraThread setupCameraThread = new SetupCameraThread();
+        setupCameraThread.start();
+        try {
+            setupCameraThread.join();
+        } catch (InterruptedException ex) {
+            // ignore
+        }
+
+        if (mOpenCameraFail) {
             Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
             return;
-        } catch (CameraDisabledException e) {
+        } else if (mCameraDisabled) {
             Util.showErrorAndFinish(this, R.string.camera_disabled);
             return;
         }
