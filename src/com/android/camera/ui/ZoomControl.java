@@ -17,7 +17,6 @@
 package com.android.camera.ui;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,58 +25,36 @@ import android.widget.RelativeLayout;
 import com.android.camera.R;
 
 /**
- * A view that contains camera zoom control which could adjust the zoom in/out
+ * A view that contains camera zoom control which could adjust the zoom ratio
  * if the camera supports zooming.
  */
 public abstract class ZoomControl extends RelativeLayout implements Rotatable {
-    // The states of zoom button.
-    public static final int ZOOM_IN = 0;
-    public static final int ZOOM_OUT = 1;
-    public static final int ZOOM_STOP = 2;
-
-    @SuppressWarnings("unused")
-    private static final String TAG = "ZoomControl";
-    private static final int ZOOMING_INTERVAL = 1000; // milliseconds
-
     protected ImageView mZoomIn;
     protected ImageView mZoomOut;
     protected ImageView mZoomSlider;
     protected int mOrientation;
-    private Handler mHandler;
 
     public interface OnZoomChangedListener {
         void onZoomValueChanged(int index);  // only for immediate zoom
-        void onZoomStateChanged(int state);  // only for smooth zoom
     }
 
-    // The interface OnZoomIndexChangedListener is used to inform the
-    // ZoomIndexBar about the zoom index change. The index position is between
-    // 0 (the index is zero) and 1.0 (the index is mZoomMax).
+    // The interface OnZoomIndexChangedListener is used to inform the listener
+    // about the zoom index change. The index position is between 0 (the index
+    // is zero) and 1.0 (the index is mZoomMax).
     public interface OnZoomIndexChangedListener {
         void onZoomIndexChanged(double indexPosition);
     }
 
     protected int mZoomMax, mZoomIndex;
-    private boolean mSmoothZoomSupported;
     private OnZoomChangedListener mListener;
 
     protected OnIndicatorEventListener mOnIndicatorEventListener;
-    private int mState;
-    private int mStep;
-
-    protected final Runnable mRunnable = new Runnable() {
-        @Override
-        public void run() {
-            performZoom(mState, false);
-        }
-    };
 
     public ZoomControl(Context context, AttributeSet attrs) {
         super(context, attrs);
         mZoomIn = addImageView(context, R.drawable.ic_zoom_in);
         mZoomSlider = addImageView(context, R.drawable.ic_zoom_slider);
         mZoomOut = addImageView(context, R.drawable.ic_zoom_out);
-        mHandler = new Handler();
     }
 
     public void startZoomControl() {
@@ -101,8 +78,6 @@ public abstract class ZoomControl extends RelativeLayout implements Rotatable {
 
     public void closeZoomControl() {
         mZoomSlider.setPressed(false);
-        stopZooming();
-        if (!mSmoothZoomSupported) mHandler.removeCallbacks(mRunnable);
         if (mOnIndicatorEventListener != null) {
             mOnIndicatorEventListener.onIndicatorEvent(
                     OnIndicatorEventListener.EVENT_LEAVE_ZOOM_CONTROL);
@@ -133,79 +108,15 @@ public abstract class ZoomControl extends RelativeLayout implements Rotatable {
         invalidate();
     }
 
-    public void setSmoothZoomSupported(boolean smoothZoomSupported) {
-        mSmoothZoomSupported = smoothZoomSupported;
-    }
-
-    private boolean zoomIn() {
-        return (mZoomIndex == mZoomMax) ? false : changeZoomIndex(mZoomIndex + mStep);
-    }
-
-    private boolean zoomOut() {
-        return (mZoomIndex == 0) ? false : changeZoomIndex(mZoomIndex - mStep);
-    }
-
-    protected void setZoomStep(int step) {
-        mStep = step;
-    }
-
-    private void stopZooming() {
-        if (mSmoothZoomSupported) {
-            if (mListener != null) mListener.onZoomStateChanged(ZOOM_STOP);
-        }
-    }
-
-    // Called from ZoomControlWheel to change the zoom level.
-    // TODO: merge the zoom control for both platforms.
-    protected void performZoom(int state) {
-        performZoom(state, true);
-    }
-
-    private void performZoom(int state, boolean fromUser) {
-        if ((mState == state) && fromUser) return;
-        if (fromUser) mHandler.removeCallbacks(mRunnable);
-        mState = state;
-        switch (state) {
-            case ZOOM_IN:
-                zoomIn();
-                break;
-            case ZOOM_OUT:
-                zoomOut();
-                break;
-            case ZOOM_STOP:
-                stopZooming();
-                break;
-        }
-        if (!mSmoothZoomSupported) {
-            // Repeat the zoom action on tablet as the user is still holding
-            // the zoom slider.
-            mHandler.postDelayed(mRunnable, ZOOMING_INTERVAL / mZoomMax);
-        }
-    }
-
-    // Called from ZoomControlBar to change the zoom level.
     protected void performZoom(double zoomPercentage) {
         int index = (int) (mZoomMax * zoomPercentage);
         if (mZoomIndex == index) return;
-        changeZoomIndex(index);
-   }
-
-    private boolean changeZoomIndex(int index) {
         if (mListener != null) {
-            if (mSmoothZoomSupported) {
-                int zoomType = (index < mZoomIndex) ? ZOOM_OUT : ZOOM_IN;
-                if (((zoomType == ZOOM_IN) && (mZoomIndex != mZoomMax)) ||
-                        ((zoomType == ZOOM_OUT) && (mZoomIndex != 0))) {
-                    mListener.onZoomStateChanged(zoomType);
-                }
-            } else {
-                if (index > mZoomMax) index = mZoomMax;
-                if (index < 0) index = 0;
-                mListener.onZoomValueChanged(index);
-                mZoomIndex = index;
-            }
+            if (index > mZoomMax) index = mZoomMax;
+            if (index < 0) index = 0;
+            mListener.onZoomValueChanged(index);
+            mZoomIndex = index;
         }
-        return true;
     }
 
     @Override
