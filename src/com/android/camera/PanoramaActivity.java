@@ -32,6 +32,7 @@ import android.hardware.Camera.Size;
 import android.media.ExifInterface;
 import android.media.MediaActionSound;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -118,6 +119,7 @@ public class PanoramaActivity extends ActivityBase implements
     private String mDialogTitle;
     private String mDialogOkString;
     private String mDialogPanoramaFailedString;
+    private String mDialogWaitingPreviousString;
 
     private int mIndicatorColor;
     private int mIndicatorColorFast;
@@ -129,6 +131,8 @@ public class PanoramaActivity extends ActivityBase implements
     private PowerManager.WakeLock mPartialWakeLock;
     private ModePicker mModePicker;
     private MosaicFrameProcessor mMosaicFrameProcessor;
+    private boolean mMosaicFrameProcessorInitialized;
+    private AsyncTask <Void, Void, Void> mWaitProcessorTask;
     private long mTimeTaken;
     private Handler mMainHandler;
     private SurfaceTexture mSurfaceTexture;
@@ -283,12 +287,14 @@ public class PanoramaActivity extends ActivityBase implements
         mOrientationEventListener = new PanoOrientationEventListener(this);
 
         mTransformMatrix = new float[16];
+        mMosaicFrameProcessor = MosaicFrameProcessor.getInstance();
 
         Resources appRes = getResources();
         mPreparePreviewString = appRes.getString(R.string.pano_dialog_prepare_preview);
         mDialogTitle = appRes.getString(R.string.pano_dialog_title);
         mDialogOkString = appRes.getString(R.string.dialog_ok);
         mDialogPanoramaFailedString = appRes.getString(R.string.pano_dialog_panorama_failed);
+        mDialogWaitingPreviousString = appRes.getString(R.string.pano_dialog_waiting_previous);
 
         mMainHandler = new Handler() {
             @Override
@@ -309,6 +315,7 @@ public class PanoramaActivity extends ActivityBase implements
                         if (mThumbnail != null) mThumbnailView.setBitmap(mThumbnail.getBitmap());
 
                         resetToPreview();
+                        clearMosaicFrameProcessorIfNeeded();
                         break;
                     case MSG_GENERATE_FINAL_MOSAIC_ERROR:
                         onBackgroundThreadFinished();
@@ -324,17 +331,18 @@ public class PanoramaActivity extends ActivityBase implements
                                         }},
                                     null, null);
                         }
+                        clearMosaicFrameProcessorIfNeeded();
                         break;
                     case MSG_RESET_TO_PREVIEW:
                         onBackgroundThreadFinished();
                         resetToPreview();
+                        clearMosaicFrameProcessorIfNeeded();
                         break;
                     case MSG_CLEAR_SCREEN_DELAY:
                         getWindow().clearFlags(WindowManager.LayoutParams.
                                 FLAG_KEEP_SCREEN_ON);
                         break;
                 }
-                clearMosaicFrameProcessorIfNeeded();
             }
         };
     }
@@ -916,17 +924,18 @@ public class PanoramaActivity extends ActivityBase implements
 
     private void clearMosaicFrameProcessorIfNeeded() {
         if (!mPausing || mThreadRunning) return;
-        mMosaicFrameProcessor.clear();
+        // Only clear the processor if it is initialized by this activity
+        // instance. Other activity instances may be using it.
+        if (mMosaicFrameProcessorInitialized) {
+            mMosaicFrameProcessor.clear();
+            mMosaicFrameProcessorInitialized = false;
+        }
     }
 
     private void initMosaicFrameProcessorIfNeeded() {
         if (mPausing || mThreadRunning) return;
-        if (mMosaicFrameProcessor == null) {
-            // Start the activity for the first time.
-            mMosaicFrameProcessor = new MosaicFrameProcessor(
-                    mPreviewWidth, mPreviewHeight, getPreviewBufSize());
-        }
-        mMosaicFrameProcessor.initialize();
+        mMosaicFrameProcessor.initialize(mPreviewWidth, mPreviewHeight, getPreviewBufSize());
+        mMosaicFrameProcessorInitialized = true;
     }
 
     @Override
@@ -948,6 +957,10 @@ public class PanoramaActivity extends ActivityBase implements
         releaseCamera();
         mMosaicView.onPause();
         clearMosaicFrameProcessorIfNeeded();
+        if (mWaitProcessorTask != null) {
+            mWaitProcessorTask.cancel(true);
+            mWaitProcessorTask = null;
+        }
         resetScreenOn();
         if (mCameraSound != null) {
             mCameraSound.release();
@@ -978,10 +991,19 @@ public class PanoramaActivity extends ActivityBase implements
         mCameraSound.load(MediaActionSound.START_VIDEO_RECORDING);
         mCameraSound.load(MediaActionSound.STOP_VIDEO_RECORDING);
 
-        // Camera must be initialized before MosaicFrameProcessor is initialized.
-        // The preview size has to be decided by camera device.
-        initMosaicFrameProcessorIfNeeded();
-        mMosaicView.onResume();
+        // Check if another panorama instance is using the mosaic frame processor.
+        mRotateDialog.dismissDialog();
+        if (!mThreadRunning && mMosaicFrameProcessor.isMosaicMemoryAllocated()) {
+            mMosaicView.setVisibility(View.GONE);
+            mRotateDialog.showWaitingDialog(mDialogWaitingPreviousString);
+            mWaitProcessorTask = new WaitProcessorTask().execute();
+        } else {
+            mMosaicView.setVisibility(View.VISIBLE);
+            // Camera must be initialized before MosaicFrameProcessor is
+            // initialized. The preview size has to be decided by camera device.
+            initMosaicFrameProcessorIfNeeded();
+            mMosaicView.onResume();
+        }
         getLastThumbnail();
         keepScreenOnAwhile();
 
@@ -1115,5 +1137,28 @@ public class PanoramaActivity extends ActivityBase implements
     private void keepScreenOn() {
         mMainHandler.removeMessages(MSG_CLEAR_SCREEN_DELAY);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    private class WaitProcessorTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            synchronized (mMosaicFrameProcessor) {
+                while (!isCancelled() && mMosaicFrameProcessor.isMosaicMemoryAllocated()) {
+                    try {
+                        mMosaicFrameProcessor.wait();
+                    } catch(Exception e) {
+                        // ignore
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            mRotateDialog.dismissDialog();
+            mMosaicView.setVisibility(View.VISIBLE);
+            initMosaicFrameProcessorIfNeeded();
+        }
     }
 }
