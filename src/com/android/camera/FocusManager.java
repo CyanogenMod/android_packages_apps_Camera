@@ -61,7 +61,8 @@ public class FocusManager {
     private Matrix mMatrix;
     private View mFocusIndicatorRotateLayout;
     private FocusIndicatorView mFocusIndicator;
-    private View mPreviewFrame;
+    private int mPreviewWidth;
+    private int mPreviewHeight;
     private FaceView mFaceView;
     private List<Area> mFocusArea; // focus area in driver format
     private List<Area> mMeteringArea; // metering area in driver format
@@ -113,18 +114,19 @@ public class FocusManager {
                 mParameters.isAutoWhiteBalanceLockSupported());
     }
 
-    public void initialize(View focusIndicatorRotate, View previewFrame,
+    public void initialize(View focusIndicatorRotate, int previewWidth, int previewHeight,
             FaceView faceView, Listener listener, boolean mirror, int displayOrientation) {
         mFocusIndicatorRotateLayout = focusIndicatorRotate;
         mFocusIndicator = (FocusIndicatorView) focusIndicatorRotate.findViewById(
                 R.id.focus_indicator);
-        mPreviewFrame = previewFrame;
+        mPreviewWidth = previewWidth;
+        mPreviewHeight = previewHeight;
         mFaceView = faceView;
         mListener = listener;
 
         Matrix matrix = new Matrix();
         Util.prepareMatrix(matrix, mirror, displayOrientation,
-                previewFrame.getWidth(), previewFrame.getHeight());
+                previewWidth, previewHeight);
         // In face detection, the matrix converts the driver coordinates to UI
         // coordinates. In tap focus, the inverted matrix converts the UI
         // coordinates to driver coordinates.
@@ -259,8 +261,8 @@ public class FocusManager {
         int y = Math.round(e.getY());
         int focusWidth = mFocusIndicatorRotateLayout.getWidth();
         int focusHeight = mFocusIndicatorRotateLayout.getHeight();
-        int previewWidth = mPreviewFrame.getWidth();
-        int previewHeight = mPreviewFrame.getHeight();
+        int previewWidth = mPreviewWidth;
+        int previewHeight = mPreviewHeight;
         if (mFocusArea == null) {
             mFocusArea = new ArrayList<Area>();
             mFocusArea.add(new Area(new Rect(), 1));
@@ -400,7 +402,7 @@ public class FocusManager {
         if (!mInitialized) return;
 
         // Set the length of focus indicator according to preview frame size.
-        int len = Math.min(mPreviewFrame.getWidth(), mPreviewFrame.getHeight()) / 4;
+        int len = Math.min(mPreviewWidth, mPreviewHeight) / 4;
         ViewGroup.LayoutParams layout = mFocusIndicator.getLayoutParams();
         layout.width = len;
         layout.height = len;

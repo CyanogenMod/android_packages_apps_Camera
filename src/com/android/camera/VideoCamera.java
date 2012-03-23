@@ -62,7 +62,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.camera.ActivityBase.CameraOpenThread;
 import com.android.camera.ui.CameraPicker;
+import com.android.camera.ui.ControlPanelLayout;
 import com.android.camera.ui.IndicatorControlContainer;
 import com.android.camera.ui.IndicatorControlWheelContainer;
 import com.android.camera.ui.PopupManager;
@@ -85,10 +87,9 @@ import java.util.List;
  */
 public class VideoCamera extends ActivityBase
         implements CameraPreference.OnPreferenceChangedListener,
-        ShutterButton.OnShutterButtonListener, TextureView.SurfaceTextureListener,
-        MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener,
-        ModePicker.OnModeChangeListener, View.OnTouchListener,
-        EffectsRecorder.EffectsListener {
+        ShutterButton.OnShutterButtonListener, MediaRecorder.OnErrorListener,
+        MediaRecorder.OnInfoListener, ModePicker.OnModeChangeListener,
+        View.OnTouchListener, EffectsRecorder.EffectsListener {
 
     private static final String TAG = "videocamera";
 
@@ -195,6 +196,7 @@ public class VideoCamera extends ActivityBase
     // The display rotation in degrees. This is only valid when mPreviewing is
     // true.
     private int mDisplayRotation;
+    private int mDisplayOrientation;
 
     private ContentResolver mContentResolver;
 
@@ -332,29 +334,42 @@ public class VideoCamera extends ActivityBase
          * To reduce startup time, we start the preview in another thread.
          * We make sure the preview is started at the end of onCreate.
          */
-        Thread startPreviewThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    mCameraDevice = Util.openCamera(VideoCamera.this, mCameraId);
-                    readVideoPreferences();
-                    startPreview();
-                } catch (CameraHardwareException e) {
-                    mOpenCameraFail = true;
-                } catch (CameraDisabledException e) {
-                    mCameraDisabled = true;
-                }
-            }
-        });
-        startPreviewThread.start();
+        CameraOpenThread cameraOpenThread = new CameraOpenThread();
+        cameraOpenThread.start();
 
         Util.enterLightsOutMode(getWindow());
 
         mContentResolver = getContentResolver();
 
-        requestWindowFeature(Window.FEATURE_PROGRESS);
-        mIsVideoCaptureIntent = isVideoCaptureIntent();
         setContentView(R.layout.video_camera);
+        // Surface texture is from camera screen nail and startPreview needs it.
+        // This must be done before startPreview.
+        mIsVideoCaptureIntent = isVideoCaptureIntent();
+        createCameraScreenNail(!mIsVideoCaptureIntent);
+
+        // Make sure camera device is opened.
+        try {
+            cameraOpenThread.join();
+            if (mOpenCameraFail) {
+                Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
+                return;
+            } else if (mCameraDisabled) {
+                Util.showErrorAndFinish(this, R.string.camera_disabled);
+                return;
+            }
+        } catch (InterruptedException ex) {
+            // ignore
+        }
+
+        Thread startPreviewThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                readVideoPreferences();
+                startPreview();
+            }
+        });
+        startPreviewThread.start();
+
         if (mIsVideoCaptureIntent) {
             // Cannot use RotateImageView for "done" and "cancel" button because
             // the tablet layout uses RotateLayout, which cannot be cast to
@@ -386,9 +401,6 @@ public class VideoCamera extends ActivityBase
         mPreviewPanel = findViewById(R.id.frame_layout);
         mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
         mReviewImage = (ImageView) findViewById(R.id.review_image);
-
-        mPreviewTextureView = (TextureView) findViewById(R.id.camera_preview);
-        mPreviewTextureView.setSurfaceTextureListener(this);
 
         mQuickCapture = getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
 
@@ -611,11 +623,14 @@ public class VideoCamera extends ActivityBase
                 showAlert();
             }
         } else {
-            Bitmap bitmap = mPreviewTextureView.getBitmap();
-            if (bitmap != null) {
-                mCaptureAnimMgr.startAnimation(bitmap.copy(Bitmap.Config.RGB_565, false),
-                        mOrientationCompensation, mPreviewPanel.getWidth(),
-                        mPreviewPanel.getHeight());
+            // TODO: add animation back.
+            if (mPreviewTextureView != null) {
+                Bitmap bitmap = mPreviewTextureView.getBitmap();
+                if (bitmap != null) {
+                    mCaptureAnimMgr.startAnimation(bitmap.copy(Bitmap.Config.RGB_565, false),
+                            mOrientationCompensation, mPreviewPanel.getWidth(),
+                            mPreviewPanel.getHeight());
+                }
             }
             if (!effectsActive()) getThumbnail();
         }
@@ -751,8 +766,7 @@ public class VideoCamera extends ActivityBase
                     it.remove();
                 }
             }
-            Size optimalSize = Util.getOptimalPreviewSize(this, sizes,
-                (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
+            Size optimalSize = Util.getOptimalPreviewSize(this, sizes);
             mDesiredPreviewWidth = optimalSize.width;
             mDesiredPreviewHeight = optimalSize.height;
         }
@@ -771,7 +785,6 @@ public class VideoCamera extends ActivityBase
 
         mZoomValue = 0;
 
-        mPreviewTextureView.setVisibility(View.VISIBLE);
         showVideoSnapshotUI(false);
 
         // Start orientation listener as soon as possible because it takes
@@ -872,22 +885,37 @@ public class VideoCamera extends ActivityBase
         }
 
         mDisplayRotation = Util.getDisplayRotation(this);
-        int orientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
-        mCameraDevice.setDisplayOrientation(orientation);
+        mDisplayOrientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
+        mCameraDevice.setDisplayOrientation(mDisplayOrientation);
         setCameraParameters();
 
-        if (!effectsActive()) {
-            setPreviewTexture();
-            try {
-                mCameraDevice.startPreview();
-            } catch (Throwable ex) {
-                closeCamera();
-                throw new RuntimeException("startPreview failed", ex);
+        if (mSurfaceTexture == null) {
+            Size size = mParameters.getPreviewSize();
+            if (mDisplayOrientation % 180 == 0) {
+                mCameraScreenNail.setSize(size.width, size.height);
+            } else {
+                mCameraScreenNail.setSize(size.height, size.width);
             }
-        } else {
-            initializeEffectsPreview();
-            Log.v(TAG, "effectsStartPreview");
-            mEffectsRecorder.startPreview();
+            mCameraScreenNail.acquireSurfaceTexture();
+            mSurfaceTexture = mCameraScreenNail.getSurfaceTexture();
+            mSurface = new Surface(mSurfaceTexture);
+        }
+
+        try {
+            if (!effectsActive()) {
+                mCameraDevice.setPreviewTexture(mSurfaceTexture);
+                mCameraDevice.startPreview();
+            } else {
+                mSurfaceWidth = mCameraScreenNail.getWidth();
+                mSurfaceHeight = mCameraScreenNail.getHeight();
+                initializeEffectsPreview();
+                mEffectsRecorder.setPreviewSurface(mSurface, mSurfaceWidth, mSurfaceHeight);
+                Log.v(TAG, "effectsStartPreview");
+                mEffectsRecorder.startPreview();
+            }
+        } catch (Throwable ex) {
+            closeCamera();
+            throw new RuntimeException("startPreview or setPreviewSurface failed", ex);
         }
 
         mPreviewing = true;
@@ -943,9 +971,9 @@ public class VideoCamera extends ActivityBase
         }
 
         finishRecorderAndCloseCamera();
+        mCameraScreenNail.releaseSurfaceTexture();
+        mSurfaceTexture = null;
         closeVideoFileDescriptor();
-
-        mPreviewTextureView.setVisibility(View.GONE);
 
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
@@ -1011,61 +1039,6 @@ public class VideoCamera extends ActivityBase
                 return true;
         }
         return super.onKeyUp(keyCode, event);
-    }
-
-    @Override
-    public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int w, int h) {
-        mSurfaceTexture = surfaceTexture;
-        mSurface = new Surface(surfaceTexture);
-        onSurfaceTextureSizeChanged(surfaceTexture, w, h);
-    }
-
-    @Override
-    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        mSurfaceTexture.release();
-        mSurfaceTexture = null;
-        mSurface.release();
-        mSurface = null;
-        return true;
-    }
-
-    @Override
-    public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int w, int h) {
-        Log.v(TAG, "surfaceChanged. w=" + w + ". h=" + h);
-
-        mSurfaceWidth = w;
-        mSurfaceHeight = h;
-
-        if (mPaused) {
-            // We're pausing, the screen is off and we already stopped
-            // video recording. We don't want to start the camera again
-            // in this case in order to conserve power.
-            // The fact that surfaceChanged is called _after_ an onPause appears
-            // to be legitimate since in that case the lockscreen always returns
-            // to portrait orientation possibly triggering the notification.
-            return;
-        }
-
-        // The mCameraDevice will be null if it is fail to connect to the
-        // camera hardware. In this case we will show a dialog and then
-        // finish the activity, so it's OK to ignore it.
-        if (mCameraDevice == null) return;
-
-        // Set preview display if the surface is being created. Preview was
-        // already started. Also restart the preview if display rotation has
-        // changed. Sometimes this happens when the device is held in portrait
-        // and camera app is opened. Rotation animation takes some time and
-        // display rotation in onCreate may not be what we want.
-        if (mPreviewing && (Util.getDisplayRotation(this) == mDisplayRotation)) {
-            setPreviewTexture();
-        } else {
-            stopVideoRecording();
-            startPreview();
-        }
-    }
-
-    @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
     }
 
     @Override
@@ -2139,10 +2112,9 @@ public class VideoCamera extends ActivityBase
         if (size.width != mDesiredPreviewWidth
                 || size.height != mDesiredPreviewHeight) {
             resizeForPreviewAspectRatio();
-        } else {
-            // Start up preview again
-            startPreview();
         }
+        // Start up preview again
+        startPreview();
     }
 
     private void showTimeLapseUI(boolean enable) {
@@ -2208,7 +2180,7 @@ public class VideoCamera extends ActivityBase
 
     private void initializeVideoSnapshot() {
         if (mParameters.isVideoSnapshotSupported() && !mIsVideoCaptureIntent) {
-            mPreviewTextureView.setOnTouchListener(this);
+            mPreviewFrameLayout.setOnTouchListener(this);
             // Show the tap to focus toast if this is the first start.
             if (mPreferences.getBoolean(
                         CameraSettings.KEY_VIDEO_FIRST_USE_HINT_SHOWN, true)) {

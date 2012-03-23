@@ -81,9 +81,8 @@ import java.util.List;
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends ActivityBase implements FocusManager.Listener,
         View.OnTouchListener, ShutterButton.OnShutterButtonListener,
-        TextureView.SurfaceTextureListener, ModePicker.OnModeChangeListener,
-        FaceDetectionListener, CameraPreference.OnPreferenceChangedListener,
-        LocationManager.Listener {
+        ModePicker.OnModeChangeListener, FaceDetectionListener,
+        CameraPreference.OnPreferenceChangedListener, LocationManager.Listener {
 
     private static final String TAG = "camera";
 
@@ -347,12 +346,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.setVisibility(View.VISIBLE);
 
+        // TODO: add touch focus back.
+        // mPreviewFrameLayout.setOnTouchListener(this);
         // Initialize focus UI.
-        mPreviewTextureView.setOnTouchListener(this);
         CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
         boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
-        mFocusManager.initialize(mFocusAreaIndicator, mPreviewTextureView, mFaceView, this,
-                mirror, mDisplayOrientation);
+        mFocusManager.initialize(mFocusAreaIndicator, mPreviewFrameLayout.getWidth(),
+                mPreviewFrameLayout.getHeight(), mFaceView, this, mirror, mDisplayOrientation);
         mImageSaver = new ImageSaver();
         installIntentFilter();
         initializeZoom();
@@ -478,7 +478,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 // other areas.
                 if (!Util.pointInView(x, y, popup)
                         && !Util.pointInView(x, y, mIndicatorControlContainer)
-                        && !Util.pointInView(x, y, mPreviewTextureView)) {
+                        && !Util.pointInView(x, y, mPreviewFrameLayout)) {
                     mIndicatorControlContainer.dismissSettingPopup();
                 }
             }
@@ -944,12 +944,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
         if (!mIsImageCaptureIntent) {
-            if (mSurfaceTexture == null) {
-                Log.v(TAG, "Animation in capture(): mSurfaceTexture == null");
+            // TODO: add the animation back
+            if (mPreviewTextureView != null) {
+                Bitmap b = mPreviewTextureView.getBitmap().copy(Bitmap.Config.RGB_565, false);
+                mCaptureAnimMgr.startAnimation(b, mOrientationCompensation,
+                        mPreviewPanel.getWidth(), mPreviewPanel.getHeight());
             }
-            Bitmap b = mPreviewTextureView.getBitmap().copy(Bitmap.Config.RGB_565, false);
-            mCaptureAnimMgr.startAnimation(b, mOrientationCompensation, mPreviewPanel.getWidth(),
-                    mPreviewPanel.getHeight());
         }
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
@@ -1005,8 +1005,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         CameraOpenThread cameraOpenThread = new CameraOpenThread();
         cameraOpenThread.start();
 
-        mIsImageCaptureIntent = isImageCaptureIntent();
         setContentView(R.layout.camera);
+        // Surface texture is from camera screen nail and startPreview needs it.
+        // This must be done before startPreview.
+        mIsImageCaptureIntent = isImageCaptureIntent();
+        createCameraScreenNail(!mIsImageCaptureIntent);
+
         if (mIsImageCaptureIntent) {
             // Cannot use RotateImageView for "done" and "cancel" button because
             // the tablet layout uses RotateLayout, which cannot be cast to
@@ -1041,9 +1045,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         resetExposureCompensation();
 
         Util.enterLightsOutMode(getWindow());
-
-        mPreviewTextureView = (TextureView) findViewById(R.id.camera_preview);
-        mPreviewTextureView.setSurfaceTextureListener(this);
 
         // Make sure camera device is opened.
         try {
@@ -1397,7 +1398,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
-        mPreviewTextureView.setVisibility(View.VISIBLE);
 
         // Start the preview if it is not started.
         if (mCameraState == PREVIEW_STOPPED) {
@@ -1423,14 +1423,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         if (!mIsImageCaptureIntent) getLastThumbnail();
 
-        if (mSurfaceTexture != null) {
-            // If first time initialization is not finished, put it in the
-            // message queue.
-            if (!mFirstTimeInitialized) {
-                mHandler.sendEmptyMessage(FIRST_TIME_INIT);
-            } else {
-                initializeSecondTime();
-            }
+        // If first time initialization is not finished, put it in the
+        // message queue.
+        if (!mFirstTimeInitialized) {
+            mHandler.sendEmptyMessage(FIRST_TIME_INIT);
+        } else {
+            initializeSecondTime();
         }
         keepScreenOnAwhile();
 
@@ -1458,6 +1456,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
+        mCameraScreenNail.releaseSurfaceTexture();
+        mSurfaceTexture = null;
         if (mCameraSound != null) {
             mCameraSound.release();
             mCameraSound = null;
@@ -1467,7 +1467,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Clear UI.
         collapseCameraControls();
         if (mFaceView != null) mFaceView.clear();
-        mPreviewTextureView.setVisibility(View.GONE);
 
         if (mFirstTimeInitialized) {
             mOrientationListener.disable();
@@ -1609,65 +1608,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         return super.onKeyUp(keyCode, event);
     }
 
-    @Override
-    public void onSurfaceTextureAvailable(SurfaceTexture surface, int w, int h) {
-        Log.v(TAG, "onSurfaceTextureAvailable. w=" + w + ". h=" + h);
-
-        // We need to save the surface for later use, even when the mCameraDevice
-        // is null. This could happen if onResume() is invoked after this
-        // function.
-        mSurfaceTexture = surface;
-
-        // The mCameraDevice will be null if it fails to connect to the camera
-        // hardware. In this case we will show a dialog and then finish the
-        // activity, so it's OK to ignore it.
-        if (mCameraDevice == null) return;
-
-        // Sometimes onSurfaceTextureAvailable is called after onPause or before onResume.
-        // Ignore it.
-        if (mPaused || isFinishing()) return;
-
-        // Set preview texture if the surface is being created. Preview was
-        // already started. Also restart the preview if display rotation has
-        // changed. Sometimes this happens when the device is held in portrait
-        // and camera app is opened. Rotation animation takes some time and
-        // display rotation in onCreate may not be what we want.
-        if (mCameraState == PREVIEW_STOPPED) {
-            startPreview();
-            startFaceDetection();
-        } else {
-            if (Util.getDisplayRotation(this) != mDisplayRotation) {
-                setDisplayOrientation();
-            }
-            setPreviewTexture(surface);
-        }
-
-        // If first time initialization is not finished, send a message to do
-        // it later. We want to finish surfaceChanged as soon as possible to let
-        // user see preview first.
-        if (!mFirstTimeInitialized) {
-            mHandler.sendEmptyMessage(FIRST_TIME_INIT);
-        } else {
-            initializeSecondTime();
-        }
-    }
-
-    @Override
-    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-    }
-
-    @Override
-    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        stopPreview();
-        mSurfaceTexture.release();
-        mSurfaceTexture = null;
-        return true;
-    }
-
-    @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-    }
-
     private void closeCamera() {
         if (mCameraDevice != null) {
             mCameraDevice.setZoomChangeListener(null);
@@ -1710,7 +1650,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // the screen).
         if (mCameraState != PREVIEW_STOPPED) stopPreview();
 
-        setPreviewTexture(mSurfaceTexture);
         setDisplayOrientation();
 
         if (!mSnapshotOnIdle) {
@@ -1730,7 +1669,19 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             }
         }
 
+        if (mSurfaceTexture == null) {
+            Size size = mParameters.getPreviewSize();
+            if (mDisplayOrientation % 180 == 0) {
+                mCameraScreenNail.setSize(size.width, size.height);
+            } else {
+                mCameraScreenNail.setSize(size.height, size.width);
+            }
+            mCameraScreenNail.acquireSurfaceTexture();
+            mSurfaceTexture = mCameraScreenNail.getSurfaceTexture();
+        }
+
         try {
+            mCameraDevice.setPreviewTexture(mSurfaceTexture);
             Log.v(TAG, "startPreview");
             mCameraDevice.startPreview();
         } catch (Throwable ex) {
@@ -1827,8 +1778,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Set a preview size that is closest to the viewfinder height and has
         // the right aspect ratio.
         List<Size> sizes = mParameters.getSupportedPreviewSizes();
-        Size optimalSize = Util.getOptimalPreviewSize(this,
-                sizes, (double) size.width / size.height);
+        Size optimalSize = Util.getOptimalPreviewSize(this, sizes);
         Size original = mParameters.getPreviewSize();
         if (!original.equals(optimalSize)) {
             mParameters.setPreviewSize(optimalSize.width, optimalSize.height);

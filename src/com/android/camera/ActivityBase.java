@@ -16,7 +16,6 @@
 
 package com.android.camera;
 
-import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -28,23 +27,32 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.RotateImageView;
+import com.android.gallery3d.app.AbstractGalleryActivity;
+import com.android.gallery3d.app.PhotoPage;
+import com.android.gallery3d.app.GalleryActionBar;
+import com.android.gallery3d.util.MediaSetUtils;
 
 import java.io.File;
 
 /**
  * Superclass of Camera and VideoCamera activities.
  */
-abstract public class ActivityBase extends Activity {
+abstract public class ActivityBase extends AbstractGalleryActivity
+        implements CameraScreenNail.PositionChangedListener {
+
     private static final String TAG = "ActivityBase";
     private static boolean LOGV = false;
     private int mResultCodeForTesting;
     private boolean mOnResumePending;
     private Intent mResultDataForTesting;
     private OnScreenHint mStorageHint;
+    private UpdateCameraAppView mUpdateCameraAppView = new UpdateCameraAppView();
+
     // The bitmap of the last captured picture thumbnail and the URI of the
     // original picture.
     protected Thumbnail mThumbnail;
@@ -57,10 +65,17 @@ abstract public class ActivityBase extends Activity {
     protected CameraManager.CameraProxy mCameraDevice;
     protected Parameters mParameters;
     protected boolean mPaused; // The activity is paused.
+    protected GalleryActionBar mActionBar;
 
     // multiple cameras support
     protected int mNumberOfCameras;
     protected int mCameraId;
+
+    protected CameraScreenNail mCameraScreenNail; // This shows camera preview.
+    // The view containing only camera related widgets like control panel,
+    // indicator bar, focus indicator and etc.
+    protected View mCameraAppView;
+    protected float mCameraAppViewAlpha = 1f;
 
     protected class CameraOpenThread extends Thread {
         @Override
@@ -83,8 +98,14 @@ abstract public class ActivityBase extends Activity {
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(icicle);
+        // The full screen mode might be turned off previously. Add the flag again.
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        mActionBar = new GalleryActionBar(this);
     }
 
     @Override
@@ -286,5 +307,57 @@ abstract public class ActivityBase extends Activity {
             }
             return null;
         }
+    }
+
+    // Call this after setContentView.
+    protected void createCameraScreenNail(boolean getPictures) {
+        mCameraAppView = findViewById(R.id.camera_app_root);
+        Bundle data = new Bundle();
+        String path = "/local/all/";
+        // Intent mode does not show camera roll. Use 0 as a work around for
+        // invalid bucket id.
+        // TODO: add support of empty media set in gallery.
+        path += (getPictures ? MediaSetUtils.CAMERA_BUCKET_ID : "0");
+        data.putString(PhotoPage.KEY_MEDIA_SET_PATH, path);
+        data.putString(PhotoPage.KEY_MEDIA_ITEM_PATH, path);
+
+        // Send a CameraScreenNail to gallery to enable the camera preview.
+        CameraScreenNailHolder holder = new CameraScreenNailHolder(this);
+        data.putParcelable(PhotoPage.KEY_SCREENNAIL_HOLDER, holder);
+        getStateManager().startState(PhotoPage.class, data);
+        mCameraScreenNail = holder.getCameraScreenNail();
+        mCameraScreenNail.setPositionChangedListener(this);
+    }
+
+    private class UpdateCameraAppView implements Runnable {
+        @Override
+        public void run() {
+            if (mCameraAppViewAlpha == 0) {
+                mCameraAppView.setVisibility(View.GONE);
+            } else {
+                mCameraAppView.setVisibility(View.VISIBLE);
+                mCameraAppView.setAlpha(mCameraAppViewAlpha);
+            }
+        }
+    }
+
+    @Override
+    public void onPositionChanged(int x, int y, boolean visible) {
+        // Fade out the camera views with the swipe.
+        if (!mPaused && !isFinishing()) {
+            if (!visible) {
+                mCameraAppViewAlpha = 0;
+            } else {
+                View v = (View) getGLRoot();
+                mCameraAppViewAlpha = 1 + (float) x / v.getWidth() * 2;
+            }
+            if (mCameraAppViewAlpha < 0) mCameraAppViewAlpha = 0;
+            runOnUiThread(mUpdateCameraAppView);
+        }
+    }
+
+    @Override
+    public GalleryActionBar getGalleryActionBar() {
+        return mActionBar;
     }
 }

@@ -24,6 +24,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -365,9 +366,9 @@ public class Util {
     }
 
     public static Size getOptimalPreviewSize(Activity currentActivity,
-            List<Size> sizes, double targetRatio) {
+            List<Size> sizes) {
         // Use a very small tolerance because we want an exact match.
-        final double ASPECT_TOLERANCE = 0.001;
+        final double ASPECT_TOLERANCE = 0.1;
         if (sizes == null) return null;
 
         Size optimalSize = null;
@@ -382,6 +383,11 @@ public class Util {
         Point point = new Point();
         display.getSize(point);
         int targetHeight = Math.min(point.x, point.y);
+        double targetRatio = (double) point.x / point.y;
+        int orientation = currentActivity.getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            targetRatio = 1 / targetRatio;
+        }
 
         // Try to find an size match aspect ratio and size
         for (Size size : sizes) {

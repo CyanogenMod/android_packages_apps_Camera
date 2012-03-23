@@ -17,7 +17,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
-    <LinearLayout
+    <com.android.gallery3d.ui.GLRootView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/gl_root_view" />
+    <LinearLayout android:id="@+id/camera_app_root"
             android:orientation="vertical"
             android:layout_height="match_parent"
             android:layout_width="match_parent">

@@ -14,10 +14,18 @@
      limitations under the License.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <include layout="@layout/preview_frame"/>
-    <include layout="@layout/camera_control"/>
-</LinearLayout>
+    <com.android.gallery3d.ui.GLRootView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/gl_root_view" />
+    <LinearLayout android:id="@+id/camera_app_root"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <include layout="@layout/preview_frame"/>
+        <include layout="@layout/camera_control"/>
+    </LinearLayout>
+</FrameLayout>
