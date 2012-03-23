@@ -99,6 +99,8 @@
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Nem lehet menteni a panorámát."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panoráma"</string>
     <string name="pano_capture_indication" msgid="8248825828264374507">"Panoráma rögzítése"</string>
+    <!-- no translation found for pano_dialog_waiting_previous (7800325815031423516) -->
+    <skip />
     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Mentés..."</string>
     <string name="tap_to_focus" msgid="8863427645591903760">"A fókuszáláshoz érintse meg."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Hatások"</string>

@@ -53,7 +53,7 @@
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 Мпикс."</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 Мпикс."</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 Мпикс."</string>
-    <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1,3 Мпикс."</string>
+    <string name="pref_camera_picturesize_entry_1280x960" msgid="7820672028447972964">"1,3 Мпикс"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="3705686683403524018">"1 Мпикс."</string>
     <string name="pref_camera_picturesize_entry_640x480" msgid="5557572917973022995">"VGA"</string>
     <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
@@ -79,7 +79,7 @@
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Вечеринка"</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Недоступно в режиме съемки"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Настройки камеры"</string>
-    <string name="pref_restore_detail" msgid="5732490002291044791">"Восстановить настройки по умолчанию"</string>
+    <string name="pref_restore_detail" msgid="5732490002291044791">"По умолчанию"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Экспозиция"</string>
     <string name="dialog_ok" msgid="6263301364153382152">"ОК"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Место на USB-накопителе заканчивается. Измените настройки качества или удалите ненужные изображения и другие файлы."</string>
@@ -99,6 +99,8 @@
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Не удалось сохранить файл."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Панорама"</string>
     <string name="pano_capture_indication" msgid="8248825828264374507">"Создание панорамы..."</string>
+    <!-- no translation found for pano_dialog_waiting_previous (7800325815031423516) -->
+    <skip />
     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Сохранение…"</string>
     <string name="tap_to_focus" msgid="8863427645591903760">"Нажмите для фокусировки."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Эффекты"</string>
