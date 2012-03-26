@@ -690,6 +690,7 @@ public class PanoramaActivity extends ActivityBase implements
 
         mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
         mThumbnailView.enableFilter(false);
+        mThumbnailViewWidth = mThumbnailView.getLayoutParams().width;
 
         mReviewLayout = findViewById(R.id.pano_review_layout);
         mReview = (ImageView) findViewById(R.id.pano_reviewarea);
@@ -809,7 +810,7 @@ public class PanoramaActivity extends ActivityBase implements
                         // than the thumbnail view's width.
                         int ratio = (int) Math.ceil(
                                 (double) (jpeg.height > jpeg.width ? jpeg.width : jpeg.height)
-                                / mThumbnailView.getWidth());
+                                / mThumbnailViewWidth);
                         int inSampleSize = Integer.highestOneBit(ratio);
                         mThumbnail = Thumbnail.createThumbnail(
                                 jpeg.data, orientation, inSampleSize, uri);

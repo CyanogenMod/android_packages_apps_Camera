@@ -701,7 +701,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
             if (!mIsImageCaptureIntent) {
                 Size s = mParameters.getPictureSize();
-                mImageSaver.addImage(jpegData, mLocation, s.width, s.height);
+                mImageSaver.addImage(jpegData, mLocation, s.width, s.height, mThumbnailViewWidth);
             } else {
                 mJpegImageData = jpegData;
                 if (!mQuickCapture) {
@@ -788,14 +788,14 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Runs in main thread
         public void addImage(final byte[] data, Location loc, int width,
-                int height) {
+                int height, int thumbnailWidth) {
             SaveRequest r = new SaveRequest();
             r.data = data;
             r.loc = (loc == null) ? null : new Location(loc);  // make a copy
             r.width = width;
             r.height = height;
             r.dateTaken = System.currentTimeMillis();
-            r.thumbnailWidth = mThumbnailView.getWidth();
+            r.thumbnailWidth = thumbnailWidth;
             synchronized (this) {
                 while (mQueue.size() >= QUEUE_LIMIT) {
                     try {
@@ -1032,6 +1032,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
             mThumbnailView.enableFilter(false);
             mThumbnailView.setVisibility(View.VISIBLE);
+            mThumbnailViewWidth = mThumbnailView.getLayoutParams().width;
         }
 
         mRotateDialog = new RotateDialogController(this, R.layout.rotate_dialog);

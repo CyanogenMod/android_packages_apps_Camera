@@ -42,6 +42,9 @@
         <item name="android:layout_margin">12dp</item>
     </style>
     <style name="ReviewThumbnail">
+        <!-- Thumbnail size calculation relies on the layout width. If this is
+             changed to wrap_content or match_parent, the code should be changed
+             as well. -->
         <item name="android:layout_width">86dp</item>
         <item name="android:layout_height">86dp</item>
         <item name="android:layout_alignParentTop">true</item>

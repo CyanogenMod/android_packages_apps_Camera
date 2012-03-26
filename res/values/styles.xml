@@ -184,6 +184,9 @@
         <item name="android:textAppearance">@android:style/TextAppearance.Medium</item>
     </style>
     <style name="ReviewThumbnail">
+        <!-- Thumbnail size calculation relies on the layout width. If this is
+             changed to wrap_content or match_parent, the code should be changed
+             as well. -->
         <item name="android:layout_width">52dp</item>
         <item name="android:layout_height">52dp</item>
         <item name="android:layout_alignParentRight">true</item>

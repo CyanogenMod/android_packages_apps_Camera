@@ -369,6 +369,7 @@ public class VideoCamera extends ActivityBase
             mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
             mThumbnailView.enableFilter(false);
             mThumbnailView.setVisibility(View.VISIBLE);
+            mThumbnailViewWidth = mThumbnailView.getLayoutParams().width;
             mModePicker = (ModePicker) findViewById(R.id.mode_picker);
             mModePicker.setVisibility(View.VISIBLE);
             mModePicker.setOnModeChangeListener(this);
@@ -1564,7 +1565,7 @@ public class VideoCamera extends ActivityBase
     private void getThumbnail() {
         if (mCurrentVideoUri != null) {
             Bitmap videoFrame = Thumbnail.createVideoThumbnailBitmap(mCurrentVideoFilename,
-                    mThumbnailView.getWidth());
+                    mThumbnailViewWidth);
             if (videoFrame != null) {
                 mThumbnail = Thumbnail.createThumbnail(mCurrentVideoUri, videoFrame, 0);
                 mThumbnailView.setBitmap(mThumbnail.getBitmap());

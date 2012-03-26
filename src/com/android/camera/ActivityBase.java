@@ -50,6 +50,7 @@ abstract public class ActivityBase extends Activity {
     protected Thumbnail mThumbnail;
     // An imageview showing showing the last captured picture thumbnail.
     protected RotateImageView mThumbnailView;
+    protected int mThumbnailViewWidth; // layout width of the thumbnail
     protected AsyncTask<Void, Void, Thumbnail> mLoadThumbnailTask;
 
     @Override
