@@ -952,9 +952,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
         if (!mIsImageCaptureIntent) {
-            mCaptureAnimMgr.startAnimation(
-                    mPreviewTextureView.getBitmap().copy(Bitmap.Config.RGB_565, false),
-                    mOrientationCompensation);
+            if (mSurfaceTexture == null) {
+                Log.v(TAG, "Animation in capture(): mSurfaceTexture == null");
+            }
+            Bitmap b = mPreviewTextureView.getBitmap().copy(Bitmap.Config.RGB_565, false);
+            mCaptureAnimMgr.startAnimation(b, mOrientationCompensation);
         }
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
