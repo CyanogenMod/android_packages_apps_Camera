@@ -44,7 +44,6 @@ abstract public class ActivityBase extends Activity {
     private boolean mOnResumePending;
     private Intent mResultDataForTesting;
     private OnScreenHint mStorageHint;
-    protected CameraDevice mCameraDevice;
     // The bitmap of the last captured picture thumbnail and the URI of the
     // original picture.
     protected Thumbnail mThumbnail;
@@ -52,6 +51,26 @@ abstract public class ActivityBase extends Activity {
     protected RotateImageView mThumbnailView;
     protected int mThumbnailViewWidth; // layout width of the thumbnail
     protected AsyncTask<Void, Void, Thumbnail> mLoadThumbnailTask;
+    protected boolean mOpenCameraFail;
+    protected boolean mCameraDisabled;
+    protected CameraManager.CameraProxy mCameraDevice;
+
+    // multiple cameras support
+    protected int mNumberOfCameras;
+    protected int mCameraId;
+
+    protected class CameraOpenThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                mCameraDevice = Util.openCamera(ActivityBase.this, mCameraId);
+            } catch (CameraHardwareException e) {
+                mOpenCameraFail = true;
+            } catch (CameraDisabledException e) {
+                mCameraDisabled = true;
+            }
+        }
+    }
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -82,7 +101,7 @@ abstract public class ActivityBase extends Activity {
         // onCreate. doOnResume should continue if mCameraDevice != null.
         // Suppose camera app is in the foreground. If users turn off and turn
         // on the screen very fast, camera app can still have the focus when the
-        // lock screen shows up. The keyguard takes input focus, so the caemra
+        // lock screen shows up. The keyguard takes input focus, so the camera
         // app will lose focus when it is displayed.
         if (LOGV) Log.v(TAG, "onResume. hasWindowFocus()=" + hasWindowFocus());
         if (mCameraDevice == null && isKeyguardLocked()) {

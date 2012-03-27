@@ -145,9 +145,6 @@ public class VideoCamera extends ActivityBase
     private boolean mIsVideoCaptureIntent;
     private boolean mQuickCapture;
 
-    private boolean mOpenCameraFail = false;
-    private boolean mCameraDisabled = false;
-
     private long mStorageSpace;
 
     private MediaRecorder mMediaRecorder;
@@ -203,17 +200,13 @@ public class VideoCamera extends ActivityBase
     private final Handler mHandler = new MainHandler();
     private Parameters mParameters;
 
-    // multiple cameras support
-    private int mNumberOfCameras;
-    private int mCameraId;
-
     private MyOrientationEventListener mOrientationListener;
     // The degrees of the device rotated clockwise from its natural orientation.
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
     // The orientation compensation for icons and thumbnails. Ex: if the value
     // is 90, the UI components should be rotated 90 degrees counter-clockwise.
     private int mOrientationCompensation = 0;
-    // The orientation compenstaion when we start recording.
+    // The orientation compensation when we start recording.
     private int mOrientationCompensationAtRecordStart;
 
     private int mZoomValue;  // The current zoom value.
@@ -761,18 +754,24 @@ public class VideoCamera extends ActivityBase
                 mBgLearningMessageFrame.setVisibility(View.GONE);
                 mIndicatorControlContainer.reloadPreferences();
             }
+            CameraOpenThread cameraOpenThread = new CameraOpenThread();
+            cameraOpenThread.start();
             try {
-                mCameraDevice = Util.openCamera(this, mCameraId);
-                readVideoPreferences();
-                resizeForPreviewAspectRatio();
-                startPreview();
-            } catch (CameraHardwareException e) {
-                Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
-                return;
-            } catch (CameraDisabledException e) {
-                Util.showErrorAndFinish(this, R.string.camera_disabled);
-                return;
+                cameraOpenThread.join();
+                if (mOpenCameraFail) {
+                    Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
+                    return;
+                } else if (mCameraDisabled) {
+                    Util.showErrorAndFinish(this, R.string.camera_disabled);
+                    return;
+                }
+            } catch (InterruptedException ex) {
+                // ignore
             }
+
+            readVideoPreferences();
+            resizeForPreviewAspectRatio();
+            startPreview();
         }
 
         // Initializing it here after the preview is started.
@@ -799,7 +798,7 @@ public class VideoCamera extends ActivityBase
             }
         }, 200);
 
-        // Initialize location sevice.
+        // Initialize location service.
         boolean recordLocation = RecordLocationPreference.get(
                 mPreferences, mContentResolver);
         mLocationManager.recordLocation(recordLocation);
@@ -881,9 +880,9 @@ public class VideoCamera extends ActivityBase
             mEffectsRecorder.release();
         }
         mEffectType = EffectsRecorder.EFFECT_NONE;
-        CameraHolder.instance().release();
         mCameraDevice.setZoomChangeListener(null);
         mCameraDevice.setErrorCallback(null);
+        CameraHolder.instance().release();
         mCameraDevice = null;
         mPreviewing = false;
         mSnapshotInProgress = false;

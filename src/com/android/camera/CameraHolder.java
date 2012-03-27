@@ -27,6 +27,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
+import com.android.camera.CameraManager.CameraProxy;
+
 import java.io.IOException;
 
 /**
@@ -44,7 +46,7 @@ import java.io.IOException;
  */
 public class CameraHolder {
     private static final String TAG = "CameraHolder";
-    private CameraDevice mCameraDevice;
+    private CameraProxy mCameraDevice;
     private long mKeepBeforeTime;  // Keep the Camera before this time.
     private final Handler mHandler;
     private boolean mCameraOpened;  // true if camera is opened
@@ -53,7 +55,7 @@ public class CameraHolder {
     private int mBackCameraId = -1;
     private int mFrontCameraId = -1;
     private final CameraInfo[] mInfo;
-    private static CameraDevice mMockCamera[];
+    private static CameraProxy mMockCamera[];
     private static CameraInfo mMockCameraInfo[];
 
     // We store the camera parameters when we actually open the device,
@@ -94,7 +96,7 @@ public class CameraHolder {
         }
     }
 
-    public static void injectMockCamera(CameraInfo[] info, CameraDevice[] camera) {
+    public static void injectMockCamera(CameraInfo[] info, CameraProxy[] camera) {
         mMockCameraInfo = info;
         mMockCamera = camera;
         sHolder = new CameraHolder();
@@ -134,7 +136,7 @@ public class CameraHolder {
         return mInfo;
     }
 
-    public synchronized CameraDevice open(int cameraId)
+    public synchronized CameraProxy open(int cameraId)
             throws CameraHardwareException {
         Assert(!mCameraOpened);
         if (mCameraDevice != null && mCameraId != cameraId) {
@@ -146,9 +148,7 @@ public class CameraHolder {
             try {
                 Log.v(TAG, "open camera " + cameraId);
                 if (mMockCameraInfo == null) {
-                    android.hardware.Camera camera = android.hardware.Camera.open(cameraId);
-                    if (camera != null)
-                        mCameraDevice = new CameraDevice(camera);
+                    mCameraDevice = CameraManager.instance().cameraOpen(cameraId);
                 } else {
                     if (mMockCamera == null)
                         throw new RuntimeException();
@@ -179,7 +179,7 @@ public class CameraHolder {
      * Tries to open the hardware camera. If the camera is being used or
      * unavailable then return {@code null}.
      */
-    public synchronized CameraDevice tryOpen(int cameraId) {
+    public synchronized CameraProxy tryOpen(int cameraId) {
         try {
             return !mCameraOpened ? open(cameraId) : null;
         } catch (CameraHardwareException e) {

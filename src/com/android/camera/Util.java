@@ -246,7 +246,7 @@ public class Util {
         }
     }
 
-    public static CameraDevice openCamera(Activity activity, int cameraId)
+    public static CameraManager.CameraProxy openCamera(Activity activity, int cameraId)
             throws CameraHardwareException, CameraDisabledException {
         // Check if device policy has disabled the camera.
         DevicePolicyManager dpm = (DevicePolicyManager) activity.getSystemService(

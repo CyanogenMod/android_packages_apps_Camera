@@ -108,7 +108,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
-    private int mTargetZoomValue;
     private ZoomControl mZoomControl;
 
     private Parameters mParameters;
@@ -131,8 +130,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private ContentProviderClient mMediaProviderClient;
     private ShutterButton mShutterButton;
-    private boolean mOpenCameraFail = false;
-    private boolean mCameraDisabled = false;
     private boolean mFaceDetectionStarted = false;
 
     private View mPreviewPanel;  // The container of PreviewFrameLayout.
@@ -247,10 +244,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private final Handler mHandler = new MainHandler();
     private IndicatorControlContainer mIndicatorControlContainer;
     private PreferenceGroup mPreferenceGroup;
-
-    // multiple cameras support
-    private int mNumberOfCameras;
-    private int mCameraId;
 
     private boolean mQuickCapture;
 
@@ -984,19 +977,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    Thread mCameraOpenThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                mCameraDevice = Util.openCamera(Camera.this, mCameraId);
-            } catch (CameraHardwareException e) {
-                mOpenCameraFail = true;
-            } catch (CameraDisabledException e) {
-                mCameraDisabled = true;
-            }
-        }
-    });
-
     Thread mCameraPreviewThread = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -1022,7 +1002,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
          * To reduce startup time, we start the camera open and preview threads.
          * We make sure the preview is started at the end of onCreate.
          */
-        mCameraOpenThread.start();
+        CameraOpenThread cameraOpenThread = new CameraOpenThread();
+        cameraOpenThread.start();
 
         mIsImageCaptureIntent = isImageCaptureIntent();
         setContentView(R.layout.camera);
@@ -1055,8 +1036,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Make sure camera device is opened.
         try {
-            mCameraOpenThread.join();
-            mCameraOpenThread = null;
+            cameraOpenThread.join();
             if (mOpenCameraFail) {
                 Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
                 return;
@@ -1400,19 +1380,24 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Start the preview if it is not started.
         if (mCameraState == PREVIEW_STOPPED) {
+            CameraOpenThread cameraOpenThread = new CameraOpenThread();
+            cameraOpenThread.start();
             try {
-                mCameraDevice = Util.openCamera(this, mCameraId);
-                initializeCapabilities();
-                resetExposureCompensation();
-                startPreview();
-                startFaceDetection();
-            } catch (CameraHardwareException e) {
-                Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
-                return;
-            } catch (CameraDisabledException e) {
-                Util.showErrorAndFinish(this, R.string.camera_disabled);
-                return;
+                cameraOpenThread.join();
+                if (mOpenCameraFail) {
+                    Util.showErrorAndFinish(this, R.string.cannot_connect_camera);
+                    return;
+                } else if (mCameraDisabled) {
+                    Util.showErrorAndFinish(this, R.string.camera_disabled);
+                    return;
+                }
+            } catch (InterruptedException ex) {
+                // ignore
             }
+            initializeCapabilities();
+            resetExposureCompensation();
+            startPreview();
+            startFaceDetection();
         }
 
         if (!mIsImageCaptureIntent) getLastThumbnail();
@@ -1665,11 +1650,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void closeCamera() {
         if (mCameraDevice != null) {
-            CameraHolder.instance().release();
-            mFaceDetectionStarted = false;
             mCameraDevice.setZoomChangeListener(null);
             mCameraDevice.setFaceDetectionListener(null);
             mCameraDevice.setErrorCallback(null);
+            CameraHolder.instance().release();
+            mFaceDetectionStarted = false;
             mCameraDevice = null;
             setCameraState(PREVIEW_STOPPED);
             mFocusManager.onCameraReleased();
