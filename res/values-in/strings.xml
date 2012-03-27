@@ -16,7 +16,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="camera_error_title" msgid="6484667504938477337">"Galat kamera"</string>
+    <string name="camera_error_title" msgid="6484667504938477337">"Kesalahan kamera"</string>
     <string name="cannot_connect_camera" msgid="955440687597185163">"Tidak dapat terhubung ke kamera."</string>
     <string name="camera_disabled" msgid="8923911090533439312">"Kamera telah dinonaktifkan karena kebijakan keamanan."</string>
     <string name="camera_label" msgid="6346560772074764302">"Kamera"</string>
