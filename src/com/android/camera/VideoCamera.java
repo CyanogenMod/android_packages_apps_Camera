@@ -70,6 +70,7 @@ import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
+import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomControl;
 
 import java.io.File;
@@ -136,7 +137,8 @@ public class VideoCamera extends ActivityBase
     private ImageView mReviewImage;
     private Rotatable mReviewCancelButton;
     private Rotatable mReviewDoneButton;
-    private Rotatable mReviewPlayButton;
+    private RotateImageView mReviewPlayButton;
+    private View mReviewRetakeButton;
     private ModePicker mModePicker;
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
@@ -355,10 +357,21 @@ public class VideoCamera extends ActivityBase
         mIsVideoCaptureIntent = isVideoCaptureIntent();
         setContentView(R.layout.video_camera);
         if (mIsVideoCaptureIntent) {
+            // Cannot use RotateImageView for "done" and "cancel" button because
+            // the tablet layout uses RotateLayout, which cannot be cast to
+            // RotateImageView.
             mReviewDoneButton = (Rotatable) findViewById(R.id.btn_done);
-            mReviewPlayButton = (Rotatable) findViewById(R.id.btn_play);
             mReviewCancelButton = (Rotatable) findViewById(R.id.btn_cancel);
+            mReviewPlayButton = (RotateImageView) findViewById(R.id.btn_play);
+            mReviewRetakeButton = findViewById(R.id.btn_retake);
             findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
+
+            // Not grayed out upon disabled, to make the follow-up fade-out
+            // effect look smooth. Note that the review done button in tablet
+            // layout is not a TwoStateImageView.
+            if (mReviewDoneButton instanceof TwoStateImageView) {
+                ((TwoStateImageView) mReviewDoneButton).enableFilter(false);
+            }
         } else {
             mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
             mThumbnailView.enableFilter(false);
@@ -1603,10 +1616,10 @@ public class VideoCamera extends ActivityBase
 
         Util.fadeOut(mShutterButton);
         Util.fadeOut(mIndicatorControlContainer);
-        int[] pickIds = {R.id.btn_retake, R.id.btn_done, R.id.btn_play};
-        for (int id : pickIds) {
-            Util.fadeIn(findViewById(id));
-        }
+
+        Util.fadeIn(mReviewRetakeButton);
+        Util.fadeIn((View) mReviewDoneButton);
+        Util.fadeIn(mReviewPlayButton);
 
         showTimeLapseUI(false);
     }
@@ -1616,10 +1629,10 @@ public class VideoCamera extends ActivityBase
         mShutterButton.setEnabled(true);
         enableCameraControls(true);
 
-        int[] pickIds = {R.id.btn_retake, R.id.btn_done, R.id.btn_play};
-        for (int id : pickIds) {
-            Util.fadeOut(findViewById(id));
-        }
+        Util.fadeOut((View) mReviewDoneButton);
+        Util.fadeOut(mReviewRetakeButton);
+        Util.fadeOut(mReviewPlayButton);
+
         Util.fadeIn(mShutterButton);
         Util.fadeIn(mIndicatorControlContainer);
 

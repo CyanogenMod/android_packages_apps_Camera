@@ -65,6 +65,7 @@ import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
+import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomControl;
 
 import java.io.File;
@@ -142,6 +143,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private RotateLayout mFocusAreaIndicator;
     private Rotatable mReviewCancelButton;
     private Rotatable mReviewDoneButton;
+    private View mReviewRetakeButton;
     private ImageView mCaptureAnimView;
     private CaptureAnimManager mCaptureAnimMgr;
 
@@ -1007,9 +1009,20 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mIsImageCaptureIntent = isImageCaptureIntent();
         setContentView(R.layout.camera);
         if (mIsImageCaptureIntent) {
+            // Cannot use RotateImageView for "done" and "cancel" button because
+            // the tablet layout uses RotateLayout, which cannot be cast to
+            // RotateImageView.
             mReviewDoneButton = (Rotatable) findViewById(R.id.btn_done);
             mReviewCancelButton = (Rotatable) findViewById(R.id.btn_cancel);
+            mReviewRetakeButton = findViewById(R.id.btn_retake);
             findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
+
+            // Not grayed out upon disabled, to make the follow-up fade-out
+            // effect look smooth. Note that the review done button in tablet
+            // layout is not a TwoStateImageView.
+            if (mReviewDoneButton instanceof TwoStateImageView) {
+                ((TwoStateImageView) mReviewDoneButton).enableFilter(false);
+            }
         } else {
             mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
             mThumbnailView.enableFilter(false);
@@ -1219,6 +1232,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
+    // onClick handler for R.id.btn_retake
     @OnClickAttr
     public void onReviewRetakeClicked(View v) {
         hidePostCaptureAlert();
@@ -1226,11 +1240,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         startFaceDetection();
     }
 
+    // onClick handler for R.id.btn_done
     @OnClickAttr
     public void onReviewDoneClicked(View v) {
         doAttach();
     }
 
+    // onClick handler for R.id.btn_cancel
     @OnClickAttr
     public void onReviewCancelClicked(View v) {
         doCancel();
@@ -1245,7 +1261,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         if (mCropValue == null) {
             // First handle the no crop case -- just return the value.  If the
-            // caller specifies a "save uri" then write the data to it's
+            // caller specifies a "save uri" then write the data to its
             // stream. Otherwise, pass back a scaled down version of the bitmap
             // directly in the extras.
             if (mSaveUri != null) {
@@ -1972,19 +1988,15 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Util.fadeOut(mIndicatorControlContainer);
             Util.fadeOut(mShutterButton);
 
-            int[] pickIds = {R.id.btn_retake, R.id.btn_done};
-            for (int id : pickIds) {
-                Util.fadeIn(findViewById(id));
-            }
+            Util.fadeIn(mReviewRetakeButton);
+            Util.fadeIn((View) mReviewDoneButton);
         }
     }
 
     private void hidePostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            int[] pickIds = {R.id.btn_retake, R.id.btn_done};
-            for (int id : pickIds) {
-                Util.fadeOut(findViewById(id));
-            }
+            Util.fadeOut(mReviewRetakeButton);
+            Util.fadeOut((View) mReviewDoneButton);
 
             Util.fadeIn(mShutterButton);
             Util.fadeIn(mIndicatorControlContainer);
