@@ -19,9 +19,7 @@ package com.android.camera;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.Uri;
 import android.provider.MediaStore;
-import android.provider.MediaStore.Images;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -134,29 +132,5 @@ public class MenuHelper {
 
     public static void gotoCameraMode(Activity activity, Intent intent) {
         startCameraActivity(activity, intent, CAMERA_CLASS);
-    }
-
-    public static void gotoCameraImageGallery(Activity activity) {
-        gotoGallery(activity, R.string.gallery_camera_bucket_name, INCLUDE_IMAGES);
-    }
-
-    public static void gotoCameraVideoGallery(Activity activity) {
-        gotoGallery(activity, R.string.gallery_camera_videos_bucket_name, INCLUDE_VIDEOS);
-    }
-
-    private static void gotoGallery(Activity activity, int windowTitleId,
-            int mediaTypes) {
-        Uri target = Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
-                .appendQueryParameter("bucketId", Storage.BUCKET_ID).build();
-        Intent intent = new Intent(Intent.ACTION_VIEW, target);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("windowTitle", activity.getString(windowTitleId));
-        intent.putExtra("mediaTypes", mediaTypes);
-
-        try {
-            activity.startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Log.e(TAG, "Could not start gallery activity", e);
-        }
     }
 }
