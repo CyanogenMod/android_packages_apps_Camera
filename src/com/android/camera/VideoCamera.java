@@ -198,7 +198,6 @@ public class VideoCamera extends ActivityBase
     private LocationManager mLocationManager;
 
     private final Handler mHandler = new MainHandler();
-    private Parameters mParameters;
 
     private MyOrientationEventListener mOrientationListener;
     // The degrees of the device rotated clockwise from its natural orientation.
@@ -1787,8 +1786,6 @@ public class VideoCamera extends ActivityBase
 
     @SuppressWarnings("deprecation")
     private void setCameraParameters() {
-        mParameters = mCameraDevice.getParameters();
-
         mParameters.setPreviewSize(mDesiredPreviewWidth, mDesiredPreviewHeight);
         mParameters.setPreviewFrameRate(mProfile.videoFrameRate);
 
