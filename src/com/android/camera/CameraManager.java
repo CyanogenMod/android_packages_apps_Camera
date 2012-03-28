@@ -66,6 +66,7 @@ public class CameraManager {
     private static final int SET_ERROR_CALLBACK = 18;
     private static final int SET_PARAMETERS = 19;
     private static final int GET_PARAMETERS = 20;
+    private static final int SET_PARAMETERS_ASYNC = 21;
 
     private Handler mCameraHandler;
     private CameraProxy mCameraProxy;
@@ -180,6 +181,10 @@ public class CameraManager {
                 case GET_PARAMETERS:
                     mParameters = mCamera.getParameters();
                     break;
+
+                case SET_PARAMETERS_ASYNC:
+                    mCamera.setParameters((Parameters) msg.obj);
+                    return;  // no need to call mSig.open()
             }
             mSig.open();
         }
@@ -345,6 +350,11 @@ public class CameraManager {
             mSig.close();
             mCameraHandler.obtainMessage(SET_PARAMETERS, params).sendToTarget();
             mSig.block();
+        }
+
+        public void setParametersAsync(Parameters params) {
+            mCameraHandler.removeMessages(SET_PARAMETERS_ASYNC);
+            mCameraHandler.obtainMessage(SET_PARAMETERS_ASYNC, params).sendToTarget();
         }
 
         public Parameters getParameters() {

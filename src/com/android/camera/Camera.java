@@ -409,14 +409,15 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private class ZoomChangeListener implements ZoomControl.OnZoomChangedListener {
-        // only for immediate zoom
         @Override
         public void onZoomValueChanged(int index) {
             // Not useful to change zoom value when the activity is paused.
             if (mPausing) return;
-
             mZoomValue = index;
-            setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
+
+            // Set zoom parameters asynchronously
+            mParameters.setZoom(mZoomValue);
+            mCameraDevice.setParametersAsync(mParameters);
         }
     }
 
