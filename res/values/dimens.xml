@@ -26,7 +26,7 @@
     <dimen name="setting_item_text_size">18sp</dimen>
     <dimen name="setting_knob_width">20dp</dimen>
     <dimen name="setting_knob_text_size">20dp</dimen>
-    <dimen name="setting_item_text_width">81dp</dimen>
+    <dimen name="setting_item_text_width">95dp</dimen>
     <dimen name="setting_popup_window_width">240dp</dimen>
     <dimen name="setting_item_list_margin">14dp</dimen>
     <dimen name="indicator_bar_width">48dp</dimen>
