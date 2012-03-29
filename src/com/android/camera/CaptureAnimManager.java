@@ -36,8 +36,6 @@ public class CaptureAnimManager implements
     private static final float ZOOM_DELTA = 0.2f;  // The amount of change for zooming out.
     private static final float ZOOM_IN_BEGIN = 1f - ZOOM_DELTA;  // Pre-calculated value for
                                                                  // convenience.
-    private static final float ZOOM_TIME_FRACTION = 0.4f;  // The amount of the time we do zoom
-                                                           // animation for in/out respectively.
     private static final long CAPTURE_ANIM_DURATION = 800;  // milliseconds.
     private static final float VIEW_GAP_RATIO = 0.1f;  // The gap between preview and review based
                                                        // on the view dimension.
@@ -150,7 +148,9 @@ public class CaptureAnimManager implements
 
     @Override
     public void onAnimationUpdate(ValueAnimator anim) {
-        zoomAnimation(anim.getAnimatedFraction());
+        float fraction = anim.getAnimatedFraction();
+        zoomAnimation(fraction);
+        mPreview.setAlpha(fraction);
         slideAnimation((Float) anim.getAnimatedValue());
     }
 
@@ -171,16 +171,14 @@ public class CaptureAnimManager implements
     // Calculate the zoom factor based on the given time fraction.
     private void zoomAnimation(float fraction) {
         float value = 1f;
-        if (fraction <= ZOOM_TIME_FRACTION) {
+        if (fraction <= 0.5f) {
             // Zoom in for the beginning.
             value = 1f - ZOOM_DELTA * ZoomOutInterpolator.getInterpolation(
-                    fraction / ZOOM_TIME_FRACTION);
-        } else if (fraction >= 1f - ZOOM_TIME_FRACTION) {
+                    fraction * 2);
+        } else {
             // Zoom out for the last.
             value = ZOOM_IN_BEGIN + ZOOM_DELTA * ZoomInInterpolator.getInterpolation(
-                    (fraction + ZOOM_TIME_FRACTION - 1f) / ZOOM_TIME_FRACTION);
-        } else {
-            return;
+                    (fraction - 0.5f) * 2f);
         }
         mReview.setScaleX(value);
         mReview.setScaleY(value);
