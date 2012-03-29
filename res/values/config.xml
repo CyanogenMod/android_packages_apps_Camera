@@ -24,5 +24,8 @@
     <bool name="needsSamsungCamMode">false</bool>
     <!-- Samsung Camera Settings -->
     <bool name="hasSamsungCamSettings">false</bool>
+    <!-- The camera removes the focus modes by default when touch-to-focus
+         exists. Use this option to change that behavior -->
+    <bool name="wantsFocusModes">false</bool>
 </resources>
 
