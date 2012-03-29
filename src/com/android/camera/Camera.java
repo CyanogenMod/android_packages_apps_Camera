@@ -110,7 +110,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private int mZoomMax;
     private ZoomControl mZoomControl;
 
-    private Parameters mParameters;
     private Parameters mInitialParams;
     private boolean mFocusAreaSupported;
     private boolean mMeteringAreaSupported;
@@ -1828,11 +1827,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (isSupported(mSceneMode, mParameters.getSupportedSceneModes())) {
             if (!mParameters.getSceneMode().equals(mSceneMode)) {
                 mParameters.setSceneMode(mSceneMode);
-                mCameraDevice.setParameters(mParameters);
 
                 // Setting scene mode will change the settings of flash mode,
                 // white balance, and focus mode. Here we read back the
                 // parameters, so we can know those settings.
+                mCameraDevice.setParameters(mParameters);
                 mParameters = mCameraDevice.getParameters();
             }
         } else {
@@ -1915,8 +1914,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // the subsets actually need updating. The PREFERENCE set needs extra
     // locking because the preference can be changed from GLThread as well.
     private void setCameraParameters(int updateSet) {
-        mParameters = mCameraDevice.getParameters();
-
         if ((updateSet & UPDATE_PARAM_INITIALIZE) != 0) {
             updateCameraParametersInitialize();
         }

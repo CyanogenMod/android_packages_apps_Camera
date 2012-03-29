@@ -22,6 +22,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.hardware.Camera.Parameters;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,6 +55,7 @@ abstract public class ActivityBase extends Activity {
     protected boolean mOpenCameraFail;
     protected boolean mCameraDisabled;
     protected CameraManager.CameraProxy mCameraDevice;
+    protected Parameters mParameters;
 
     // multiple cameras support
     protected int mNumberOfCameras;
@@ -64,6 +66,7 @@ abstract public class ActivityBase extends Activity {
         public void run() {
             try {
                 mCameraDevice = Util.openCamera(ActivityBase.this, mCameraId);
+                mParameters = mCameraDevice.getParameters();
             } catch (CameraHardwareException e) {
                 mOpenCameraFail = true;
             } catch (CameraDisabledException e) {
