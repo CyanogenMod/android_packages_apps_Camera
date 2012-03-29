@@ -59,9 +59,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewGroup;
@@ -152,6 +154,7 @@ public class PanoramaActivity extends ActivityBase implements
     private int mCaptureState;
     private SensorManager mSensorManager;
     private Sensor mSensor;
+    private PowerManager.WakeLock mPartialWakeLock;
     private ModePicker mModePicker;
     private MosaicFrameProcessor mMosaicFrameProcessor;
     private long mTimeTaken;
@@ -235,6 +238,20 @@ public class PanoramaActivity extends ActivityBase implements
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        // Only show the menu when idle.
+        boolean idle = (mCaptureState == CAPTURE_STATE_VIEWFINDER && !mThreadRunning);
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            item.setVisible(idle);
+            item.setEnabled(idle);
+        }
+
+        return true;
+    }
+
     private void addBaseMenuItems(Menu menu) {
         MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_CAMERA, new Runnable() {
             public void run() {
@@ -263,6 +280,8 @@ public class PanoramaActivity extends ActivityBase implements
         if (mSensor == null) {
             mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
         }
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        mPartialWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Panorama");
 
         mOrientationEventListener = new PanoOrientationEventListener(this);
 
@@ -287,6 +306,9 @@ public class PanoramaActivity extends ActivityBase implements
                         break;
                     case MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL:
                         onBackgroundThreadFinished();
+                        // If the activity is paused, save the thumbnail to the file here.
+                        // If not, it will be saved in onPause.
+                        if (mPausing) saveThumbnailToFile();
                         // Set the thumbnail bitmap here because mThumbnailView must be accessed
                         // from the UI thread.
                         updateThumbnailButton();
@@ -439,7 +461,11 @@ public class PanoramaActivity extends ActivityBase implements
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (!mPausing) {
+                // If panorama is generating low res or high res mosaic, it
+                // means users exit and come back to panorama. Do not start the
+                // preview. Preview will be started after final mosaic is
+                // generated.
+                if (!mPausing && !mThreadRunning) {
                     startCameraPreview();
                 }
             }
@@ -800,11 +826,23 @@ public class PanoramaActivity extends ActivityBase implements
         }
     }
 
+    private void saveThumbnailToFile() {
+        if (mThumbnail != null && !mThumbnail.fromFile()) {
+            mThumbnail.saveTo(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
+        }
+    }
+
     public void saveHighResMosaic() {
         runBackgroundThread(new Thread() {
             @Override
             public void run() {
-                MosaicJpeg jpeg = generateFinalMosaic(true);
+                mPartialWakeLock.acquire();
+                MosaicJpeg jpeg;
+                try {
+                    jpeg = generateFinalMosaic(true);
+                } finally {
+                    mPartialWakeLock.release();
+                }
 
                 if (jpeg == null) {  // Cancelled by user.
                     mMainHandler.sendEmptyMessage(MSG_RESET_TO_PREVIEW);
@@ -964,7 +1002,6 @@ public class PanoramaActivity extends ActivityBase implements
         super.onPause();
 
         mPausing = true;
-        cancelHighResComputation();
         // Stop the capturing first.
         if (mCaptureState == CAPTURE_STATE_MOSAIC) {
             stopCapture(true);
@@ -972,9 +1009,7 @@ public class PanoramaActivity extends ActivityBase implements
         }
         if (mSharePopup != null) mSharePopup.dismiss();
 
-        if (mThumbnail != null && !mThumbnail.fromFile()) {
-            mThumbnail.saveTo(new File(getFilesDir(), Thumbnail.LAST_THUMB_FILENAME));
-        }
+        saveThumbnailToFile();
 
         releaseCamera();
         mMosaicView.onPause();
@@ -1103,6 +1138,14 @@ public class PanoramaActivity extends ActivityBase implements
     public void onUserInteraction() {
         super.onUserInteraction();
         if (mCaptureState != CAPTURE_STATE_MOSAIC) keepScreenOnAwhile();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // If panorama is generating low res or high res mosaic, ignore back
+        // key. So the activity will not be destroyed.
+        if (mThreadRunning) return;
+        super.onBackPressed();
     }
 
     private void resetScreenOn() {

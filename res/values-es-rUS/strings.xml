@@ -45,37 +45,37 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Parte trasera"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Parte delantera"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Almacenar ubicación"</string>
-    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Apagado"</string>
-    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Encendido"</string>
+    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Desactivado"</string>
+    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Activado"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Calidad del video"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervalo de tiempo"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configuración de cámara"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configuración de videocámara"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Tamaño de imagen"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Modo de enfoque"</string>
-    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automáticamente"</string>
+    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automático"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
-    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Modo de flash"</string>
-    <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automáticamente"</string>
-    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Encendido"</string>
-    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Apagado"</string>
-    <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Equilibrio de blancos"</string>
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Flash"</string>
+    <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automático"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Activado"</string>
+    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Desactivado"</string>
+    <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Balance blancos"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Automático"</string>
     <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Incandescente"</string>
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Luz del día"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescente"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Nublado"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Modo de preselección de escenas"</string>
-    <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automáticamente"</string>
+    <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automático"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Acción"</string>
-    <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Noche"</string>
-    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Crepúsculo"</string>
+    <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Nocturno"</string>
+    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Atardecer"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Fiesta"</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"No se puede seleccionar en el modo Escena."</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Configuración de cámara"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar configuraciones predeterminadas"</string>
-    <string name="pref_exposure_title" msgid="1229093066434614811">"Exposición"</string>
+    <string name="pref_exposure_title" msgid="1229093066434614811">"Valor de exposición"</string>
     <string name="dialog_ok" msgid="6263301364153382152">"Aceptar"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"El almacenamiento USB se está quedando sin espacio. Cambia la configuración de calidad o elimina algunas imágenes u otros archivos."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Tu tarjeta SD se está quedando sin espacio. Cambia la configuración de calidad o elimina algunas imágenes u otros archivos."</string>
@@ -103,14 +103,14 @@
     <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"Nariz grande"</string>
     <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"Ojos pequeños"</string>
     <string name="effect_backdropper_space" msgid="7935661090723068402">"En el espacio"</string>
-    <string name="effect_backdropper_sunset" msgid="45198943771777870">"Crepúsculo"</string>
+    <string name="effect_backdropper_sunset" msgid="45198943771777870">"Atardecer"</string>
     <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="3271387403091819540">"Elige tu fondo"</string>
     <string name="bg_replacement_message" msgid="6828585054971662284">"Desactiva el dispositivo."\n"Deja de usarlo durante unos minutos."</string>
     <string name="not_selectable_in_effect" msgid="7967729203855039239">"No se puede seleccionar si se activó el efecto."</string>
     <string name="video_snapshot_hint" msgid="8159602664271448241">"Toca la pant. de vista prev. mientras grabas para tomar una foto."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Las instantáneas de video se inhabilitan al activar los efectos."</string>
-    <string name="clear_effects" msgid="5485339175014139481">"Borrar efectos"</string>
+    <string name="clear_effects" msgid="5485339175014139481">"Eliminar efectos"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"CARAS GRACIOSAS"</string>
     <string name="effect_background" msgid="6579360207378171022">"FONDO"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Botón del obturador"</string>
