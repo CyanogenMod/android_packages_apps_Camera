@@ -44,10 +44,10 @@ public class CaptureAnimManager implements
     private final ImageView mReview;
     private final View mPreview;
 
-    private final float mXDelta;
-    private final float mYDelta;
-    private final float mXDeltaScaled;
-    private final float mYDeltaScaled;
+    private float mXDelta;
+    private float mYDelta;
+    private float mXDeltaScaled;
+    private float mYDeltaScaled;
     private float mOffset; // The offset where preview should be put relative to the review.
     private int mAnimOrientation;
 
@@ -60,9 +60,8 @@ public class CaptureAnimManager implements
 
     /* preview: camera preview view.
      * review: view of picture just taken.
-     * xDelta, yDelta: The dimension of the viewfinder in which animation happens.
      */
-    public CaptureAnimManager(View preview, ImageView review, int xDelta, int yDelta) {
+    public CaptureAnimManager(View preview, ImageView review) {
         mReview = review;
         mPreview = preview;
 
@@ -70,7 +69,9 @@ public class CaptureAnimManager implements
         mCaptureAnim.setDuration(CAPTURE_ANIM_DURATION);
         mCaptureAnim.addListener(this);
         mCaptureAnim.addUpdateListener(this);
+    }
 
+    void initializeDelta(int xDelta, int yDelta) {
         mXDelta = xDelta;
         mYDelta = yDelta;
         mXDeltaScaled = mXDelta * TOTAL_RATIO;
@@ -81,7 +82,11 @@ public class CaptureAnimManager implements
         mReviewSlideValue[3] = PropertyValuesHolder.ofFloat("", 0f, mYDeltaScaled);
     }
 
-    public void startAnimation(Bitmap bitmap, int animOrientation) {
+    // xDelta, yDelta: The dimension of the viewfinder in which animation happens.
+    public void startAnimation(Bitmap bitmap, int animOrientation, int xDelta, int yDelta) {
+        if (xDelta != mXDelta || mYDelta != yDelta) {
+            initializeDelta(xDelta, yDelta);
+        }
         mAnimOrientation = animOrientation;
         // Reset the views before the animation begins.
         mCaptureAnim.cancel();

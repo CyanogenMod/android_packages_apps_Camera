@@ -18,7 +18,8 @@
         android:id="@+id/frame_layout"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@android:color/black">
     <com.android.camera.PreviewFrameLayout android:id="@+id/frame"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
@@ -50,13 +51,11 @@
                 android:onClick="onReviewPlayClicked"/>
     </com.android.camera.PreviewFrameLayout>
 
-    <!-- Fill up the space below preview frame with black. -->
-    <View
-        android:background="#ff000000"
-        android:layout_height="match_parent"
-        android:layout_width="0dip"
-        android:layout_below="@+id/frame"
-        android:layout_alignParentBottom="true" />
+    <ImageView android:id="@+id/capture_anim_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layerType="hardware"
+            android:visibility="gone"/>
 
     <!-- Indicator control and popup window frame.
          Listed last for highest Z-order -->

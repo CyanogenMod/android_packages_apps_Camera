@@ -128,6 +128,8 @@ public class VideoCamera extends ActivityBase
     private int mSurfaceHeight;
     private View mReviewControl;
     private RotateDialogController mRotateDialog;
+    private ImageView mCaptureAnimView;
+    private CaptureAnimManager mCaptureAnimMgr;
 
     // An review image having same size as preview. It is displayed when
     // recording is stopped in capture intent.
@@ -405,6 +407,8 @@ public class VideoCamera extends ActivityBase
         mBgLearningMessageFrame = findViewById(R.id.bg_replace_message_frame);
 
         mLocationManager = new LocationManager(this, null);
+        mCaptureAnimView = (ImageView) findViewById(R.id.capture_anim_view);
+        mCaptureAnimMgr = new CaptureAnimManager(mPreviewFrameLayout, mCaptureAnimView);
 
         // Make sure preview is started.
         try {
@@ -586,8 +590,14 @@ public class VideoCamera extends ActivityBase
             } else if (!effectsActive()) {
                 showAlert();
             }
-        } else if (!effectsActive()) {
-            getThumbnail();
+        } else {
+            Bitmap bitmap = mPreviewTextureView.getBitmap();
+            if (bitmap != null) {
+                mCaptureAnimMgr.startAnimation(bitmap.copy(Bitmap.Config.RGB_565, false),
+                        mOrientationCompensation, mPreviewPanel.getWidth(),
+                        mPreviewPanel.getHeight());
+            }
+            if (!effectsActive()) getThumbnail();
         }
     }
 
