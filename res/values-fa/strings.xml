@@ -99,8 +99,7 @@
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"ذخیره پانوراما امکان‌پذیر نیست."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"پانوراما"</string>
     <string name="pano_capture_indication" msgid="8248825828264374507">"گرفتن عکس پانوراما"</string>
-    <!-- no translation found for pano_dialog_waiting_previous (7800325815031423516) -->
-    <skip />
+    <string name="pano_dialog_waiting_previous" msgid="7800325815031423516">"درحال انتظار برای پانورامای قبلی"</string>
     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"در حال ذخیره..."</string>
     <string name="tap_to_focus" msgid="8863427645591903760">"برای فوکوس لمس کنید."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"جلوه‌ها"</string>
