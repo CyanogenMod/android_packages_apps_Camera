@@ -365,9 +365,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         mCaptureAnimView = (ImageView) findViewById(R.id.capture_anim_view);
-        mCaptureAnimMgr = new CaptureAnimManager(
-                mPreviewTextureView, mCaptureAnimView,
-                mPreviewPanel.getWidth(), mPreviewPanel.getHeight());
+        mCaptureAnimMgr = new CaptureAnimManager(mPreviewFrameLayout, mCaptureAnimView);
 
         mFirstTimeInitialized = true;
         addIdleHandler();
@@ -949,7 +947,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 Log.v(TAG, "Animation in capture(): mSurfaceTexture == null");
             }
             Bitmap b = mPreviewTextureView.getBitmap().copy(Bitmap.Config.RGB_565, false);
-            mCaptureAnimMgr.startAnimation(b, mOrientationCompensation);
+            mCaptureAnimMgr.startAnimation(b, mOrientationCompensation, mPreviewPanel.getWidth(),
+                    mPreviewPanel.getHeight());
         }
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
