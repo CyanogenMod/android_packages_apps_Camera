@@ -1204,9 +1204,17 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void setOrientationIndicator(int orientation, boolean animation) {
         Rotatable[] indicators = {mThumbnailView, mModePicker,
                 mIndicatorControlContainer, mZoomControl, mFocusAreaIndicator, mFaceView,
-                mReviewCancelButton, mReviewDoneButton, mRotateDialog, mOnScreenIndicators};
+                mReviewDoneButton, mRotateDialog, mOnScreenIndicators};
         for (Rotatable indicator : indicators) {
             if (indicator != null) indicator.setOrientation(orientation, animation);
+        }
+
+        // We change the orientation of the review cancel button only for tablet
+        // UI because there's a label along with the X icon. For phone UI, we
+        // don't change the orientation because there's only a symmetrical X
+        // icon.
+        if (mReviewCancelButton instanceof RotateLayout) {
+            mReviewCancelButton.setOrientation(orientation, animation);
         }
     }
 

@@ -538,9 +538,17 @@ public class VideoCamera extends ActivityBase
     private void setOrientationIndicator(int orientation, boolean animation) {
         Rotatable[] indicators = {mThumbnailView, mModePicker,
                 mBgLearningMessageRotater, mIndicatorControlContainer,
-                mReviewDoneButton, mReviewPlayButton, mReviewCancelButton, mRotateDialog};
+                mReviewDoneButton, mReviewPlayButton, mRotateDialog};
         for (Rotatable indicator : indicators) {
             if (indicator != null) indicator.setOrientation(orientation, animation);
+        }
+
+        // We change the orientation of the review cancel button only for tablet
+        // UI because there's a label along with the X icon. For phone UI, we
+        // don't change the orientation because there's only a symmetrical X
+        // icon.
+        if (mReviewCancelButton instanceof RotateLayout) {
+            mReviewCancelButton.setOrientation(orientation, animation);
         }
 
         // We change the orientation of the linearlayout only for phone UI because when in portrait
