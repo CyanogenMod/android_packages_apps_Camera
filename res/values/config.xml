@@ -22,6 +22,8 @@
 <resources>
     <!-- Samsung Camcorder Mode -->
     <bool name="needsSamsungCamMode">false</bool>
+    <!-- Samsung Video Size -->
+    <bool name="needsSamsungVideoSize">false</bool>
     <!-- Samsung Camera Settings -->
     <bool name="hasSamsungCamSettings">false</bool>
     <!-- The camera removes the focus modes by default when touch-to-focus

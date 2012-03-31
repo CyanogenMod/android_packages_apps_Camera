@@ -72,6 +72,7 @@ public class CameraSettings {
 
     // Samsung camcorder mode
     private static boolean mSamsungCamMode;
+    private static boolean mSamsungVideoSize;
     private static boolean mSamsungCamSettings;
 
     public CameraSettings(Activity activity, Parameters parameters,
@@ -82,6 +83,7 @@ public class CameraSettings {
         mCameraInfo = cameraInfo;
 
         mSamsungCamMode = mContext.getResources().getBoolean(R.bool.needsSamsungCamMode);
+        mSamsungVideoSize = mContext.getResources().getBoolean(R.bool.needsSamsungVideoSize);
         mSamsungCamSettings = mContext.getResources().getBoolean(R.bool.hasSamsungCamSettings);
     }
 
@@ -495,6 +497,18 @@ public class CameraSettings {
     public static void setVideoMode(Parameters params, boolean on) {
         if (mSamsungCamMode) {
             params.set("cam_mode", on ? "1" : "0");
+        }
+    }
+
+    /**
+     * Set video size for certain cameras.
+     *
+     * @param params
+     * @param profile
+     */
+    public static void setVideoSize(Parameters params, CamcorderProfile profile) {
+        if (mSamsungVideoSize) {
+            params.set("video-size", profile.videoFrameWidth + "x" + profile.videoFrameHeight);
         }
     }
 
