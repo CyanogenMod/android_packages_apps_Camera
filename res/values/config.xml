@@ -20,6 +20,8 @@
 <!-- These resources are around just to allow their values to be customized
      for different hardware and product builds. -->
 <resources>
+    <!-- Allows setting video size before recording starts -->
+    <bool name="needsEarlyVideoSize">false</bool>
     <!-- Samsung Camcorder Mode -->
     <bool name="needsSamsungCamMode">false</bool>
     <!-- Samsung Camera Settings -->
