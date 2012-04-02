@@ -656,7 +656,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_on);
             mFlashIndicator.setVisibility(View.VISIBLE);
         } else if (Parameters.FLASH_MODE_OFF.equals(value)) {
-            mFlashIndicator.setVisibility(View.GONE);
+            mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_off);
+            mFlashIndicator.setVisibility(View.VISIBLE);
         }
     }
 
