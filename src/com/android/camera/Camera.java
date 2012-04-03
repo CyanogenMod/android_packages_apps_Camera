@@ -168,6 +168,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private String mCropValue;
     private Uri mSaveUri;
 
+    // Constant from android.hardware.Camera.Parameters
+    private static final String KEY_PICTURE_FORMAT = "picture-format";
+    private static final String PIXEL_FORMAT_JPEG = "jpeg";
+    private static final String PIXEL_FORMAT_RAW = "raw";
+
     // Small indicators which show the camera settings in the viewfinder.
     private TextView mExposureIndicator;
     private ImageView mGpsIndicator;
@@ -988,10 +993,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Runs in saver thread
         private void storeImage(final byte[] data, Location loc, int width,
                 int height, long dateTaken, int previewWidth) {
+            String pictureFormat = mParameters.get(KEY_PICTURE_FORMAT);
             String title = Util.createJpegName(dateTaken);
             int orientation = Exif.getOrientation(data);
-            Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
-                    loc, orientation, data, width, height);
+            Uri uri = Storage.addImage(mContentResolver, title, pictureFormat,
+                    dateTaken, loc, orientation, data, width, height);
             if (uri != null) {
                 boolean needThumbnail;
                 synchronized (this) {
@@ -1046,7 +1052,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Set rotation and gps data.
         Util.setRotationParameter(mParameters, mCameraId, mOrientation);
-        Location loc = mLocationManager.getCurrentLocation();
+        String pictureFormat = mParameters.get(KEY_PICTURE_FORMAT);
+        Location loc = null;
+        if (pictureFormat != null &&
+            PIXEL_FORMAT_JPEG.equalsIgnoreCase(pictureFormat)) {
+            loc = mLocationManager.getCurrentLocation();
+        }
         Util.setGpsParameters(mParameters, loc);
         mCameraDevice.setParameters(mParameters);
 
@@ -1254,6 +1265,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 CameraSettings.KEY_SCENE_MODE};
         final String[] OTHER_SETTING_KEYS = {
                 CameraSettings.KEY_RECORD_LOCATION,
+                CameraSettings.KEY_PICTURE_FORMAT,
                 CameraSettings.KEY_POWER_SHUTTER,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_FOCUS_MODE};
@@ -2009,6 +2021,14 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 mSceneMode = Parameters.SCENE_MODE_AUTO;
             }
         }
+
+        // Set Picture Format
+        // Picture Formats specified in UI should be consistent with
+        // PIXEL_FORMAT_JPEG and PIXEL_FORMAT_RAW constants
+        String pictureFormat = mPreferences.getString(
+        CameraSettings.KEY_PICTURE_FORMAT,
+        getString(R.string.pref_camera_picture_format_default));
+        mParameters.set(KEY_PICTURE_FORMAT, pictureFormat);
 
         // Set JPEG quality.
         int jpegQuality = CameraProfile.getJpegEncodingQualityParameter(mCameraId,

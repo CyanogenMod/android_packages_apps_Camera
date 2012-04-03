@@ -37,9 +37,13 @@ public class Storage {
 
     public static final String DIRECTORY = DCIM + "/Camera";
 
+    public static final String RAW_DIRECTORY = DCIM + "/Camera/raw";
+
     // Match the code in MediaProvider.computeBucketValues().
     public static final String BUCKET_ID =
             String.valueOf(DIRECTORY.toLowerCase().hashCode());
+    public static final String CAMERA_RAW_IMAGE_BUCKET_ID =
+            String.valueOf(RAW_DIRECTORY.toLowerCase().hashCode());
 
     public static final long UNAVAILABLE = -1L;
     public static final long PREPARING = -2L;
@@ -49,12 +53,29 @@ public class Storage {
 
     private static final int BUFSIZE = 4096;
 
-    public static Uri addImage(ContentResolver resolver, String title, long date,
+    public static Uri addImage(ContentResolver resolver, String title, String pictureFormat, long date,
                 Location location, int orientation, byte[] jpeg, int width, int height) {
         // Save the image.
-        String path = generateFilepath(title);
+        //String path = generateFilepath(title);
+        String directory = null;
+        String ext = null;
+        if (pictureFormat == null ||
+            pictureFormat.equalsIgnoreCase("jpeg")) {
+            ext = ".jpg";
+            directory = DIRECTORY;
+        } else if (pictureFormat.equalsIgnoreCase("raw")) {
+            ext = ".raw";
+            directory = RAW_DIRECTORY;
+        } else {
+            Log.e(TAG, "Invalid pictureFormat " + pictureFormat);
+            return null;
+        }
+
+        String path = directory + '/' + title + ext;
         FileOutputStream out = null;
         try {
+            File dir = new File(directory);
+            if (!dir.exists()) dir.mkdirs();
             out = new FileOutputStream(path);
             out.write(jpeg);
         } catch (Exception e) {
@@ -70,7 +91,7 @@ public class Storage {
         // Insert into MediaStore.
         ContentValues values = new ContentValues(9);
         values.put(ImageColumns.TITLE, title);
-        values.put(ImageColumns.DISPLAY_NAME, title + ".jpg");
+        values.put(ImageColumns.DISPLAY_NAME, title + ext);
         values.put(ImageColumns.DATE_TAKEN, date);
         values.put(ImageColumns.MIME_TYPE, "image/jpeg");
         values.put(ImageColumns.ORIENTATION, orientation);
