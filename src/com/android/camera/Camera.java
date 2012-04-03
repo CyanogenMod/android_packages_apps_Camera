@@ -1235,7 +1235,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     @OnClickAttr
     public void onThumbnailClicked(View v) {
         if (isCameraIdle() && mThumbnail != null) {
-            mImageSaver.waitDone();
+            if (mImageSaver != null) mImageSaver.waitDone();
             gotoGallery();
         }
     }
