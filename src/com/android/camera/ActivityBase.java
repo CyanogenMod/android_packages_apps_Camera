@@ -56,6 +56,7 @@ abstract public class ActivityBase extends Activity {
     protected boolean mCameraDisabled;
     protected CameraManager.CameraProxy mCameraDevice;
     protected Parameters mParameters;
+    protected boolean mPaused; // The activity is paused.
 
     // multiple cameras support
     protected int mNumberOfCameras;
@@ -91,6 +92,7 @@ abstract public class ActivityBase extends Activity {
         if (LOGV) Log.v(TAG, "onWindowFocusChanged.hasFocus=" + hasFocus
                 + ".mOnResumePending=" + mOnResumePending);
         if (hasFocus && mOnResumePending) {
+            mPaused = false;
             doOnResume();
             mOnResumePending = false;
         }
@@ -112,6 +114,7 @@ abstract public class ActivityBase extends Activity {
             mOnResumePending = true;
         } else {
             if (LOGV) Log.v(TAG, "onResume. mOnResumePending=false");
+            mPaused = false;
             doOnResume();
             mOnResumePending = false;
         }
@@ -119,6 +122,7 @@ abstract public class ActivityBase extends Activity {
 
     @Override
     protected void onPause() {
+        mPaused = true;
         if (LOGV) Log.v(TAG, "onPause");
         saveThumbnailToFile();
         super.onPause();

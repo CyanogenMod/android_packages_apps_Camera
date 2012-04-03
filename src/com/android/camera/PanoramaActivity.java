@@ -92,8 +92,6 @@ public class PanoramaActivity extends ActivityBase implements
     // Speed is in unit of deg/sec
     private static final float PANNING_SPEED_THRESHOLD = 25f;
 
-    private boolean mPausing;
-
     private ContentResolver mContentResolver;
 
     private View mPanoLayout;
@@ -281,7 +279,7 @@ public class PanoramaActivity extends ActivityBase implements
             @Override
             public void run() {
                 // Check if the activity is paused here can speed up the onPause() process.
-                if (mPausing) return;
+                if (mPaused) return;
                 mSurfaceTexture.updateTexImage();
                 mSurfaceTexture.getTransformMatrix(mTransformMatrix);
             }
@@ -322,7 +320,7 @@ public class PanoramaActivity extends ActivityBase implements
                         onBackgroundThreadFinished();
                         // If the activity is paused, save the thumbnail to the file here.
                         // If not, it will be saved in onPause.
-                        if (mPausing) saveThumbnailToFile();
+                        if (mPaused) saveThumbnailToFile();
                         // Set the thumbnail bitmap here because mThumbnailView must be accessed
                         // from the UI thread.
                         if (mThumbnail != null) mThumbnailView.setBitmap(mThumbnail.getBitmap());
@@ -332,7 +330,7 @@ public class PanoramaActivity extends ActivityBase implements
                         break;
                     case MSG_GENERATE_FINAL_MOSAIC_ERROR:
                         onBackgroundThreadFinished();
-                        if (mPausing) {
+                        if (mPaused) {
                             resetToPreview();
                         } else {
                             mRotateDialog.showAlertDialog(
@@ -480,7 +478,7 @@ public class PanoramaActivity extends ActivityBase implements
                 // means users exit and come back to panorama. Do not start the
                 // preview. Preview will be started after final mosaic is
                 // generated.
-                if (!mPausing && !mThreadRunning) {
+                if (!mPaused && !mThreadRunning) {
                     startCameraPreview();
                 }
             }
@@ -496,7 +494,7 @@ public class PanoramaActivity extends ActivityBase implements
                     mSurfaceTexture.release();
                 }
                 mSurfaceTexture = new SurfaceTexture(textureID);
-                if (!mPausing) {
+                if (!mPaused) {
                     mSurfaceTexture.setOnFrameAvailableListener(PanoramaActivity.this);
                 }
             }
@@ -510,7 +508,7 @@ public class PanoramaActivity extends ActivityBase implements
          */
         // Frames might still be available after the activity is paused. If we call onFrameAvailable
         // after pausing, the GL thread will crash.
-        if (mPausing) return;
+        if (mPaused) return;
 
         mMosaicView.setRenderEnabled(true);
 
@@ -745,7 +743,7 @@ public class PanoramaActivity extends ActivityBase implements
     public void onShutterButtonClick() {
         // If mSurfaceTexture == null then GL setup is not finished yet.
         // No buttons can be pressed.
-        if (mPausing || mThreadRunning || mSurfaceTexture == null) return;
+        if (mPaused || mThreadRunning || mSurfaceTexture == null) return;
         // Since this button will stay on the screen when capturing, we need to check the state
         // right now.
         switch (mCaptureState) {
@@ -856,13 +854,13 @@ public class PanoramaActivity extends ActivityBase implements
 
     @OnClickAttr
     public void onCancelButtonClicked(View v) {
-        if (mPausing || mSurfaceTexture == null) return;
+        if (mPaused || mSurfaceTexture == null) return;
         cancelHighResComputation();
     }
 
     @OnClickAttr
     public void onThumbnailClicked(View v) {
-        if (mPausing || mThreadRunning || mSurfaceTexture == null
+        if (mPaused || mThreadRunning || mSurfaceTexture == null
                 || mThumbnail == null) return;
         gotoGallery();
     }
@@ -881,7 +879,7 @@ public class PanoramaActivity extends ActivityBase implements
 
     private void resetToPreview() {
         reset();
-        if (!mPausing) startCameraPreview();
+        if (!mPaused) startCameraPreview();
     }
 
     private void showFinalMosaic(Bitmap bitmap) {
@@ -937,7 +935,7 @@ public class PanoramaActivity extends ActivityBase implements
     }
 
     private void clearMosaicFrameProcessorIfNeeded() {
-        if (!mPausing || mThreadRunning) return;
+        if (!mPaused || mThreadRunning) return;
         // Only clear the processor if it is initialized by this activity
         // instance. Other activity instances may be using it.
         if (mMosaicFrameProcessorInitialized) {
@@ -947,7 +945,7 @@ public class PanoramaActivity extends ActivityBase implements
     }
 
     private void initMosaicFrameProcessorIfNeeded() {
-        if (mPausing || mThreadRunning) return;
+        if (mPaused || mThreadRunning) return;
         mMosaicFrameProcessor.initialize(mPreviewWidth, mPreviewHeight, getPreviewBufSize());
         mMosaicFrameProcessorInitialized = true;
     }
@@ -956,7 +954,6 @@ public class PanoramaActivity extends ActivityBase implements
     protected void onPause() {
         super.onPause();
 
-        mPausing = true;
         mOrientationEventListener.disable();
         if (mCameraDevice == null) {
             // Camera open failed. Nothing should be done here.
@@ -985,7 +982,6 @@ public class PanoramaActivity extends ActivityBase implements
 
     @Override
     protected void doOnResume() {
-        mPausing = false;
         mOrientationEventListener.enable();
 
         mCaptureState = CAPTURE_STATE_VIEWFINDER;

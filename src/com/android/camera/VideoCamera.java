@@ -191,7 +191,6 @@ public class VideoCamera extends ActivityBase
     private int mDesiredPreviewWidth;
     private int mDesiredPreviewHeight;
 
-    boolean mPausing = false;
     boolean mPreviewing = false; // True if preview is started.
     // The display rotation in degrees. This is only valid when mPreviewing is
     // true.
@@ -770,7 +769,6 @@ public class VideoCamera extends ActivityBase
     protected void doOnResume() {
         if (mOpenCameraFail || mCameraDisabled) return;
 
-        mPausing = false;
         mZoomValue = 0;
 
         mPreviewTextureView.setVisibility(View.VISIBLE);
@@ -939,7 +937,6 @@ public class VideoCamera extends ActivityBase
     @Override
     protected void onPause() {
         super.onPause();
-        mPausing = true;
 
         if (mIndicatorControlContainer != null) {
             mIndicatorControlContainer.dismissSettingPopup();
@@ -970,7 +967,7 @@ public class VideoCamera extends ActivityBase
 
     @Override
     public void onBackPressed() {
-        if (mPausing) return;
+        if (mPaused) return;
         if (mMediaRecorderRecording) {
             onStopVideoRecording(false);
         } else if (!collapseCameraControls()) {
@@ -981,7 +978,7 @@ public class VideoCamera extends ActivityBase
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // Do not handle any key if the activity is paused.
-        if (mPausing) {
+        if (mPaused) {
             return true;
         }
 
@@ -1039,7 +1036,7 @@ public class VideoCamera extends ActivityBase
         mSurfaceWidth = w;
         mSurfaceHeight = h;
 
-        if (mPausing) {
+        if (mPaused) {
             // We're pausing, the screen is off and we already stopped
             // video recording. We don't want to start the camera again
             // in this case in order to conserve power.
@@ -2038,7 +2035,7 @@ public class VideoCamera extends ActivityBase
     @Override
     public void onSharedPreferenceChanged() {
         // ignore the events after "onPause()" or preview has not started yet
-        if (mPausing) return;
+        if (mPaused) return;
         synchronized (mPreferences) {
             // If mCameraDevice is not ready then we can set the parameter in
             // startPreview().
@@ -2185,7 +2182,7 @@ public class VideoCamera extends ActivityBase
         @Override
         public void onZoomValueChanged(int index) {
             // Not useful to change zoom value when the activity is paused.
-            if (mPausing) return;
+            if (mPaused) return;
 
             mZoomValue = index;
 
@@ -2238,7 +2235,7 @@ public class VideoCamera extends ActivityBase
             return false;
         }
 
-        if (mPausing || mSnapshotInProgress
+        if (mPaused || mSnapshotInProgress
                 || !mMediaRecorderRecording || effectsActive()) {
             return false;
         }

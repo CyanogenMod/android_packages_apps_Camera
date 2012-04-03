@@ -192,7 +192,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private int mDisplayRotation;
     // The value for android.hardware.Camera.setDisplayOrientation.
     private int mDisplayOrientation;
-    private boolean mPausing;
     private boolean mFirstTimeInitialized;
     private boolean mIsImageCaptureIntent;
 
@@ -412,7 +411,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         @Override
         public void onZoomValueChanged(int index) {
             // Not useful to change zoom value when the activity is paused.
-            if (mPausing) return;
+            if (mPaused) return;
             mZoomValue = index;
 
             // Set zoom parameters asynchronously
@@ -665,7 +664,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         @Override
         public void onPictureTaken(
                 final byte [] jpegData, final android.hardware.Camera camera) {
-            if (mPausing) {
+            if (mPaused) {
                 return;
             }
 
@@ -723,7 +722,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         @Override
         public void onAutoFocus(
                 boolean focused, android.hardware.Camera camera) {
-            if (mPausing) return;
+            if (mPaused) return;
 
             mAutoFocusTime = System.currentTimeMillis() - mFocusStartTime;
             Log.v(TAG, "mAutoFocusTime = " + mAutoFocusTime + "ms");
@@ -1261,7 +1260,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private void doAttach() {
-        if (mPausing) {
+        if (mPaused) {
             return;
         }
 
@@ -1343,7 +1342,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void onShutterButtonFocus(boolean pressed) {
-        if (mPausing || collapseCameraControls() || mCameraState == SNAPSHOT_IN_PROGRESS) return;
+        if (mPaused || collapseCameraControls() || mCameraState == SNAPSHOT_IN_PROGRESS) return;
 
         // Do not do focus if there is not enough storage.
         if (pressed && !canTakePicture()) return;
@@ -1357,7 +1356,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void onShutterButtonClick() {
-        if (mPausing || collapseCameraControls()) return;
+        if (mPaused || collapseCameraControls()) return;
 
         // Do not take the picture if there is not enough storage.
         if (mStorageSpace <= Storage.LOW_STORAGE_THRESHOLD) {
@@ -1396,7 +1395,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     protected void doOnResume() {
         if (mOpenCameraFail || mCameraDisabled) return;
 
-        mPausing = false;
         mJpegPictureCallbackTime = 0;
         mZoomValue = 0;
         mPreviewTextureView.setVisibility(View.VISIBLE);
@@ -1455,7 +1453,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     protected void onPause() {
-        mPausing = true;
+        super.onPause();
+
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
@@ -1493,8 +1492,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mHandler.removeMessages(FIRST_TIME_INIT);
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
         mFocusManager.removeMessages();
-
-        super.onPause();
     }
 
     @Override
@@ -1541,7 +1538,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // Preview area is touched. Handle touch focus.
     @Override
     public boolean onTouch(View v, MotionEvent e) {
-        if (mPausing || mCameraDevice == null || !mFirstTimeInitialized
+        if (mPaused || mCameraDevice == null || !mFirstTimeInitialized
                 || mCameraState == SNAPSHOT_IN_PROGRESS) {
             return false;
         }
@@ -1628,7 +1625,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Sometimes onSurfaceTextureAvailable is called after onPause or before onResume.
         // Ignore it.
-        if (mPausing || isFinishing()) return;
+        if (mPaused || isFinishing()) return;
 
         // Set preview texture if the surface is being created. Preview was
         // already started. Also restart the preview if display rotation has
@@ -1703,7 +1700,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private void startPreview() {
-        if (mPausing || isFinishing()) return;
+        if (mPaused || isFinishing()) return;
 
         mFocusManager.resetTouchFocus();
 
@@ -2089,7 +2086,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     @Override
     public void onSharedPreferenceChanged() {
         // ignore the events after "onPause()"
-        if (mPausing) return;
+        if (mPaused) return;
 
         boolean recordLocation = RecordLocationPreference.get(
                 mPreferences, mContentResolver);
@@ -2136,7 +2133,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void onRestorePreferencesClicked() {
-        if (mPausing) return;
+        if (mPaused) return;
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -2168,7 +2165,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void onOverriddenPreferencesClicked() {
-        if (mPausing) return;
+        if (mPaused) return;
         if (mNotSelectableToast == null) {
             String str = getResources().getString(R.string.not_selectable_in_scene_mode);
             mNotSelectableToast = Toast.makeText(Camera.this, str, Toast.LENGTH_SHORT);
