@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class CameraSettings {
     private static final int NOT_FOUND = -1;
-
+    public static final String KEY_FORCE_PREVIEW = "force_preview_display";
     public static final String KEY_VERSION = "pref_version_key";
     public static final String KEY_LOCAL_VERSION = "pref_local_version_key";
     public static final String KEY_RECORD_LOCATION = RecordLocationPreference.KEY;
