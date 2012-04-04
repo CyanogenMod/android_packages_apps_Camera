@@ -485,7 +485,8 @@ int db_FrameToReferenceRegistration::AddFrame(const unsigned char * const * im, 
   if(m_do_motion_smoothing)
     SmoothMotion();
 
-   db_PrintDoubleMatrix(m_H_ref_to_ins,3,3);
+   // Disable debug printing
+   // db_PrintDoubleMatrix(m_H_ref_to_ins,3,3);
 
   db_Copy9(H, m_H_ref_to_ins);
 
