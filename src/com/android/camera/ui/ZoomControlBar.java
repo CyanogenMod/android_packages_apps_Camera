@@ -155,6 +155,5 @@ public class ZoomControlBar extends ZoomControl {
     public void setZoomIndex(int index) {
         super.setZoomIndex(index);
         mSliderPosition = -1; // -1 means invalid
-        requestLayout();
     }
 }

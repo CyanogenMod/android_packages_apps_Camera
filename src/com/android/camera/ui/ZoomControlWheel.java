@@ -172,4 +172,12 @@ public class ZoomControlWheel extends ZoomControl {
         mRotateAngle = angle;
         requestLayout();
     }
+
+     @Override
+     public void setZoomIndex(int index) {
+         super.setZoomIndex(index);
+         double offsetAngle = (double) (MAX_SLIDER_ANGLE - MIN_SLIDER_ANGLE) / mZoomMax * mZoomIndex;
+         mSliderRadians = Math.toRadians(MAX_SLIDER_ANGLE - offsetAngle);
+     }
+
 }

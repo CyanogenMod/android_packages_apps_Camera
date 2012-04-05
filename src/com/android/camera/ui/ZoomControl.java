@@ -105,7 +105,7 @@ public abstract class ZoomControl extends RelativeLayout implements Rotatable {
             throw new IllegalArgumentException("Invalid zoom value:" + index);
         }
         mZoomIndex = index;
-        invalidate();
+        requestLayout();
     }
 
     protected void performZoom(double zoomPercentage) {
