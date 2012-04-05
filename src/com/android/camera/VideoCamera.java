@@ -216,6 +216,7 @@ public class VideoCamera extends ActivityBase
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
     private ZoomControl mZoomControl;
+    private boolean mClickedThumbnail;
 
     // This Handler is used to post message back onto the main thread of the
     // application
@@ -587,6 +588,7 @@ public class VideoCamera extends ActivityBase
     @OnClickAttr
     public void onThumbnailClicked(View v) {
         if (!mMediaRecorderRecording && mThumbnail != null) {
+            mClickedThumbnail = true;
             gotoGallery();
         }
     }
@@ -783,8 +785,7 @@ public class VideoCamera extends ActivityBase
     protected void doOnResume() {
         if (mOpenCameraFail || mCameraDisabled) return;
 
-        mZoomValue = 0;
-
+        mClickedThumbnail = false;
         showVideoSnapshotUI(false);
 
         // Start orientation listener as soon as possible because it takes
@@ -985,6 +986,12 @@ public class VideoCamera extends ActivityBase
         mLocationManager.recordLocation(false);
 
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
+
+        // Retain zoom level if leaving camcorder by clicking thumbnail,
+        // otherwise reset zoom level.
+        if (!mClickedThumbnail) {
+            mZoomValue = 0;
+        }
     }
 
     @Override

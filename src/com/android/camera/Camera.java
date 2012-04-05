@@ -109,6 +109,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
     private ZoomControl mZoomControl;
+    private boolean mClickedThumbnail;
 
     private Parameters mInitialParams;
     private boolean mFocusAreaSupported;
@@ -1236,6 +1237,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     public void onThumbnailClicked(View v) {
         if (isCameraIdle() && mThumbnail != null) {
             if (mImageSaver != null) mImageSaver.waitDone();
+            mClickedThumbnail = true;
             gotoGallery();
         }
     }
@@ -1397,7 +1399,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mOpenCameraFail || mCameraDisabled) return;
 
         mJpegPictureCallbackTime = 0;
-        mZoomValue = 0;
+        mClickedThumbnail = false;
 
         // Start the preview if it is not started.
         if (mCameraState == PREVIEW_STOPPED) {
@@ -1491,6 +1493,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mHandler.removeMessages(FIRST_TIME_INIT);
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
         mFocusManager.removeMessages();
+
+        // Retain zoom level if leaving camera by clicking thumbnail, otherwise
+        // reset zoom level.
+        if (!mClickedThumbnail) {
+            mZoomValue = 0;
+        }
     }
 
     @Override
