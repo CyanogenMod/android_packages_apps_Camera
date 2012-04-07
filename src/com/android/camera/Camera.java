@@ -947,9 +947,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (!mIsImageCaptureIntent) {
             // TODO: add the animation back
             if (mPreviewTextureView != null) {
-                Bitmap b = mPreviewTextureView.getBitmap().copy(Bitmap.Config.RGB_565, false);
-                mCaptureAnimMgr.startAnimation(b, mOrientationCompensation,
-                        mPreviewPanel.getWidth(), mPreviewPanel.getHeight());
+                Bitmap bitmapSource = mPreviewTextureView.getBitmap();
+                if (bitmapSource != null) {
+                    Bitmap b = bitmapSource.copy(Bitmap.Config.RGB_565, false);
+                    mCaptureAnimMgr.startAnimation(b, mOrientationCompensation,
+                            mPreviewPanel.getWidth(), mPreviewPanel.getHeight());
+                }
             }
         }
         mFaceDetectionStarted = false;
