@@ -122,11 +122,6 @@ public class MosaicFrameProcessor {
         if (mIsMosaicMemoryAllocated) throw new RuntimeException("MosaicFrameProcessor in use!");
         mIsMosaicMemoryAllocated = true;
         mMosaicer.allocateMosaicMemory(previewWidth, previewHeight);
-
-        mFillIn = 0;
-        if  (mMosaicer != null) {
-            mMosaicer.reset();
-        }
     }
 
     public void reset() {

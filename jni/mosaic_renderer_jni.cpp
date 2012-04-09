@@ -370,10 +370,8 @@ void AllocateTextureMemory(int widthHR, int heightHR, int widthLR, int heightLR)
     sem_wait(&gPreviewImage_semaphore);
     gPreviewImage[LR] = ImageUtils::allocateImage(gPreviewImageWidth[LR],
             gPreviewImageHeight[LR], 4);
-    ClearPreviewImage(LR);
     gPreviewImage[HR] = ImageUtils::allocateImage(gPreviewImageWidth[HR],
             gPreviewImageHeight[HR], 4);
-    ClearPreviewImage(HR);
     sem_post(&gPreviewImage_semaphore);
 
     gPreviewFBOWidth = PREVIEW_FBO_WIDTH_SCALE * gPreviewImageWidth[HR];
@@ -572,40 +570,37 @@ JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_reset(
     gBufferInputYVU[HR].Init(gPreviewImageWidth[HR],
             gPreviewImageHeight[HR], GL_RGBA);
 
-    sem_wait(&gPreviewImage_semaphore);
-    ClearPreviewImage(LR);
-    ClearPreviewImage(HR);
-    sem_post(&gPreviewImage_semaphore);
-
     // bind the surface texture
     bindSurfaceTexture(gSurfaceTextureID[0]);
 
+    // To speed up, there is no need to clear the destination buffers
+    // (offscreen/screen buffers) of gSurfTexRenderer, gYVURenderer
+    // and gPreview because we always fill the whole destination buffers
+    // when we draw something to those offscreen/screen buffers.
     gSurfTexRenderer[LR].SetupGraphics(&gBufferInput[LR]);
-    gSurfTexRenderer[LR].Clear(0.0, 0.0, 0.0, 1.0);
     gSurfTexRenderer[LR].SetViewportMatrix(1, 1, 1, 1);
     gSurfTexRenderer[LR].SetScalingMatrix(1.0f, -1.0f);
     gSurfTexRenderer[LR].SetInputTextureName(gSurfaceTextureID[0]);
     gSurfTexRenderer[LR].SetInputTextureType(GL_TEXTURE_EXTERNAL_OES_ENUM);
 
     gSurfTexRenderer[HR].SetupGraphics(&gBufferInput[HR]);
-    gSurfTexRenderer[HR].Clear(0.0, 0.0, 0.0, 1.0);
     gSurfTexRenderer[HR].SetViewportMatrix(1, 1, 1, 1);
     gSurfTexRenderer[HR].SetScalingMatrix(1.0f, -1.0f);
     gSurfTexRenderer[HR].SetInputTextureName(gSurfaceTextureID[0]);
     gSurfTexRenderer[HR].SetInputTextureType(GL_TEXTURE_EXTERNAL_OES_ENUM);
 
     gYVURenderer[LR].SetupGraphics(&gBufferInputYVU[LR]);
-    gYVURenderer[LR].Clear(0.0, 0.0, 0.0, 1.0);
     gYVURenderer[LR].SetInputTextureName(gBufferInput[LR].GetTextureName());
     gYVURenderer[LR].SetInputTextureType(GL_TEXTURE_2D);
 
     gYVURenderer[HR].SetupGraphics(&gBufferInputYVU[HR]);
-    gYVURenderer[HR].Clear(0.0, 0.0, 0.0, 1.0);
     gYVURenderer[HR].SetInputTextureName(gBufferInput[HR].GetTextureName());
     gYVURenderer[HR].SetInputTextureType(GL_TEXTURE_2D);
 
     // gBuffer[1-gCurrentFBOIndex] --> gWarper1 --> gBuffer[gCurrentFBOIndex]
     gWarper1.SetupGraphics(&gBuffer[gCurrentFBOIndex]);
+
+    // Clear the destination buffer of gWarper1.
     gWarper1.Clear(0.0, 0.0, 0.0, 1.0);
     gWarper1.SetViewportMatrix(1, 1, 1, 1);
     gWarper1.SetScalingMatrix(1.0f, 1.0f);
@@ -614,7 +609,9 @@ JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_reset(
 
     // gBufferInput[HR] --> gWarper2 --> gBuffer[gCurrentFBOIndex]
     gWarper2.SetupGraphics(&gBuffer[gCurrentFBOIndex]);
-    gWarper2.Clear(0.0, 0.0, 0.0, 1.0);
+
+    // gWarp2's destination buffer is the same to gWarp1's. No need to clear it
+    // again.
     gWarper2.SetViewportMatrix(gPreviewImageWidth[HR],
             gPreviewImageHeight[HR], gBuffer[gCurrentFBOIndex].GetWidth(),
             gBuffer[gCurrentFBOIndex].GetHeight());
@@ -622,8 +619,8 @@ JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_reset(
     gWarper2.SetInputTextureName(gBufferInput[HR].GetTextureName());
     gWarper2.SetInputTextureType(GL_TEXTURE_2D);
 
+    // gBuffer[gCurrentFBOIndex] --> gPreview --> Screen
     gPreview.SetupGraphics(width, height);
-    gPreview.Clear(0.0, 0.0, 0.0, 1.0);
     gPreview.SetViewportMatrix(1, 1, 1, 1);
 
     // Scale the previewFBO so that the viewfinder window fills the layout height
