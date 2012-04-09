@@ -29,7 +29,7 @@ import com.android.gallery3d.ui.SurfaceTextureScreenNail;
  */
 public class CameraScreenNail extends SurfaceTextureScreenNail {
     private boolean mVisible;
-    private int mX, mY;
+    private int mDrawX, mDrawY, mDrawWidth, mDrawHeight;
     private RenderListener mRenderListener;
     private PositionChangedListener mPositionChangedListener;
 
@@ -38,7 +38,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     }
 
     public interface PositionChangedListener {
-        public void onPositionChanged(int x, int y, boolean visible);
+        public void onPositionChanged(int x, int y, int width, int height, boolean visible);
     }
 
     public CameraScreenNail(RenderListener listener) {
@@ -54,11 +54,15 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         if (getSurfaceTexture() == null) return;
         if (!mVisible) setVisibility(true);
         super.draw(canvas, x, y, width, height);
-        if (mX != x || mY != y) {
-            mX = x;
-            mY = y;
+
+        if (mDrawX != x || mDrawY != y || mDrawWidth != width || mDrawHeight != height) {
+            mDrawX = x;
+            mDrawY = y;
+            mDrawWidth = width;
+            mDrawHeight = height;
             if (mPositionChangedListener != null) {
-                mPositionChangedListener.onPositionChanged(x, y, mVisible);
+                mPositionChangedListener.onPositionChanged(mDrawX, mDrawY,
+                        mDrawWidth, mDrawHeight, mVisible);
             }
         }
     }
@@ -83,9 +87,12 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     }
 
     private void setVisibility(boolean visible) {
-        mVisible = visible;
-        if (mPositionChangedListener != null) {
-            mPositionChangedListener.onPositionChanged(mX, mY, mVisible);
+        if (mVisible != visible) {
+            mVisible = visible;
+            if (mPositionChangedListener != null) {
+                mPositionChangedListener.onPositionChanged(mDrawX, mDrawY,
+                        mDrawWidth, mDrawHeight, mVisible);
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ import android.hardware.Camera.Parameters;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.animation.DecelerateInterpolator;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -51,7 +52,8 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     private boolean mOnResumePending;
     private Intent mResultDataForTesting;
     private OnScreenHint mStorageHint;
-    private UpdateCameraAppView mUpdateCameraAppView = new UpdateCameraAppView();
+    private UpdateCameraAppView mUpdateCameraAppView;
+    private HideCameraAppView mHideCameraAppView;
 
     // The bitmap of the last captured picture thumbnail and the URI of the
     // original picture.
@@ -75,7 +77,7 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     // The view containing only camera related widgets like control panel,
     // indicator bar, focus indicator and etc.
     protected View mCameraAppView;
-    protected float mCameraAppViewAlpha = 1f;
+    protected boolean mShowCameraAppView = true;
 
     protected class CameraOpenThread extends Thread {
         @Override
@@ -329,30 +331,50 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         mCameraScreenNail.setPositionChangedListener(this);
     }
 
+    private class HideCameraAppView implements Runnable {
+        @Override
+        public void run() {
+            mCameraAppView.setVisibility(View.GONE);
+        }
+    }
     private class UpdateCameraAppView implements Runnable {
         @Override
         public void run() {
-            if (mCameraAppViewAlpha == 0) {
-                mCameraAppView.setVisibility(View.GONE);
-            } else {
+            if (mShowCameraAppView) {
                 mCameraAppView.setVisibility(View.VISIBLE);
-                mCameraAppView.setAlpha(mCameraAppViewAlpha);
+                mCameraAppView.animate().withLayer().alpha(1);
+            } else {
+                mCameraAppView.animate().withLayer().alpha(0).withEndAction(mHideCameraAppView);
             }
         }
     }
 
     @Override
-    public void onPositionChanged(int x, int y, boolean visible) {
-        // Fade out the camera views with the swipe.
+    public void onPositionChanged(int x, int y, int width, int height, boolean visible) {
         if (!mPaused && !isFinishing()) {
-            if (!visible) {
-                mCameraAppViewAlpha = 0;
+            View rootView = (View) getGLRoot();
+            int rootWidth = rootView.getWidth();
+            int rootHeight = rootView.getHeight();
+            boolean showCameraAppView;
+            // Check if the camera preview is in the center.
+            if (visible && (x == 0 && width == rootWidth) ||
+                    (y == 0 && height == rootHeight && Math.abs(x - (rootWidth - width) / 2) <= 1)) {
+                showCameraAppView = true;
             } else {
-                View v = (View) getGLRoot();
-                mCameraAppViewAlpha = 1 + (float) x / v.getWidth() * 2;
+                showCameraAppView = false;
             }
-            if (mCameraAppViewAlpha < 0) mCameraAppViewAlpha = 0;
-            runOnUiThread(mUpdateCameraAppView);
+
+            if (mShowCameraAppView != showCameraAppView) {
+                mShowCameraAppView = showCameraAppView;
+                // Initialize the animation.
+                if (mUpdateCameraAppView == null) {
+                    mUpdateCameraAppView = new UpdateCameraAppView();
+                    mHideCameraAppView = new HideCameraAppView();
+                    mCameraAppView.animate().setDuration(300)
+                            .setInterpolator(new DecelerateInterpolator());
+                }
+                runOnUiThread(mUpdateCameraAppView);
+            }
         }
     }
 
