@@ -16,7 +16,9 @@
 
 package com.android.camera;
 
+import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
+import android.graphics.RectF;
 
 import com.android.gallery3d.app.GalleryActivity;
 import com.android.gallery3d.ui.GLCanvas;
@@ -29,7 +31,13 @@ import com.android.gallery3d.ui.SurfaceTextureScreenNail;
  */
 public class CameraScreenNail extends SurfaceTextureScreenNail {
     private boolean mVisible;
-    private int mDrawX, mDrawY, mDrawWidth, mDrawHeight;
+    // The original draw coordinates.
+    private int mOriginalX, mOriginalY, mOriginalWidth, mOriginalHeight;
+    // The actual draw coordinates.
+    private int mTransformedX, mTransformedY, mTransformedWidth, mTransformedHeight;
+    // The matrix to transform the original coordinates to actual coordinates.
+    private Matrix mMatrix = new Matrix();
+    private RectF mRect = new RectF();
     private RenderListener mRenderListener;
     private PositionChangedListener mPositionChangedListener;
 
@@ -49,22 +57,41 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         mPositionChangedListener = listener;
     }
 
+    // Set the matrix to scale by scaleRatio, with a pivot point at (px, py).
+    // Then translate by (translateX, translateY).
+    public void setMatrix(float scaleRatio, float scalePx, float scalePy,
+            float translateX, float translateY) {
+        mMatrix.setScale(scaleRatio, scaleRatio, scalePx, scalePy);
+        mMatrix.postTranslate(translateX, translateY);
+    }
+
+    int xx = 0;
     @Override
     public void draw(GLCanvas canvas, int x, int y, int width, int height) {
         if (getSurfaceTexture() == null) return;
         if (!mVisible) setVisibility(true);
-        super.draw(canvas, x, y, width, height);
 
-        if (mDrawX != x || mDrawY != y || mDrawWidth != width || mDrawHeight != height) {
-            mDrawX = x;
-            mDrawY = y;
-            mDrawWidth = width;
-            mDrawHeight = height;
+        // Check if the draw position has changed.
+        if (mOriginalX != x || mOriginalY != y || mOriginalWidth != width
+                || mOriginalHeight != height) {
+            // Save the position and notify the listener.
+            mOriginalX = x;
+            mOriginalY = y;
+            mOriginalWidth = width;
+            mOriginalHeight = height;
             if (mPositionChangedListener != null) {
-                mPositionChangedListener.onPositionChanged(mDrawX, mDrawY,
-                        mDrawWidth, mDrawHeight, mVisible);
+                mPositionChangedListener.onPositionChanged(x, y, width, height, mVisible);
             }
+
+            // Calculate the actual draw position.
+            mRect.set(x, y, x + width, y + height);
+            mMatrix.mapRect(mRect);
+            mTransformedX = Math.round(mRect.left);
+            mTransformedY = Math.round(mRect.top);
+            mTransformedWidth = Math.round(mRect.width());
+            mTransformedHeight = Math.round(mRect.height());
         }
+        super.draw(canvas, mTransformedX, mTransformedY, mTransformedWidth, mTransformedHeight);
     }
 
     @Override
@@ -90,8 +117,8 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         if (mVisible != visible) {
             mVisible = visible;
             if (mPositionChangedListener != null) {
-                mPositionChangedListener.onPositionChanged(mDrawX, mDrawY,
-                        mDrawWidth, mDrawHeight, mVisible);
+                mPositionChangedListener.onPositionChanged(mOriginalX, mOriginalY,
+                        mOriginalWidth, mOriginalHeight, mVisible);
             }
         }
     }

@@ -44,7 +44,8 @@ import java.io.File;
  * Superclass of Camera and VideoCamera activities.
  */
 abstract public class ActivityBase extends AbstractGalleryActivity
-        implements CameraScreenNail.PositionChangedListener {
+        implements CameraScreenNail.PositionChangedListener,
+                View.OnLayoutChangeListener {
 
     private static final String TAG = "ActivityBase";
     private static boolean LOGV = false;
@@ -381,5 +382,36 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     @Override
     public GalleryActionBar getGalleryActionBar() {
         return mActionBar;
+    }
+
+    // Preview frame layout has changed. Move the preview to the center of the
+    // layout.
+    @Override
+    public void onLayoutChange(View v, int left, int top, int right, int bottom,
+            int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        // Find out the left and top of the preview frame layout relative to GL
+        // root view.
+        View root = (View) getGLRoot();
+        int[] rootLocation = new int[2];
+        int[] viewLocation = new int[2];
+        root.getLocationInWindow(rootLocation);
+        v.getLocationInWindow(viewLocation);
+        int relativeLeft = viewLocation[0] - rootLocation[0];
+        int relativeTop = viewLocation[1] - rootLocation[1];
+
+        // Calculate the scale ratio between preview frame layout and GL root
+        // view.
+        int width = root.getWidth();
+        int height = root.getHeight();
+        float scale = Math.max((float) (right - left) / width,
+                (float) (bottom - top) / height);
+        float scalePx = width / 2f;
+        float scalePy = height / 2f;
+
+        // Calculate the translate distance.
+        float translateX = relativeLeft + (right - left - width) / 2f;
+        float translateY = relativeTop + (bottom - top - height) / 2f;
+
+        mCameraScreenNail.setMatrix(scale, scalePx, scalePy, translateX, translateY);
     }
 }

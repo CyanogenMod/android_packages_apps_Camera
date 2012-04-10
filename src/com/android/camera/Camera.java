@@ -1785,11 +1785,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mPreviewPanel = findViewById(R.id.frame_layout);
         mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
         mPreviewFrameLayout.setAspectRatio((double) size.width / size.height);
+        mPreviewFrameLayout.addOnLayoutChangeListener(this);
 
         // Set a preview size that is closest to the viewfinder height and has
         // the right aspect ratio.
         List<Size> sizes = mParameters.getSupportedPreviewSizes();
-        Size optimalSize = Util.getOptimalPreviewSize(this, sizes);
+        Size optimalSize = Util.getOptimalPreviewSize(this, sizes,
+                (double) size.width / size.height);
         Size original = mParameters.getPreviewSize();
         if (!original.equals(optimalSize)) {
             mParameters.setPreviewSize(optimalSize.width, optimalSize.height);

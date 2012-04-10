@@ -401,6 +401,7 @@ public class VideoCamera extends ActivityBase
 
         mPreviewPanel = findViewById(R.id.frame_layout);
         mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
+        mPreviewFrameLayout.addOnLayoutChangeListener(this);
         mReviewImage = (ImageView) findViewById(R.id.review_image);
 
         mQuickCapture = getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
@@ -768,7 +769,8 @@ public class VideoCamera extends ActivityBase
                     it.remove();
                 }
             }
-            Size optimalSize = Util.getOptimalPreviewSize(this, sizes);
+            Size optimalSize = Util.getOptimalPreviewSize(this, sizes,
+                    (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
             mDesiredPreviewWidth = optimalSize.width;
             mDesiredPreviewHeight = optimalSize.height;
         }
