@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--  Copyright (C) 2007 The Android Open Source Project
+      Copyright (C) 2012 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
  -->
-
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Camerafout"</string>
@@ -23,7 +23,7 @@
     <string name="video_camera_label" msgid="2899292505526427293">"Camcorder"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Camerafoto\'s"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Cameravideo\'s"</string>
-    <string name="wait" msgid="8600187532323801552">"Een ogenblik geduld..."</string>
+    <string name="wait" msgid="8600187532323801552">"Een ogenblik geduld\u2026"</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Koppel de USB-opslag voordat u de camera gebruikt."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Plaats een SD-kaart voordat u de camera gebruikt."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Uw USB-opslag is vol."</string>
@@ -123,4 +123,22 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"%1$s verlagen"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"%1$s verhogen"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"%1$s-schakelaar"</string>
+
+    <!-- CYANOGENMOD EDITS -->
+
+    <string name="pref_camera_power_shutter_title">Aan/uit-knop bedient sluiter</string>
+    <string name="pref_camera_focusmode_entry_fixed">Vast</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Gezichtsdetectie</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Bewolkt-daglicht</string>
+    <string name="pref_camera_scenemode_entry_backlight">Achtergrondverlichting</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Ochtend</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Herfstkleur</string>
+    <string name="pref_camera_scenemode_entry_text">Tekst</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portret</string>
+    <string name="pref_camera_scenemode_entry_landscape">Landschap</string>
+    <string name="pref_camera_scenemode_entry_beach">Strand</string>
+    <string name="pref_camera_scenemode_entry_snow">Sneeuw</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Vuurwerk</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Kaarslicht</string>
 </resources>
