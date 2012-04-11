@@ -16,178 +16,176 @@
 
 package com.android.camera;
 
-import android.animation.Animator;
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
-import android.graphics.Bitmap;
-import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.ImageView;
+import android.os.SystemClock;
+
+import com.android.gallery3d.ui.GLCanvas;
+import com.android.gallery3d.ui.Raw2DTexture;
 
 /**
  * Class to handle the capture animation.
  */
-public class CaptureAnimManager implements
-        ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
+public class CaptureAnimManager {
 
+    private static final String TAG = "CaptureAnimManager";
     private static final float ZOOM_DELTA = 0.2f;  // The amount of change for zooming out.
     private static final float ZOOM_IN_BEGIN = 1f - ZOOM_DELTA;  // Pre-calculated value for
                                                                  // convenience.
-    private static final long CAPTURE_ANIM_DURATION = 800;  // milliseconds.
-    private static final float VIEW_GAP_RATIO = 0.1f;  // The gap between preview and review based
-                                                       // on the view dimension.
-    private static final float TOTAL_RATIO = 1f + VIEW_GAP_RATIO;
+    private static final float CAPTURE_ANIM_DURATION = 800;  // milliseconds.
+    private static final float GAP_RATIO = 0.1f;  // The gap between preview and review based
+                                                  // on the view dimension.
+    private static final float TOTAL_RATIO = 1f + GAP_RATIO;
 
-    private final ImageView mReview;
-    private final View mPreview;
+    private final Interpolator mZoomOutInterpolator = new DecelerateInterpolator();
+    private final Interpolator mZoomInInterpolator = new AccelerateInterpolator();
+    private final Interpolator mSlideInterpolator = new AccelerateDecelerateInterpolator();
 
-    private float mXDelta;
-    private float mYDelta;
-    private float mXDeltaScaled;
-    private float mYDeltaScaled;
-    private float mOffset; // The offset where preview should be put relative to the review.
-    private int mAnimOrientation;
-
-    private final Interpolator ZoomOutInterpolator = new DecelerateInterpolator();
-    private final Interpolator ZoomInInterpolator = new AccelerateInterpolator();
-
-    private final ValueAnimator mCaptureAnim = new ValueAnimator();
-    // The translation value for 4 different orientations.
-    private final PropertyValuesHolder[] mReviewSlideValue = new PropertyValuesHolder[4];
+    private int mAnimOrientation;  // Could be 0, 90, 180 or 270 degrees.
+    private long mAnimStartTime;  // milliseconds.
+    private float mCenterX;  // The center of the whole view including preview and review.
+    private float mCenterY;
+    private float mCenterDelta;  // The amount of the center will move after whole animation.
+    private float mGap;  // mGap = (width or height) * GAP_RATIO. (depends on orientation)
+    private int mDrawWidth;
+    private int mDrawHeight;
+    private int mDrawX;
+    private int mDrawY;
+    private float mHalfGap;  // mHalfGap = mGap / 2f.
+    private float[] mTextureTransformMatrix;
 
     /* preview: camera preview view.
      * review: view of picture just taken.
      */
-    public CaptureAnimManager(View preview, ImageView review) {
-        mReview = review;
-        mPreview = preview;
-
-        mCaptureAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-        mCaptureAnim.setDuration(CAPTURE_ANIM_DURATION);
-        mCaptureAnim.addListener(this);
-        mCaptureAnim.addUpdateListener(this);
+    public CaptureAnimManager() {
     }
 
-    void initializeDelta(int xDelta, int yDelta) {
-        mXDelta = xDelta;
-        mYDelta = yDelta;
-        mXDeltaScaled = mXDelta * TOTAL_RATIO;
-        mYDeltaScaled = mYDelta * TOTAL_RATIO;
-        mReviewSlideValue[0] = PropertyValuesHolder.ofFloat("", 0f, mXDeltaScaled);
-        mReviewSlideValue[1] = PropertyValuesHolder.ofFloat("", 0f, -mYDeltaScaled);
-        mReviewSlideValue[2] = PropertyValuesHolder.ofFloat("", 0f, -mXDeltaScaled);
-        mReviewSlideValue[3] = PropertyValuesHolder.ofFloat("", 0f, mYDeltaScaled);
-    }
-
-    // xDelta, yDelta: The dimension of the viewfinder in which animation happens.
-    public void startAnimation(Bitmap bitmap, int animOrientation, int xDelta, int yDelta) {
-        if (xDelta != mXDelta || mYDelta != yDelta) {
-            initializeDelta(xDelta, yDelta);
-        }
+    public void setOrientation(int animOrientation) {
         mAnimOrientation = animOrientation;
-        // Reset the views before the animation begins.
-        mCaptureAnim.cancel();
-        mCaptureAnim.setValues(mReviewSlideValue[(mAnimOrientation / 90) % 4]);
+    }
+
+    // x, y, h and h: the rectangle area where the animation takes place in.
+    // transformMatrix: used to show the texture.
+    public void startAnimation(int x, int y, int w, int h, float[] transformMatrix) {
+        mAnimStartTime = SystemClock.uptimeMillis();
+        mTextureTransformMatrix = transformMatrix;
+        // Set the views to the initial positions.
+        mDrawWidth = w;
+        mDrawHeight = h;
+        mDrawX = x;
+        mDrawY = y;
+        switch (mAnimOrientation) {
+            case 0:  // Preview is on the left.
+                mGap = w * GAP_RATIO;
+                mHalfGap = mGap / 2f;
+                mCenterX = x - mHalfGap;
+                mCenterDelta = w * (TOTAL_RATIO);
+                mCenterY = y + h / 2f;
+                break;
+            case 90:  // Preview is below.
+                mGap = h * GAP_RATIO;
+                mHalfGap = mGap / 2f;
+                mCenterY = y + h + mHalfGap;
+                mCenterDelta = -h * (TOTAL_RATIO);
+                mCenterX = x + w / 2f;
+                break;
+            case 180:  // Preview on the right.
+                mGap = w * GAP_RATIO;
+                mHalfGap = mGap / 2f;
+                mCenterX = x + mHalfGap;
+                mCenterDelta = -w * (TOTAL_RATIO);
+                mCenterY = y + h / 2f;
+                break;
+            case 270:  // Preview is above.
+                mGap = h * GAP_RATIO;
+                mHalfGap = mGap / 2f;
+                mCenterY = y - mHalfGap;
+                mCenterDelta = h * (TOTAL_RATIO);
+                mCenterX = x + w / 2f;
+                break;
+        }
+    }
+
+    // Returns true if the animation has been drawn.
+    public boolean drawAnimation(GLCanvas canvas, CameraScreenNail preview,
+                Raw2DTexture review) {
+        long timeDiff = SystemClock.uptimeMillis() - mAnimStartTime;;
+        if (timeDiff > CAPTURE_ANIM_DURATION) return false;
+        float fraction = timeDiff / CAPTURE_ANIM_DURATION;
+        float scale = calculateScale(fraction);
+        float centerX = mCenterX;
+        float centerY = mCenterY;
+        if (mAnimOrientation == 0 || mAnimOrientation == 180) {
+            centerX = mCenterX + mCenterDelta * mSlideInterpolator.getInterpolation(fraction);
+        } else {
+            centerY = mCenterY + mCenterDelta * mSlideInterpolator.getInterpolation(fraction);
+        }
+
+        float height = mDrawHeight * scale;
+        float width = mDrawWidth * scale;
+        int previewX = (int) centerX;
+        int previewY = (int) centerY;
+        int reviewX = (int) centerX;
+        int reviewY = (int) centerY;
         switch (mAnimOrientation) {
             case 0:
-                mPreview.setTranslationX(-mXDeltaScaled);
-                mPreview.setPivotX(mXDelta * (1f + VIEW_GAP_RATIO / 2f)); //left
-                mReview.setPivotX(mXDelta * -VIEW_GAP_RATIO / 2f); //right
-                mPreview.setPivotY(mYDeltaScaled / 2f);
-                mReview.setPivotY(mYDeltaScaled / 2f);
-                mOffset = -mXDeltaScaled;
+                previewX = Math.round(centerX - width - mHalfGap * scale);
+                previewY = Math.round(centerY - height / 2f);
+                reviewX = Math.round(centerX + mHalfGap * scale);
+                reviewY = previewY;
                 break;
             case 90:
-                mPreview.setTranslationY(mYDeltaScaled);
-                mPreview.setPivotX(mXDeltaScaled / 2f);
-                mReview.setPivotX(mXDeltaScaled / 2f);
-                mPreview.setPivotY(mYDelta * -VIEW_GAP_RATIO / 2f); //down
-                mReview.setPivotY(mYDelta * (1f + VIEW_GAP_RATIO / 2f)); //up
-                mOffset = (mYDeltaScaled);
+                previewY = Math.round(centerY + mHalfGap * scale);
+                previewX = Math.round(centerX - width / 2f);
+                reviewY = Math.round(centerY - height - mHalfGap * scale);
+                reviewX = previewX;
                 break;
             case 180:
-                mPreview.setTranslationX(mXDeltaScaled);
-                mPreview.setPivotX(mXDelta * -VIEW_GAP_RATIO / 2f); //right
-                mReview.setPivotX(mXDelta * (1f + VIEW_GAP_RATIO / 2f)); //left
-                mPreview.setPivotY(mYDeltaScaled / 2f);
-                mReview.setPivotY(mYDeltaScaled / 2f);
-                mOffset = mXDeltaScaled;
+                previewX = Math.round(centerX + width + mHalfGap * scale);
+                previewY = Math.round(centerY - height / 2f);
+                reviewX = Math.round(centerX - mHalfGap * scale);
+                reviewY = previewY;
                 break;
             case 270:
-                mPreview.setTranslationY(-mYDeltaScaled);
-                mPreview.setPivotX(mXDeltaScaled / 2f);
-                mReview.setPivotX(mXDeltaScaled / 2f);
-                mPreview.setPivotY(mYDelta * (1f + VIEW_GAP_RATIO / 2f)); //up
-                mReview.setPivotY(mYDelta * -VIEW_GAP_RATIO / 2f); //down
-                mOffset = -mYDeltaScaled;
+                previewY = Math.round(centerY - height - mHalfGap * scale);
+                previewX = Math.round(centerX - width / 2f);
+                reviewY = Math.round(centerY + mHalfGap * scale);
+                reviewX = previewX;
                 break;
         }
+        float alpha = canvas.getAlpha();
+        canvas.setAlpha(fraction);
+        preview.directDraw(canvas, previewX, previewY, Math.round(width), Math.round(height));
+        canvas.setAlpha(alpha);
 
-        mReview.setImageBitmap(bitmap);
-        mReview.setTranslationX(0f);
-        mReview.setTranslationY(0f);
-        mReview.setScaleX(1f);
-        mReview.setScaleY(1f);
-        mReview.setVisibility(View.VISIBLE);
-        mCaptureAnim.start();
-    }
+        // Flip animation texture vertically. OpenGL uses bottom left point as the origin (0,0).
+        canvas.save(GLCanvas.SAVE_FLAG_MATRIX);
+        int cx = Math.round(reviewX + width / 2);
+        int cy = Math.round(reviewY + height / 2);
+        canvas.translate(cx, cy);
+        canvas.scale(1, -1, 1);
+        canvas.translate(-cx, -cy);
+        canvas.drawTexture(review, mTextureTransformMatrix,
+                reviewX, reviewY, (int) width, (int) height);
+        canvas.restore();
 
-    @Override
-    public void onAnimationStart(Animator anim) {
-    }
-
-    @Override
-    public void onAnimationEnd(Animator anim) {
-        mReview.setVisibility(View.GONE);
-        mReview.setImageBitmap(null);
-    }
-
-    @Override
-    public void onAnimationRepeat(Animator anim) {}
-
-    @Override
-    public void onAnimationCancel(Animator anim) {}
-
-    @Override
-    public void onAnimationUpdate(ValueAnimator anim) {
-        float fraction = anim.getAnimatedFraction();
-        zoomAnimation(fraction);
-        mPreview.setAlpha(fraction);
-        slideAnimation((Float) anim.getAnimatedValue());
-    }
-
-    // Take a translation value of the review and calculate the corresponding value for
-    // the preview.
-    private void slideAnimation(float value) {
-        if (mAnimOrientation == 0 || mAnimOrientation == 180) {
-            // Slide horizontally.
-            mReview.setTranslationX(value);
-            mPreview.setTranslationX(value + mOffset);
-        } else {
-            // Slide vertically.
-            mReview.setTranslationY(value);
-            mPreview.setTranslationY(value + mOffset);
-        }
+        return true;
     }
 
     // Calculate the zoom factor based on the given time fraction.
-    private void zoomAnimation(float fraction) {
+    private float calculateScale(float fraction) {
         float value = 1f;
         if (fraction <= 0.5f) {
             // Zoom in for the beginning.
-            value = 1f - ZOOM_DELTA * ZoomOutInterpolator.getInterpolation(
+            value = 1f - ZOOM_DELTA * mZoomOutInterpolator.getInterpolation(
                     fraction * 2);
         } else {
             // Zoom out for the last.
-            value = ZOOM_IN_BEGIN + ZOOM_DELTA * ZoomInInterpolator.getInterpolation(
+            value = ZOOM_IN_BEGIN + ZOOM_DELTA * mZoomInInterpolator.getInterpolation(
                     (fraction - 0.5f) * 2f);
         }
-        mReview.setScaleX(value);
-        mReview.setScaleY(value);
-        mPreview.setScaleX(value);
-        mPreview.setScaleY(value);
+        return value;
     }
 }

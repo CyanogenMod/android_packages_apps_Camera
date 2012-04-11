@@ -17,11 +17,12 @@
 package com.android.camera;
 
 import android.graphics.Matrix;
-import android.graphics.SurfaceTexture;
 import android.graphics.RectF;
+import android.graphics.SurfaceTexture;
 
 import com.android.gallery3d.app.GalleryActivity;
 import com.android.gallery3d.ui.GLCanvas;
+import com.android.gallery3d.ui.Raw2DTexture;
 import com.android.gallery3d.ui.ScreenNail;
 import com.android.gallery3d.ui.ScreenNailHolder;
 import com.android.gallery3d.ui.SurfaceTextureScreenNail;
@@ -30,6 +31,11 @@ import com.android.gallery3d.ui.SurfaceTextureScreenNail;
  * This is a ScreenNail which can displays camera preview.
  */
 public class CameraScreenNail extends SurfaceTextureScreenNail {
+    private static final String TAG = "CameraScreenNail";
+    private static final int ANIM_NONE = 0;
+    private static final int ANIM_TO_START = 1;
+    private static final int ANIM_RUNNING = 2;
+
     private boolean mVisible;
     // The original draw coordinates.
     private int mOriginalX, mOriginalY, mOriginalWidth, mOriginalHeight;
@@ -40,6 +46,12 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     private RectF mRect = new RectF();
     private RenderListener mRenderListener;
     private PositionChangedListener mPositionChangedListener;
+    private final float[] mTextureTransformMatrix = new float[16];
+
+    // Animation.
+    private CaptureAnimManager mAnimManager = new CaptureAnimManager();
+    private int mAnimState = ANIM_NONE;
+    private Raw2DTexture mAnimTexture;
 
     public interface RenderListener {
         void requestRender();
@@ -51,6 +63,12 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
     public CameraScreenNail(RenderListener listener) {
         mRenderListener = listener;
+    }
+
+    @Override
+    public void acquireSurfaceTexture() {
+        super.acquireSurfaceTexture();
+        mAnimTexture = new Raw2DTexture(getWidth(), getHeight());
     }
 
     public void setPositionChangedListener(PositionChangedListener listener) {
@@ -65,7 +83,25 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         mMatrix.postTranslate(translateX, translateY);
     }
 
-    int xx = 0;
+    public void animate(int animOrientation) {
+        switch (mAnimState) {
+            case ANIM_TO_START:
+                break;
+            case ANIM_NONE:
+                mAnimManager.setOrientation(animOrientation);
+                // No break here. Continue to set the state and request for rendering.
+            case ANIM_RUNNING:
+                // Don't change the animation orientation during animation.
+                mRenderListener.requestRender();
+                mAnimState = ANIM_TO_START;
+                break;
+        }
+    }
+
+    public void directDraw(GLCanvas canvas, int x, int y, int width, int height) {
+        super.draw(canvas, x, y, width, height);
+    }
+
     @Override
     public void draw(GLCanvas canvas, int x, int y, int width, int height) {
         if (getSurfaceTexture() == null) return;
@@ -91,7 +127,28 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
             mTransformedWidth = Math.round(mRect.width());
             mTransformedHeight = Math.round(mRect.height());
         }
-        super.draw(canvas, mTransformedX, mTransformedY, mTransformedWidth, mTransformedHeight);
+
+        switch (mAnimState) {
+            case ANIM_TO_START:
+                getSurfaceTexture().getTransformMatrix(mTextureTransformMatrix);
+                Raw2DTexture.copy(canvas, mExtTexture, mAnimTexture);
+                mAnimManager.startAnimation(mTransformedX, mTransformedY,
+                        mTransformedWidth, mTransformedHeight, mTextureTransformMatrix);
+                mAnimState = ANIM_RUNNING;
+                // Continue to draw the animation. No break is needed here.
+            case ANIM_RUNNING:
+                if (mAnimManager.drawAnimation(canvas, this, mAnimTexture)) {
+                    mRenderListener.requestRender();
+                    break;
+                }
+                // No break here because we continue to the normal draw
+                // procedure if the animation is not drawn.
+                mAnimState = ANIM_NONE;
+            case ANIM_NONE:
+                super.draw(canvas, mTransformedX, mTransformedY,
+                        mTransformedWidth, mTransformedHeight);
+                break;
+        }
     }
 
     @Override

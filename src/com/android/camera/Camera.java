@@ -51,7 +51,6 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
-import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -133,9 +132,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private ShutterButton mShutterButton;
     private boolean mFaceDetectionStarted = false;
 
-    private View mPreviewPanel;  // The container of PreviewFrameLayout.
     private PreviewFrameLayout mPreviewFrameLayout;
-    private TextureView mPreviewTextureView;  // Preview frame area.
     private SurfaceTexture mSurfaceTexture;
     private RotateDialogController mRotateDialog;
 
@@ -146,7 +143,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private Rotatable mReviewDoneButton;
     private View mReviewRetakeButton;
     private ImageView mCaptureAnimView;
-    private CaptureAnimManager mCaptureAnimMgr;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -374,7 +370,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         mCaptureAnimView = (ImageView) findViewById(R.id.capture_anim_view);
-        mCaptureAnimMgr = new CaptureAnimManager(mPreviewFrameLayout, mCaptureAnimView);
 
         mFirstTimeInitialized = true;
         addIdleHandler();
@@ -965,15 +960,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
         if (!mIsImageCaptureIntent) {
-            // TODO: add the animation back
-            if (mPreviewTextureView != null) {
-                Bitmap bitmapSource = mPreviewTextureView.getBitmap();
-                if (bitmapSource != null) {
-                    Bitmap b = bitmapSource.copy(Bitmap.Config.RGB_565, false);
-                    mCaptureAnimMgr.startAnimation(b, mOrientationCompensation,
-                            mPreviewPanel.getWidth(), mPreviewPanel.getHeight());
-                }
-            }
+            mCameraScreenNail.animate(mOrientationCompensation);
         }
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
@@ -1101,7 +1088,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mLocationManager = new LocationManager(this, this);
 
         mFaceView = (FaceView) findViewById(R.id.face_view);
-        mPreviewPanel = findViewById(R.id.frame_layout);
         mPreviewFrameLayout.addOnLayoutChangeListener(this);
         mPreviewFrameLayout.setOnSizeChangedListener(this);
 

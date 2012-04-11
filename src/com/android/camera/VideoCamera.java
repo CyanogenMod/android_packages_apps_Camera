@@ -53,9 +53,7 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.Surface;
-import android.view.TextureView;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,7 +62,6 @@ import android.widget.Toast;
 
 import com.android.camera.ActivityBase.CameraOpenThread;
 import com.android.camera.ui.CameraPicker;
-import com.android.camera.ui.ControlPanelLayout;
 import com.android.camera.ui.IndicatorControlContainer;
 import com.android.camera.ui.IndicatorControlWheelContainer;
 import com.android.camera.ui.PopupManager;
@@ -120,9 +117,7 @@ public class VideoCamera extends ActivityBase
     private ComboPreferences mPreferences;
     private PreferenceGroup mPreferenceGroup;
 
-    private View mPreviewPanel;  // The container of PreviewFrameLayout.
     private PreviewFrameLayout mPreviewFrameLayout;
-    private TextureView mPreviewTextureView;  // Preview frame area.
     private SurfaceTexture mSurfaceTexture;
     private Surface mSurface;
     private IndicatorControlContainer mIndicatorControlContainer;
@@ -131,7 +126,6 @@ public class VideoCamera extends ActivityBase
     private View mReviewControl;
     private RotateDialogController mRotateDialog;
     private ImageView mCaptureAnimView;
-    private CaptureAnimManager mCaptureAnimMgr;
 
     // An review image having same size as preview. It is displayed when
     // recording is stopped in capture intent.
@@ -398,7 +392,6 @@ public class VideoCamera extends ActivityBase
 
         mRotateDialog = new RotateDialogController(this, R.layout.rotate_dialog);
 
-        mPreviewPanel = findViewById(R.id.frame_layout);
         mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
         mPreviewFrameLayout.addOnLayoutChangeListener(this);
         mReviewImage = (ImageView) findViewById(R.id.review_image);
@@ -433,7 +426,6 @@ public class VideoCamera extends ActivityBase
 
         mLocationManager = new LocationManager(this, null);
         mCaptureAnimView = (ImageView) findViewById(R.id.capture_anim_view);
-        mCaptureAnimMgr = new CaptureAnimManager(mPreviewFrameLayout, mCaptureAnimView);
 
         // Make sure preview is started.
         try {
@@ -624,6 +616,7 @@ public class VideoCamera extends ActivityBase
                 showAlert();
             }
         } else {
+            mCameraScreenNail.animate(mOrientationCompensation);
             if (!effectsActive()) getThumbnail();
         }
     }
