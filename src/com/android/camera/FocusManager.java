@@ -61,8 +61,10 @@ public class FocusManager {
     private Matrix mMatrix;
     private View mFocusIndicatorRotateLayout;
     private FocusIndicatorView mFocusIndicator;
-    private int mPreviewWidth;
-    private int mPreviewHeight;
+    private int mPreviewWidth; // The width of the preview frame layout.
+    private int mPreviewHeight; // The height of the preview frame layout.
+    private boolean mMirror; // true if the camera is front-facing.
+    private int mDisplayOrientation;
     private FaceView mFaceView;
     private List<Area> mFocusArea; // focus area in driver format
     private List<Area> mMeteringArea; // metering area in driver format
@@ -97,16 +99,20 @@ public class FocusManager {
         }
     }
 
-    public FocusManager(ComboPreferences preferences, String[] defaultFocusModes) {
+    public FocusManager(ComboPreferences preferences, String[] defaultFocusModes,
+            View focusIndicatorRotate, Parameters parameters, Listener listener,
+            boolean mirror) {
         mPreferences = preferences;
         mDefaultFocusModes = defaultFocusModes;
+        mFocusIndicatorRotateLayout = focusIndicatorRotate;
+        mParameters = parameters;
+        mListener = listener;
+        mMirror = mirror;
+
         mHandler = new MainHandler();
         mMatrix = new Matrix();
-    }
-
-    // This has to be initialized before initialize().
-    public void initializeParameters(Parameters parameters) {
-        mParameters = parameters;
+        mFocusIndicator = (FocusIndicatorView) focusIndicatorRotate.findViewById(
+                R.id.focus_indicator);
         mFocusAreaSupported = (mParameters.getMaxNumFocusAreas() > 0
                 && isSupported(Parameters.FOCUS_MODE_AUTO,
                         mParameters.getSupportedFocusModes()));
@@ -114,29 +120,34 @@ public class FocusManager {
                 mParameters.isAutoWhiteBalanceLockSupported());
     }
 
-    public void initialize(View focusIndicatorRotate, int previewWidth, int previewHeight,
-            FaceView faceView, Listener listener, boolean mirror, int displayOrientation) {
-        mFocusIndicatorRotateLayout = focusIndicatorRotate;
-        mFocusIndicator = (FocusIndicatorView) focusIndicatorRotate.findViewById(
-                R.id.focus_indicator);
-        mPreviewWidth = previewWidth;
-        mPreviewHeight = previewHeight;
-        mFaceView = faceView;
-        mListener = listener;
+    public void setPreviewSize(int previewWidth, int previewHeight) {
+        if (mPreviewWidth != previewWidth || mPreviewHeight != previewHeight) {
+            mPreviewWidth = previewWidth;
+            mPreviewHeight = previewHeight;
+            setMatrix();
+        }
+    }
 
+    public void setDisplayOrientation(int displayOrientation) {
+        mDisplayOrientation = displayOrientation;
+        if (mPreviewWidth != 0 && mPreviewHeight != 0) {
+            setMatrix();
+        }
+    }
+
+    public void setFaceView(FaceView faceView) {
+        mFaceView = faceView;
+    }
+
+    private void setMatrix() {
         Matrix matrix = new Matrix();
-        Util.prepareMatrix(matrix, mirror, displayOrientation,
-                previewWidth, previewHeight);
+        Util.prepareMatrix(matrix, mMirror, mDisplayOrientation,
+                mPreviewWidth, mPreviewHeight);
         // In face detection, the matrix converts the driver coordinates to UI
         // coordinates. In tap focus, the inverted matrix converts the UI
         // coordinates to driver coordinates.
         matrix.invert(mMatrix);
-
-        if (mParameters != null) {
-            mInitialized = true;
-        } else {
-            Log.e(TAG, "mParameters is not initialized.");
-        }
+        mInitialized = true;
     }
 
     public void onShutterDown() {
@@ -353,7 +364,6 @@ public class FocusManager {
         }
     }
 
-    // This can only be called after mParameters is initialized.
     public String getFocusMode() {
         if (mOverrideFocusMode != null) return mOverrideFocusMode;
         List<String> supportedFocusModes = mParameters.getSupportedFocusModes();

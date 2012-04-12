@@ -29,11 +29,12 @@ import android.widget.RelativeLayout;
 public class PreviewFrameLayout extends RelativeLayout {
     /** A callback to be invoked when the preview frame's size changes. */
     public interface OnSizeChangedListener {
-        public void onSizeChanged();
+        public void onSizeChanged(int width, int height);
     }
 
     private double mAspectRatio;
     private View mBorder;
+    private OnSizeChangedListener mListener;
 
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -92,5 +93,14 @@ public class PreviewFrameLayout extends RelativeLayout {
         // Ask children to follow the new preview dimension.
         super.onMeasure(MeasureSpec.makeMeasureSpec(previewWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(previewHeight, MeasureSpec.EXACTLY));
+    }
+
+    public void setOnSizeChangedListener(OnSizeChangedListener listener) {
+        mListener = listener;
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        if (mListener != null) mListener.onSizeChanged(w, h);
     }
 }

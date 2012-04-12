@@ -82,7 +82,8 @@ import java.util.List;
 public class Camera extends ActivityBase implements FocusManager.Listener,
         View.OnTouchListener, ShutterButton.OnShutterButtonListener,
         ModePicker.OnModeChangeListener, FaceDetectionListener,
-        CameraPreference.OnPreferenceChangedListener, LocationManager.Listener {
+        CameraPreference.OnPreferenceChangedListener, LocationManager.Listener,
+        PreviewFrameLayout.OnSizeChangedListener {
 
     private static final String TAG = "camera";
 
@@ -348,11 +349,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // TODO: add touch focus back.
         // mPreviewFrameLayout.setOnTouchListener(this);
-        // Initialize focus UI.
-        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-        boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
-        mFocusManager.initialize(mFocusAreaIndicator, mPreviewFrameLayout.getWidth(),
-                mPreviewFrameLayout.getHeight(), mFaceView, this, mirror, mDisplayOrientation);
         mImageSaver = new ImageSaver();
         installIntentFilter();
         initializeZoom();
@@ -443,6 +439,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
             mFaceView.setMirror(info.facing == CameraInfo.CAMERA_FACING_FRONT);
             mFaceView.resume();
+            mFocusManager.setFaceView(mFaceView);
             mCameraDevice.setFaceDetectionListener(this);
             mCameraDevice.startFaceDetection();
         }
@@ -983,7 +980,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     Thread mCameraPreviewThread = new Thread(new Runnable() {
         @Override
         public void run() {
-            initializeCapabilities();
             startPreview();
         }
     });
@@ -994,10 +990,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
         mCameraId = getPreferredCameraId(mPreferences);
-
-        String[] defaultFocusModes = getResources().getStringArray(
-                R.array.pref_camera_focusmode_default_array);
-        mFocusManager = new FocusManager(mPreferences, defaultFocusModes);
 
         mContentResolver = getContentResolver();
 
@@ -1062,6 +1054,17 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         } catch (InterruptedException ex) {
             // ignore
         }
+
+        // Create FocusManager object. startPreview needs it.
+        initializeCapabilities();
+        String[] defaultFocusModes = getResources().getStringArray(
+                R.array.pref_camera_focusmode_default_array);
+        mFocusAreaIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
+        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+        boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
+        mFocusManager = new FocusManager(mPreferences, defaultFocusModes,
+                mFocusAreaIndicator, mInitialParams, this, mirror);
+
         mCameraPreviewThread.start();
 
         if (mIsImageCaptureIntent) {
@@ -1073,13 +1076,15 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
         }
 
-        mFocusAreaIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
-
         mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
         mOnScreenIndicators = (Rotatable) findViewById(R.id.on_screen_indicators);
         mLocationManager = new LocationManager(this, this);
 
         mFaceView = (FaceView) findViewById(R.id.face_view);
+        mPreviewPanel = findViewById(R.id.frame_layout);
+        mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
+        mPreviewFrameLayout.addOnLayoutChangeListener(this);
+        mPreviewFrameLayout.setOnSizeChangedListener(this);
 
         // Wait until the camera settings are retrieved.
         synchronized (mCameraPreviewThread) {
@@ -1641,6 +1646,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mFaceView != null) {
             mFaceView.setDisplayOrientation(mDisplayOrientation);
         }
+        mFocusManager.setDisplayOrientation(mDisplayOrientation);
     }
 
     private void startPreview() {
@@ -1774,11 +1780,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Set the preview frame aspect ratio according to the picture size.
         Size size = mParameters.getPictureSize();
-
-        mPreviewPanel = findViewById(R.id.frame_layout);
-        mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
         mPreviewFrameLayout.setAspectRatio((double) size.width / size.height);
-        mPreviewFrameLayout.addOnLayoutChangeListener(this);
 
         // Set a preview size that is closest to the viewfinder height and has
         // the right aspect ratio.
@@ -2144,7 +2146,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void initializeCapabilities() {
         mInitialParams = mCameraDevice.getParameters();
-        mFocusManager.initializeParameters(mInitialParams);
         mFocusAreaSupported = (mInitialParams.getMaxNumFocusAreas() > 0
                 && isSupported(Parameters.FOCUS_MODE_AUTO,
                         mInitialParams.getSupportedFocusModes()));
@@ -2153,5 +2154,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mAwbLockSupported = mInitialParams.isAutoWhiteBalanceLockSupported();
         mContinousFocusSupported = mInitialParams.getSupportedFocusModes().contains(
                 Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+    }
+
+    // PreviewFrameLayout size has changed.
+    @Override
+    public void onSizeChanged(int width, int height) {
+        mFocusManager.setPreviewSize(width, height);
     }
 }
