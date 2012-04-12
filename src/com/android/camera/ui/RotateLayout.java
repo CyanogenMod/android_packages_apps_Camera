@@ -27,7 +27,7 @@ public class RotateLayout extends ViewGroup implements Rotatable {
     @SuppressWarnings("unused")
     private static final String TAG = "RotateLayout";
     private int mOrientation;
-    private View mChild;
+    protected View mChild;
 
     public RotateLayout(Context context, AttributeSet attrs) {
         super(context, attrs);

@@ -626,7 +626,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mShutterCallbackTime = System.currentTimeMillis();
             mShutterLag = mShutterCallbackTime - mCaptureStartTime;
             Log.v(TAG, "mShutterLag = " + mShutterLag + "ms");
-            mFocusManager.onShutter();
         }
     }
 
