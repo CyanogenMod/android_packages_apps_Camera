@@ -50,7 +50,6 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     private static final String TAG = "ActivityBase";
     private static boolean LOGV = false;
     private int mResultCodeForTesting;
-    private boolean mOnResumePending;
     private Intent mResultDataForTesting;
     private OnScreenHint mStorageHint;
     private UpdateCameraAppView mUpdateCameraAppView;
@@ -112,36 +111,9 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        if (LOGV) Log.v(TAG, "onWindowFocusChanged.hasFocus=" + hasFocus
-                + ".mOnResumePending=" + mOnResumePending);
-        if (hasFocus && mOnResumePending) {
-            mPaused = false;
-            doOnResume();
-            mOnResumePending = false;
-        }
-    }
-
-    @Override
     protected void onResume() {
+        mPaused = false;
         super.onResume();
-        // Don't grab the camera if in use by lockscreen. For example, face
-        // unlock may be using the camera. Camera may be already opened in
-        // onCreate. doOnResume should continue if mCameraDevice != null.
-        // Suppose camera app is in the foreground. If users turn off and turn
-        // on the screen very fast, camera app can still have the focus when the
-        // lock screen shows up. The keyguard takes input focus, so the camera
-        // app will lose focus when it is displayed.
-        if (LOGV) Log.v(TAG, "onResume. hasWindowFocus()=" + hasWindowFocus());
-        if (mCameraDevice == null && isKeyguardLocked()) {
-            if (LOGV) Log.v(TAG, "onResume. mOnResumePending=true");
-            mOnResumePending = true;
-        } else {
-            if (LOGV) Log.v(TAG, "onResume. mOnResumePending=false");
-            mPaused = false;
-            doOnResume();
-            mOnResumePending = false;
-        }
     }
 
     @Override
@@ -160,12 +132,7 @@ abstract public class ActivityBase extends AbstractGalleryActivity
             mStorageHint.cancel();
             mStorageHint = null;
         }
-
-        mOnResumePending = false;
     }
-
-    // Put the code of onResume in this method.
-    abstract protected void doOnResume();
 
     @Override
     public boolean onSearchRequested() {

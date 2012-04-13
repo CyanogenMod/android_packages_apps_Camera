@@ -981,7 +981,8 @@ public class PanoramaActivity extends ActivityBase implements
     }
 
     @Override
-    protected void doOnResume() {
+    protected void onResume() {
+        super.onResume();
         mOrientationEventListener.enable();
 
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
