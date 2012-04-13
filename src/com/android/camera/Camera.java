@@ -1396,7 +1396,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     @Override
-    protected void doOnResume() {
+    protected void onResume() {
+        super.onResume();
         if (mOpenCameraFail || mCameraDisabled) return;
 
         mJpegPictureCallbackTime = 0;

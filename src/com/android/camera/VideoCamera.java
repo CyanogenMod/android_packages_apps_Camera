@@ -782,7 +782,8 @@ public class VideoCamera extends ActivityBase
     }
 
     @Override
-    protected void doOnResume() {
+    protected void onResume() {
+        super.onResume();
         if (mOpenCameraFail || mCameraDisabled) return;
 
         mZoomValue = 0;
