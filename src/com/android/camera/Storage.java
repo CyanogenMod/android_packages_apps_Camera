@@ -35,7 +35,11 @@ public class Storage {
     public static final String DCIM =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
 
+    public static final String E_DCIM = "/mnt/emmc/DCIM";
+
     public static final String DIRECTORY = DCIM + "/Camera";
+
+    public static final String E_DIRECTORY = E_DCIM + "/Camera";
 
     // Match the code in MediaProvider.computeBucketValues().
     public static final String BUCKET_ID =
@@ -49,10 +53,10 @@ public class Storage {
 
     private static final int BUFSIZE = 4096;
 
-    public static Uri addImage(ContentResolver resolver, String title, long date,
+    public static Uri addImage(ContentResolver resolver, boolean place, String title, long date,
                 Location location, int orientation, byte[] jpeg, int width, int height) {
         // Save the image.
-        String path = generateFilepath(title);
+        String path = generateFilepath(place, title);
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(path);
@@ -97,9 +101,17 @@ public class Storage {
         }
         return uri;
     }
+	
+    public static String storagePathBuilder(boolean external){
+    	String path = null;
+	path = external ? E_DIRECTORY : DIRECTORY;
+	if(external)
+	   new File(E_DCIM).mkdirs();
+	return path;
+    }
 
-    public static String generateFilepath(String title) {
-        return DIRECTORY + '/' + title + ".jpg";
+    public static String generateFilepath(boolean place, String title) {
+        return storagePathBuilder(place) + '/' + title + ".jpg";
     }
 
     public static long getAvailableSpace() {

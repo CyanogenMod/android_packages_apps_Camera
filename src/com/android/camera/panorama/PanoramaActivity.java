@@ -948,10 +948,10 @@ public class PanoramaActivity extends ActivityBase implements
         if (jpegData != null) {
             String filename = PanoUtil.createName(
                     getResources().getString(R.string.pano_file_name_format), mTimeTaken);
-            Uri uri = Storage.addImage(getContentResolver(), filename, mTimeTaken, null,
+            Uri uri = Storage.addImage(getContentResolver(), false, filename, mTimeTaken, null,
                     orientation, jpegData, width, height);
             if (uri != null && orientation != 0) {
-                String filepath = Storage.generateFilepath(filename);
+                String filepath = Storage.generateFilepath(false ,filename);
                 try {
                     // Save the orientation in EXIF.
                     ExifInterface exif = new ExifInterface(filepath);

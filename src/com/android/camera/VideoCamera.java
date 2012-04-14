@@ -521,7 +521,8 @@ public class VideoCamera extends ActivityBase
                     CameraSettings.KEY_VIDEO_QUALITY};
         final String[] OTHER_SETTING_KEYS = {
                     CameraSettings.KEY_RECORD_LOCATION,
-                    CameraSettings.KEY_POWER_SHUTTER};
+                    CameraSettings.KEY_POWER_SHUTTER,
+		    CameraSettings.KEY_EXTERNAL_STORAGE};
 
         CameraPicker.setImageResourceId(R.drawable.ic_switch_video_facing_holo_light);
         mIndicatorControlContainer.initialize(this, mPreferenceGroup,
@@ -1403,7 +1404,8 @@ public class VideoCamera extends ActivityBase
         // Used when emailing.
         String filename = title + convertOutputFormatToFileExt(outputFileFormat);
         String mime = convertOutputFormatToMimeType(outputFileFormat);
-        mVideoFilename = Storage.DIRECTORY + '/' + filename;
+	boolean eStorage = !mPreferences.getString(CameraSettings.KEY_EXTERNAL_STORAGE, "off").equals("off");
+        mVideoFilename = Storage.storagePathBuilder(eStorage) + '/' + filename;
         mCurrentVideoValues = new ContentValues(7);
         mCurrentVideoValues.put(Video.Media.TITLE, title);
         mCurrentVideoValues.put(Video.Media.DISPLAY_NAME, filename);
@@ -2427,7 +2429,8 @@ public class VideoCamera extends ActivityBase
         String title = Util.createJpegName(dateTaken);
         int orientation = Exif.getOrientation(data);
         Size s = mParameters.getPictureSize();
-        Uri uri = Storage.addImage(mContentResolver, title, dateTaken, loc, orientation, data,
+	boolean eStorage = !mPreferences.getString(CameraSettings.KEY_EXTERNAL_STORAGE, "off").equals("off");
+        Uri uri = Storage.addImage(mContentResolver, eStorage, title, dateTaken, loc, orientation, data,
                 s.width, s.height);
         if (uri != null) {
             // Create a thumbnail whose width is equal or bigger than that of the preview.
