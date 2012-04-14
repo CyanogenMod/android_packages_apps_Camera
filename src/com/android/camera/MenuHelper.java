@@ -137,18 +137,18 @@ public class MenuHelper {
         startCameraActivity(activity, intent, CAMERA_CLASS);
     }
 
-    public static void gotoCameraImageGallery(Activity activity) {
-        gotoGallery(activity, R.string.gallery_camera_bucket_name, INCLUDE_IMAGES);
+    public static void gotoCameraImageGallery(Activity activity, String bucketId) {
+        gotoGallery(activity, R.string.gallery_camera_bucket_name, INCLUDE_IMAGES, bucketId);
     }
 
-    public static void gotoCameraVideoGallery(Activity activity) {
-        gotoGallery(activity, R.string.gallery_camera_videos_bucket_name, INCLUDE_VIDEOS);
+    public static void gotoCameraVideoGallery(Activity activity, String bucketId) {
+        gotoGallery(activity, R.string.gallery_camera_videos_bucket_name, INCLUDE_VIDEOS, bucketId);
     }
 
     private static void gotoGallery(Activity activity, int windowTitleId,
-            int mediaTypes) {
+            int mediaTypes, String bucketId) {
         Uri target = Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
-                .appendQueryParameter("bucketId", Storage.BUCKET_ID).build();
+                .appendQueryParameter("bucketId", bucketId).build();
         Intent intent = new Intent(Intent.ACTION_VIEW, target);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("windowTitle", activity.getString(windowTitleId));
