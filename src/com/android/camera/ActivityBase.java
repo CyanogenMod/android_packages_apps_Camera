@@ -49,6 +49,7 @@ abstract public class ActivityBase extends AbstractGalleryActivity
 
     private static final String TAG = "ActivityBase";
     private static boolean LOGV = false;
+    private static final int CAMERA_APP_VIEW_TOGGLE_TIME = 100;  // milliseconds
     private int mResultCodeForTesting;
     private Intent mResultDataForTesting;
     private OnScreenHint mStorageHint;
@@ -310,9 +311,13 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         public void run() {
             if (mShowCameraAppView) {
                 mCameraAppView.setVisibility(View.VISIBLE);
-                mCameraAppView.animate().withLayer().alpha(1);
+                mCameraAppView.animate()
+                        .setDuration(CAMERA_APP_VIEW_TOGGLE_TIME)
+                        .withLayer().alpha(1);
             } else {
-                mCameraAppView.animate().withLayer().alpha(0).withEndAction(mHideCameraAppView);
+                mCameraAppView.animate()
+                        .setDuration(CAMERA_APP_VIEW_TOGGLE_TIME)
+                        .withLayer().alpha(0).withEndAction(mHideCameraAppView);
             }
         }
     }
@@ -338,8 +343,8 @@ abstract public class ActivityBase extends AbstractGalleryActivity
                 if (mUpdateCameraAppView == null) {
                     mUpdateCameraAppView = new UpdateCameraAppView();
                     mHideCameraAppView = new HideCameraAppView();
-                    mCameraAppView.animate().setDuration(300)
-                            .setInterpolator(new DecelerateInterpolator());
+                    mCameraAppView.animate()
+                        .setInterpolator(new DecelerateInterpolator());
                 }
                 runOnUiThread(mUpdateCameraAppView);
             }
