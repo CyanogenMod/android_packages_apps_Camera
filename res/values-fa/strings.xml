@@ -44,7 +44,7 @@
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"جلو"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"ذخیره موقعیت مکانی"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"خاموش"</string>
-    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"در"</string>
+    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"فعال"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"کیفیت ویدیو"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"فاصله زمانی سپری شده"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"تنظیمات دوربین"</string>
@@ -63,7 +63,7 @@
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"ماکرو"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"حالت فلاش"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"خودکار"</string>
-    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"در"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"روشن"</string>
     <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"خاموش"</string>
     <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"توازن سفیدی"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"خودکار"</string>
