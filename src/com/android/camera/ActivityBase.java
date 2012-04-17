@@ -67,7 +67,9 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     protected boolean mCameraDisabled;
     protected CameraManager.CameraProxy mCameraDevice;
     protected Parameters mParameters;
-    protected boolean mPaused; // The activity is paused.
+    // The activity is paused. The classes that extend this class should set
+    // mPaused the first thing in onResume/onPause.
+    protected boolean mPaused;
     protected GalleryActionBar mActionBar;
 
     // multiple cameras support
@@ -112,17 +114,10 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     }
 
     @Override
-    protected void onResume() {
-        mPaused = false;
-        super.onResume();
-    }
-
-    @Override
     protected void onPause() {
-        mPaused = true;
+        super.onPause();
         if (LOGV) Log.v(TAG, "onPause");
         saveThumbnailToFile();
-        super.onPause();
 
         if (mLoadThumbnailTask != null) {
             mLoadThumbnailTask.cancel(true);

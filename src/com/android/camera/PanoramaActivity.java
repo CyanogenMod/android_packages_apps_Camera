@@ -952,6 +952,7 @@ public class PanoramaActivity extends ActivityBase implements
 
     @Override
     protected void onPause() {
+        mPaused = true;
         super.onPause();
 
         mOrientationEventListener.disable();
@@ -982,6 +983,7 @@ public class PanoramaActivity extends ActivityBase implements
 
     @Override
     protected void onResume() {
+        mPaused = false;
         super.onResume();
         mOrientationEventListener.enable();
 

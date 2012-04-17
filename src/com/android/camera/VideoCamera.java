@@ -624,15 +624,6 @@ public class VideoCamera extends ActivityBase
                 showAlert();
             }
         } else {
-            // TODO: add animation back.
-            if (mPreviewTextureView != null) {
-                Bitmap bitmap = mPreviewTextureView.getBitmap();
-                if (bitmap != null) {
-                    mCaptureAnimMgr.startAnimation(bitmap.copy(Bitmap.Config.RGB_565, false),
-                            mOrientationCompensation, mPreviewPanel.getWidth(),
-                            mPreviewPanel.getHeight());
-                }
-            }
             if (!effectsActive()) getThumbnail();
         }
     }
@@ -783,6 +774,7 @@ public class VideoCamera extends ActivityBase
 
     @Override
     protected void onResume() {
+        mPaused = false;
         super.onResume();
         if (mOpenCameraFail || mCameraDisabled) return;
 
@@ -947,33 +939,17 @@ public class VideoCamera extends ActivityBase
         mSnapshotInProgress = false;
     }
 
-    private void finishRecorderAndCloseCamera() {
-        // This is similar to what mShutterButton.performClick() does,
-        // but not quite the same.
-        if (mMediaRecorderRecording) {
-            mEffectsDisplayResult = true;
-            if (mIsVideoCaptureIntent) {
-                stopVideoRecording();
-                if (!effectsActive()) showAlert();
-            } else {
-                stopVideoRecording();
-                if (!effectsActive()) getThumbnail();
-            }
-        } else {
-            stopVideoRecording();
-        }
-        closeCamera();
-    }
-
     @Override
     protected void onPause() {
-        super.onPause();
+        mPaused = true;
 
-        if (mIndicatorControlContainer != null) {
-            mIndicatorControlContainer.dismissSettingPopup();
+        if (mMediaRecorderRecording) {
+            // Camera will be released in onStopVideoRecording.
+            onStopVideoRecording(true);
+        } else {
+            closeCamera();
+            if (!effectsActive()) releaseMediaRecorder();
         }
-
-        finishRecorderAndCloseCamera();
         mCameraScreenNail.releaseSurfaceTexture();
         mSurfaceTexture = null;
         closeVideoFileDescriptor();
@@ -983,11 +959,17 @@ public class VideoCamera extends ActivityBase
             mReceiver = null;
         }
         resetScreenOn();
+        if (mIndicatorControlContainer != null) {
+            mIndicatorControlContainer.dismissSettingPopup();
+        }
 
         mOrientationListener.disable();
         mLocationManager.recordLocation(false);
 
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
+        // Call onPause after stopping video recording. So the camera can be
+        // released as soon as possible.
+        super.onPause();
     }
 
     @Override
@@ -1647,8 +1629,13 @@ public class VideoCamera extends ActivityBase
                 Log.e(TAG, "stop fail",  e);
                 if (mVideoFilename != null) deleteVideoFile(mVideoFilename);
             }
-
             mMediaRecorderRecording = false;
+
+            // If the activity is paused, this means activity is interrupted
+            // during recording. Release the camera as soon as possible because
+            // face unlock or other applications may need to use the camera.
+            if (mPaused) closeCamera();
+
             showRecordingUI(false);
             if (!mIsVideoCaptureIntent) {
                 enableCameraControls(true);

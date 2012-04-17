@@ -1400,6 +1400,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     protected void onResume() {
+        mPaused = false;
         super.onResume();
         if (mOpenCameraFail || mCameraDisabled) return;
 
@@ -1458,6 +1459,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     protected void onPause() {
+        mPaused = true;
         super.onPause();
 
         stopPreview();
