@@ -89,7 +89,7 @@ public class CameraHolder {
                         // there is a chance that this message has been handled
                         // before being removed. So, we need to add a check
                         // here:
-                        if (!CameraHolder.this.mCameraOpened) releaseCamera();
+                        if (!mCameraOpened) release();
                     }
                     break;
             }
@@ -193,21 +193,19 @@ public class CameraHolder {
     }
 
     public synchronized void release() {
-        Assert(mCameraOpened);
-        mCameraOpened = false;
-        mCameraDevice.stopPreview();
-        releaseCamera();
-    }
-
-    private synchronized void releaseCamera() {
-        Assert(!mCameraOpened);
         Assert(mCameraDevice != null);
+
         long now = System.currentTimeMillis();
         if (now < mKeepBeforeTime) {
+            if (mCameraOpened) {
+                mCameraOpened = false;
+                mCameraDevice.stopPreview();
+            }
             mHandler.sendEmptyMessageDelayed(RELEASE_CAMERA,
                     mKeepBeforeTime - now);
             return;
         }
+        mCameraOpened = false;
         mCameraDevice.release();
         mCameraDevice = null;
         // We must set this to null because it has a reference to Camera.
