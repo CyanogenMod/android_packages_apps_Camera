@@ -89,14 +89,16 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
         invalidate();
     }
 
+    // Ignore the parameter. No autofocus animation for face detection.
     @Override
-    public void showSuccess() {
+    public void showSuccess(boolean timeout) {
         mFaceIndicator = mDrawableFocused;
         invalidate();
     }
 
+    // Ignore the parameter. No autofocus animation for face detection.
     @Override
-    public void showFail() {
+    public void showFail(boolean timeout) {
         mFaceIndicator = mDrawableFocusFailed;
         invalidate();
     }

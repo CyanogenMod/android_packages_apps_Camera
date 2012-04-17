@@ -32,13 +32,33 @@ import android.widget.RelativeLayout;
 
 import com.android.camera.ui.FaceView;
 import com.android.camera.ui.FocusIndicator;
-import com.android.camera.ui.FocusIndicatorView;
+import com.android.camera.ui.FocusIndicatorRotateLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-// A class that handles everything about focus in still picture mode.
-// This also handles the metering area because it is the same as focus area.
+/* A class that handles everything about focus in still picture mode.
+ * This also handles the metering area because it is the same as focus area.
+ *
+ * The test cases:
+ * (1) The camera has continuous autofocus. Move the camera. Take a picture when
+ *     CAF is not in progress.
+ * (2) The camera has continuous autofocus. Move the camera. Take a picture when
+ *     CAF is in progress.
+ * (3) The camera has face detection. Point the camera at some faces. Hold the
+ *     shutter. Release to take a picture.
+ * (4) The camera has face detection. Point the camera at some faces. Single tap
+ *     the shutter to take a picture.
+ * (5) The camera has autofocus. Single tap the shutter to take a picture.
+ * (6) The camera has autofocus. Hold the shutter. Release to take a picture.
+ * (7) The camera has no autofocus. Single tap the shutter and take a picture.
+ * (8) The camera has autofocus and supports focus area. Touch the screen to
+ *     trigger autofocus. Take a picture.
+ * (9) The camera has autofocus and supports focus area. Touch the screen to
+ *     trigger autofocus. Wait until it times out.
+ * (10) The camera has no autofocus and supports metering area. Touch the screen
+ *     to change metering area.
+ */
 public class FocusManager {
     private static final String TAG = "FocusManager";
 
@@ -57,10 +77,12 @@ public class FocusManager {
     private boolean mFocusAreaSupported;
     private boolean mLockAeAwbNeeded;
     private boolean mAeAwbLock;
-    private boolean mAutoFocusMoving;
     private Matrix mMatrix;
-    private View mFocusIndicatorRotateLayout;
-    private FocusIndicatorView mFocusIndicator;
+
+    // The parent layout that includes only the focus indicator.
+    private FocusIndicatorRotateLayout mFocusIndicatorRotateLayout;
+    // The focus indicator view that holds the image resource.
+    private View mFocusIndicator;
     private int mPreviewWidth; // The width of the preview frame layout.
     private int mPreviewHeight; // The height of the preview frame layout.
     private boolean mMirror; // true if the camera is front-facing.
@@ -104,15 +126,14 @@ public class FocusManager {
             boolean mirror) {
         mPreferences = preferences;
         mDefaultFocusModes = defaultFocusModes;
-        mFocusIndicatorRotateLayout = focusIndicatorRotate;
+        mFocusIndicatorRotateLayout = (FocusIndicatorRotateLayout) focusIndicatorRotate;
         mParameters = parameters;
         mListener = listener;
         mMirror = mirror;
 
         mHandler = new MainHandler();
         mMatrix = new Matrix();
-        mFocusIndicator = (FocusIndicatorView) focusIndicatorRotate.findViewById(
-                R.id.focus_indicator);
+        mFocusIndicator = focusIndicatorRotate.findViewById(R.id.focus_indicator);
         mFocusAreaSupported = (mParameters.getMaxNumFocusAreas() > 0
                 && isSupported(Parameters.FOCUS_MODE_AUTO,
                         mParameters.getSupportedFocusModes()));
@@ -125,6 +146,12 @@ public class FocusManager {
             mPreviewWidth = previewWidth;
             mPreviewHeight = previewHeight;
             setMatrix();
+
+            // Set the length of focus indicator according to preview frame size.
+            int len = Math.min(mPreviewWidth, mPreviewHeight) / 4;
+            ViewGroup.LayoutParams layout = mFocusIndicator.getLayoutParams();
+            layout.width = len;
+            layout.height = len;
         }
     }
 
@@ -208,11 +235,6 @@ public class FocusManager {
         }
     }
 
-    public void onShutter() {
-        resetTouchFocus();
-        updateFocusUI();
-    }
-
     public void onAutoFocus(boolean focused) {
         if (mState == STATE_FOCUSING_SNAP_ON_FINISH) {
             // Take the picture no matter focus succeeds or fails. No need
@@ -254,8 +276,18 @@ public class FocusManager {
     }
 
     public void onAutoFocusMoving(boolean moving) {
-        mAutoFocusMoving = moving;
-        updateFocusUI();
+        // Ignore if the camera has detected some faces.
+        if (mFaceView != null && mFaceView.faceExists()) return;
+
+        // Ignore if we have requested autofocus. This method only handles
+        // continuous autofocus.
+        if (mState != STATE_IDLE) return;
+
+        if (moving) {
+            mFocusIndicatorRotateLayout.showStart();
+        } else {
+            mFocusIndicatorRotateLayout.showSuccess(true);
+        }
     }
 
     public boolean onTouch(MotionEvent e) {
@@ -411,38 +443,29 @@ public class FocusManager {
     public void updateFocusUI() {
         if (!mInitialized) return;
 
-        // Set the length of focus indicator according to preview frame size.
-        int len = Math.min(mPreviewWidth, mPreviewHeight) / 4;
-        ViewGroup.LayoutParams layout = mFocusIndicator.getLayoutParams();
-        layout.width = len;
-        layout.height = len;
-
         // Show only focus indicator or face indicator.
         boolean faceExists = (mFaceView != null && mFaceView.faceExists());
-        FocusIndicator focusIndicator = (faceExists) ? mFaceView : mFocusIndicator;
+        FocusIndicator focusIndicator = (faceExists) ? mFaceView : mFocusIndicatorRotateLayout;
 
         if (mState == STATE_IDLE) {
-            if (mFocusArea == null && !mAutoFocusMoving) {
+            if (mFocusArea == null) {
                 focusIndicator.clear();
             } else {
-                // Continuous autofocus is in progress. Or users touch on the
-                // preview and the indicator represents the metering area.
-                // Either focus area is not supported or autoFocus call is not
-                // required.
+                // Users touch on the preview and the indicator represents the
+                // metering area. Either focus area is not supported or
+                // autoFocus call is not required.
                 focusIndicator.showStart();
             }
         } else if (mState == STATE_FOCUSING || mState == STATE_FOCUSING_SNAP_ON_FINISH) {
             focusIndicator.showStart();
         } else {
-            // In CAF, do not show success or failure because it only returns
-            // the focus status. It does not do a full scan. So the result is
-            // failure most of the time.
             if (Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)) {
-                focusIndicator.showStart();
+                // TODO: check HAL behavior and decide if this can be removed.
+                focusIndicator.showSuccess(false);
             } else if (mState == STATE_SUCCESS) {
-                focusIndicator.showSuccess();
+                focusIndicator.showSuccess(false);
             } else if (mState == STATE_FAIL) {
-                focusIndicator.showFail();
+                focusIndicator.showFail(false);
             }
         }
     }
@@ -456,6 +479,7 @@ public class FocusManager {
         int[] rules = p.getRules();
         rules[RelativeLayout.CENTER_IN_PARENT] = RelativeLayout.TRUE;
         p.setMargins(0, 0, 0, 0);
+        mFocusIndicatorRotateLayout.clear();
 
         mFocusArea = null;
         mMeteringArea = null;
