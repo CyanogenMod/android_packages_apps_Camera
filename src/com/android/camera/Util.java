@@ -518,6 +518,16 @@ public class Util {
                 && y >= mLocation[1] && y < (mLocation[1] + v.getHeight());
     }
 
+    public static int[] getRelativeLocation(View reference, View view) {
+        reference.getLocationInWindow(mLocation);
+        int referenceX = mLocation[0];
+        int referenceY = mLocation[1];
+        view.getLocationInWindow(mLocation);
+        mLocation[0] -= referenceX;
+        mLocation[1] -= referenceY;
+        return mLocation;
+    }
+
     public static boolean isUriValid(Uri uri, ContentResolver resolver) {
         if (uri == null) return false;
 

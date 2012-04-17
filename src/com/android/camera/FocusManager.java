@@ -290,8 +290,8 @@ public class FocusManager {
         }
     }
 
-    public boolean onTouch(MotionEvent e) {
-        if (!mInitialized || mState == STATE_FOCUSING_SNAP_ON_FINISH) return false;
+    public void onSingleTapUp(int x, int y) {
+        if (!mInitialized || mState == STATE_FOCUSING_SNAP_ON_FINISH) return;
 
         // Let users be able to cancel previous touch focus.
         if ((mFocusArea != null) && (mState == STATE_FOCUSING ||
@@ -300,8 +300,6 @@ public class FocusManager {
         }
 
         // Initialize variables.
-        int x = Math.round(e.getX());
-        int y = Math.round(e.getY());
         int focusWidth = mFocusIndicatorRotateLayout.getWidth();
         int focusHeight = mFocusIndicatorRotateLayout.getHeight();
         int previewWidth = mPreviewWidth;
@@ -337,7 +335,7 @@ public class FocusManager {
 
         // Set the focus area and metering area.
         mListener.setFocusParameters();
-        if (mFocusAreaSupported && (e.getAction() == MotionEvent.ACTION_UP)) {
+        if (mFocusAreaSupported) {
             autoFocus();
         } else {  // Just show the indicator in all other cases.
             updateFocusUI();
@@ -345,8 +343,6 @@ public class FocusManager {
             mHandler.removeMessages(RESET_TOUCH_FOCUS);
             mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, RESET_TOUCH_FOCUS_DELAY);
         }
-
-        return true;
     }
 
     public void onPreviewStarted() {
