@@ -66,7 +66,13 @@ public class ControlPanelLayout extends RelativeLayout {
             Log.e(TAG, "layout_xxx of ControlPanelLayout should be wrap_content");
         }
 
-        // The width cannot be bigger than the constraint.
+        // The size cannot be smaller than minimum constraint.
+        int minimumSize = (isLandscape) ? getMinimumWidth() : getMinimumHeight();
+        if (measuredSize < minimumSize) {
+            measuredSize = minimumSize;
+        }
+
+        // The size cannot be bigger than the constraint.
         if (mode == MeasureSpec.AT_MOST && measuredSize > specSize) {
             measuredSize = specSize;
         }
