@@ -19,15 +19,14 @@
             android:layout_width="wrap_content"
             android:layout_alignParentLeft="true"
             android:visibility="gone">
+    <!-- minHeight in camera_control.xml is used to avoid overlapping of current_mode. -->
     <RelativeLayout android:id="@+id/current_mode"
-            android:orientation="horizontal"
             android:layout_alignLeft="@+id/mode_selection"
             android:layout_height="match_parent"
             android:layout_width="55dp"
             android:contentDescription="@string/accessibility_mode_picker"
             android:background="@drawable/bg_mode_picker">
         <RelativeLayout
-                android:orientation="vertical"
                 android:contentDescription="@string/empty"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent">

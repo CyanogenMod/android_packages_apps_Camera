@@ -14,10 +14,11 @@
      limitations under the License.
 -->
 
+<!-- minHeight is necessary to avoid distortion or overlapping. -->
 <com.android.camera.ui.ControlPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="76dp"
+        android:minHeight="105dp"
         android:background="@drawable/bg_camera_pattern">
     <include layout="@layout/review_thumbnail" />
     <include layout="@layout/review_control" />
