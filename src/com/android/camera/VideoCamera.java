@@ -1111,7 +1111,11 @@ public class VideoCamera extends ActivityBase
         // display rotation in onCreate may not be what we want.
         if (mPreviewing && (Util.getDisplayRotation(this) == mDisplayRotation)
                 && holder.isCreating()) {
-            setPreviewDisplay(holder);
+            if (forcePreview(mPreferences)) {
+                startPreview();
+            } else {
+                setPreviewDisplay(holder);
+            }
         } else {
             stopVideoRecording();
             startPreview();
