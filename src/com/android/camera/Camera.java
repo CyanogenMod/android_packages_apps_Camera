@@ -1064,6 +1064,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mFocusManager = new FocusManager(mPreferences, defaultFocusModes,
                 mFocusAreaIndicator, mInitialParams, this, mirror);
 
+        // startPreview needs this.
+        mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
+
         mCameraPreviewThread.start();
 
         if (mIsImageCaptureIntent) {
@@ -1081,7 +1084,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         mFaceView = (FaceView) findViewById(R.id.face_view);
         mPreviewPanel = findViewById(R.id.frame_layout);
-        mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
         mPreviewFrameLayout.addOnLayoutChangeListener(this);
         mPreviewFrameLayout.setOnSizeChangedListener(this);
 
