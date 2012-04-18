@@ -62,6 +62,7 @@ public class CameraSettings {
     public static final String KEY_SHARPNESS = "pref_camera_sharpness_key";
     public static final String KEY_CONTRAST = "pref_camera_contrast_key";
     public static final String KEY_SATURATION = "pref_camera_saturation_key";
+    public static final String KEY_STABILIZATION = "pref_camera_stabilization_key";
 
     private static final String VIDEO_QUALITY_HD = "hd";
     private static final String VIDEO_QUALITY_WIDE = "wide";
@@ -102,8 +103,6 @@ public class CameraSettings {
     private static boolean mSamsungSpecialSettings; // slow_ae and video_recording_gamma
     private static boolean mIsOMAP4Camera;
 
-    private static boolean sFocusCamcorderAtStart = true;
-
     public static final String FOCUS_MODE_TOUCH = "touch";
 
     public CameraSettings(Activity activity, Parameters parameters,
@@ -113,8 +112,6 @@ public class CameraSettings {
         mCameraInfo = cameraInfo;
         mCameraId = cameraId;
         mIsOMAP4Camera = mContext.getResources().getBoolean(R.bool.isOMAP4Camera);
-        sFocusCamcorderAtStart = mContext.getResources().getBoolean(
-                R.bool.focusCamcorderAtStart);
     }
 
     public PreferenceGroup getPreferenceGroup(int preferenceRes) {
@@ -182,6 +179,7 @@ public class CameraSettings {
         ListPreference lensShade = group.findPreference(KEY_LENSSHADING);
         ListPreference antiBanding = group.findPreference(KEY_ANTIBANDING);
         ListPreference autoExposure = group.findPreference(KEY_AUTOEXPOSURE);
+        ListPreference stabilization = group.findPreference(KEY_STABILIZATION);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -287,13 +285,23 @@ public class CameraSettings {
              filterUnsupportedOptions(group,
                      autoExposure, mParameters.getSupportedAutoexposure());
          }
+         if (stabilization != null) {
+		/* The parameter might be initialized post-check, that's why we
+		 * check for a 3rd parameter these cameras have
+		 */
+             if (mParameters.get("mot-image-stabilization-values") == null &&
+                 mParameters.get("nv-image-stabilization-values") == null &&
+                 mParameters.get("mot-max-burst-size") == null) {
+                     filterUnsupportedOptions(group, stabilization, null);
+             }
+         }
     }
 
     private boolean checkTouchFocus() {
         sTouchFocusParameter = mContext.getResources().getString(R.string.touchFocusParameter);
         sTouchFocusNeedsRect = mContext.getResources().getBoolean(R.bool.touchFocusNeedsRect);
 
-        if (sTouchFocusParameter != null && sTouchFocusParameter.length() != 0) {
+        if (sTouchFocusParameter != null) {
             return true;
         } else {
             return false;
@@ -631,10 +639,6 @@ public class CameraSettings {
         // reset to 3264x2448x15 when attempting Full HD recording.
         params.setPreviewSize(1280, 720); 
         params.set("preview-frame-rate", "30"); 
-    }
-
-    public static boolean isCamcoderFocusAtStart() {
-        return sFocusCamcorderAtStart;
     }
 
 }
