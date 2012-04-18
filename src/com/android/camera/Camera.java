@@ -37,6 +37,7 @@ import android.media.CameraProfile;
 import android.media.MediaActionSound;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ConditionVariable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -246,6 +247,14 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private PreferenceGroup mPreferenceGroup;
 
     private boolean mQuickCapture;
+
+    ConditionVariable mParametersSetCondition = new ConditionVariable();
+    Thread mCameraPreviewThread = new Thread() {
+        @Override
+        public void run() {
+            startPreview();
+        }
+    };
 
     /**
      * This Handler is used to post message back onto the main thread of the
@@ -976,13 +985,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    Thread mCameraPreviewThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            startPreview();
-        }
-    });
-
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -1088,13 +1090,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mPreviewFrameLayout.setOnSizeChangedListener(this);
 
         // Wait until the camera settings are retrieved.
-        synchronized (mCameraPreviewThread) {
-            try {
-                mCameraPreviewThread.wait();
-            } catch (InterruptedException ex) {
-                // ignore
-            }
-        }
+        mParametersSetCondition.block();
 
         // Do this after starting preview because it depends on camera
         // parameters.
@@ -1107,6 +1103,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             // ignore
         }
         mCameraPreviewThread = null;
+        mParametersSetCondition = null;
     }
 
     private void overrideCameraSettings(final String flashMode,
@@ -1674,11 +1671,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         setCameraParameters(UPDATE_PARAM_ALL);
 
         // Inform the main thread to go on the UI initialization.
-        if (mCameraPreviewThread != null) {
-            synchronized (mCameraPreviewThread) {
-                mCameraPreviewThread.notify();
-            }
-        }
+        if (mParametersSetCondition != null) mParametersSetCondition.open();
 
         if (mSurfaceTexture == null) {
             Size size = mParameters.getPreviewSize();
