@@ -141,6 +141,10 @@
     <!-- More Settings screen, storage title -->
     <string name="pref_camera_storage_title">Storage</string>
 
+    <!-- More Settings screen, force preview title -->
+    <string name="pref_camera_force_preview_title">Force preview</string>
+    <string name="pref_camera_force_preview_default">off</string>
+
     <!-- Settings screen, Picture size title -->
     <string name="pref_camera_picturesize_title">Picture size</string>
 

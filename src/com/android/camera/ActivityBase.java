@@ -73,6 +73,16 @@ abstract public class ActivityBase extends Activity {
             return false;
         }
     }
+    protected boolean forcePreview(ComboPreferences prefs) {
+        prefs.setLocalId(getApplicationContext(), 0);
+        String val = prefs.getString(CameraSettings.KEY_FORCE_PREVIEW,
+                                     getResources().getString(R.string.pref_camera_force_preview_default));
+        if (val.equals(CameraSettings.VALUE_ON)){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     @Override
     protected void onResume() {
