@@ -81,10 +81,10 @@ import java.util.List;
 
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends ActivityBase implements FocusManager.Listener,
-        View.OnTouchListener, ShutterButton.OnShutterButtonListener,
         ModePicker.OnModeChangeListener, FaceDetectionListener,
         CameraPreference.OnPreferenceChangedListener, LocationManager.Listener,
-        PreviewFrameLayout.OnSizeChangedListener {
+        PreviewFrameLayout.OnSizeChangedListener,
+        ShutterButton.OnShutterButtonListener {
 
     private static final String TAG = "camera";
 
@@ -356,8 +356,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.setVisibility(View.VISIBLE);
 
-        // TODO: add touch focus back.
-        // mPreviewFrameLayout.setOnTouchListener(this);
+        // Set touch focus listener.
+        setSingleTapUpListener(mPreviewFrameLayout);
+
         mImageSaver = new ImageSaver();
         installIntentFilter();
         initializeZoom();
@@ -1545,19 +1546,19 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     // Preview area is touched. Handle touch focus.
     @Override
-    public boolean onTouch(View v, MotionEvent e) {
+    protected void onSingleTapUp(View view, int x, int y) {
         if (mPaused || mCameraDevice == null || !mFirstTimeInitialized
                 || mCameraState == SNAPSHOT_IN_PROGRESS) {
-            return false;
+            return;
         }
 
         // Do not trigger touch focus if popup window is opened.
-        if (collapseCameraControls()) return false;
+        if (collapseCameraControls()) return;
 
         // Check if metering area or focus area is supported.
-        if (!mFocusAreaSupported && !mMeteringAreaSupported) return false;
+        if (!mFocusAreaSupported && !mMeteringAreaSupported) return;
 
-        return mFocusManager.onTouch(e);
+        mFocusManager.onSingleTapUp(x, y);
     }
 
     @Override

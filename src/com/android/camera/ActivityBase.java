@@ -35,7 +35,9 @@ import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.RotateImageView;
 import com.android.gallery3d.app.AbstractGalleryActivity;
 import com.android.gallery3d.app.PhotoPage;
+import com.android.gallery3d.app.PhotoPage.PageTapListener;
 import com.android.gallery3d.app.GalleryActionBar;
+import com.android.gallery3d.app.StateManager;
 import com.android.gallery3d.util.MediaSetUtils;
 
 import java.io.File;
@@ -45,7 +47,7 @@ import java.io.File;
  */
 abstract public class ActivityBase extends AbstractGalleryActivity
         implements CameraScreenNail.PositionChangedListener,
-                View.OnLayoutChangeListener {
+                View.OnLayoutChangeListener, PageTapListener {
 
     private static final String TAG = "ActivityBase";
     private static boolean LOGV = false;
@@ -55,6 +57,7 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     private OnScreenHint mStorageHint;
     private UpdateCameraAppView mUpdateCameraAppView;
     private HideCameraAppView mHideCameraAppView;
+    private View mSingleTapArea;
 
     // The bitmap of the last captured picture thumbnail and the URI of the
     // original picture.
@@ -380,5 +383,32 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         float translateY = relativeTop + (bottom - top - height) / 2f;
 
         mCameraScreenNail.setMatrix(scale, scalePx, scalePy, translateX, translateY);
+    }
+
+    protected void setSingleTapUpListener(View singleTapArea) {
+        PhotoPage photoPage = (PhotoPage) getStateManager().getTopState();
+        photoPage.setPageTapListener(this);
+        mSingleTapArea = singleTapArea;
+    }
+
+    // Single tap up from PhotoPage.
+    @Override
+    public boolean onSingleTapUp(int x, int y) {
+        // Camera control is invisible. Ignore.
+        if (!mShowCameraAppView) return false;
+
+        int[] relativeLocation = Util.getRelativeLocation((View) getGLRoot(),
+                mSingleTapArea);
+        x -= relativeLocation[0];
+        y -= relativeLocation[1];
+        if (x >= 0 && x < mSingleTapArea.getWidth() && y >= 0
+                && y < mSingleTapArea.getHeight()) {
+            onSingleTapUp(mSingleTapArea, x, y);
+            return true;
+        }
+        return false;
+    }
+
+    protected void onSingleTapUp(View view, int x, int y) {
     }
 }

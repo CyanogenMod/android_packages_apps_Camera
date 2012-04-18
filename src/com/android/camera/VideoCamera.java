@@ -89,7 +89,7 @@ public class VideoCamera extends ActivityBase
         implements CameraPreference.OnPreferenceChangedListener,
         ShutterButton.OnShutterButtonListener, MediaRecorder.OnErrorListener,
         MediaRecorder.OnInfoListener, ModePicker.OnModeChangeListener,
-        View.OnTouchListener, EffectsRecorder.EffectsListener {
+        EffectsRecorder.EffectsListener {
 
     private static final String TAG = "videocamera";
 
@@ -2170,7 +2170,7 @@ public class VideoCamera extends ActivityBase
 
     private void initializeVideoSnapshot() {
         if (mParameters.isVideoSnapshotSupported() && !mIsVideoCaptureIntent) {
-            mPreviewFrameLayout.setOnTouchListener(this);
+            setSingleTapUpListener(mPreviewFrameLayout);
             // Show the tap to focus toast if this is the first start.
             if (mPreferences.getBoolean(
                         CameraSettings.KEY_VIDEO_FIRST_USE_HINT_SHOWN, true)) {
@@ -2190,16 +2190,16 @@ public class VideoCamera extends ActivityBase
 
     // Preview area is touched. Take a picture.
     @Override
-    public boolean onTouch(View v, MotionEvent e) {
+    protected void onSingleTapUp(View view, int x, int y) {
         if (mMediaRecorderRecording && effectsActive()) {
             new RotateTextToast(this, R.string.disable_video_snapshot_hint,
                     mOrientation).show();
-            return false;
+            return;
         }
 
         if (mPaused || mSnapshotInProgress
                 || !mMediaRecorderRecording || effectsActive()) {
-            return false;
+            return;
         }
 
         // Set rotation and gps data.
@@ -2212,7 +2212,6 @@ public class VideoCamera extends ActivityBase
         mCameraDevice.takePicture(null, null, null, new JpegPictureCallback(loc));
         showVideoSnapshotUI(true);
         mSnapshotInProgress = true;
-        return true;
     }
 
     private final class JpegPictureCallback implements PictureCallback {
