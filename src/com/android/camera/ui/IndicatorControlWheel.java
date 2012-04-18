@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -35,8 +36,8 @@ import com.android.camera.Util;
 
 /**
  * A view that contains camera setting indicators in two levels. The first-level
- * indicators including the zoom, camera picker, flash and second-level control.
- * The second-level indicators are the merely for the camera settings.
+ * indicators including the zoom, camera picker and second-level control.
+ * The second-level indicators are merely for the camera settings.
  */
 public class IndicatorControlWheel extends IndicatorControl implements
         View.OnClickListener {
@@ -47,19 +48,49 @@ public class IndicatorControlWheel extends IndicatorControl implements
     private static final int HIGHLIGHT_DEGREES = 30;
     private static final double HIGHLIGHT_RADIANS = Math.toRadians(HIGHLIGHT_DEGREES);
 
-    // The following angles are based in the zero degree on the right. Here we
-    // have the CameraPicker, ZoomControl and the Settings icons in the
+    // The following angles are based in the zero degree on the right, measured
+    // counter-clockwise.
+    //
+    // For landscape orientation:
+    //                   90
+    //             ______|______
+    //            |      |      |
+    //    180 <---|------|------|---> 0
+    //            |______|______|
+    //                   |
+    //                  270
+    //
+    // For portrait orientation:
+    //                   90
+    //                ___|___
+    //               |   |   |
+    //               |   |   |
+    //       180 <---|---|---|---> 0
+    //               |   |   |
+    //               |___|___|
+    //                   |
+    //                  270
+    //
+    // Here we have the CameraPicker, ZoomControl and the Settings icons in the
     // first-level. For consistency, we treat the zoom control as one of the
     // indicator buttons but it needs additional efforts for rotation animation.
     // For second-level indicators, the indicators are located evenly between start
     // and end angle. In addition, these indicators for the second-level hidden
     // in the same wheel with larger angle values are visible after rotation.
-    private static final int FIRST_LEVEL_START_DEGREES = 74;
-    private static final int FIRST_LEVEL_END_DEGREES = 286;
-    private static final int SECOND_LEVEL_START_DEGREES = 60;
-    private static final int SECOND_LEVEL_END_DEGREES = 300;
-    private static final int MAX_ZOOM_CONTROL_DEGREES = 264;
-    private static final int CLOSE_ICON_DEFAULT_DEGREES = 315;
+    private static final int LANDSCAPE_FIRST_LEVEL_START_DEGREES = 74;
+    private static final int LANDSCAPE_FIRST_LEVEL_END_DEGREES = 286;
+    private static final int LANDSCAPE_SECOND_LEVEL_START_DEGREES = 60;
+    private static final int LANDSCAPE_SECOND_LEVEL_END_DEGREES = 300;
+    private static final int LANDSCAPE_MAX_ZOOM_CONTROL_DEGREES = 264;
+    private static final int LANDSCAPE_CLOSE_ICON_DEFAULT_DEGREES = 315;
+
+    // Will be calculated based on orientation.
+    private final int FIRST_LEVEL_START_DEGREES;
+    private final int FIRST_LEVEL_END_DEGREES;
+    private final int SECOND_LEVEL_START_DEGREES;
+    private final int SECOND_LEVEL_END_DEGREES;
+    private final int MAX_ZOOM_CONTROL_DEGREES;
+    private final int CLOSE_ICON_DEFAULT_DEGREES;
 
     private static final int ANIMATION_TIME = 300; // milliseconds
 
@@ -133,6 +164,25 @@ public class IndicatorControlWheel extends IndicatorControl implements
 
         mBackgroundRect = new RectF();
         mFanPath = new Path();
+
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+            // tablet in landscape orientation
+            FIRST_LEVEL_START_DEGREES = LANDSCAPE_FIRST_LEVEL_START_DEGREES;
+            FIRST_LEVEL_END_DEGREES = LANDSCAPE_FIRST_LEVEL_END_DEGREES;
+            SECOND_LEVEL_START_DEGREES = LANDSCAPE_SECOND_LEVEL_START_DEGREES;
+            SECOND_LEVEL_END_DEGREES = LANDSCAPE_SECOND_LEVEL_END_DEGREES;
+            MAX_ZOOM_CONTROL_DEGREES = LANDSCAPE_MAX_ZOOM_CONTROL_DEGREES;
+            CLOSE_ICON_DEFAULT_DEGREES = LANDSCAPE_CLOSE_ICON_DEFAULT_DEGREES;
+        } else {
+            // tablet in portrait orientation
+            FIRST_LEVEL_START_DEGREES = LANDSCAPE_FIRST_LEVEL_START_DEGREES - 90;
+            FIRST_LEVEL_END_DEGREES = LANDSCAPE_FIRST_LEVEL_END_DEGREES - 90;
+            SECOND_LEVEL_START_DEGREES = LANDSCAPE_SECOND_LEVEL_START_DEGREES - 90;
+            SECOND_LEVEL_END_DEGREES = LANDSCAPE_SECOND_LEVEL_END_DEGREES - 90;
+            MAX_ZOOM_CONTROL_DEGREES = LANDSCAPE_MAX_ZOOM_CONTROL_DEGREES - 90;
+            CLOSE_ICON_DEFAULT_DEGREES = LANDSCAPE_CLOSE_ICON_DEFAULT_DEGREES - 90;
+        }
     }
 
     private int getChildCountByLevel(int level) {
@@ -222,24 +272,49 @@ public class IndicatorControlWheel extends IndicatorControl implements
         } else {
             endIndex = getChildCount() - 1;
         }
+
         // Check which indicator is touched.
         double halfTouchSectorRadians = mTouchSectorRadians[mCurrentLevel];
-        if ((delta >= (mChildRadians[startIndex] - halfTouchSectorRadians)) &&
-                (delta <= (mChildRadians[endIndex] + halfTouchSectorRadians))) {
+        // The effective touch area is defined by the range [startRadians,
+        // endRadians], counter-clockwise.
+        double startRadians = mChildRadians[startIndex] - halfTouchSectorRadians;
+        if (startRadians < 0) startRadians += Math.PI * 2;
+        double endRadians = mChildRadians[endIndex] + halfTouchSectorRadians;
+        // True if the touch point is in the effective touch area.
+        boolean touchInRange;
+        if (startRadians > endRadians) {
+            // range crosses 0 degree
+            touchInRange = (delta >= startRadians || delta <= endRadians);
+        } else {
+            touchInRange = (delta >= startRadians && delta <= endRadians);
+        }
+
+        if (touchInRange) {
+            // For portrait orientation, we offset the angles by 90 degrees to
+            // make it share the same logic with landscape orientation.
+            final int offset;
+            if (getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE) {
+                offset = 0;
+            } else {
+                offset = 90;
+            }
+            delta = rebase(delta, offset);
+
             int index = 0;
-            if (mCurrentLevel == 1) {
-                index = (int) ((delta - mChildRadians[startIndex])
+            if (mCurrentLevel == 1) { // for second-level indicators
+                index = (int) ((delta - rebase(mChildRadians[startIndex], offset))
                         / mSectorRadians[mCurrentLevel]);
                 // greater than the center of ending indicator
                 if (index > sectors) return (startIndex + sectors);
                 // less than the center of starting indicator
                 if (index < 0) return startIndex;
             }
-            if (delta <= (mChildRadians[startIndex + index]
+            if (delta <= (rebase(mChildRadians[startIndex + index], offset)
                     + halfTouchSectorRadians)) {
                 return (startIndex + index);
             }
-            if (delta >= (mChildRadians[startIndex + index + 1]
+            if (delta >= (rebase(mChildRadians[startIndex + index + 1], offset)
                     - halfTouchSectorRadians)) {
                 return (startIndex + index + 1);
             }
@@ -249,6 +324,20 @@ public class IndicatorControlWheel extends IndicatorControl implements
             if ((mCurrentLevel == 0) && (mZoomControl != null)) return 0;
         }
         return -1;
+    }
+
+    /*
+     * Calculate the new value of the given angle based on the given offset to
+     * the 0 degree position.
+     *
+     * @param oldAngle the old value of the angle to be calculated. The unit is
+     *                 in radians, measured counter-clockwise from 0 degree
+     *                 position.
+     * @param offset   the angle offset to the 0 degree. The unit is in radians,
+     *                 towards clockwise.
+     */
+    private double rebase(double oldAngle, int offset) {
+        return (oldAngle + offset) % (Math.PI * 2);
     }
 
     private void injectMotionEvent(int viewIndex, MotionEvent event, int action) {
@@ -265,10 +354,11 @@ public class IndicatorControlWheel extends IndicatorControl implements
 
         double dx = event.getX() - mCenterX;
         double dy = mCenterY - event.getY();
-        double radius = Math.sqrt(dx * dx + dy * dy);
+        double centerToTouchPoint = Math.sqrt(dx * dx + dy * dy);
 
         // Ignore the event if too far from the shutter button.
-        if ((radius <= (mWheelRadius + mStrokeWidth)) && (radius > mShutterButtonRadius)) {
+        if ((centerToTouchPoint <= (mWheelRadius + mStrokeWidth))
+                && (centerToTouchPoint > mShutterButtonRadius)) {
             double delta = Math.atan2(dy, dx);
             if (delta < 0) delta += Math.PI * 2;
             int index = getTouchIndicatorIndex(delta);
@@ -341,12 +431,21 @@ public class IndicatorControlWheel extends IndicatorControl implements
             rotateWheel();
             mHandler.post(mRunnable);
         }
-        mCenterX = right - left - Util.dpToPixel(
-                IndicatorControlWheelContainer.FULL_WHEEL_RADIUS);
-        mCenterY = (bottom - top) / 2;
+
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+            mCenterX = right - left - Util.dpToPixel(
+                    IndicatorControlWheelContainer.WHEEL_CENTER_TO_SECANT);
+            mCenterY = (bottom - top) / 2;
+        } else {
+            mCenterX = (right - left) / 2;
+            mCenterY = bottom - top - Util.dpToPixel(
+                    IndicatorControlWheelContainer.WHEEL_CENTER_TO_SECANT);
+        }
 
         // Layout the indicators based on the current level.
-        // The icons are spreaded on the left side of the shutter button.
+        // The icons are spread on the left (top) side of the shutter button in
+        // landscape (portrait) orientation.
         for (int i = 0; i < getChildCount(); ++i) {
             View view = getChildAt(i);
             // We still need to show the disabled indicators in the second level.

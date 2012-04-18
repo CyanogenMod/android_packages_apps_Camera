@@ -21,6 +21,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.hardware.Camera.Parameters;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -101,11 +102,13 @@ abstract public class ActivityBase extends AbstractGalleryActivity
 
     @Override
     public void onCreate(Bundle icicle) {
-        if (Util.isTabletUI()) {
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);

@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,13 +36,25 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
     @SuppressWarnings("unused")
     private static final String TAG = "IndicatorControlWheelContainer";
 
-    public static final int STROKE_WIDTH = 87;
-    public static final int SHUTTER_BUTTON_RADIUS = 74;
-    public static final int FULL_WHEEL_RADIUS = 93;
+    // From center outwards, the indicator control wheel
+    // (e.g. res/drawable-sw600dp-hdpi/btn_camera_shutter_holo.png) is composed
+    // of a center colored button (could be blue, red or green), a light-black
+    // circle band, a thin gray circle strip and a dark-black circle band.
+    // The STROKE_WIDTH is the width of the outer-most dark-black circle band.
+    // The SHUTTER_BUTTON_RADIUS is the radius of the circle containing the
+    // center colored button and the light-black circle band.
+    public static final int STROKE_WIDTH = 87;  // in dp
+    public static final int SHUTTER_BUTTON_RADIUS = 74;  // in dp
+    // The indicator control wheel is cut by a secant. The secant is at the
+    // right edge for landscape orientation and at bottom edge for portrait
+    // orientation. This constant is the distance from the wheel center to the
+    // secant.
+    public static final int WHEEL_CENTER_TO_SECANT = 93;  // in dp
 
     private View mShutterButton;
-    private double mShutterButtonRadius;
+    private double mShutterButtonRadius;  // in pixels
     private IndicatorControlWheel mIndicatorControlWheel;
+    // The center of the shutter button.
     private int mCenterX, mCenterY;
 
     public IndicatorControlWheelContainer(Context context, AttributeSet attrs) {
@@ -106,12 +119,23 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
         // Layout the shutter button.
         int shutterButtonWidth = mShutterButton.getMeasuredWidth();
         int shutterButtonHeight = mShutterButton.getMeasuredHeight();
-        mCenterX = right - left - Util.dpToPixel(FULL_WHEEL_RADIUS);
-        mCenterY = (bottom - top) / 2;
-        mShutterButton.layout(right - left - shutterButtonWidth,
-                mCenterY - shutterButtonHeight / 2,
-                right - left,
-                mCenterY + shutterButtonHeight - shutterButtonHeight / 2);
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+            mCenterX = right - left - Util.dpToPixel(WHEEL_CENTER_TO_SECANT);
+            mCenterY = (bottom - top) / 2;
+            mShutterButton.layout(right - left - shutterButtonWidth,
+                    mCenterY - shutterButtonHeight / 2,
+                    right - left,
+                    mCenterY + shutterButtonHeight / 2);
+        } else {
+            mCenterX = (right - left) / 2;
+            mCenterY = bottom - top - Util.dpToPixel(WHEEL_CENTER_TO_SECANT);
+            mShutterButton.layout(mCenterX - shutterButtonWidth / 2,
+                    bottom - top - shutterButtonHeight,
+                    mCenterX + shutterButtonWidth / 2,
+                    bottom - top);
+        }
+
         // Layout the control wheel.
         mIndicatorControlWheel.layout(0, 0, right - left, bottom - top);
     }
