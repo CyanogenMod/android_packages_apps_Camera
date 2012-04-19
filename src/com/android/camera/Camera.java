@@ -193,6 +193,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private int mDisplayRotation;
     // The value for android.hardware.Camera.setDisplayOrientation.
     private int mDisplayOrientation;
+    // The value for android.hardware.Camera.Parameters.setRotation.
+    private int mJpegRotation;
     private boolean mFirstTimeInitialized;
     private boolean mIsImageCaptureIntent;
 
@@ -698,8 +700,19 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             }
 
             if (!mIsImageCaptureIntent) {
+                // Calculate the width and the height of the jpeg.
                 Size s = mParameters.getPictureSize();
-                mImageSaver.addImage(jpegData, mLocation, s.width, s.height, mThumbnailViewWidth);
+                int orientation = Exif.getOrientation(jpegData);
+                int width, height;
+                if ((mJpegRotation + orientation) % 180 == 0) {
+                    width = s.width;
+                    height = s.height;
+                } else {
+                    width = s.height;
+                    height = s.width;
+                }
+                mImageSaver.addImage(jpegData, mLocation, width, height,
+                        mThumbnailViewWidth, orientation);
             } else {
                 mJpegImageData = jpegData;
                 if (!mQuickCapture) {
@@ -753,6 +766,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         int width, height;
         long dateTaken;
         int thumbnailWidth;
+        int orientation;
     }
 
     // We use a queue to store the SaveRequests that have not been completed
@@ -785,8 +799,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         // Runs in main thread
-        public void addImage(final byte[] data, Location loc, int width,
-                int height, int thumbnailWidth) {
+        public void addImage(final byte[] data, Location loc,
+                int width, int height, int thumbnailWidth, int orientation) {
             SaveRequest r = new SaveRequest();
             r.data = data;
             r.loc = (loc == null) ? null : new Location(loc);  // make a copy
@@ -794,6 +808,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             r.height = height;
             r.dateTaken = System.currentTimeMillis();
             r.thumbnailWidth = thumbnailWidth;
+            r.orientation = orientation;
             synchronized (this) {
                 while (mQueue.size() >= QUEUE_LIMIT) {
                     try {
@@ -830,7 +845,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     r = mQueue.get(0);
                 }
                 storeImage(r.data, r.loc, r.width, r.height, r.dateTaken,
-                        r.thumbnailWidth);
+                        r.thumbnailWidth, r.orientation);
                 synchronized (this) {
                     mQueue.remove(0);
                     notifyAll();  // the main thread may wait in addImage
@@ -884,9 +899,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Runs in saver thread
         private void storeImage(final byte[] data, Location loc, int width,
-                int height, long dateTaken, int thumbnailWidth) {
+                int height, long dateTaken, int thumbnailWidth, int orientation) {
             String title = Util.createJpegName(dateTaken);
-            int orientation = Exif.getOrientation(data);
             Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
                     loc, orientation, data, width, height);
             if (uri != null) {
@@ -942,7 +956,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mJpegImageData = null;
 
         // Set rotation and gps data.
-        Util.setRotationParameter(mParameters, mCameraId, mOrientation);
+        mJpegRotation = Util.getJpegRotation(mCameraId, mOrientation);
+        mParameters.setRotation(mJpegRotation);
         Location loc = mLocationManager.getCurrentLocation();
         Util.setGpsParameters(mParameters, loc);
         mCameraDevice.setParameters(mParameters);

@@ -2202,7 +2202,8 @@ public class VideoCamera extends ActivityBase
         }
 
         // Set rotation and gps data.
-        Util.setRotationParameter(mParameters, mCameraId, mOrientation);
+        int rotation = Util.getJpegRotation(mCameraId, mOrientation);
+        mParameters.setRotation(rotation);
         Location loc = mLocationManager.getCurrentLocation();
         Util.setGpsParameters(mParameters, loc);
         mCameraDevice.setParameters(mParameters);

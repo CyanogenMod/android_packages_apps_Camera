@@ -625,7 +625,7 @@ public class Util {
         view.setVisibility(View.GONE);
     }
 
-    public static void setRotationParameter(Parameters parameters, int cameraId, int orientation) {
+    public static int getJpegRotation(int cameraId, int orientation) {
         // See android.hardware.Camera.Parameters.setRotation for
         // documentation.
         int rotation = 0;
@@ -637,7 +637,7 @@ public class Util {
                 rotation = (info.orientation + orientation) % 360;
             }
         }
-        parameters.setRotation(rotation);
+        return rotation;
     }
 
     public static void setGpsParameters(Parameters parameters, Location loc) {
