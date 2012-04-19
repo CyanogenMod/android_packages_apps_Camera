@@ -509,23 +509,23 @@ public class Util {
         return (intentCameraId == android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK);
     }
 
-    private static int mLocation[] = new int[2];
+    private static int sLocation[] = new int[2];
 
     // This method is not thread-safe.
     public static boolean pointInView(float x, float y, View v) {
-        v.getLocationInWindow(mLocation);
-        return x >= mLocation[0] && x < (mLocation[0] + v.getWidth())
-                && y >= mLocation[1] && y < (mLocation[1] + v.getHeight());
+        v.getLocationInWindow(sLocation);
+        return x >= sLocation[0] && x < (sLocation[0] + v.getWidth())
+                && y >= sLocation[1] && y < (sLocation[1] + v.getHeight());
     }
 
     public static int[] getRelativeLocation(View reference, View view) {
-        reference.getLocationInWindow(mLocation);
-        int referenceX = mLocation[0];
-        int referenceY = mLocation[1];
-        view.getLocationInWindow(mLocation);
-        mLocation[0] -= referenceX;
-        mLocation[1] -= referenceY;
-        return mLocation;
+        reference.getLocationInWindow(sLocation);
+        int referenceX = sLocation[0];
+        int referenceY = sLocation[1];
+        view.getLocationInWindow(sLocation);
+        sLocation[0] -= referenceX;
+        sLocation[1] -= referenceY;
+        return sLocation;
     }
 
     public static boolean isUriValid(Uri uri, ContentResolver resolver) {
