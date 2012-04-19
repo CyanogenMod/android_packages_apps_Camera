@@ -174,18 +174,6 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         super.onDestroy();
     }
 
-    private boolean isKeyguardLocked() {
-        KeyguardManager kgm = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-        if (LOGV) {
-            if (kgm != null) {
-                Log.v(TAG, "kgm.isKeyguardLocked()="+kgm.isKeyguardLocked()
-                        + ". kgm.isKeyguardSecure()="+kgm.isKeyguardSecure());
-            }
-        }
-        // isKeyguardSecure excludes the slide lock case.
-        return (kgm != null) && kgm.isKeyguardLocked() && kgm.isKeyguardSecure();
-    }
-
     protected void updateStorageHint(long storageSpace) {
         String message = null;
         if (storageSpace == Storage.UNAVAILABLE) {

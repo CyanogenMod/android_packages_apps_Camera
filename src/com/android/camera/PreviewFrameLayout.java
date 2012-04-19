@@ -74,8 +74,8 @@ public class PreviewFrameLayout extends RelativeLayout {
         int previewHeight = MeasureSpec.getSize(heightSpec);
 
         // Get the padding of the border background.
-        int hPadding = mPaddingLeft + mPaddingRight;
-        int vPadding = mPaddingTop + mPaddingBottom;
+        int hPadding = getPaddingLeft() + getPaddingRight();
+        int vPadding = getPaddingTop() + getPaddingBottom();
 
         // Resize the preview frame with correct aspect ratio.
         previewWidth -= hPadding;
