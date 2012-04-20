@@ -31,7 +31,7 @@ import java.util.List;
  * is limited.
  */
 public class ListPreference extends CameraPreference {
-    private final String TAG = "ListPreference";
+    private static final String TAG = "ListPreference";
     private final String mKey;
     private String mValue;
     private final CharSequence[] mDefaultValues;

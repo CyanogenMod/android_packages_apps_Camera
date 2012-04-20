@@ -41,7 +41,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     int mOrientation = 0;
     int mSelectedIndex = -1;
     // There are some views in the ViewGroup before adding the indicator buttons,
-    // such as Close icon, divider line and the hightlight bar, we need to
+    // such as Close icon, divider line and the highlight bar, we need to
     // remember the count of the non-indicator buttons for getTouchViewIndex().
     int mNonIndicatorButtonCount;
 

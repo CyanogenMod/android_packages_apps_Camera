@@ -25,7 +25,7 @@ import com.android.camera.R;
 
 public class OtherSettingIndicatorButton extends AbstractIndicatorButton {
     @SuppressWarnings("unused")
-    private final String TAG = "OtherSettingIndicatorButton";
+    private static final String TAG = "OtherSettingIndicatorButton";
     private PreferenceGroup mPreferenceGroup;
     private String[] mPrefKeys;
     private OtherSettingsPopup.Listener mListener;

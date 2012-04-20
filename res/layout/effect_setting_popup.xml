@@ -15,12 +15,10 @@
 -->
 <com.android.camera.ui.EffectSettingPopup xmlns:android="http://schemas.android.com/apk/res/android"
         style="@style/SettingPopupWindow">
-
     <LinearLayout android:orientation="vertical"
-        android:background="@color/popup_background"
-        android:layout_height="wrap_content"
-        android:layout_width="@dimen/big_setting_popup_window_width">
-
+            android:background="@color/popup_background"
+            android:layout_height="wrap_content"
+            android:layout_width="@dimen/big_setting_popup_window_width">
         <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -28,8 +26,7 @@
             <TextView android:id="@+id/title"
                     style="@style/PopupTitleText" />
         </FrameLayout>
-
-        <View style="@style/PopupTitleSeperator" />
+        <View style="@style/PopupTitleSeparator" />
         <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -43,7 +40,6 @@
                         android:textSize="@dimen/effect_setting_clear_text_size"
                         android:minHeight="@dimen/effect_setting_clear_text_min_height"
                         android:background="@drawable/bg_pressed"/>
-
                 <TextView android:id="@+id/effect_silly_faces_title"
                         android:text="@string/effect_silly_faces"
                         android:visibility="gone"
@@ -53,11 +49,9 @@
                         style="@style/EffectTypeSeparator"/>
                 <com.android.camera.ui.ExpandedGridView android:id="@+id/effect_silly_faces"
                         style="@style/EffectSettingGrid"/>
-
                 <View android:id="@+id/effect_background_separator"
                         android:visibility="gone"
                         style="@style/EffectTitleSeparator"/>
-
                 <TextView android:id="@+id/effect_background_title"
                         android:text="@string/effect_background"
                         android:visibility="gone"

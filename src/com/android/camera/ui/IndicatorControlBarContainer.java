@@ -29,8 +29,9 @@ import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
 
 /**
- * The IndicatorControlBarContainer is a IndicatorControl containing
- * IndicatorControlBar, SecondIndicatorControlBar and ZoomControlBar for Phone UI.
+ * The IndicatorControlBarContainer is an IndicatorControlContainer containing
+ * IndicatorControlBar, SecondLevelIndicatorControlBar and ZoomControlBar for
+ * Phone UI.
  */
 public class IndicatorControlBarContainer extends IndicatorControlContainer {
     @SuppressWarnings("unused")

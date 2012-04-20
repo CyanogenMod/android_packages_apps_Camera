@@ -13,7 +13,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/frame_layout"
         android:layout_height="match_parent"
@@ -24,13 +23,12 @@
             android:layout_width="match_parent"
             android:layout_centerInParent="true">
         <FrameLayout android:id="@+id/preview_border"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:background="@drawable/ic_snapshot_border" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:background="@drawable/ic_snapshot_border" />
         <com.android.camera.ui.RotateLayout android:id="@+id/recording_time_rect"
-                style="@style/ViewfinderLableLayout">
-
+                style="@style/ViewfinderLabelLayout">
             <include layout="@layout/viewfinder_labels_video" android:id="@+id/labels" />
         </com.android.camera.ui.RotateLayout>
         <ImageView android:id="@+id/review_image"

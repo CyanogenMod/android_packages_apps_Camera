@@ -38,7 +38,7 @@ import java.util.Map;
 // daylight, incandescent, etc).
 public class BasicSettingPopup extends AbstractSettingPopup implements
         AdapterView.OnItemClickListener {
-    private final String TAG = "BasicSettingPopup";
+    private static final String TAG = "BasicSettingPopup";
     private IconListPreference mPreference;
     private Listener mListener;
 

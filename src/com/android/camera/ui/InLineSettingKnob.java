@@ -31,7 +31,7 @@ import com.android.camera.R;
 
 /* A knob setting control. */
 public class InLineSettingKnob extends InLineSettingItem {
-    private final String TAG = "InLineSettingKnob";
+    private static final String TAG = "InLineSettingKnob";
     private boolean mNext, mPrevious;
     private Button mPrevButton, mNextButton;
     private Handler mHandler;

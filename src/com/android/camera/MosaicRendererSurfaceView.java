@@ -16,9 +16,8 @@
 
 package com.android.camera;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.ConditionVariable;
@@ -58,7 +57,7 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
     }
 
     private void initialize(Context context, boolean translucent, int depth, int stencil) {
-        getDisplayOrientation(context);
+        getDisplayOrientation();
         init(translucent, depth, stencil);
         setZOrderMediaOverlay(true);
         mPreviewRunnable = new Runnable() {
@@ -85,10 +84,9 @@ public class MosaicRendererSurfaceView extends GLSurfaceView {
         };
     }
 
-    private void getDisplayOrientation(Context context) {
-        Activity activity = (PanoramaActivity) context;
-        mIsLandscapeOrientation = (activity.getRequestedOrientation()
-                == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE );
+    private void getDisplayOrientation() {
+        mIsLandscapeOrientation = (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE);
     }
 
     private void init(boolean translucent, int depth, int stencil) {

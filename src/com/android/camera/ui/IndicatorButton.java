@@ -29,7 +29,7 @@ import com.android.camera.R;
 // window.
 public class IndicatorButton extends AbstractIndicatorButton
         implements BasicSettingPopup.Listener, EffectSettingPopup.Listener{
-    private final String TAG = "IndicatorButton";
+    private static final String TAG = "IndicatorButton";
     private IconListPreference mPreference;
     // Scene mode can override the original preference value.
     private String mOverrideValue;

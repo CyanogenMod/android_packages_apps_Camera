@@ -31,7 +31,7 @@ import com.android.camera.R;
 public abstract class AbstractIndicatorButton extends RotateImageView implements
         PopupManager.OnOtherPopupShowedListener {
     @SuppressWarnings("unused")
-    private final String TAG = "AbstractIndicatorButton";
+    private static final String TAG = "AbstractIndicatorButton";
     protected Animation mFadeIn, mFadeOut;
     protected final int HIGHLIGHT_COLOR;
     protected AbstractSettingPopup mPopup;

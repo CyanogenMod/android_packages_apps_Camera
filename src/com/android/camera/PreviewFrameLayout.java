@@ -16,9 +16,8 @@
 
 package com.android.camera;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -49,8 +48,8 @@ public class PreviewFrameLayout extends RelativeLayout {
     public void setAspectRatio(double ratio) {
         if (ratio <= 0.0) throw new IllegalArgumentException();
 
-        if (((Activity) getContext()).getRequestedOrientation()
-                == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT) {
             ratio = 1 / ratio;
         }
 

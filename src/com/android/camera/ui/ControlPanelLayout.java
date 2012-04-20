@@ -16,9 +16,8 @@
 
 package com.android.camera.ui;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.RelativeLayout;
@@ -43,8 +42,8 @@ public class ControlPanelLayout extends RelativeLayout {
         int measuredSize = 0;
         int mode, longSideSize, shortSideSize, specSize;
 
-        boolean isLandscape = (((Activity) getContext()).getRequestedOrientation()
-                == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        boolean isLandscape = (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE);
 
         if (isLandscape) {
             mode = MeasureSpec.getMode(widthSpec);

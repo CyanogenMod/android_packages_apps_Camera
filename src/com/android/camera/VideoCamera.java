@@ -1178,16 +1178,15 @@ public class VideoCamera extends ActivityBase
         // If the mCameraDevice is null, then this activity is going to finish
         if (mCameraDevice == null) return;
 
-        boolean inLandscape =
-                (getRequestedOrientation() ==
-                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        boolean inLandscape = (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE);
 
         CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
 
         mEffectsDisplayResult = false;
         mEffectsRecorder = new EffectsRecorder(this);
 
-        // TODO: Confirm none of the foll need to go to initializeEffectsRecording()
+        // TODO: Confirm none of the following need to go to initializeEffectsRecording()
         // and none of these change even when the preview is not refreshed.
         mEffectsRecorder.setAppToLandscape(inLandscape);
         mEffectsRecorder.setCamera(mCameraDevice.getCamera());

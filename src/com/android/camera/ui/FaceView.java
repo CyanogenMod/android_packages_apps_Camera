@@ -30,7 +30,7 @@ import com.android.camera.R;
 import com.android.camera.Util;
 
 public class FaceView extends View implements FocusIndicator, Rotatable {
-    private final String TAG = "FaceView";
+    private static final String TAG = "FaceView";
     private final boolean LOGV = false;
     // The value for android.hardware.Camera.setDisplayOrientation.
     private int mDisplayOrientation;

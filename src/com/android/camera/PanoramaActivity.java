@@ -18,7 +18,7 @@ package com.android.camera;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -721,7 +721,8 @@ public class PanoramaActivity extends ActivityBase implements
 
         mRotateDialog = new RotateDialogController(this, R.layout.rotate_dialog);
 
-        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT) {
             Rotatable[] rotateLayout = {
                     (Rotatable) findViewById(R.id.pano_pan_progress_bar_layout),
                     (Rotatable) findViewById(R.id.pano_capture_too_fast_textview_layout),
@@ -808,7 +809,7 @@ public class PanoramaActivity extends ActivityBase implements
                 } else if (!jpeg.isValid) {  // Error when generating mosaic.
                     mMainHandler.sendEmptyMessage(MSG_GENERATE_FINAL_MOSAIC_ERROR);
                 } else {
-                    // The panorama image returned from the library is orientated based on the
+                    // The panorama image returned from the library is oriented based on the
                     // natural orientation of a camera. We need to set an orientation for the image
                     // in its EXIF header, so the image can be displayed correctly.
                     // The orientation is calculated from compensating the
