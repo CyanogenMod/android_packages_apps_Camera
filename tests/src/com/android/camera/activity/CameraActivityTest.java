@@ -17,6 +17,8 @@
 package com.android.camera.activity;
 
 import com.android.camera.Camera;
+import com.android.camera.CameraHolder;
+import com.android.camera.R;
 
 import android.test.suitebuilder.annotation.LargeTest;
 
@@ -38,5 +40,21 @@ public class CameraActivityTest extends CameraTestCase <Camera> {
     @LargeTest
     public void testOneCamera() throws Exception {
         super.internalTestOneCamera();
+    }
+
+    @LargeTest
+    public void testTakePicture() throws Exception {
+        CameraHolder.injectMockCamera(mCameraInfo, mOneMockCamera);
+
+        getActivity();
+        getInstrumentation().waitForIdleSync();
+
+        // Press shutter button to take a picture.
+        performClick(R.id.shutter_button);
+        getInstrumentation().waitForIdleSync();
+
+        // Force the activity to finish.
+        getActivity().finish();
+        getInstrumentation().waitForIdleSync();
     }
 }

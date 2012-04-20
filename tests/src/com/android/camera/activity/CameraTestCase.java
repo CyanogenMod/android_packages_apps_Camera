@@ -18,8 +18,12 @@ package com.android.camera.activity;
 
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.hardware.Camera;
+import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
+import android.hardware.Camera.PictureCallback;
+import android.hardware.Camera.ShutterCallback;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -28,12 +32,24 @@ import android.view.View;
 import com.android.camera.CameraHolder;
 import com.android.camera.CameraManager.CameraProxy;
 import com.android.camera.R;
+import com.android.camera.Util;
 
 import static com.google.testing.littlemock.LittleMock.mock;
+import static com.google.testing.littlemock.LittleMock.doAnswer;
 import static com.google.testing.littlemock.LittleMock.doReturn;
+import static com.google.testing.littlemock.LittleMock.anyObject;
 import com.google.testing.littlemock.AppDataDirGuesser;
+import com.google.testing.littlemock.ArgumentCaptor;
+import com.google.testing.littlemock.Captor;
+import com.google.testing.littlemock.LittleMock;
+import com.google.testing.littlemock.Mock;
 
 import java.io.File;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.concurrent.Callable;
+
 
 public class CameraTestCase<T extends Activity> extends ActivityInstrumentationTestCase2<T> {
     protected CameraInfo mCameraInfo[];
@@ -41,6 +57,52 @@ public class CameraTestCase<T extends Activity> extends ActivityInstrumentationT
     protected CameraInfo mOneCameraInfo[];
     protected CameraProxy mOneMockCamera[];
     private static Parameters mParameters;
+    private byte[] mBlankJpeg;
+    @Mock private CameraProxy mMockBackCamera;
+    @Mock private CameraProxy mMockFrontCamera;
+    @Captor private ArgumentCaptor<ShutterCallback> mShutterCallback;
+    @Captor private ArgumentCaptor<PictureCallback> mRawPictureCallback;
+    @Captor private ArgumentCaptor<PictureCallback> mJpegPictureCallback;
+    @Captor private ArgumentCaptor<AutoFocusCallback> mAutoFocusCallback;
+    Callable<Object> mAutoFocusCallable = new AutoFocusCallable();
+    Callable<Object> mTakePictureCallable = new TakePictureCallable();
+
+    private class TakePictureCallable implements Callable<Object> {
+        @Override
+        public Object call() throws Exception {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    readBlankJpeg();
+                    Camera camera = mOneMockCamera[0].getCamera();
+                    mShutterCallback.getValue().onShutter();
+                    mRawPictureCallback.getValue().onPictureTaken(null, camera);
+                    mJpegPictureCallback.getValue().onPictureTaken(mBlankJpeg, camera);
+                }
+            };
+            // Probably need some delay. Make sure shutter callback is called
+            // after onShutterButtonFocus(false).
+            getActivity().findViewById(R.id.gl_root_view).postDelayed(runnable, 50);
+            return null;
+        }
+   }
+
+    private class AutoFocusCallable implements Callable<Object> {
+        @Override
+        public Object call() throws Exception {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    Camera camera = mOneMockCamera[0].getCamera();
+                    mAutoFocusCallback.getValue().onAutoFocus(true, camera);
+                }
+            };
+            // Need some delay. Otherwise, focus callback will be run before
+            // onShutterButtonClick
+            getActivity().findViewById(R.id.gl_root_view).postDelayed(runnable, 50);
+            return null;
+        }
+   }
 
     public CameraTestCase(Class<T> activityClass) {
         super(activityClass);
@@ -56,14 +118,15 @@ public class CameraTestCase<T extends Activity> extends ActivityInstrumentationT
             }
         });
         AppDataDirGuesser.getsInstance().guessSuitableDirectoryForGeneratedClasses();
+        LittleMock.initMocks(this);
         mCameraInfo = new CameraInfo[2];
         mCameraInfo[0] = new CameraInfo();
         mCameraInfo[0].facing = CameraInfo.CAMERA_FACING_BACK;
         mCameraInfo[1] = new CameraInfo();
         mCameraInfo[1].facing = CameraInfo.CAMERA_FACING_FRONT;
         mMockCamera = new CameraProxy[2];
-        mMockCamera[0] = mock(CameraProxy.class);
-        mMockCamera[1] = mock(CameraProxy.class);
+        mMockCamera[0] = mMockBackCamera;
+        mMockCamera[1] = mMockFrontCamera;
         doReturn(getParameters()).when(mMockCamera[0]).getParameters();
         doReturn(getParameters()).when(mMockCamera[1]).getParameters();
 
@@ -71,8 +134,36 @@ public class CameraTestCase<T extends Activity> extends ActivityInstrumentationT
         mOneCameraInfo[0] = new CameraInfo();
         mOneCameraInfo[0].facing = CameraInfo.CAMERA_FACING_BACK;
         mOneMockCamera = new CameraProxy[1];
-        mOneMockCamera[0] = mock(CameraProxy.class);
+        mOneMockCamera[0] = mMockBackCamera;
         doReturn(getParameters()).when(mOneMockCamera[0]).getParameters();
+
+        // Mock takePicture call.
+        doAnswer(mTakePictureCallable).when(mMockBackCamera).takePicture(
+                mShutterCallback.capture(), mRawPictureCallback.capture(),
+                (PictureCallback) anyObject(), mJpegPictureCallback.capture());
+
+        // Mock autoFocus call.
+        doAnswer(mAutoFocusCallable).when(mMockBackCamera).autoFocus(
+                mAutoFocusCallback.capture());
+    }
+
+    private void readBlankJpeg() {
+        InputStream ins = getActivity().getResources().openRawResource(R.raw.blank);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        int size = 0;
+
+        // Read the entire resource into a local byte buffer.
+        byte[] buffer = new byte[1024];
+        try {
+            while((size = ins.read(buffer, 0, 1024)) >= 0){
+                outputStream.write(buffer, 0, size);
+            }
+        } catch (IOException e) {
+            // ignore
+        } finally {
+            Util.closeSilently(ins);
+        }
+        mBlankJpeg = outputStream.toByteArray();
     }
 
     @Override
@@ -145,7 +236,7 @@ public class CameraTestCase<T extends Activity> extends ActivityInstrumentationT
                 mParameters.unflatten("preview-format-values=yuv420sp,yuv420p,yuv422i-yuyv,yuv420p;" +
                         "preview-format=yuv420sp;" +
                         "preview-size-values=800x480;preview-size=800x480;" +
-                        "picture-size-values=2592x1944;picture-size=2592x1944;" +
+                        "picture-size-values=320x240;picture-size=320x240;" +
                         "jpeg-thumbnail-size-values=320x240,0x0;jpeg-thumbnail-width=320;jpeg-thumbnail-height=240;" +
                         "jpeg-thumbnail-quality=60;jpeg-quality=95;" +
                         "preview-frame-rate-values=30,15;preview-frame-rate=30;" +
