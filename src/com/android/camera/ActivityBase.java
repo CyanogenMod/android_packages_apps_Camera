@@ -245,7 +245,9 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     }
 
     protected void gotoGallery() {
-        Util.viewUri(mThumbnail.getUri(), this);
+        PhotoPage photoPage = (PhotoPage) getStateManager().getTopState();
+        // Move the next picture with capture animation. "1" means next.
+        photoPage.switchWithCaptureAnimation(1);
     }
 
     protected void saveThumbnailToFile() {
