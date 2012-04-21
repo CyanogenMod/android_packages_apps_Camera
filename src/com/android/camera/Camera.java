@@ -2001,11 +2001,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mParameters.setAutoWhiteBalanceLock(mFocusManager.getAeAwbLock());
         }
 
-        if (mFocusAreaSupported) {
+        if (mFocusAreaSupported && mFocusManager.getFocusAreas() != null) {
             mParameters.setFocusAreas(mFocusManager.getFocusAreas());
         }
 
-        if (mMeteringAreaSupported) {
+        if (mMeteringAreaSupported && mFocusManager.getMeteringAreas() != null) {
             // Use the same area for focus and metering.
             mParameters.setMeteringAreas(mFocusManager.getMeteringAreas());
         }
