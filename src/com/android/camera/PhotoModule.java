@@ -2247,14 +2247,14 @@ public class PhotoModule
 
     @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void setFocusAreasIfSupported() {
-        if (mFocusAreaSupported) {
+        if (mFocusAreaSupported && mFocusManager.getFocusAreas() != null) {
             mParameters.setFocusAreas(mFocusManager.getFocusAreas());
         }
     }
 
     @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void setMeteringAreasIfSupported() {
-        if (mMeteringAreaSupported) {
+        if (mMeteringAreaSupported && mFocusManager.getMeteringAreas() != null) {
             // Use the same area for focus and metering.
             mParameters.setMeteringAreas(mFocusManager.getMeteringAreas());
         }
