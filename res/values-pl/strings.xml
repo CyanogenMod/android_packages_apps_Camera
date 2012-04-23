@@ -123,4 +123,26 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"Zmniejsz: %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Zwiększ: %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"Przełącznik: %1$s"</string>
+
+    <!-- **** CYANOGENMOD EDITS START **** -->
+    <string name="pref_camera_power_shutter_title">Migawka przyciskiem zasilania</string>
+
+    <string name="pref_camera_focusmode_entry_fixed">Stały</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Detekcja twarzy</string>
+
+    <string name="pref_camera_scenemode_entry_backlight">Podświetlenie</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Świt/Zmierzch</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Intensywny kolor</string>
+    <string name="pref_camera_scenemode_entry_text">Tekst</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portret</string>
+    <string name="pref_camera_scenemode_entry_landscape">Krajobraz</string>
+    <string name="pref_camera_scenemode_entry_beach">Plaża</string>
+    <string name="pref_camera_scenemode_entry_snow">Śnieg</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Fajerwerki</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Światło świec</string>
+
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Pochmurny dzień</string>
+    <!-- **** CYANOGENMOD EDITS END **** -->
+
 </resources>
