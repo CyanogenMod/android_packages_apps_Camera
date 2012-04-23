@@ -123,4 +123,9 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"Verkleinern %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Vergrößern %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"Schalter %1$s"</string>
+
+    <!-- CYANOGENMOD CHANGES START HERE -->
+
+    <!-- More Settings screen, storage title -->
+    <string name="pref_camera_storage_title">Speicherort</string>
 </resources>
