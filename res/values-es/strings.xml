@@ -49,13 +49,23 @@
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Activada"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Calidad de vídeo"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervalo de tiempo"</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_1000" translatable="false">1 seg.</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_1500" translatable="false">1.5 seg.</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_2000" translatable="false">2 seg.</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_2500" translatable="false">2.5 seg.</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_3000" translatable="false">3 seg.</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_5000" translatable="false">5 seg.</string>
+    <string name="pref_video_time_lapse_frame_interval_entry_10000" translatable="false">10 seg.</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configuración de cámara"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configuración de videocámara"</string>
+    <string name="pref_camera_power_shutter_title">"Potenciar obturador"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Tamaño imagen"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Modo de enfoque"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Auto"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
+    <string name="pref_camera_focusmode_entry_fixed">"Fijo"</string>
+    <string name="pref_camera_focusmode_entry_facedetect">"Detección de rostro"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automático"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Activado"</string>
@@ -66,12 +76,24 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Luz natural"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescente"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Nublado"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">"Nublado"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Modo de escena"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automático"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Acción"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Nocturno"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Atardecer"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Fiesta"</string>
+    <string name="pref_camera_scenemode_entry_backlight">"Luz de fondo"</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">"Amanecer/Anochecer"</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">"Otoñal"</string>
+    <string name="pref_camera_scenemode_entry_text">"Texto"</string>
+    <string name="pref_camera_scenemode_entry_portrait">"Vertical (Retrato)"</string>
+    <string name="pref_camera_scenemode_entry_landscape">"Horizontal (Apaisado)"</string>
+    <string name="pref_camera_scenemode_entry_beach">"Playa"</string>
+    <string name="pref_camera_scenemode_entry_snow">"Nieve"</string>
+    <string name="pref_camera_scenemode_entry_fireworks">"Fuegos artificiales"</string>
+    <string name="pref_camera_scenemode_entry_sports">"Deportes"</string>
+    <string name="pref_camera_scenemode_entry_candlelight">"Luz de vela"</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"No se puede seleccionar en el modo de escena."</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Configuración de cámara"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar valores predeterminados"</string>
