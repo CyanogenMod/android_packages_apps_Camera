@@ -110,6 +110,7 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        super.disableToggleStatusBar();
         super.onCreate(icicle);
         // The full screen mode might be turned off previously. Add the flag again.
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
