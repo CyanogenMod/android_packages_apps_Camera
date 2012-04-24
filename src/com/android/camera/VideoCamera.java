@@ -47,9 +47,6 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.Surface;
@@ -1019,19 +1016,6 @@ public class VideoCamera extends ActivityBase
         return super.onKeyUp(keyCode, event);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        if (mIsVideoCaptureIntent) {
-            // No options menu for attach mode.
-            return false;
-        } else {
-            addBaseMenuItems(menu);
-        }
-        return true;
-    }
-
     private boolean isVideoCaptureIntent() {
         String action = getIntent().getAction();
         return (MediaStore.ACTION_VIDEO_CAPTURE.equals(action));
@@ -1354,43 +1338,6 @@ public class VideoCamera extends ActivityBase
         File f = new File(fileName);
         if (!f.delete()) {
             Log.v(TAG, "Could not delete " + fileName);
-        }
-    }
-
-    private void addBaseMenuItems(Menu menu) {
-        MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_CAMERA, new Runnable() {
-            @Override
-            public void run() {
-                switchToOtherMode(ModePicker.MODE_CAMERA);
-            }
-        });
-        MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_PANORAMA, new Runnable() {
-            @Override
-            public void run() {
-                switchToOtherMode(ModePicker.MODE_PANORAMA);
-            }
-        });
-
-        if (mNumberOfCameras > 1) {
-            int nextCameraId = (mCameraId + 1) % mNumberOfCameras;
-            CameraInfo info = CameraHolder.instance().getCameraInfo()[nextCameraId];
-
-            int switchLabel;
-            if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
-                switchLabel = R.string.front_camera_label;
-            } else {
-                switchLabel = R.string.rear_camera_label;
-            }
-            menu.add(switchLabel)
-                    .setOnMenuItemClickListener(new OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    CameraSettings.writePreferredCameraId(mPreferences,
-                            (mCameraId + 1) % mNumberOfCameras);
-                    onSharedPreferenceChanged();
-                    return true;
-                }
-            }).setIcon(android.R.drawable.ic_menu_camera);
         }
     }
 

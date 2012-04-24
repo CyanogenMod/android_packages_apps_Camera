@@ -88,8 +88,6 @@
     <string name="switch_to_camera_label" msgid="5909347213770678326">"Auf Kamera umschalten"</string>
     <string name="switch_to_video_label" msgid="1167994386902254398">"Zu Video wechseln"</string>
     <string name="switch_to_panorama_label" msgid="858801335653517864">"Zu Panorama wechseln"</string>
-    <string name="rear_camera_label" msgid="1104543961051437138">"Rückkamera"</string>
-    <string name="front_camera_label" msgid="6098010541544579711">"Frontkamera"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Bild teilen über"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Video teilen über"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"Kein Bild zum Teilen"</string>

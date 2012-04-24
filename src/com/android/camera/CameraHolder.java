@@ -215,9 +215,9 @@ public class CameraHolder {
     }
 
     public synchronized void keep() {
-        // We allow mCameraOpened in either state for the convenience of the calling activity.
-        // The activity may not have a chance to call open() before the user
-        // choose the menu item to switch to another activity.
+        // We allow mCameraOpened in either state for the convenience of the
+        // calling activity. The activity may not have a chance to call open()
+        // before the user switches to another activity.
 
         // Keep the camera instance for 3 seconds.
         mKeepBeforeTime = System.currentTimeMillis() + 3000;

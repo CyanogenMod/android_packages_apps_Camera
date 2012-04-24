@@ -38,8 +38,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.View;
@@ -212,43 +210,6 @@ public class PanoramaActivity extends ActivityBase implements
                 mOrientationCompensation = orientationCompensation;
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        addBaseMenuItems(menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        // Only show the menu when idle.
-        boolean idle = (mCaptureState == CAPTURE_STATE_VIEWFINDER && !mThreadRunning);
-        for (int i = 0; i < menu.size(); i++) {
-            MenuItem item = menu.getItem(i);
-            item.setVisible(idle);
-            item.setEnabled(idle);
-        }
-
-        return true;
-    }
-
-    private void addBaseMenuItems(Menu menu) {
-        MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_CAMERA, new Runnable() {
-            @Override
-            public void run() {
-                switchToOtherMode(ModePicker.MODE_CAMERA);
-            }
-        });
-        MenuHelper.addSwitchModeMenuItem(menu, ModePicker.MODE_VIDEO, new Runnable() {
-            @Override
-            public void run() {
-                switchToOtherMode(ModePicker.MODE_VIDEO);
-            }
-        });
     }
 
     @Override

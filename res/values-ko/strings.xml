@@ -88,8 +88,6 @@
     <string name="switch_to_camera_label" msgid="5909347213770678326">"사진으로 전환"</string>
     <string name="switch_to_video_label" msgid="1167994386902254398">"동영상으로 전환"</string>
     <string name="switch_to_panorama_label" msgid="858801335653517864">"파노라마로 전환"</string>
-    <string name="rear_camera_label" msgid="1104543961051437138">"후방 카메라"</string>
-    <string name="front_camera_label" msgid="6098010541544579711">"전방 카메라"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"사진 공유 애플리케이션"</string>
     <string name="share_video_via" msgid="5152302809166549015">"동영상 공유 애플리케이션"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"공유할 사진 없음"</string>

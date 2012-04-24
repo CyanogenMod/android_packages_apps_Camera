@@ -40,37 +40,6 @@ public class MenuHelper {
     private static final String PANORAMA_CLASS = "com.android.camera.PanoramaActivity";
     private static final String VIDEO_CAMERA_CLASS = "com.android.camera.VideoCamera";
 
-    public static void addSwitchModeMenuItem(Menu menu, int mode,
-            final Runnable r) {
-        int labelId, iconId;
-        switch(mode) {
-            case ModePicker.MODE_VIDEO:
-                labelId = R.string.switch_to_video_label;
-                iconId = R.drawable.ic_menu_camera_video_view;
-                break;
-            case ModePicker.MODE_CAMERA:
-                labelId = R.string.switch_to_camera_label;
-                iconId = android.R.drawable.ic_menu_camera;
-                break;
-            case ModePicker.MODE_PANORAMA:
-                labelId = R.string.switch_to_panorama_label;
-                iconId = R.drawable.btn_ic_panorama;
-                break;
-            default:
-                  // incorrect mode, do nothing.
-                  return;
-        }
-        MenuItem item = menu.add(labelId).setOnMenuItemClickListener(
-                new OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                r.run();
-                return true;
-            }
-        });
-        item.setIcon(iconId);
-    }
-
     private static void startCameraActivity(Activity activity, Intent intent,
             String className) {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

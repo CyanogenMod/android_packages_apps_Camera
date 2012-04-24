@@ -243,12 +243,6 @@
     <!-- The text of menu item to switch the mode to Panorama. [CHAR LIMIT=24] -->
     <string name="switch_to_panorama_label">Switch to panorama</string>
 
-    <!-- The text of menu item to switch to rear camera. [CHAR LIMIT=24]-->
-    <string name="rear_camera_label">Rear camera</string>
-
-    <!-- The text of menu item to switch to front camera. [CHAR LIMIT=24]-->
-    <string name="front_camera_label">Front camera</string>
-
     <string name="setting_increment" translatable="false">&gt;</string>
     <string name="setting_decrement" translatable="false">&lt;</string>
 
