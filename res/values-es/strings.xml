@@ -49,13 +49,6 @@
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Activada"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Calidad de vídeo"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervalo de tiempo"</string>
-    <string name="pref_video_time_lapse_frame_interval_entry_1000" translatable="false">1 seg.</string>
-    <string name="pref_video_time_lapse_frame_interval_entry_1500" translatable="false">1.5 seg.</string>
-    <string name="pref_video_time_lapse_frame_interval_entry_2000" translatable="false">2 seg.</string>
-    <string name="pref_video_time_lapse_frame_interval_entry_2500" translatable="false">2.5 seg.</string>
-    <string name="pref_video_time_lapse_frame_interval_entry_3000" translatable="false">3 seg.</string>
-    <string name="pref_video_time_lapse_frame_interval_entry_5000" translatable="false">5 seg.</string>
-    <string name="pref_video_time_lapse_frame_interval_entry_10000" translatable="false">10 seg.</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configuración de cámara"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configuración de videocámara"</string>
     <string name="pref_camera_power_shutter_title">"Potenciar obturador"</string>
