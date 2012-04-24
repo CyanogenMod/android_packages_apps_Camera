@@ -69,8 +69,6 @@ public class Util {
     // Orientation hysteresis amount used in rounding, in degrees
     public static final int ORIENTATION_HYSTERESIS = 5;
 
-    public static final String REVIEW_ACTION = "com.android.camera.action.REVIEW";
-
     // Private intent extras. Test only.
     private static final String EXTRAS_CAMERA_FACING =
             "android.intent.extras.CAMERA_FACING";
@@ -542,23 +540,6 @@ public class Util {
             return false;
         }
         return true;
-    }
-
-    public static void viewUri(Uri uri, Context context) {
-        if (!isUriValid(uri, context.getContentResolver())) {
-            Log.e(TAG, "Uri invalid. uri=" + uri);
-            return;
-        }
-
-        try {
-            context.startActivity(new Intent(Util.REVIEW_ACTION, uri));
-        } catch (ActivityNotFoundException ex) {
-            try {
-                context.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-            } catch (ActivityNotFoundException e) {
-                Log.e(TAG, "review image fail. uri=" + uri, e);
-            }
-        }
     }
 
     public static void dumpRect(RectF rect, String msg) {

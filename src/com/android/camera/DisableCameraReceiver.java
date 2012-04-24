@@ -21,6 +21,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Camera.CameraInfo;
 import android.util.Log;
 
 // We want to disable camera-related activities if there is no camera. This
@@ -28,6 +29,7 @@ import android.util.Log;
 // this receiver will be disabled, so it will not run again.
 public class DisableCameraReceiver extends BroadcastReceiver {
     private static final String TAG = "DisableCameraReceiver";
+    private static final boolean CHECK_BACK_CAMERA_ONLY = true;
     private static final Class ACTIVITIES[] = {
         com.android.camera.Camera.class,
         com.android.camera.VideoCamera.class,
@@ -37,10 +39,12 @@ public class DisableCameraReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // Disable camera-related activities if there is no camera.
-        int n = android.hardware.Camera.getNumberOfCameras();
-        if (n <= 0) {
-            Log.i(TAG, "number of camera = " + n +
-                    ", disable all camera activities");
+        boolean needCameraActivity = CHECK_BACK_CAMERA_ONLY
+            ? hasBackCamera()
+            : hasCamera();
+
+        if (!needCameraActivity) {
+            Log.i(TAG, "disable all camera activities");
             for (int i = 0; i < ACTIVITIES.length; i++) {
                 disableComponent(context, ACTIVITIES[i]);
             }
@@ -48,6 +52,26 @@ public class DisableCameraReceiver extends BroadcastReceiver {
 
         // Disable this receiver so it won't run again.
         disableComponent(context, DisableCameraReceiver.class);
+    }
+
+    private boolean hasCamera() {
+        int n = android.hardware.Camera.getNumberOfCameras();
+        Log.i(TAG, "number of camera: " + n);
+        return (n > 0);
+    }
+
+    private boolean hasBackCamera() {
+        int n = android.hardware.Camera.getNumberOfCameras();
+        CameraInfo info = new CameraInfo();
+        for (int i = 0; i < n; i++) {
+            android.hardware.Camera.getCameraInfo(i, info);
+            if (info.facing == CameraInfo.CAMERA_FACING_BACK) {
+                Log.i(TAG, "back camera found: " + i);
+                return true;
+            }
+        }
+        Log.i(TAG, "no back camera");
+        return false;
     }
 
     private void disableComponent(Context context, Class klass) {
