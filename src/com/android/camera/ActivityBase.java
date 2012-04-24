@@ -246,9 +246,14 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     }
 
     protected void gotoGallery() {
-        PhotoPage photoPage = (PhotoPage) getStateManager().getTopState();
-        // Move the next picture with capture animation. "1" means next.
-        photoPage.switchWithCaptureAnimation(1);
+        // TODO: remove this after panorama has swipe UI.
+        if (getStateManager().getStateCount() > 0) {
+            PhotoPage photoPage = (PhotoPage) getStateManager().getTopState();
+            // Move the next picture with capture animation. "1" means next.
+            photoPage.switchWithCaptureAnimation(1);
+        } else {
+            Util.viewUri(mThumbnail.getUri(), this);
+        }
     }
 
     protected void saveThumbnailToFile() {
