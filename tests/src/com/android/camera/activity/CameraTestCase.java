@@ -229,6 +229,13 @@ public class CameraTestCase<T extends Activity> extends ActivityInstrumentationT
         assertNull(activity.findViewById(id));
     }
 
+    protected void assertViewNotVisible(int id) {
+        Activity activity = getActivity();
+        getInstrumentation().waitForIdleSync();
+        View view = activity.findViewById(id);
+        assertTrue(view.getVisibility() != View.VISIBLE);
+    }
+
     protected static Parameters getParameters() {
         synchronized (CameraTestCase.class) {
             if (mParameters == null) {

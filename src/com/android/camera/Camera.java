@@ -558,31 +558,37 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mFlashIndicator == null) {
             return;
         }
-        if (Parameters.FLASH_MODE_AUTO.equals(value)) {
-            mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_auto);
-            mFlashIndicator.setVisibility(View.VISIBLE);
-        } else if (Parameters.FLASH_MODE_ON.equals(value)) {
-            mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_on);
-            mFlashIndicator.setVisibility(View.VISIBLE);
-        } else if (Parameters.FLASH_MODE_OFF.equals(value)) {
+        if (value == null || Parameters.FLASH_MODE_OFF.equals(value)) {
             mFlashIndicator.setVisibility(View.GONE);
+        } else {
+            mFlashIndicator.setVisibility(View.VISIBLE);
+            if (Parameters.FLASH_MODE_AUTO.equals(value)) {
+                mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_auto);
+            } else if (Parameters.FLASH_MODE_ON.equals(value)) {
+                mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_on);
+            } else {
+                // Should not happen.
+                mFlashIndicator.setVisibility(View.GONE);
+            }
         }
     }
 
-    private void updateSceneOnScreenIndicator(boolean isVisible) {
+    private void updateSceneOnScreenIndicator(String value) {
         if (mSceneIndicator == null) {
             return;
         }
-        mSceneIndicator.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        boolean isGone = (value == null) || (Parameters.SCENE_MODE_AUTO.equals(value));
+        mSceneIndicator.setVisibility(isGone ? View.GONE : View.VISIBLE);
     }
 
     private void updateWhiteBalanceOnScreenIndicator(String value) {
         if (mWhiteBalanceIndicator == null) {
             return;
         }
-        if (Parameters.WHITE_BALANCE_AUTO.equals(value)) {
+        if (value == null || Parameters.WHITE_BALANCE_AUTO.equals(value)) {
             mWhiteBalanceIndicator.setVisibility(View.GONE);
         } else {
+            mWhiteBalanceIndicator.setVisibility(View.VISIBLE);
             if (Parameters.WHITE_BALANCE_FLUORESCENT.equals(value)) {
                 mWhiteBalanceIndicator.setImageResource(R.drawable.ic_indicators_fluorescent);
             } else if (Parameters.WHITE_BALANCE_INCANDESCENT.equals(value)) {
@@ -591,8 +597,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 mWhiteBalanceIndicator.setImageResource(R.drawable.ic_indicators_sunlight);
             } else if (Parameters.WHITE_BALANCE_CLOUDY_DAYLIGHT.equals(value)) {
                 mWhiteBalanceIndicator.setImageResource(R.drawable.ic_indicators_cloudy);
+            } else {
+                // Should not happen.
+                mWhiteBalanceIndicator.setVisibility(View.GONE);
             }
-            mWhiteBalanceIndicator.setVisibility(View.VISIBLE);
         }
     }
 
@@ -603,20 +611,21 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Do not show the indicator if users cannot choose.
         if (mPreferenceGroup.findPreference(CameraSettings.KEY_FOCUS_MODE) == null) {
             mFocusIndicator.setVisibility(View.GONE);
-        } else if (Parameters.FOCUS_MODE_INFINITY.equals(value)) {
-            mFocusIndicator.setImageResource(R.drawable.ic_indicators_landscape);
-            mFocusIndicator.setVisibility(View.VISIBLE);
-        } else if (Parameters.FOCUS_MODE_MACRO.equals(value)) {
-            mFocusIndicator.setImageResource(R.drawable.ic_indicators_macro);
-            mFocusIndicator.setVisibility(View.VISIBLE);
         } else {
-            mFocusIndicator.setVisibility(View.GONE);
+            mFocusIndicator.setVisibility(View.VISIBLE);
+            if (Parameters.FOCUS_MODE_INFINITY.equals(value)) {
+                mFocusIndicator.setImageResource(R.drawable.ic_indicators_landscape);
+            } else if (Parameters.FOCUS_MODE_MACRO.equals(value)) {
+                mFocusIndicator.setImageResource(R.drawable.ic_indicators_macro);
+            } else {
+                // Should not happen.
+                mFocusIndicator.setVisibility(View.GONE);
+            }
         }
     }
 
     private void updateOnScreenIndicators() {
-        boolean isAutoScene = !(Parameters.SCENE_MODE_AUTO.equals(mParameters.getSceneMode()));
-        updateSceneOnScreenIndicator(isAutoScene);
+        updateSceneOnScreenIndicator(mParameters.getSceneMode());
         updateExposureOnScreenIndicator(CameraSettings.readExposure(mPreferences));
         updateFlashOnScreenIndicator(mParameters.getFlashMode());
         updateWhiteBalanceOnScreenIndicator(mParameters.getWhiteBalance());
