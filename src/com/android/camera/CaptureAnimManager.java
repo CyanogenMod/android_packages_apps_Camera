@@ -16,14 +16,14 @@
 
 package com.android.camera;
 
+import android.os.SystemClock;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.os.SystemClock;
 
 import com.android.gallery3d.ui.GLCanvas;
-import com.android.gallery3d.ui.Raw2DTexture;
+import com.android.gallery3d.ui.RawTexture;
 
 /**
  * Class to handle the capture animation.
@@ -51,10 +51,7 @@ public class CaptureAnimManager {
     private float mGap;  // mGap = (width or height) * GAP_RATIO. (depends on orientation)
     private int mDrawWidth;
     private int mDrawHeight;
-    private int mDrawX;
-    private int mDrawY;
     private float mHalfGap;  // mHalfGap = mGap / 2f.
-    private float[] mTextureTransformMatrix;
 
     /* preview: camera preview view.
      * review: view of picture just taken.
@@ -68,14 +65,11 @@ public class CaptureAnimManager {
 
     // x, y, h and h: the rectangle area where the animation takes place in.
     // transformMatrix: used to show the texture.
-    public void startAnimation(int x, int y, int w, int h, float[] transformMatrix) {
+    public void startAnimation(int x, int y, int w, int h) {
         mAnimStartTime = SystemClock.uptimeMillis();
-        mTextureTransformMatrix = transformMatrix;
         // Set the views to the initial positions.
         mDrawWidth = w;
         mDrawHeight = h;
-        mDrawX = x;
-        mDrawY = y;
         switch (mAnimOrientation) {
             case 0:  // Preview is on the left.
                 mGap = w * GAP_RATIO;
@@ -110,8 +104,8 @@ public class CaptureAnimManager {
 
     // Returns true if the animation has been drawn.
     public boolean drawAnimation(GLCanvas canvas, CameraScreenNail preview,
-                Raw2DTexture review) {
-        long timeDiff = SystemClock.uptimeMillis() - mAnimStartTime;;
+                RawTexture review) {
+        long timeDiff = SystemClock.uptimeMillis() - mAnimStartTime;
         if (timeDiff > CAPTURE_ANIM_DURATION) return false;
         float fraction = timeDiff / CAPTURE_ANIM_DURATION;
         float scale = calculateScale(fraction);
@@ -160,17 +154,7 @@ public class CaptureAnimManager {
         preview.directDraw(canvas, previewX, previewY, Math.round(width), Math.round(height));
         canvas.setAlpha(alpha);
 
-        // Flip animation texture vertically. OpenGL uses bottom left point as the origin (0,0).
-        canvas.save(GLCanvas.SAVE_FLAG_MATRIX);
-        int cx = Math.round(reviewX + width / 2);
-        int cy = Math.round(reviewY + height / 2);
-        canvas.translate(cx, cy);
-        canvas.scale(1, -1, 1);
-        canvas.translate(-cx, -cy);
-        canvas.drawTexture(review, mTextureTransformMatrix,
-                reviewX, reviewY, (int) width, (int) height);
-        canvas.restore();
-
+        review.draw(canvas, reviewX, reviewY, (int) width, (int) height);
         return true;
     }
 
