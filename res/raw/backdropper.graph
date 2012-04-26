@@ -31,7 +31,7 @@
 @external recordingProfile;
 @external recordingDoneListener;
 
-@external previewSurface;
+@external previewSurfaceTexture;
 @external previewWidth;
 @external previewHeight;
 
@@ -65,10 +65,10 @@
 }
 
 // Display output
-@filter SurfaceTargetFilter display {
-  surface = $previewSurface;
-  owidth = $previewWidth;
-  oheight = $previewHeight;
+@filter SurfaceTextureTarget display {
+  surfaceTexture = $previewSurfaceTexture;
+  width = $previewWidth;
+  height = $previewHeight;
 }
 
 // Recording output

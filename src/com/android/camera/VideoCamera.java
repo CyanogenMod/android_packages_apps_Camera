@@ -321,7 +321,8 @@ public class VideoCamera extends ActivityBase
         mResetEffect = getIntent().getBooleanExtra(IntentExtras.RESET_EFFECT_EXTRA, true);
         // If background replacement was on when the camera was switched, the
         // background uri will be sent via the intent.
-        mEffectUriFromGallery = getIntent().getStringExtra(IntentExtras.BACKGROUND_URI_GALLERY_EXTRA);
+        mEffectUriFromGallery = getIntent().getStringExtra(
+            IntentExtras.BACKGROUND_URI_GALLERY_EXTRA);
         resetEffect();
 
         /*
@@ -851,7 +852,8 @@ public class VideoCamera extends ActivityBase
     private void setPreviewTexture() {
         try {
             if (effectsActive()) {
-                mEffectsRecorder.setPreviewSurface(mSurface, mSurfaceWidth, mSurfaceHeight);
+                mEffectsRecorder.setPreviewSurfaceTexture(mSurfaceTexture, mSurfaceWidth,
+                    mSurfaceHeight);
             } else {
                 mCameraDevice.setPreviewTexture(mSurfaceTexture);
             }
@@ -897,13 +899,14 @@ public class VideoCamera extends ActivityBase
                 mSurfaceWidth = mCameraScreenNail.getWidth();
                 mSurfaceHeight = mCameraScreenNail.getHeight();
                 initializeEffectsPreview();
-                mEffectsRecorder.setPreviewSurface(mSurface, mSurfaceWidth, mSurfaceHeight);
+                mEffectsRecorder.setPreviewSurfaceTexture(mSurfaceTexture, mSurfaceWidth,
+                    mSurfaceHeight);
                 Log.v(TAG, "effectsStartPreview");
                 mEffectsRecorder.startPreview();
             }
         } catch (Throwable ex) {
             closeCamera();
-            throw new RuntimeException("startPreview or setPreviewSurface failed", ex);
+            throw new RuntimeException("startPreview or setPreviewSurfaceTexture failed", ex);
         }
 
         mPreviewing = true;
@@ -1199,7 +1202,7 @@ public class VideoCamera extends ActivityBase
 
         mOrientationCompensationAtRecordStart = mOrientationCompensation;
 
-        mEffectsRecorder.setPreviewSurface(mSurface, mSurfaceWidth, mSurfaceHeight);
+        mEffectsRecorder.setPreviewSurfaceTexture(mSurfaceTexture, mSurfaceWidth, mSurfaceHeight);
 
         if (mEffectType == EffectsRecorder.EFFECT_BACKDROPPER &&
                 ((String) mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)) {

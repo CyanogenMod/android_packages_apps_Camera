@@ -73,7 +73,7 @@ public class EffectsRecorder {
     private Camera mCameraDevice;
     private CamcorderProfile mProfile;
     private double mCaptureRate = 0;
-    private Surface mPreviewSurface;
+    private SurfaceTexture mPreviewSurfaceTexture;
     private int mPreviewWidth;
     private int mPreviewHeight;
     private MediaRecorder.OnInfoListener mInfoListener;
@@ -109,7 +109,7 @@ public class EffectsRecorder {
     private int mState = STATE_CONFIGURE;
 
     private boolean mLogVerbose = Log.isLoggable(TAG, Log.VERBOSE);
-    private static final String TAG = "effectsrecorder";
+    private static final String TAG = "EffectsRecorder";
     private MediaActionSound mCameraSound;
 
     /** Determine if a given effect is supported at runtime
@@ -118,7 +118,8 @@ public class EffectsRecorder {
     public static boolean isEffectSupported(int effectId) {
         switch (effectId) {
             case EFFECT_GOOFY_FACE:
-                return Filter.isAvailable("com.google.android.filterpacks.facedetect.GoofyRenderFilter");
+                return Filter.isAvailable(
+                    "com.google.android.filterpacks.facedetect.GoofyRenderFilter");
             case EFFECT_BACKDROPPER:
                 return Filter.isAvailable("android.filterpacks.videoproc.BackDropperFilter");
             default:
@@ -201,7 +202,8 @@ public class EffectsRecorder {
             case STATE_RECORD:
                 throw new RuntimeException("setMaxFileSize cannot be called while recording!");
             case STATE_RELEASED:
-                throw new RuntimeException("setMaxFileSize called on an already released recorder!");
+                throw new RuntimeException(
+                    "setMaxFileSize called on an already released recorder!");
             default:
                 break;
         }
@@ -217,7 +219,8 @@ public class EffectsRecorder {
             case STATE_RECORD:
                 throw new RuntimeException("setMaxDuration cannot be called while recording!");
             case STATE_RELEASED:
-                throw new RuntimeException("setMaxDuration called on an already released recorder!");
+                throw new RuntimeException(
+                    "setMaxDuration called on an already released recorder!");
             default:
                 break;
         }
@@ -230,7 +233,8 @@ public class EffectsRecorder {
             case STATE_RECORD:
                 throw new RuntimeException("setCaptureRate cannot be called while recording!");
             case STATE_RELEASED:
-                throw new RuntimeException("setCaptureRate called on an already released recorder!");
+                throw new RuntimeException(
+                    "setCaptureRate called on an already released recorder!");
             default:
                 break;
         }
@@ -239,20 +243,22 @@ public class EffectsRecorder {
         mCaptureRate = fps;
     }
 
-    public void setPreviewSurface(Surface previewSurface,
+    public void setPreviewSurfaceTexture(SurfaceTexture previewSurfaceTexture,
                                   int previewWidth,
                                   int previewHeight) {
-        if (mLogVerbose) Log.v(TAG, "setPreviewSurface (" + this + ")");
+        if (mLogVerbose) Log.v(TAG, "setPreviewSurfaceTexture(" + this + ")");
         switch (mState) {
             case STATE_RECORD:
-                throw new RuntimeException("setPreviewSurface cannot be called while recording!");
+                throw new RuntimeException(
+                    "setPreviewSurfaceTexture cannot be called while recording!");
             case STATE_RELEASED:
-                throw new RuntimeException("setPreviewSurface called on an already released recorder!");
+                throw new RuntimeException(
+                    "setPreviewSurfaceTexture called on an already released recorder!");
             default:
                 break;
         }
 
-        mPreviewSurface = previewSurface;
+        mPreviewSurfaceTexture= previewSurfaceTexture;
         mPreviewWidth = previewWidth;
         mPreviewHeight = previewHeight;
 
@@ -374,7 +380,8 @@ public class EffectsRecorder {
             case STATE_RECORD:
                 throw new RuntimeException("setInfoListener cannot be called while recording!");
             case STATE_RELEASED:
-                throw new RuntimeException("setInfoListener called on an already released recorder!");
+                throw new RuntimeException(
+                    "setInfoListener called on an already released recorder!");
             default:
                 break;
         }
@@ -386,7 +393,8 @@ public class EffectsRecorder {
             case STATE_RECORD:
                 throw new RuntimeException("setErrorListener cannot be called while recording!");
             case STATE_RELEASED:
-                throw new RuntimeException("setErrorListener called on an already released recorder!");
+                throw new RuntimeException(
+                    "setErrorListener called on an already released recorder!");
             default:
                 break;
         }
@@ -429,7 +437,7 @@ public class EffectsRecorder {
             }
 
             mGraphEnv.addReferences(
-                    "previewSurface", mPreviewSurface,
+                    "previewSurfaceTexture", mPreviewSurfaceTexture,
                     "previewWidth", mPreviewWidth,
                     "previewHeight", mPreviewHeight,
                     "orientation", mOrientationHint);
@@ -525,7 +533,7 @@ public class EffectsRecorder {
         if (mProfile == null) {
             throw new RuntimeException("No recording profile provided!");
         }
-        if (mPreviewSurface == null) {
+        if (mPreviewSurfaceTexture == null) {
             if (mLogVerbose) Log.v(TAG, "Passed a null surface; waiting for valid one");
             mState = STATE_WAITING_FOR_SURFACE;
             return;
@@ -642,7 +650,8 @@ public class EffectsRecorder {
             case STATE_RECORD:
                 throw new RuntimeException("Already recording, cannot begin anew!");
             case STATE_RELEASED:
-                throw new RuntimeException("startRecording called on an already released recorder!");
+                throw new RuntimeException(
+                    "startRecording called on an already released recorder!");
             default:
                 break;
         }
