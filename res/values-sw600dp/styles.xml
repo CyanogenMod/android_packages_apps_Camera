@@ -14,12 +14,6 @@
      limitations under the License.
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <style name="ReviewControlIcon">
-        <item name="android:layout_height">32dp</item>
-        <item name="android:layout_width">32dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_centerHorizontal">true</item>
-    </style>
     <style name="ReviewControlText">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
@@ -37,25 +31,6 @@
     <style name="OnScreenIndicators">
         <item name="android:layout_margin">12dp</item>
     </style>
-    <style name="ReviewThumbnail">
-        <!-- Thumbnail size calculation relies on the layout width. If this is
-             changed to wrap_content or match_parent, the code should be changed
-             as well. -->
-        <item name="android:layout_width">86dp</item>
-        <item name="android:layout_height">86dp</item>
-        <item name="android:layout_alignParentTop">true</item>
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginRight">28dp</item>
-    </style>
-    <style name="SettingPopupWindow">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:layout_marginRight">@dimen/setting_popup_right_margin</item>
-        <item name="android:visibility">gone</item>
-    </style>
     <style name="PopupTitleText">
         <item name="android:textSize">@dimen/popup_title_text_size</item>
         <item name="android:layout_gravity">left|center_vertical</item>
@@ -64,13 +39,6 @@
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/popup_title_color</item>
         <item name="android:layout_marginLeft">10dp</item>
-    </style>
-    <style name="PanoViewHorizontalBar">
-        <item name="android:background">#000000</item>
-        <item name="android:alpha">1.0</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0dp</item>
-        <item name="android:layout_weight">0.5</item>
     </style>
     <style name="PanoCustomDialogText">
         <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
