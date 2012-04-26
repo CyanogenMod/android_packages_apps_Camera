@@ -76,12 +76,12 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
                     OnIndicatorEventListener.EVENT_LEAVE_SECOND_LEVEL_INDICATOR_BAR);
     }
 
-    private int getTouchViewIndex(int offset, boolean isLandscape) {
+    private int getTouchViewIndex(int touchPosition, boolean isLandscape) {
         // If the current touch location is on close icon and above.
         if (isLandscape) {
-            if (offset < mCloseIcon.getBottom()) return indexOfChild(mCloseIcon);
+            if (touchPosition < mCloseIcon.getBottom()) return indexOfChild(mCloseIcon);
         } else {
-            if (offset > mCloseIcon.getLeft()) return indexOfChild(mCloseIcon);
+            if (touchPosition > mCloseIcon.getLeft()) return indexOfChild(mCloseIcon);
         }
 
         // Calculate if the touch event is on the indicator buttons.
@@ -91,16 +91,16 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         View firstIndicatorButton = getChildAt(mNonIndicatorButtonCount);
         if (isLandscape) {
             int baseline = firstIndicatorButton.getTop() + (ICON_SPACING / 2);
-            if (offset < baseline) return -1;
+            if (touchPosition < baseline) return -1;
             int iconHeight = firstIndicatorButton.getMeasuredHeight();
             int buttonRange = iconHeight + ICON_SPACING;
-            return (mNonIndicatorButtonCount + ((offset - baseline) / buttonRange));
+            return (mNonIndicatorButtonCount + ((touchPosition - baseline) / buttonRange));
         } else {
             int baseline = firstIndicatorButton.getRight() + (ICON_SPACING / 2);
-            if (offset > baseline) return -1;
+            if (touchPosition > baseline) return -1;
             int iconWidth = firstIndicatorButton.getMeasuredWidth();
             int buttonRange = iconWidth + ICON_SPACING;
-            return (mNonIndicatorButtonCount + ((baseline - offset) / buttonRange));
+            return (mNonIndicatorButtonCount + ((baseline - touchPosition) / buttonRange));
         }
     }
 
@@ -120,11 +120,16 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         int index = 0;
         boolean isLandscape = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
-        double offset = isLandscape ? event.getY() : event.getY();
-        int size      = isLandscape ? getHeight() : getWidth();
-        if (size == 0) return false; // the event is sent before onMeasure()
-        if (offset > size) offset = size;
-        index = getTouchViewIndex((int) offset, isLandscape);
+        // the X (Y) of touch point for portrait (landscape) orientation
+        int touchPosition = (int) (isLandscape ? event.getY() : event.getX());
+        // second-level indicator control bar width (height) for portrait
+        // (landscape) orientation
+        int controlBarLength = isLandscape ? getHeight() : getWidth();
+        if (controlBarLength == 0) return false; // the event is sent before onMeasure()
+        if (touchPosition >= controlBarLength) {
+            touchPosition = controlBarLength - 1;
+        }
+        index = getTouchViewIndex(touchPosition, isLandscape);
 
         // Cancel the previous target if we moved out of it
         if ((mSelectedIndex != -1) && (index != mSelectedIndex)) {
