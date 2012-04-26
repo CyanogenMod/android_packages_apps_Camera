@@ -940,8 +940,10 @@ public class VideoCamera extends ActivityBase
             closeCamera();
             if (!effectsActive()) releaseMediaRecorder();
         }
-        mCameraScreenNail.releaseSurfaceTexture();
-        mSurfaceTexture = null;
+        if (mSurfaceTexture != null) {
+            mCameraScreenNail.releaseSurfaceTexture();
+            mSurfaceTexture = null;
+        }
         closeVideoFileDescriptor();
 
         if (mReceiver != null) {
@@ -953,8 +955,8 @@ public class VideoCamera extends ActivityBase
             mIndicatorControlContainer.dismissSettingPopup();
         }
 
-        mOrientationListener.disable();
-        mLocationManager.recordLocation(false);
+        if (mOrientationListener != null) mOrientationListener.disable();
+        if (mLocationManager != null) mLocationManager.recordLocation(false);
 
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
         // Call onPause after stopping video recording. So the camera can be
