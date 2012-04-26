@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -92,24 +93,50 @@ public class IndicatorControlBar extends IndicatorControl implements
         int count = getChildCount();
         if (count == 0) return;
 
-        // We have (equal) paddings at left and right, but no padding at top or
-        // bottom.
-        int padding = getPaddingLeft();
         int width = right - left;
         int height = bottom - top;
 
-        // We want the icons to be square (size x size)
-        int size = height;
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+            // For landscape orientation, we have equal paddings at top and
+            // bottom, but no padding at left and right.
+            int padding = getPaddingTop();
 
-        mSecondLevelIcon.layout(padding, 0, padding + size, size);
+            // We want the icons to be square (size x size)
+            int size = width;
 
-        // Layout the zoom control if required.
-        if (mZoomControl != null)  {
-            mZoomControl.layout(padding + size, 0, width - padding - size, size);
-        }
+            // Layout the camera picker if required.
+            if (mCameraPicker != null) {
+                mCameraPicker.layout(0, padding, size, padding + size);
+            }
 
-        if (mCameraPicker != null) {
-            mCameraPicker.layout(width - padding - size, 0, width - padding, size);
+            // Layout the zoom control if required.
+            if (mZoomControl != null) {
+                mZoomControl.layout(0, padding + size, size,
+                        height - padding - size);
+            }
+
+            mSecondLevelIcon.layout(0, height - padding - size, size,
+                    height - padding);
+        } else {
+            // For portrait orientation, we have equal paddings at left and
+            // right, but no padding at top or bottom.
+            int padding = getPaddingLeft();
+
+            // We want the icons to be square (size x size)
+            int size = height;
+
+            mSecondLevelIcon.layout(padding, 0, padding + size, size);
+
+            // Layout the zoom control if required.
+            if (mZoomControl != null)  {
+                mZoomControl.layout(padding + size, 0, width - padding - size, size);
+            }
+
+            // Layout the camera picker if required.
+            if (mCameraPicker != null) {
+                mCameraPicker.layout(width - padding - size, 0, width - padding, size);
+            }
         }
     }
 

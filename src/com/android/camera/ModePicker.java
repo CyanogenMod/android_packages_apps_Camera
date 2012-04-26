@@ -17,6 +17,7 @@
 package com.android.camera;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.view.View;
@@ -269,17 +270,32 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     protected void onLayout(
             boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        // Layout the current mode indicator bar.
+        // Layout the current mode indicator bar, which is only for tablet.
         if (mCurrentModeBar != null) {
-            int viewWidth = mModeSelectionIcon[MODE_CAMERA].getWidth();
-            int iconWidth = ((ImageView) mModeSelectionIcon[MODE_CAMERA])
-                    .getDrawable().getIntrinsicWidth();
-            int padding = (viewWidth - iconWidth) / 2;
-            int l = mModeSelectionFrame.getLeft() + mCurrentMode * viewWidth;
-            mCurrentModeBar.layout((l + padding),
-                    (bottom - top - mCurrentModeBar.getHeight()),
-                    (l + padding + iconWidth),
-                    (bottom - top));
+            if (getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE) {
+                // tablet in landscape orientation
+                int viewWidth = mModeSelectionIcon[MODE_CAMERA].getWidth();
+                int iconWidth = ((ImageView) mModeSelectionIcon[MODE_CAMERA])
+                        .getDrawable().getIntrinsicWidth();
+                int padding = (viewWidth - iconWidth) / 2;
+                int l = mModeSelectionFrame.getLeft() + mCurrentMode * viewWidth;
+                mCurrentModeBar.layout((l + padding),
+                        (bottom - top - mCurrentModeBar.getHeight()),
+                        (l + padding + iconWidth),
+                        (bottom - top));
+            } else {
+                // tablet in portrait orientation
+                int viewHeight = mModeSelectionIcon[MODE_CAMERA].getHeight();
+                int iconHeight = ((ImageView) mModeSelectionIcon[MODE_CAMERA])
+                        .getDrawable().getIntrinsicHeight();
+                int padding = (viewHeight - iconHeight) / 2;
+                int l = mModeSelectionFrame.getTop() + mCurrentMode * viewHeight;
+                mCurrentModeBar.layout(0,
+                        (l + padding),
+                        mCurrentModeBar.getWidth(),
+                        (l + padding + iconHeight));
+            }
         }
     }
 

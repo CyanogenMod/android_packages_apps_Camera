@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2007 The Android Open Source Project
+<!-- Copyright (C) 2012 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,20 +13,19 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
+<!-- This layout is shared by phone and tablet in landscape orientation. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <com.android.gallery3d.ui.GLRootView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/gl_root_view" />
     <LinearLayout android:id="@+id/camera_app_root"
             android:orientation="horizontal"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent">
-        <include layout="@layout/preview_frame_video"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <include layout="@layout/preview_frame"/>
         <include layout="@layout/camera_control"/>
     </LinearLayout>
-    <include layout="@layout/bg_replacement_training_message"/>
-</RelativeLayout>
+</FrameLayout>

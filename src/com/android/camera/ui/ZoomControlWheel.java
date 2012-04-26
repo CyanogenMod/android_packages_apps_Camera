@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -38,16 +39,18 @@ public class ZoomControlWheel extends ZoomControl {
     private static final String TAG = "ZoomControlWheel";
     private static final int HIGHLIGHT_DEGREES = 30;
     private static final int TRAIL_WIDTH = 2;
-    private static final int ZOOM_IN_ICON_DEGREES = 96;
-    private static final int ZOOM_OUT_ICON_DEGREES = 264;
-    private static final int MAX_SLIDER_ANGLE =
-            ZOOM_OUT_ICON_DEGREES - (HIGHLIGHT_DEGREES / 2);
-    private static final int MIN_SLIDER_ANGLE =
-            ZOOM_IN_ICON_DEGREES + (HIGHLIGHT_DEGREES / 2);
-    private static final int DEFAULT_SLIDER_POSITION = MAX_SLIDER_ANGLE;
-    private static final double SLIDER_RANGE =
-            Math.toRadians(MAX_SLIDER_ANGLE - MIN_SLIDER_ANGLE);
-    private double mSliderRadians = DEFAULT_SLIDER_POSITION;
+
+    private static final int LANDSCAPE_ZOOM_IN_ICON_DEGREES = 96;
+    private static final int LANDSCAPE_ZOOM_OUT_ICON_DEGREES = 264;
+
+    // Will be calculated based on screen orientation.
+    private final int ZOOM_IN_ICON_DEGREES;
+    private final int ZOOM_OUT_ICON_DEGREES;
+    private final int MAX_SLIDER_ANGLE;
+    private final int MIN_SLIDER_ANGLE;
+    private final int DEFAULT_SLIDER_POSITION;
+    private final double SLIDER_RANGE;
+    private double mSliderRadians;
 
     private final int TRAIL_COLOR;
 
@@ -77,6 +80,22 @@ public class ZoomControlWheel extends ZoomControl {
         mShutterButtonRadius = IndicatorControlWheelContainer.SHUTTER_BUTTON_RADIUS;
         mStrokeWidth = Util.dpToPixel(IndicatorControlWheelContainer.STROKE_WIDTH);
         mWheelRadius = mShutterButtonRadius + mStrokeWidth * 0.5;
+
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+            // tablet in landscape orientation
+            ZOOM_IN_ICON_DEGREES = LANDSCAPE_ZOOM_IN_ICON_DEGREES;
+            ZOOM_OUT_ICON_DEGREES = LANDSCAPE_ZOOM_OUT_ICON_DEGREES;
+        } else {
+            // tablet in portrait orientation
+            ZOOM_IN_ICON_DEGREES = LANDSCAPE_ZOOM_IN_ICON_DEGREES - 90;
+            ZOOM_OUT_ICON_DEGREES = LANDSCAPE_ZOOM_OUT_ICON_DEGREES - 90;
+        }
+        MAX_SLIDER_ANGLE = ZOOM_OUT_ICON_DEGREES - (HIGHLIGHT_DEGREES / 2);
+        MIN_SLIDER_ANGLE = ZOOM_IN_ICON_DEGREES + (HIGHLIGHT_DEGREES / 2);
+        DEFAULT_SLIDER_POSITION = MAX_SLIDER_ANGLE;
+        SLIDER_RANGE = Math.toRadians(MAX_SLIDER_ANGLE - MIN_SLIDER_ANGLE);
+        mSliderRadians = DEFAULT_SLIDER_POSITION;
     }
 
     @Override
@@ -139,9 +158,16 @@ public class ZoomControlWheel extends ZoomControl {
     @Override
     protected void onLayout(
             boolean changed, int left, int top, int right, int bottom) {
-        mCenterX = right - left - Util.dpToPixel(
-                IndicatorControlWheelContainer.FULL_WHEEL_RADIUS);
-        mCenterY = (bottom - top) / 2;
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+            mCenterX = right - left - Util.dpToPixel(
+                    IndicatorControlWheelContainer.WHEEL_CENTER_TO_SECANT);
+            mCenterY = (bottom - top) / 2;
+        } else {
+            mCenterX = (right - left) / 2;
+            mCenterY = bottom - top - Util.dpToPixel(
+                    IndicatorControlWheelContainer.WHEEL_CENTER_TO_SECANT);
+        }
         layoutIcon(mZoomIn, Math.toRadians(ZOOM_IN_ICON_DEGREES));
         layoutIcon(mZoomOut, Math.toRadians(ZOOM_OUT_ICON_DEGREES));
         layoutIcon(mZoomSlider, getSliderDrawAngle(mSliderRadians));

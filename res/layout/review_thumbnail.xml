@@ -13,7 +13,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <com.android.camera.ui.RotateImageView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/thumbnail"
         style="@style/ReviewThumbnail"
@@ -22,5 +21,4 @@
         android:focusable="false"
         android:visibility="gone"
         android:contentDescription="@string/accessibility_review_thumbnail"
-        android:background="@drawable/border_last_picture">
-</com.android.camera.ui.RotateImageView>
+        android:background="@drawable/border_last_picture" />

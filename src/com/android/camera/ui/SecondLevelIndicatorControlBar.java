@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -75,20 +76,32 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
                     OnIndicatorEventListener.EVENT_LEAVE_SECOND_LEVEL_INDICATOR_BAR);
     }
 
-    private int getTouchViewIndex(int x, int width) {
+    private int getTouchViewIndex(int offset, boolean isLandscape) {
         // If the current touch location is on close icon and above.
-        if (x > mCloseIcon.getLeft()) return indexOfChild(mCloseIcon);
+        if (isLandscape) {
+            if (offset < mCloseIcon.getBottom()) return indexOfChild(mCloseIcon);
+        } else {
+            if (offset > mCloseIcon.getLeft()) return indexOfChild(mCloseIcon);
+        }
 
         // Calculate if the touch event is on the indicator buttons.
         int count = getChildCount();
         if (count == mNonIndicatorButtonCount) return -1;
         // The baseline will be the first indicator button's top minus spacing.
         View firstIndicatorButton = getChildAt(mNonIndicatorButtonCount);
-        int baselineX = firstIndicatorButton.getRight() + (ICON_SPACING / 2);
-        if (x > baselineX) return -1;
-        int iconWidth = firstIndicatorButton.getMeasuredWidth();
-        int buttonRange = iconWidth + ICON_SPACING;
-        return (mNonIndicatorButtonCount + ((baselineX - x) / buttonRange));
+        if (isLandscape) {
+            int baseline = firstIndicatorButton.getTop() + (ICON_SPACING / 2);
+            if (offset < baseline) return -1;
+            int iconHeight = firstIndicatorButton.getMeasuredHeight();
+            int buttonRange = iconHeight + ICON_SPACING;
+            return (mNonIndicatorButtonCount + ((offset - baseline) / buttonRange));
+        } else {
+            int baseline = firstIndicatorButton.getRight() + (ICON_SPACING / 2);
+            if (offset > baseline) return -1;
+            int iconWidth = firstIndicatorButton.getMeasuredWidth();
+            int buttonRange = iconWidth + ICON_SPACING;
+            return (mNonIndicatorButtonCount + ((baseline - offset) / buttonRange));
+        }
     }
 
     private void dispatchRelativeTouchEvent(View view, MotionEvent event) {
@@ -104,12 +117,14 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         int action = event.getAction();
         if (!isEnabled()) return false;
 
-        double x = event.getX();
-        int width = getWidth();
-        if (width == 0) return false; // the event is sent before onMeasure()
-        if (x > width) x = width;
-
-        int index = getTouchViewIndex((int) x, width);
+        int index = 0;
+        boolean isLandscape = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
+        double offset = isLandscape ? event.getY() : event.getY();
+        int size      = isLandscape ? getHeight() : getWidth();
+        if (size == 0) return false; // the event is sent before onMeasure()
+        if (offset > size) offset = size;
+        index = getTouchViewIndex((int) offset, isLandscape);
 
         // Cancel the previous target if we moved out of it
         if ((mSelectedIndex != -1) && (index != mSelectedIndex)) {
@@ -180,25 +195,43 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         if (count == 0) return;
         int width = right - left;
         int height = bottom - top;
-        int iconWidth = mCloseIcon.getMeasuredWidth();
-        int padding = getPaddingLeft();
 
-        // Layout from the last icon up.
-        int offsetX = padding;
-        int increment = iconWidth + ICON_SPACING;
-        for (int i = count - 1; i >= mNonIndicatorButtonCount; --i) {
-            getChildAt(i).layout(offsetX, 0, offsetX + iconWidth, height);
-            offsetX += increment;
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+            int iconSize = mCloseIcon.getMeasuredHeight();
+            int padding = getPaddingTop();
+            // The first icon is close button.
+            int offset = padding;
+            mCloseIcon.layout(0, offset, width, (offset + iconSize));
+            // And layout the divider line.
+            offset += (iconSize + padding);
+            mDivider.layout(padding, offset, (width - padding),
+                    (offset + mDivider.getMeasuredHeight()));
+            // Layout from the last icon up.
+            int startY = height - iconSize - padding;
+            int decrement = iconSize + ICON_SPACING;
+            for (int i = count - 1; i >= mNonIndicatorButtonCount; --i) {
+                getChildAt(i).layout(0, startY, width, startY + iconSize);
+                startY -= decrement;
+            }
+        } else {
+            int iconSize = mCloseIcon.getMeasuredWidth();
+            int padding = getPaddingLeft();
+            // Layout from the last icon up.
+            int offset = padding;
+            int increment = iconSize + ICON_SPACING;
+            for (int i = count - 1; i >= mNonIndicatorButtonCount; --i) {
+                getChildAt(i).layout(offset, 0, offset + iconSize, height);
+                offset += increment;
+            }
+            // And layout the divider line.
+            offset = width - iconSize - 2 * padding;
+            mDivider.layout(offset, padding,
+                    (offset + mDivider.getMeasuredWidth()), (height - padding));
+            offset = width - iconSize - padding;
+            // The first icon is close button.
+            mCloseIcon.layout(offset, 0, (offset + iconSize), height);
         }
-
-        // And layout the divider line.
-        offsetX = width - iconWidth - 2 * padding;
-        mDivider.layout(offsetX, padding, (offsetX + mDivider.getMeasuredWidth()),
-                (height - padding));
-
-        offsetX = width - iconWidth - padding;
-        // The first icon is close button.
-        mCloseIcon.layout(offsetX, 0, (offsetX + iconWidth), height);
    }
 
     @Override

@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,9 +39,15 @@ public class ZoomControlBar extends ZoomControl {
     private boolean mStartChanging;
     private int mSliderPosition = 0;
     private int mSliderLength;
-    private int mWidth;
-    private int mIconWidth;
-    private int mTotalIconWidth;
+    // The width of the zoom control bar (including the '+', '-' icons and the
+    // slider bar) for phone in portrait orientation, or the height of that
+    // for phone in landscape orientation.
+    private int mSize;
+    // The width of the '+' icon (the same as '-' icon) for phone in portrait
+    // orientation, or the height of that for phone in landscape orientation.
+    private int mIconSize;
+    // mIconSize + padding
+    private int mTotalIconSize;
 
     public ZoomControlBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -55,16 +62,25 @@ public class ZoomControlBar extends ZoomControl {
         mBar.setActivated(activated);
     }
 
-    private int getSliderPosition(int x) {
+    private int getSliderPosition(int offset) {
         // Calculate the absolute offset of the slider in the zoom control bar.
         // For left-hand users, as the device is rotated for 180 degree for
         // landscape mode, the zoom-in bottom should be on the top, so the
         // position should be reversed.
         int pos; // the relative position in the zoom slider bar
-        if (mOrientation == 90) {
-            pos = mWidth - mTotalIconWidth - x;
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+            if (mOrientation == 180) {
+                pos = offset - mTotalIconSize;
+            } else {
+                pos = mSize - mTotalIconSize - offset;
+            }
         } else {
-            pos = x - mTotalIconWidth;
+            if (mOrientation == 90) {
+                pos = mSize - mTotalIconSize - offset;
+            } else {
+                pos = offset - mTotalIconSize;
+            }
         }
         if (pos < 0) pos = 0;
         if (pos > mSliderLength) pos = mSliderLength;
@@ -73,15 +89,21 @@ public class ZoomControlBar extends ZoomControl {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        mWidth = w;
-        mIconWidth = mZoomIn.getMeasuredWidth();
-        mTotalIconWidth = mIconWidth + ICON_SPACING;
-        mSliderLength = mWidth  - (2 * mTotalIconWidth);
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+            mSize = h;
+            mIconSize = mZoomIn.getMeasuredHeight();
+        } else {
+            mSize = w;
+            mIconSize = mZoomIn.getMeasuredWidth();
+        }
+        mTotalIconSize = mIconSize + ICON_SPACING;
+        mSliderLength = mSize  - (2 * mTotalIconSize);
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        if (!isEnabled() || (mWidth == 0)) return false;
+        if (!isEnabled() || (mSize == 0)) return false;
         int action = event.getAction();
 
         switch (action) {
@@ -96,7 +118,10 @@ public class ZoomControlBar extends ZoomControl {
                 setActivated(true);
                 mStartChanging = false;
             case MotionEvent.ACTION_MOVE:
-                int pos = getSliderPosition((int) event.getX());
+                boolean isLandscape = (getResources().getConfiguration().orientation
+                        == Configuration.ORIENTATION_LANDSCAPE);
+                int pos = getSliderPosition((int)
+                        (isLandscape ? event.getY() : event.getX()));
                 if (!mStartChanging) {
                     // Make sure the movement is large enough before we start
                     // changing the zoom.
@@ -118,16 +143,24 @@ public class ZoomControlBar extends ZoomControl {
     @Override
     public void setOrientation(int orientation, boolean animation) {
         // layout for the left-hand camera control
-        if ((orientation == 90) || (mOrientation == 90)) requestLayout();
+        if ((orientation == 180) || (mOrientation == 180)) requestLayout();
         super.setOrientation(orientation, animation);
     }
 
     @Override
     protected void onLayout(
             boolean changed, int left, int top, int right, int bottom) {
+        boolean isLandscape = (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE);
         if (mZoomMax == 0) return;
-        int height = bottom - top;
-        mBar.layout(mTotalIconWidth, 0, mWidth - mTotalIconWidth, height);
+        int size = 0;
+        if (isLandscape) {
+            size = right - left;
+            mBar.layout(0, mTotalIconSize, size, mSize - mTotalIconSize);
+        } else {
+            size = bottom - top;
+            mBar.layout(mTotalIconSize, 0, mSize - mTotalIconSize, size);
+        }
         // For left-hand users, as the device is rotated for 180 degree,
         // the zoom-in button should be on the top.
         int pos; // slider position
@@ -137,18 +170,34 @@ public class ZoomControlBar extends ZoomControl {
         } else {
             sliderPosition = (int) ((double) mSliderLength * mZoomIndex / mZoomMax);
         }
-        if (mOrientation == 90) {
-            mZoomIn.layout(0, 0, mIconWidth, height);
-            mZoomOut.layout(mWidth - mIconWidth, 0, mWidth, height);
-            pos = mBar.getRight() - sliderPosition;
+
+        if (isLandscape) {
+            if (mOrientation == 180) {
+                mZoomOut.layout(0, 0, size, mIconSize);
+                mZoomIn.layout(0, mSize - mIconSize, size, mSize);
+                pos = mBar.getTop() + sliderPosition;
+            } else {
+                mZoomIn.layout(0, 0, size, mIconSize);
+                mZoomOut.layout(0, mSize - mIconSize, size, mSize);
+                pos = mBar.getBottom() - sliderPosition;
+            }
+            int sliderHeight = mZoomSlider.getMeasuredHeight();
+            mZoomSlider.layout(0, (pos - sliderHeight / 2), size,
+                    (pos + sliderHeight / 2));
         } else {
-            mZoomOut.layout(0, 0, mIconWidth, height);
-            mZoomIn.layout(mWidth - mIconWidth, 0, mWidth, height);
-            pos = mBar.getLeft() + sliderPosition;
+            if (mOrientation == 90) {
+                mZoomIn.layout(0, 0, mIconSize, size);
+                mZoomOut.layout(mSize - mIconSize, 0, mSize, size);
+                pos = mBar.getRight() - sliderPosition;
+            } else {
+                mZoomOut.layout(0, 0, mIconSize, size);
+                mZoomIn.layout(mSize - mIconSize, 0, mSize, size);
+                pos = mBar.getLeft() + sliderPosition;
+            }
+            int sliderWidth = mZoomSlider.getMeasuredWidth();
+            mZoomSlider.layout((pos - sliderWidth / 2), 0,
+                    (pos + sliderWidth / 2), size);
         }
-        int sliderWidth = mZoomSlider.getMeasuredWidth();
-        mZoomSlider.layout((pos - sliderWidth / 2), 0,
-                (pos + sliderWidth / 2), height);
     }
 
     @Override
