@@ -263,7 +263,7 @@ public class CameraSettings {
 
         for (int i = 0; i < volumes.length; i++) {
             StorageVolume v = volumes[i];
-            entries[i] = v.getDescription();
+            entries[i] = v.getLabel();
             entryValues[i] = v.getPath();
         }
         storage.setEntries(entries);
