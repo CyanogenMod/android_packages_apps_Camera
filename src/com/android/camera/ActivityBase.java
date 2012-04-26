@@ -109,12 +109,6 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
-        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        mActionBar = new GalleryActionBar(this);
-        mActionBar.hide();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         super.disableToggleStatusBar();
         super.onCreate(icicle);
@@ -135,6 +129,21 @@ abstract public class ActivityBase extends AbstractGalleryActivity
             mStorageHint.cancel();
             mStorageHint = null;
         }
+    }
+
+    @Override
+    public void setContentView(int layoutResID) {
+        // Set a theme with action bar. It is not specified in manifest because
+        // we want to hide it by default. setTheme must happen before
+        // setContentView.
+        setTheme(android.R.style.Theme_Holo);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+
+        super.setContentView(layoutResID);
+        // getActionBar() should be after setContentView
+        mActionBar = new GalleryActionBar(this);
+        mActionBar.hide();
     }
 
     @Override
