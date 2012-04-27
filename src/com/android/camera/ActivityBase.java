@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.hardware.Camera.Parameters;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,10 +37,11 @@ import android.view.WindowManager;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.RotateImageView;
 import com.android.gallery3d.app.AbstractGalleryActivity;
+import com.android.gallery3d.app.AppBridge;
 import com.android.gallery3d.app.PhotoPage;
-import com.android.gallery3d.app.PhotoPage.PageTapListener;
 import com.android.gallery3d.app.GalleryActionBar;
 import com.android.gallery3d.app.StateManager;
+import com.android.gallery3d.ui.ScreenNail;
 import com.android.gallery3d.util.MediaSetUtils;
 
 import java.io.File;
@@ -48,8 +50,7 @@ import java.io.File;
  * Superclass of Camera and VideoCamera activities.
  */
 abstract public class ActivityBase extends AbstractGalleryActivity
-        implements CameraScreenNail.PositionChangedListener,
-                View.OnLayoutChangeListener, PageTapListener {
+        implements View.OnLayoutChangeListener {
 
     private static final String TAG = "ActivityBase";
     private static boolean LOGV = false;
@@ -57,7 +58,6 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     private int mResultCodeForTesting;
     private Intent mResultDataForTesting;
     private OnScreenHint mStorageHint;
-    private UpdateCameraAppView mUpdateCameraAppView;
     private HideCameraAppView mHideCameraAppView;
     private View mSingleTapArea;
 
@@ -81,6 +81,7 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     protected int mNumberOfCameras;
     protected int mCameraId;
 
+    protected MyAppBridge mAppBridge;
     protected CameraScreenNail mCameraScreenNail; // This shows camera preview.
     // The view containing only camera related widgets like control panel,
     // indicator bar, focus indicator and etc.
@@ -103,12 +104,6 @@ abstract public class ActivityBase extends AbstractGalleryActivity
 
     @Override
     public void onCreate(Bundle icicle) {
-        if (getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         super.disableToggleStatusBar();
         super.onCreate(icicle);
@@ -264,11 +259,10 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     }
 
     protected void gotoGallery() {
-        // TODO: remove this after panorama has swipe UI.
-        if (getStateManager().getStateCount() > 0) {
-            PhotoPage photoPage = (PhotoPage) getStateManager().getTopState();
+        // TODO: remove this check after panorama has swipe UI.
+        if (mAppBridge != null) {
             // Move the next picture with capture animation. "1" means next.
-            photoPage.switchWithCaptureAnimation(1);
+            mAppBridge.switchWithCaptureAnimation(1);
         } else {
             Util.viewUri(mThumbnail.getUri(), this);
         }
@@ -304,12 +298,11 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         data.putString(PhotoPage.KEY_MEDIA_SET_PATH, path);
         data.putString(PhotoPage.KEY_MEDIA_ITEM_PATH, path);
 
-        // Send a CameraScreenNail to gallery to enable the camera preview.
-        CameraScreenNailHolder holder = new CameraScreenNailHolder(this);
-        data.putParcelable(PhotoPage.KEY_SCREENNAIL_HOLDER, holder);
+        // Send an AppBridge to gallery to enable the camera preview.
+        mAppBridge = new MyAppBridge();
+        data.putParcelable(PhotoPage.KEY_APP_BRIDGE, mAppBridge);
         getStateManager().startState(PhotoPage.class, data);
-        mCameraScreenNail = holder.getCameraScreenNail();
-        mCameraScreenNail.setPositionChangedListener(this);
+        mCameraScreenNail = mAppBridge.getCameraScreenNail();
     }
 
     private class HideCameraAppView implements Runnable {
@@ -318,49 +311,31 @@ abstract public class ActivityBase extends AbstractGalleryActivity
             mCameraAppView.setVisibility(View.GONE);
         }
     }
-    private class UpdateCameraAppView implements Runnable {
-        @Override
-        public void run() {
-            if (mShowCameraAppView) {
-                mCameraAppView.setVisibility(View.VISIBLE);
-                mCameraAppView.animate()
-                        .setDuration(CAMERA_APP_VIEW_TOGGLE_TIME)
-                        .withLayer().alpha(1);
-            } else {
-                mCameraAppView.animate()
-                        .setDuration(CAMERA_APP_VIEW_TOGGLE_TIME)
-                        .withLayer().alpha(0).withEndAction(mHideCameraAppView);
-            }
+
+    private void updateCameraAppView() {
+        if (mShowCameraAppView) {
+            mCameraAppView.setVisibility(View.VISIBLE);
+            mCameraAppView.animate()
+                .setDuration(CAMERA_APP_VIEW_TOGGLE_TIME)
+                .withLayer().alpha(1);
+        } else {
+            mCameraAppView.animate()
+                .setDuration(CAMERA_APP_VIEW_TOGGLE_TIME)
+                .withLayer().alpha(0).withEndAction(mHideCameraAppView);
         }
     }
 
-    @Override
-    public void onPositionChanged(int x, int y, int width, int height, boolean visible) {
-        if (!mPaused && !isFinishing()) {
-            View rootView = (View) getGLRoot();
-            int rootWidth = rootView.getWidth();
-            int rootHeight = rootView.getHeight();
-            boolean showCameraAppView;
-            // Check if the camera preview is in the center.
-            if (visible && (x == 0 && width == rootWidth) ||
-                    (y == 0 && height == rootHeight && Math.abs(x - (rootWidth - width) / 2) <= 1)) {
-                showCameraAppView = true;
-            } else {
-                showCameraAppView = false;
-            }
-
-            if (mShowCameraAppView != showCameraAppView) {
-                mShowCameraAppView = showCameraAppView;
-                // Initialize the animation.
-                if (mUpdateCameraAppView == null) {
-                    mUpdateCameraAppView = new UpdateCameraAppView();
-                    mHideCameraAppView = new HideCameraAppView();
-                    mCameraAppView.animate()
-                        .setInterpolator(new DecelerateInterpolator());
-                }
-                runOnUiThread(mUpdateCameraAppView);
-            }
+    private void onFullScreenChanged(boolean full) {
+        if (mShowCameraAppView == full) return;
+        mShowCameraAppView = full;
+        if (mPaused || isFinishing()) return;
+        // Initialize the animation.
+        if (mHideCameraAppView == null) {
+            mHideCameraAppView = new HideCameraAppView();
+            mCameraAppView.animate()
+                .setInterpolator(new DecelerateInterpolator());
         }
+        updateCameraAppView();
     }
 
     @Override
@@ -368,46 +343,45 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         return mActionBar;
     }
 
-    // Preview frame layout has changed. Move the preview to the center of the
-    // layout.
+    // Preview frame layout has changed.
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom,
             int oldLeft, int oldTop, int oldRight, int oldBottom) {
-        // Find out the left and top of the preview frame layout relative to GL
+        if (mAppBridge == null) return;
+
+        // Find out the coordinates of the preview frame relative to GL
         // root view.
         View root = (View) getGLRoot();
         int[] rootLocation = new int[2];
         int[] viewLocation = new int[2];
         root.getLocationInWindow(rootLocation);
         v.getLocationInWindow(viewLocation);
-        int relativeLeft = viewLocation[0] - rootLocation[0];
-        int relativeTop = viewLocation[1] - rootLocation[1];
 
-        // Calculate the scale ratio between preview frame layout and GL root
-        // view.
-        int width = root.getWidth();
-        int height = root.getHeight();
-        float scale = Math.max((float) (right - left) / width,
-                (float) (bottom - top) / height);
-        float scalePx = width / 2f;
-        float scalePy = height / 2f;
+        int w = root.getWidth();
+        int h = root.getHeight();
+        int l = viewLocation[0] - rootLocation[0];
+        int t = viewLocation[1] - rootLocation[1];
+        int r = l + (right - left);
+        int b = t + (bottom - top);
+        int rotation = Util.getDisplayRotation(this);
 
-        // Calculate the translate distance.
-        float translateX = relativeLeft + (right - left - width) / 2f;
-        float translateY = relativeTop + (bottom - top - height) / 2f;
+        Rect frame = new Rect();
+        switch (rotation) {
+            case 0: frame.set(l, t, r, b); break;
+            case 90: frame.set(h - b, l, h - t, r); break;
+            case 180: frame.set(w - r, h - b, w - l, h - t); break;
+            case 270: frame.set(t, w - r, b, w - l); break;
+        }
 
-        mCameraScreenNail.setMatrix(scale, scalePx, scalePy, translateX, translateY);
+        Log.d(TAG, "rotation = " + rotation + ", camera natural frame = " + frame);
+        mAppBridge.setCameraNaturalFrame(frame);
     }
 
     protected void setSingleTapUpListener(View singleTapArea) {
-        PhotoPage photoPage = (PhotoPage) getStateManager().getTopState();
-        photoPage.setPageTapListener(this);
         mSingleTapArea = singleTapArea;
     }
 
-    // Single tap up from PhotoPage.
-    @Override
-    public boolean onSingleTapUp(int x, int y) {
+    private boolean onSingleTapUp(int x, int y) {
         // Camera control is invisible. Ignore.
         if (!mShowCameraAppView) return false;
 
@@ -424,5 +398,66 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     }
 
     protected void onSingleTapUp(View view, int x, int y) {
+    }
+
+    protected void setSwipeEnabled(boolean enabled) {
+        ((View) getGLRoot()).setEnabled(enabled);
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////
+    //  The is the communication interface between the Camera Application and
+    //  the Gallery PhotoPage.
+    //////////////////////////////////////////////////////////////////////////
+
+    class MyAppBridge extends AppBridge implements CameraScreenNail.RenderListener {
+        private CameraScreenNail mCameraScreenNail;
+        private Server mServer;
+
+        @Override
+        public ScreenNail attachScreenNail() {
+            mCameraScreenNail = new CameraScreenNail(this);
+            return mCameraScreenNail;
+        }
+
+        @Override
+        public void detachScreenNail() {
+            mCameraScreenNail = null;
+        }
+
+        public CameraScreenNail getCameraScreenNail() {
+            return mCameraScreenNail;
+        }
+
+        // Return true if the tap is consumed.
+        @Override
+        public boolean onSingleTapUp(int x, int y) {
+            return ActivityBase.this.onSingleTapUp(x, y);
+        }
+
+        // This is used to notify that the screen nail will be drawn in full screen
+        // or not in next draw() call.
+        @Override
+        public void onFullScreenChanged(boolean full) {
+            ActivityBase.this.onFullScreenChanged(full);
+        }
+
+        @Override
+        public void requestRender() {
+            getGLRoot().requestRender();
+        }
+
+        @Override
+        public void setServer(Server s) {
+            mServer = s;
+        }
+
+        private void setCameraNaturalFrame(Rect frame) {
+            if (mServer != null) mServer.setCameraNaturalFrame(frame);
+        }
+
+        private void switchWithCaptureAnimation(int offset) {
+            if (mServer != null) mServer.switchWithCaptureAnimation(offset);
+        }
     }
 }

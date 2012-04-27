@@ -187,7 +187,7 @@ public class VideoCamera extends ActivityBase
     // The display rotation in degrees. This is only valid when mPreviewing is
     // true.
     private int mDisplayRotation;
-    private int mDisplayOrientation;
+    private int mCameraDisplayOrientation;
 
     private ContentResolver mContentResolver;
 
@@ -872,13 +872,13 @@ public class VideoCamera extends ActivityBase
         }
 
         mDisplayRotation = Util.getDisplayRotation(this);
-        mDisplayOrientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
-        mCameraDevice.setDisplayOrientation(mDisplayOrientation);
+        mCameraDisplayOrientation = Util.getDisplayOrientation(0, mCameraId);
+        mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
         setCameraParameters();
 
         if (mSurfaceTexture == null) {
             Size size = mParameters.getPreviewSize();
-            if (mDisplayOrientation % 180 == 0) {
+            if (mCameraDisplayOrientation % 180 == 0) {
                 mCameraScreenNail.setSize(size.width, size.height);
             } else {
                 mCameraScreenNail.setSize(size.height, size.width);
@@ -1406,6 +1406,7 @@ public class VideoCamera extends ActivityBase
 
     private void startVideoRecording() {
         Log.v(TAG, "startVideoRecording");
+        setSwipeEnabled(false);
 
         updateAndShowStorageHint();
         if (mStorageSpace <= Storage.LOW_STORAGE_THRESHOLD) {
@@ -1550,6 +1551,8 @@ public class VideoCamera extends ActivityBase
 
     private void stopVideoRecording() {
         Log.v(TAG, "stopVideoRecording");
+        setSwipeEnabled(true);
+
         if (mMediaRecorderRecording) {
             boolean shouldAddToMediaStoreNow = false;
 

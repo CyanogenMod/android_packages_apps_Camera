@@ -185,6 +185,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // not PREVIEW_STOPPED.
     private int mDisplayRotation;
     // The value for android.hardware.Camera.setDisplayOrientation.
+    private int mCameraDisplayOrientation;
+    // The value for UI components like indicators.
     private int mDisplayOrientation;
     // The value for android.hardware.Camera.Parameters.setRotation.
     private int mJpegRotation;
@@ -1642,7 +1644,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void setDisplayOrientation() {
         mDisplayRotation = Util.getDisplayRotation(this);
         mDisplayOrientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
-        mCameraDevice.setDisplayOrientation(mDisplayOrientation);
+        mCameraDisplayOrientation = Util.getDisplayOrientation(0, mCameraId);
+        mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
         if (mFaceView != null) {
             mFaceView.setDisplayOrientation(mDisplayOrientation);
         }
@@ -1677,7 +1680,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         if (mSurfaceTexture == null) {
             Size size = mParameters.getPreviewSize();
-            if (mDisplayOrientation % 180 == 0) {
+            if (mCameraDisplayOrientation % 180 == 0) {
                 mCameraScreenNail.setSize(size.width, size.height);
             } else {
                 mCameraScreenNail.setSize(size.height, size.width);
