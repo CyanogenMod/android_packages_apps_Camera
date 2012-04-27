@@ -1464,8 +1464,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
-        mCameraScreenNail.releaseSurfaceTexture();
-        mSurfaceTexture = null;
+        if (mSurfaceTexture != null) {
+            mCameraScreenNail.releaseSurfaceTexture();
+            mSurfaceTexture = null;
+        }
         if (mCameraSound != null) {
             mCameraSound.release();
             mCameraSound = null;
@@ -1498,7 +1500,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Remove the messages in the event queue.
         mHandler.removeMessages(FIRST_TIME_INIT);
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
-        mFocusManager.removeMessages();
+        if (mFocusManager != null) mFocusManager.removeMessages();
     }
 
     @Override
@@ -1710,7 +1712,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mFaceDetectionStarted = false;
         }
         setCameraState(PREVIEW_STOPPED);
-        mFocusManager.onPreviewStopped();
+        if (mFocusManager != null) mFocusManager.onPreviewStopped();
     }
 
     private static boolean isSupported(String value, List<String> supported) {
