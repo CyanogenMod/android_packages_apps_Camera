@@ -108,4 +108,8 @@ public class RotateLayout extends ViewGroup implements Rotatable {
         mOrientation = orientation;
         requestLayout();
     }
+
+    public int getOrientation() {
+        return mOrientation;
+    }
 }

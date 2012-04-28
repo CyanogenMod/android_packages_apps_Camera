@@ -373,7 +373,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         resetScreenOn();
 
         // Clear UI.
-        collapseCameraControls();
+        collapseCameraControls(true);
         if (mSharePopup != null)
             mSharePopup.dismiss();
         if (mFaceView != null)
@@ -681,7 +681,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             if (!Util.pointInView(e.getX(), e.getY(), popup)
                     && !Util.pointInView(e.getX(), e.getY(), mIndicatorControlContainer)
                     && !Util.pointInView(e.getX(), e.getY(), mPreviewFrame)) {
-                mIndicatorControlContainer.dismissSettingPopup();
+                mIndicatorControlContainer.dismissSettingPopup(false);
                 // Let event fall through.
             }
             return false;
@@ -1426,9 +1426,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mIndicatorControlContainer.setListener(this);
     }
 
-    private boolean collapseCameraControls() {
+    private boolean collapseCameraControls(boolean multiLevel) {
         if ((mIndicatorControlContainer != null)
-                && mIndicatorControlContainer.dismissSettingPopup()) {
+                && mIndicatorControlContainer.dismissSettingPopup(multiLevel)) {
             return true;
         }
         return false;
@@ -1611,7 +1611,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void onShutterButtonFocus(boolean pressed) {
-        if (mTimerMode && pressed || mPausing || collapseCameraControls() || mCameraState == SNAPSHOT_IN_PROGRESS) return;
+        if (mTimerMode && pressed || mPausing || collapseCameraControls(true) || mCameraState == SNAPSHOT_IN_PROGRESS) return;
 
         // Do not do focus if there is not enough storage.
         if (pressed && !canTakePicture()) return;
@@ -1664,7 +1664,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             return;
         }
 
-        if (mPausing || collapseCameraControls()) {
+        if (mPausing || collapseCameraControls(true)) {
             return;
         }
 
@@ -1849,7 +1849,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         // Do not trigger touch focus or Pinch zoom if popup window is opened.
-        if (collapseCameraControls()) return false;
+        if (collapseCameraControls(false)) return false;
 
         // Check if metering area or focus area is supported.
         if (!mFocusAreaSupported && !mMeteringAreaSupported) return false;
@@ -1925,7 +1925,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (!isCameraIdle()) {
             // ignore backs while we're taking a picture
             return;
-        } else if (!collapseCameraControls()) {
+        } else if (!collapseCameraControls(false)) {
             super.onBackPressed();
         }
     }
@@ -1950,7 +1950,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     // Start auto-focus immediately to reduce shutter lag. After
                     // the shutter button gets the focus, onShutterButtonFocus()
                     // will be called again but it is fine.
-                    if (collapseCameraControls()) return true;
+                    if (collapseCameraControls(true)) return true;
                     onShutterButtonFocus(true);
                     if (mShutterButton.isInTouchMode()) {
                         mShutterButton.requestFocusFromTouch();
@@ -2579,7 +2579,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mZoomControl.setZoomIndex(0);
         }
         if (mIndicatorControlContainer != null) {
-            mIndicatorControlContainer.dismissSettingPopup();
+            mIndicatorControlContainer.dismissSettingPopup(true);
             CameraSettings.restorePreferences(Camera.this, mPreferences,
                     mParameters);
             mIndicatorControlContainer.reloadPreferences();
