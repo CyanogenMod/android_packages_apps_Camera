@@ -21,6 +21,8 @@ import com.android.camera.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,6 +43,7 @@ public abstract class InLineSettingItem extends LinearLayout {
     protected int mIndex;
     // Scene mode can override the original preference value.
     protected String mOverrideValue;
+    protected OtherSettingsPopup mParentPopup;
 
     static public interface Listener {
         public void onSettingChanged();
@@ -54,11 +57,13 @@ public abstract class InLineSettingItem extends LinearLayout {
         ((TextView) findViewById(R.id.title)).setText(preference.getTitle());
     }
 
-    public void initialize(ListPreference preference) {
+    public void initialize(ListPreference preference,
+            ViewGroup parent, OtherSettingsPopup parentPopup) {
         setTitle(preference);
         if (preference == null) return;
         mPreference = preference;
         reloadPreference();
+        mParentPopup = parentPopup;
     }
 
     protected abstract void updateView();
@@ -88,5 +93,20 @@ public abstract class InLineSettingItem extends LinearLayout {
     public void overrideSettings(String value) {
         mOverrideValue = value;
         updateView();
+    }
+
+    public boolean dismiss() {
+        return false;
+    }
+
+    public boolean dismissOutside(MotionEvent m) {
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // Close other popups if needed
+        mParentPopup.dismissAllOutside(event);
+        return super.onTouchEvent(event);
     }
 }

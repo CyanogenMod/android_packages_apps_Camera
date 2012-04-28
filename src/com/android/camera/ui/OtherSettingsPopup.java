@@ -16,23 +16,23 @@
 
 package com.android.camera.ui;
 
+import android.content.Context;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
 import com.android.camera.CameraSettings;
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
-import com.android.camera.RecordLocationPreference;
-
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.View;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /* A popup window that contains several camera settings. */
 public class OtherSettingsPopup extends AbstractSettingPopup
@@ -80,7 +80,7 @@ public class OtherSettingsPopup extends AbstractSettingPopup
             InLineSettingItem view = (InLineSettingItem)
                     mInflater.inflate(viewLayoutId, parent, false);
 
-            view.initialize(pref); // no init for restore one
+            view.initialize(pref, parent, OtherSettingsPopup.this);
             view.setSettingChangedListener(OtherSettingsPopup.this);
             return view;
         }
@@ -154,4 +154,43 @@ public class OtherSettingsPopup extends AbstractSettingPopup
             }
         }
     }
+
+    // Pass on orientation message to its children
+    @Override
+    public void setOrientation(int orientation) {
+        super.setOrientation(orientation);
+        int count = mSettingList.getChildCount();
+        for (int i = 0; i < count; i++) {
+            InLineSettingItem settingItem =
+                    (InLineSettingItem) mSettingList.getChildAt(i);
+            settingItem.setOrientation(orientation);
+        }
+    }
+
+    public boolean dismissAll() {
+        // Dismiss all popups
+        int count = mSettingList.getChildCount();
+        for (int i = 0; i < count; i++) {
+            InLineSettingItem settingItem =
+                    (InLineSettingItem) mSettingList.getChildAt(i);
+            if (settingItem.dismiss()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean dismissAllOutside(MotionEvent event) {
+        // Dismiss popup dialogs (called from child)
+        int count = mSettingList.getChildCount();
+        for (int i = 0; i < count; i++) {
+            InLineSettingItem settingItem =
+                    (InLineSettingItem) mSettingList.getChildAt(i);
+            if (settingItem.dismissOutside(event)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

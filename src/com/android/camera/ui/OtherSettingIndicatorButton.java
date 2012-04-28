@@ -62,4 +62,13 @@ public class OtherSettingIndicatorButton extends AbstractIndicatorButton {
         root.addView(popup);
         mPopup = popup;
     }
+
+    @Override
+    public boolean dismissPopup() {
+        // Dismiss setting knob popups first
+        if (((OtherSettingsPopup)mPopup).dismissAll()) {
+            return true;
+        }
+        return super.dismissPopup();
+    }
 }
