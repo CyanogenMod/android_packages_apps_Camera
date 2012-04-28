@@ -205,7 +205,7 @@ public class CameraSettings {
             initVideoEffect(group, videoEffect);
             resetIfInvalid(videoEffect);
         }
-        if (storage != null) buildStorage(storage);
+        if (storage != null) buildStorage(group, storage);
     }
 
     private void buildExposureCompensation(
@@ -255,11 +255,17 @@ public class CameraSettings {
         preference.setEntryValues(entryValues);
     }
 
-    private void buildStorage(ListPreference storage) {
+    private void buildStorage(PreferenceGroup group, ListPreference storage) {
         StorageManager sm = (StorageManager) mContext.getSystemService(Context.STORAGE_SERVICE);
         StorageVolume[] volumes = sm.getVolumeList();
         String[] entries = new String[volumes.length];
         String[] entryValues = new String[volumes.length];
+
+        if (volumes.length < 2) {
+            // No need for storage setting
+            removePreference(group, storage.getKey());
+            return;
+        }
 
         for (int i = 0; i < volumes.length; i++) {
             StorageVolume v = volumes[i];
