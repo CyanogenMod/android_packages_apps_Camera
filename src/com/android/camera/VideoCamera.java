@@ -498,9 +498,9 @@ public class VideoCamera extends ActivityBase
                 settings.getPreferenceGroup(R.xml.video_preferences));
     }
 
-    private boolean collapseCameraControls() {
+    private boolean collapseCameraControls(boolean multiLevel) {
         if ((mIndicatorControlContainer != null)
-                && mIndicatorControlContainer.dismissSettingPopup()) {
+                && mIndicatorControlContainer.dismissSettingPopup(multiLevel)) {
             return true;
         }
         return false;
@@ -663,7 +663,7 @@ public class VideoCamera extends ActivityBase
 
     @Override
     public void onShutterButtonClick() {
-        if (collapseCameraControls()) return;
+        if (collapseCameraControls(true)) return;
 
         boolean stop = mMediaRecorderRecording;
 
@@ -996,7 +996,7 @@ public class VideoCamera extends ActivityBase
         mPausing = true;
 
         if (mIndicatorControlContainer != null) {
-            mIndicatorControlContainer.dismissSettingPopup();
+            mIndicatorControlContainer.dismissSettingPopup(true);
         }
 
         finishRecorderAndCloseCamera();
@@ -1036,7 +1036,7 @@ public class VideoCamera extends ActivityBase
         if (mPausing) return;
         if (mMediaRecorderRecording) {
             onStopVideoRecording(false);
-        } else if (!collapseCameraControls()) {
+        } else if (!collapseCameraControls(false)) {
             super.onBackPressed();
         }
     }
@@ -2120,7 +2120,7 @@ public class VideoCamera extends ActivityBase
         }
 
         if (mIndicatorControlContainer != null) {
-            mIndicatorControlContainer.dismissSettingPopup();
+            mIndicatorControlContainer.dismissSettingPopup(true);
             CameraSettings.restorePreferences(this, mPreferences,
                     mParameters);
             mIndicatorControlContainer.reloadPreferences();
@@ -2296,7 +2296,7 @@ public class VideoCamera extends ActivityBase
             // areas.
             if (!Util.pointInView(e.getX(), e.getY(), popup)
                     && !Util.pointInView(e.getX(), e.getY(), mIndicatorControlContainer)) {
-                mIndicatorControlContainer.dismissSettingPopup();
+                mIndicatorControlContainer.dismissSettingPopup(false);
                 // Let event fall through.
             }
             return false;
