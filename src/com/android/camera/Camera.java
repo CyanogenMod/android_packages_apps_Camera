@@ -351,9 +351,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.setVisibility(View.VISIBLE);
 
-        // Set touch focus listener.
-        setSingleTapUpListener(mPreviewFrameLayout);
-
         mImageSaver = new ImageSaver();
         installIntentFilter();
         initializeZoom();
@@ -1068,6 +1065,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // startPreview needs this.
         mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
+        // Set touch focus listener.
+        setSingleTapUpListener(mPreviewFrameLayout);
 
         mCameraPreviewThread.start();
 
