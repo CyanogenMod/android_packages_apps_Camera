@@ -21,6 +21,7 @@ import com.android.camera.R;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 public class OtherSettingIndicatorButton extends AbstractIndicatorButton {
@@ -62,4 +63,31 @@ public class OtherSettingIndicatorButton extends AbstractIndicatorButton {
         root.addView(popup);
         mPopup = popup;
     }
+
+    @Override
+    public boolean dismissPopup(boolean multiLevel) {
+        boolean closedChild = false;
+        // Dismiss child popups first
+        if (mPopup != null &&
+                ((OtherSettingsPopup)mPopup).dismissAll(!multiLevel)) {
+            if (!multiLevel) {
+                return true;
+            }
+            closedChild = true;
+            // Fall through
+        }
+        return super.dismissPopup(multiLevel) || closedChild;
+    }
+
+    @Override
+    public AbstractSettingPopup getPopupWindow() {
+        AbstractSettingPopup res = super.getPopupWindow();
+        if (res != null) {
+            return res;
+        } else if (mPopup != null) {
+            return ((OtherSettingsPopup)mPopup).getPopupWindow();
+        }
+        return null;
+    }
+
 }

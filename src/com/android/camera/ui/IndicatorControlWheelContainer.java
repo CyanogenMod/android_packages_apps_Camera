@@ -161,8 +161,8 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
     }
 
     @Override
-    public boolean dismissSettingPopup() {
-        return mIndicatorControlWheel.dismissSettingPopup();
+    public boolean dismissSettingPopup(boolean multiLevel) {
+        return mIndicatorControlWheel.dismissSettingPopup(multiLevel);
     }
 
     @Override
