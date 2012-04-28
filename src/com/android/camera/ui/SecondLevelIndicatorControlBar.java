@@ -66,7 +66,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
     }
 
     public void onClick(View view) {
-        dismissSettingPopup();
+        dismissSettingPopup(true);
         mOnIndicatorEventListener.onIndicatorEvent(
                     OnIndicatorEventListener.EVENT_LEAVE_SECOND_LEVEL_INDICATOR_BAR);
     }
@@ -118,7 +118,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
 
             if (p instanceof AbstractIndicatorButton) {
                 AbstractIndicatorButton b = (AbstractIndicatorButton) p;
-                b.dismissPopup();
+                b.dismissPopup(true);
             }
         }
 

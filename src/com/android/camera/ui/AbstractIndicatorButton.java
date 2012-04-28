@@ -55,7 +55,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
 
     @Override
     public void onOtherPopupShowed() {
-        dismissPopup();
+        dismissPopup(true);
     }
 
     public void setIndicatorChangeListener(IndicatorChangeListener listener) {
@@ -80,11 +80,11 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
                 showPopup();
                 PopupManager.getInstance(getContext()).notifyShowPopup(this);
             } else {
-                dismissPopup();
+                dismissPopup(true);
             }
             return true;
         } else if (action == MotionEvent.ACTION_CANCEL) {
-            dismissPopup();
+            dismissPopup(true);
             return true;
         }
         return false;
@@ -126,7 +126,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
         if (mListener != null) mListener.onShowIndicator(this, true);
     }
 
-    public boolean dismissPopup() {
+    public boolean dismissPopup(boolean multiLevel) {
         setPressed(false);
         mHandler.removeMessages(MSG_DISMISS_POPUP);
         if (mPopup != null && mPopup.getVisibility() == View.VISIBLE) {
@@ -166,7 +166,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_DISMISS_POPUP:
-                    dismissPopup();
+                    dismissPopup(true);
                     break;
             }
         }
