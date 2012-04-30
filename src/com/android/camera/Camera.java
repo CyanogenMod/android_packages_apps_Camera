@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.CameraInfo;
@@ -46,11 +47,13 @@ import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -114,6 +117,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private boolean mAeLockSupported;
     private boolean mAwbLockSupported;
     private boolean mContinousFocusSupported;
+    private String[] mDefaultFocusModes;
 
     private MyOrientationEventListener mOrientationListener;
     // The degrees of the device rotated clockwise from its natural orientation.
@@ -139,7 +143,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private Rotatable mReviewCancelButton;
     private Rotatable mReviewDoneButton;
     private View mReviewRetakeButton;
-    private ImageView mCaptureAnimView;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -364,8 +367,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             // Delay the toast for one second to wait for orientation.
             mHandler.sendEmptyMessageDelayed(SHOW_TAP_TO_FOCUS_TOAST, 1000);
         }
-
-        mCaptureAnimView = (ImageView) findViewById(R.id.capture_anim_view);
 
         mFirstTimeInitialized = true;
         addIdleHandler();
@@ -631,6 +632,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         updateWhiteBalanceOnScreenIndicator(mParameters.getWhiteBalance());
         updateFocusOnScreenIndicator(mParameters.getFocusMode());
     }
+
     private final class ShutterCallback
             implements android.hardware.Camera.ShutterCallback {
         @Override
@@ -994,8 +996,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
         mCameraId = getPreferredCameraId(mPreferences);
@@ -1014,28 +1016,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // This must be done before startPreview.
         mIsImageCaptureIntent = isImageCaptureIntent();
         createCameraScreenNail(!mIsImageCaptureIntent);
-
-        if (mIsImageCaptureIntent) {
-            // Cannot use RotateImageView for "done" and "cancel" button because
-            // the tablet layout uses RotateLayout, which cannot be cast to
-            // RotateImageView.
-            mReviewDoneButton = (Rotatable) findViewById(R.id.btn_done);
-            mReviewCancelButton = (Rotatable) findViewById(R.id.btn_cancel);
-            mReviewRetakeButton = findViewById(R.id.btn_retake);
-            findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
-
-            // Not grayed out upon disabled, to make the follow-up fade-out
-            // effect look smooth. Note that the review done button in tablet
-            // layout is not a TwoStateImageView.
-            if (mReviewDoneButton instanceof TwoStateImageView) {
-                ((TwoStateImageView) mReviewDoneButton).enableFilter(false);
-            }
-        } else {
-            mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
-            mThumbnailView.enableFilter(false);
-            mThumbnailView.setVisibility(View.VISIBLE);
-            mThumbnailViewWidth = mThumbnailView.getLayoutParams().width;
-        }
+        initializeControlByIntent();
 
         mRotateDialog = new RotateDialogController(this, R.layout.rotate_dialog);
 
@@ -1064,39 +1045,14 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             // ignore
         }
 
-        // Create FocusManager object. startPreview needs it.
         initializeCapabilities();
-        String[] defaultFocusModes = getResources().getStringArray(
+        mDefaultFocusModes = getResources().getStringArray(
                 R.array.pref_camera_focusmode_default_array);
-        mFocusAreaIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
-        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-        boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
-        mFocusManager = new FocusManager(mPreferences, defaultFocusModes,
-                mFocusAreaIndicator, mInitialParams, this, mirror);
-
-        // startPreview needs this.
-        mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
-        // Set touch focus listener.
-        setSingleTapUpListener(mPreviewFrameLayout);
-
-        mCameraPreviewThread.start();
-
-        if (mIsImageCaptureIntent) {
-            setupCaptureParams();
-        } else {
-            mModePicker = (ModePicker) findViewById(R.id.mode_picker);
-            mModePicker.setVisibility(View.VISIBLE);
-            mModePicker.setOnModeChangeListener(this);
-            mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
-        }
-
-        mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
-        mOnScreenIndicators = (Rotatable) findViewById(R.id.on_screen_indicators);
+        initializeFocusManager();
+        initializeMiscControls();
         mLocationManager = new LocationManager(this, this);
 
-        mFaceView = (FaceView) findViewById(R.id.face_view);
-        mPreviewFrameLayout.addOnLayoutChangeListener(this);
-        mPreviewFrameLayout.setOnSizeChangedListener(this);
+        mCameraPreviewThread.start();
 
         // Wait until the camera settings are retrieved.
         mParametersSetCondition.block();
@@ -1513,6 +1469,99 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mFocusManager != null) mFocusManager.removeMessages();
     }
 
+    private void initializeControlByIntent() {
+        if (mIsImageCaptureIntent) {
+            // Cannot use RotateImageView for "done" and "cancel" button because
+            // the tablet layout uses RotateLayout, which cannot be cast to
+            // RotateImageView.
+            mReviewDoneButton = (Rotatable) findViewById(R.id.btn_done);
+            mReviewCancelButton = (Rotatable) findViewById(R.id.btn_cancel);
+            mReviewRetakeButton = findViewById(R.id.btn_retake);
+            findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
+
+            // Not grayed out upon disabled, to make the follow-up fade-out
+            // effect look smooth. Note that the review done button in tablet
+            // layout is not a TwoStateImageView.
+            if (mReviewDoneButton instanceof TwoStateImageView) {
+                ((TwoStateImageView) mReviewDoneButton).enableFilter(false);
+            }
+
+            setupCaptureParams();
+        } else {
+            mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
+            mThumbnailView.enableFilter(false);
+            mThumbnailView.setVisibility(View.VISIBLE);
+            mThumbnailViewWidth = mThumbnailView.getLayoutParams().width;
+
+            mModePicker = (ModePicker) findViewById(R.id.mode_picker);
+            mModePicker.setVisibility(View.VISIBLE);
+            mModePicker.setOnModeChangeListener(this);
+            mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
+        }
+    }
+
+    private void initializeFocusManager() {
+        // Create FocusManager object. startPreview needs it.
+        mFocusAreaIndicator = (RotateLayout) findViewById(R.id.focus_indicator_rotate_layout);
+        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+        boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
+        mFocusManager = new FocusManager(mPreferences, mDefaultFocusModes,
+                mFocusAreaIndicator, mInitialParams, this, mirror);
+    }
+
+    private void initializeMiscControls() {
+        // startPreview needs this.
+        mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
+        // Set touch focus listener.
+        setSingleTapUpListener(mPreviewFrameLayout);
+
+        mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
+        mOnScreenIndicators = (Rotatable) findViewById(R.id.on_screen_indicators);
+        mFaceView = (FaceView) findViewById(R.id.face_view);
+        mPreviewFrameLayout.addOnLayoutChangeListener(this);
+        mPreviewFrameLayout.setOnSizeChangedListener(this);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setDisplayOrientation();
+
+        // Change layout in response to configuration change
+        LinearLayout appRoot = (LinearLayout) findViewById(R.id.camera_app_root);
+        appRoot.setOrientation(
+                newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
+                ? LinearLayout.HORIZONTAL : LinearLayout.VERTICAL);
+        appRoot.removeAllViews();
+        LayoutInflater inflater = getLayoutInflater();
+        inflater.inflate(R.layout.preview_frame, appRoot);
+        inflater.inflate(R.layout.camera_control, appRoot);
+
+        // from onCreate()
+        initializeControlByIntent();
+        initializeFocusManager();
+        initializeMiscControls();
+        initializeIndicatorControl();
+
+        // from onResume()
+        if (!mIsImageCaptureIntent) updateThumbnailView();
+
+        // from initializeFirstTime()
+        mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
+        mShutterButton.setOnShutterButtonListener(this);
+        mShutterButton.setVisibility(View.VISIBLE);
+        initializeZoom();
+        initOnScreenIndicator();
+        updateOnScreenIndicators();
+        mFaceView.clear();
+        mFaceView.setVisibility(View.VISIBLE);
+        mFaceView.setDisplayOrientation(mDisplayOrientation);
+        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+        mFaceView.setMirror(info.facing == CameraInfo.CAMERA_FACING_FRONT);
+        mFaceView.resume();
+        mFocusManager.setFaceView(mFaceView);
+    }
+
     @Override
     protected void onActivityResult(
             int requestCode, int resultCode, Intent data) {
@@ -1638,15 +1687,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mCameraDevice = null;
             setCameraState(PREVIEW_STOPPED);
             mFocusManager.onCameraReleased();
-        }
-    }
-
-    private void setPreviewTexture(SurfaceTexture surface) {
-        try {
-            mCameraDevice.setPreviewTexture(surface);
-        } catch (Throwable ex) {
-            closeCamera();
-            throw new RuntimeException("setPreviewTexture failed", ex);
         }
     }
 

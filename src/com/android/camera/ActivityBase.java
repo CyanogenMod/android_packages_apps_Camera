@@ -213,7 +213,7 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         }
     }
 
-    private void updateThumbnailView() {
+    protected void updateThumbnailView() {
         if (mThumbnail != null) {
             mThumbnailView.setBitmap(mThumbnail.getBitmap());
             mThumbnailView.setVisibility(View.VISIBLE);

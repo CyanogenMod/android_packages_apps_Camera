@@ -47,6 +47,7 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.Surface;
@@ -302,8 +303,8 @@ public class VideoCamera extends ActivityBase
     }
 
     @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
         mCameraId = getPreferredCameraId(mPreferences);
@@ -362,68 +363,13 @@ public class VideoCamera extends ActivityBase
         });
         startPreviewThread.start();
 
-        if (mIsVideoCaptureIntent) {
-            // Cannot use RotateImageView for "done" and "cancel" button because
-            // the tablet layout uses RotateLayout, which cannot be cast to
-            // RotateImageView.
-            mReviewDoneButton = (Rotatable) findViewById(R.id.btn_done);
-            mReviewCancelButton = (Rotatable) findViewById(R.id.btn_cancel);
-            mReviewPlayButton = (RotateImageView) findViewById(R.id.btn_play);
-            mReviewRetakeButton = findViewById(R.id.btn_retake);
-            findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
-
-            // Not grayed out upon disabled, to make the follow-up fade-out
-            // effect look smooth. Note that the review done button in tablet
-            // layout is not a TwoStateImageView.
-            if (mReviewDoneButton instanceof TwoStateImageView) {
-                ((TwoStateImageView) mReviewDoneButton).enableFilter(false);
-            }
-        } else {
-            mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
-            mThumbnailView.enableFilter(false);
-            mThumbnailView.setVisibility(View.VISIBLE);
-            mThumbnailViewWidth = mThumbnailView.getLayoutParams().width;
-            mModePicker = (ModePicker) findViewById(R.id.mode_picker);
-            mModePicker.setVisibility(View.VISIBLE);
-            mModePicker.setOnModeChangeListener(this);
-        }
+        initializeControlByIntent();
+        initializeMiscControls();
 
         mRotateDialog = new RotateDialogController(this, R.layout.rotate_dialog);
-
-        mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
-        mPreviewFrameLayout.addOnLayoutChangeListener(this);
-        mReviewImage = (ImageView) findViewById(R.id.review_image);
-
         mQuickCapture = getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
-
-        mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
-        mShutterButton.setBackgroundResource(R.drawable.btn_shutter_video);
-        mShutterButton.setOnShutterButtonListener(this);
-        mShutterButton.requestFocus();
-
-        // Disable the shutter button if effects are ON since it might take
-        // a little more time for the effects preview to be ready. We do not
-        // want to allow recording before that happens. The shutter button
-        // will be enabled when we get the message from effectsrecorder that
-        // the preview is running. This becomes critical when the camera is
-        // swapped.
-        if (effectsActive()) {
-            mShutterButton.setEnabled(false);
-        }
-
-        mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
-        mRecordingTimeRect = (RotateLayout) findViewById(R.id.recording_time_rect);
         mOrientationListener = new MyOrientationEventListener(this);
-        mTimeLapseLabel = findViewById(R.id.time_lapse_label);
-        // The R.id.labels can only be found in phone layout.
-        // That is, mLabelsLinearLayout should be null in tablet layout.
-        mLabelsLinearLayout = (LinearLayout) findViewById(R.id.labels);
-
-        mBgLearningMessageRotater = (RotateLayout) findViewById(R.id.bg_replace_message);
-        mBgLearningMessageFrame = findViewById(R.id.bg_replace_message_frame);
-
         mLocationManager = new LocationManager(this, null);
-        mCaptureAnimView = (ImageView) findViewById(R.id.capture_anim_view);
 
         // Make sure preview is started.
         try {
@@ -860,6 +806,12 @@ public class VideoCamera extends ActivityBase
         }
     }
 
+    private void setDisplayOrientation() {
+        mDisplayRotation = Util.getDisplayRotation(this);
+        mCameraDisplayOrientation = Util.getDisplayOrientation(0, mCameraId);
+        mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
+    }
+
     private void startPreview() {
         Log.v(TAG, "startPreview");
 
@@ -871,9 +823,7 @@ public class VideoCamera extends ActivityBase
             }
         }
 
-        mDisplayRotation = Util.getDisplayRotation(this);
-        mCameraDisplayOrientation = Util.getDisplayOrientation(0, mCameraId);
-        mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
+        setDisplayOrientation();
         setCameraParameters();
 
         if (mSurfaceTexture == null) {
@@ -1897,9 +1847,96 @@ public class VideoCamera extends ActivityBase
         throw new RuntimeException("Error during recording!", exception);
     }
 
+    private void initializeControlByIntent() {
+        if (mIsVideoCaptureIntent) {
+            // Cannot use RotateImageView for "done" and "cancel" button because
+            // the tablet layout uses RotateLayout, which cannot be cast to
+            // RotateImageView.
+            mReviewDoneButton = (Rotatable) findViewById(R.id.btn_done);
+            mReviewCancelButton = (Rotatable) findViewById(R.id.btn_cancel);
+            mReviewPlayButton = (RotateImageView) findViewById(R.id.btn_play);
+            mReviewRetakeButton = findViewById(R.id.btn_retake);
+            findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
+
+            // Not grayed out upon disabled, to make the follow-up fade-out
+            // effect look smooth. Note that the review done button in tablet
+            // layout is not a TwoStateImageView.
+            if (mReviewDoneButton instanceof TwoStateImageView) {
+                ((TwoStateImageView) mReviewDoneButton).enableFilter(false);
+            }
+        } else {
+            mThumbnailView = (RotateImageView) findViewById(R.id.thumbnail);
+            mThumbnailView.enableFilter(false);
+            mThumbnailView.setVisibility(View.VISIBLE);
+            mThumbnailViewWidth = mThumbnailView.getLayoutParams().width;
+            mModePicker = (ModePicker) findViewById(R.id.mode_picker);
+            mModePicker.setVisibility(View.VISIBLE);
+            mModePicker.setOnModeChangeListener(this);
+        }
+    }
+
+    private void initializeMiscControls() {
+        mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
+        mPreviewFrameLayout.addOnLayoutChangeListener(this);
+        mReviewImage = (ImageView) findViewById(R.id.review_image);
+
+        mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
+        mShutterButton.setBackgroundResource(R.drawable.btn_shutter_video);
+        mShutterButton.setOnShutterButtonListener(this);
+        mShutterButton.requestFocus();
+
+        // Disable the shutter button if effects are ON since it might take
+        // a little more time for the effects preview to be ready. We do not
+        // want to allow recording before that happens. The shutter button
+        // will be enabled when we get the message from effectsrecorder that
+        // the preview is running. This becomes critical when the camera is
+        // swapped.
+        if (effectsActive()) {
+            mShutterButton.setEnabled(false);
+        }
+
+        mRecordingTimeView = (TextView) findViewById(R.id.recording_time);
+        mRecordingTimeRect = (RotateLayout) findViewById(R.id.recording_time_rect);
+        mTimeLapseLabel = findViewById(R.id.time_lapse_label);
+        // The R.id.labels can only be found in phone layout.
+        // That is, mLabelsLinearLayout should be null in tablet layout.
+        mLabelsLinearLayout = (LinearLayout) findViewById(R.id.labels);
+
+        mBgLearningMessageRotater = (RotateLayout) findViewById(R.id.bg_replace_message);
+        mBgLearningMessageFrame = findViewById(R.id.bg_replace_message_frame);
+        mCaptureAnimView = (ImageView) findViewById(R.id.capture_anim_view);
+    }
+
     @Override
-    public void onConfigurationChanged(Configuration config) {
-        super.onConfigurationChanged(config);
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setDisplayOrientation();
+
+        // Change layout in response to configuration change
+        LayoutInflater inflater = getLayoutInflater();
+        LinearLayout appRoot = (LinearLayout) findViewById(R.id.camera_app_root);
+        appRoot.setOrientation(
+                newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
+                ? LinearLayout.HORIZONTAL : LinearLayout.VERTICAL);
+        appRoot.removeAllViews();
+        inflater.inflate(R.layout.preview_frame_video, appRoot);
+        inflater.inflate(R.layout.camera_control, appRoot);
+
+        // from onCreate()
+        initializeControlByIntent();
+        initializeMiscControls();
+        showTimeLapseUI(mCaptureTimeLapse);
+        initializeVideoSnapshot();
+        resizeForPreviewAspectRatio();
+        initializeIndicatorControl();
+
+        // from onResume()
+        showVideoSnapshotUI(false);
+        initializeZoom();
+        if (!mIsVideoCaptureIntent) {
+            updateThumbnailView();
+            mModePicker.setCurrentMode(ModePicker.MODE_VIDEO);
+        }
     }
 
     @Override
