@@ -18,6 +18,7 @@ package com.android.camera;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -227,6 +228,14 @@ public class PanoramaActivity extends ActivityBase implements
 
     @Override
     public void onCreate(Bundle icicle) {
+        // TODO: remove this after panorama has swipe UI.
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
         super.onCreate(icicle);
 
         Window window = getWindow();
