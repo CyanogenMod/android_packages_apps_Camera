@@ -75,6 +75,7 @@ public class CameraSettings {
     public static final String KEY_BURST_MODE = "pref_camera_burst_key";
     public static final String KEY_STORAGE = "pref_camera_storage_key";
     public static final String KEY_VOICE_SHUTTER = "pref_voice_shutter_key";
+    public static final String KEY_TIMER_MODE = "pref_camera_timer_key";
 
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
     public static final String VALUE_ON = "on";

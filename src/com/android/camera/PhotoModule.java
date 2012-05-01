@@ -115,6 +115,7 @@ public class PhotoModule
     private static final int START_PREVIEW_DONE = 10;
     private static final int OPEN_CAMERA_FAIL = 11;
     private static final int CAMERA_DISABLED = 12;
+    private static final int CAMERA_TIMER = 13;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -198,6 +199,9 @@ public class PhotoModule
     private ImageView mHdrIndicator;
     // A view group that contains all the small indicators.
     private View mOnScreenIndicators;
+
+    // Corner indicator for no-hands shot activities
+    private ImageView mNoHandsIndicator;
 
     // We use a thread in ImageSaver to do the work of saving images. This
     // reduces the shot-to-shot time.
@@ -307,7 +311,11 @@ public class PhotoModule
     private ProgressDialog mHdrProgressDialog = null;
     private static ArrayList<Uri> sHDRShotsPaths = new ArrayList<Uri>();
 
+    // Camera timer.
+    private boolean mTimerMode = false;
+
     private boolean mQuickCapture;
+    protected int mCaptureMode;
 
     CameraStartUpThread mCameraStartUpThread;
     ConditionVariable mStartPreviewPrerequisiteReady = new ConditionVariable();
@@ -443,6 +451,12 @@ public class PhotoModule
                             R.string.camera_disabled);
                     break;
                 }
+
+                case CAMERA_TIMER: {
+                    updateTimer(msg.arg1);
+                    break;
+                }
+
             }
         }
     }
@@ -801,6 +815,7 @@ public class PhotoModule
         mFlashIndicator = (ImageView) mOnScreenIndicators.findViewById(R.id.menu_flash_indicator);
         mSceneIndicator = (ImageView) mOnScreenIndicators.findViewById(R.id.menu_scenemode_indicator);
         mHdrIndicator = (ImageView) mOnScreenIndicators.findViewById(R.id.menu_hdr_indicator);
+        mNoHandsIndicator = (ImageView) mRootView.findViewById(R.id.indicator_nohandsshot);
     }
 
     @Override
@@ -860,6 +875,19 @@ public class PhotoModule
         }
     }
 
+    private void updateTimerOnScreenIndicator() {
+        if (mNoHandsIndicator == null) {
+            return;
+        }
+        if (mCaptureMode != 0) {
+            mNoHandsIndicator.setImageResource(R.drawable.ic_indicators_timer);
+            mNoHandsIndicator.setVisibility(View.VISIBLE);
+        } else {
+            mNoHandsIndicator.setVisibility(View.GONE);
+            mNoHandsIndicator.setImageBitmap(null);
+        }
+    }
+
     private void updateSceneOnScreenIndicator(String value) {
         if (mSceneIndicator == null) {
             return;
@@ -884,14 +912,15 @@ public class PhotoModule
     }
 
     public void updateVoiceShutterIndicator(boolean active) {
-        ImageView mVSIndicator = (ImageView) mRootView.findViewById(R.id.indicator_voiceshutter);
-        if (mVSIndicator == null) {
+        if (mNoHandsIndicator == null) {
             return;
         }
         if (active) {
-            mVSIndicator.setImageResource(R.drawable.ic_switch_voiceshutter);
+            mNoHandsIndicator.setImageResource(R.drawable.ic_switch_voiceshutter);
+            mNoHandsIndicator.setVisibility(View.VISIBLE);
         } else {
-            mVSIndicator.setImageBitmap(null);
+            mNoHandsIndicator.setVisibility(View.GONE);
+            mNoHandsIndicator.setImageBitmap(null);
         }
     }
 
@@ -900,6 +929,7 @@ public class PhotoModule
         updateExposureOnScreenIndicator(CameraSettings.readExposure(mPreferences));
         updateFlashOnScreenIndicator(mParameters.getFlashMode());
         updateHdrOnScreenIndicator(mParameters.getSceneMode());
+        updateTimerOnScreenIndicator();
     }
 
     private final class ShutterCallback
@@ -1628,7 +1658,7 @@ public class PhotoModule
 
     @Override
     public void onShutterButtonFocus(boolean pressed) {
-        if (mPaused || collapseCameraControls()
+        if ((mTimerMode && pressed) || mPaused || collapseCameraControls()
                 || (mCameraState == SNAPSHOT_IN_PROGRESS)
                 || (mCameraState == PREVIEW_STOPPED)) return;
 
@@ -1646,9 +1676,38 @@ public class PhotoModule
         }
     }
 
+    private void updateTimer(int timerSeconds) {
+        timerSeconds--;
+        if (timerSeconds < 0) {
+            capture();
+            onShutterButtonClick();
+        } else {
+            if (timerSeconds < 2) {
+                mFocusManager.onShutterDown();
+                mFocusManager.onShutterUp();
+            }
+            Message timerMsg = Message.obtain();
+            timerMsg.arg1 = timerSeconds;
+            timerMsg.what = CAMERA_TIMER;
+            mHandler.sendMessageDelayed(timerMsg, 1000);
+        }
+    }
+
     @Override
     public void onShutterButtonClick() {
         int nbBurstShots = Integer.valueOf(mPreferences.getString(CameraSettings.KEY_BURST_MODE, "1"));
+
+        if (!mTimerMode) {
+            if (mCaptureMode != 0) {
+                mTimerMode = true;
+                updateTimer(mCaptureMode);
+                return;
+            }
+        } else if (mTimerMode) {
+            mTimerMode = false;
+            mHandler.removeMessages(CAMERA_TIMER);
+            return;
+        }
 
         if (Util.getDoSoftwareHDRShot() && !mHDRShotInProgress && !mHDRRendering) {
             Log.d(TAG, "Starting HDR shot - set min exposure");
@@ -2557,6 +2616,11 @@ public class PhotoModule
             mFocusManager.setFocusTime(Integer.valueOf(
                     mPreferences.getString(CameraSettings.KEY_FOCUS_TIME,
                     mActivity.getString(R.string.pref_camera_focustime_default))));
+
+            // Set capture mode.
+            String defaultTime = mActivity.getString(R.string.pref_camera_timer_default);
+            String delayTime = mPreferences.getString(CameraSettings.KEY_TIMER_MODE, defaultTime);
+            mCaptureMode = Integer.valueOf(delayTime);
         } else {
             mFocusManager.overrideFocusMode(mParameters.getFocusMode());
         }
