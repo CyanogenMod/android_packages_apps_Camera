@@ -25,7 +25,7 @@
             android:layout_height="match_parent">
         <include layout="@layout/preview_surface_view"/>
         <ImageView
-            android:id="@+id/indicator_voiceshutter"
+            android:id="@+id/indicator_nohandsshot"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:paddingTop="5dp"
