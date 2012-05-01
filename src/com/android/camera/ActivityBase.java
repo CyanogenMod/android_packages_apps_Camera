@@ -84,6 +84,8 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     // Set time after touchtofocus
     public static int mFocusTime;
 
+    protected int mCaptureMode;
+
     // multiple cameras support
     protected int mNumberOfCameras;
     protected int mCameraId;

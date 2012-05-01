@@ -36,6 +36,9 @@
             <ImageView android:id="@+id/onscreen_flash_indicator"
                     style="@style/OnScreenIndicator"
                     android:visibility="visible"/>
+            <ImageView android:id="@+id/onscreen_timer_indicator"
+                    style="@style/OnScreenIndicator"
+                    android:visibility="visible"/>
             <ImageView android:id="@+id/onscreen_white_balance_indicator"
                     style="@style/OnScreenIndicator"/>
             <TextView android:id="@+id/onscreen_exposure_indicator"

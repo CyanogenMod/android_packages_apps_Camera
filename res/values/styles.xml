@@ -103,6 +103,14 @@
         <item name="android:visibility">gone</item>
         <item name="android:padding">1dp</item>
     </style>
+    <style name="ViewfinderLableLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">13dp</item>
+        <item name="android:layout_marginBottom">@dimen/indicator_bar_width</item>
+        <item name="android:layout_marginLeft">13dp</item>
+        <item name="android:layout_marginRight">13dp</item>
+    </style>
     <style name="OnViewfinderLabel">
         <item name="android:gravity">center</item>
         <item name="android:layout_width">wrap_content</item>

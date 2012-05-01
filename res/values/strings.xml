@@ -192,6 +192,19 @@
     <string name="pref_camera_iso_entry_iso100">100</string>
     <string name="pref_camera_iso_entry_iso50">50</string>
 
+    <!-- Settings screen, Timer mode title -->
+    <string name="pref_camera_timer_title">Timer mode</string>
+    <string name="pref_camera_timer_default" translatable="false">0</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_timer_entry_0">Off</string>
+    <string name="pref_camera_timer_entry_10">10s</string>
+    <string name="pref_camera_timer_entry_20">20s</string>
+    <string name="pref_camera_timer_entry_30">30s</string>
+    <string name="pref_camera_timer_entry_40">40s</string>
+    <string name="pref_camera_timer_entry_50">50s</string>
+    <string name="pref_camera_timer_entry_60">60s</string>
+
     <!-- Settings screen, Burst mode title -->
     <string name="pref_camera_burst_title">Burst mode</string>
 

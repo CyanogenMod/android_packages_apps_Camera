@@ -203,6 +203,27 @@
         <item>ISO50</item>
     </string-array>
 
+    <!-- Camera Preferences for timer duration -->
+    <string-array name="pref_camera_timer_duration_entries" translatable="false">
+        <item>@string/pref_camera_timer_entry_60</item>
+        <item>@string/pref_camera_timer_entry_50</item>
+        <item>@string/pref_camera_timer_entry_40</item>
+        <item>@string/pref_camera_timer_entry_30</item>
+        <item>@string/pref_camera_timer_entry_20</item>
+        <item>@string/pref_camera_timer_entry_10</item>
+        <item>@string/pref_camera_timer_entry_0</item>
+    </string-array>
+
+    <string-array name="pref_camera_timer_duration_values" translatable="false">
+        <item>60</item>
+        <item>50</item>
+        <item>40</item>
+        <item>30</item>
+        <item>20</item>
+        <item>10</item>
+        <item>0</item>
+    </string-array>
+
     <!-- Camera Preferences for burst modes -->
     <string-array name="pref_camera_burst_mode_entries" translatable="false">
         <item>@string/pref_camera_burst_entry_20</item>
