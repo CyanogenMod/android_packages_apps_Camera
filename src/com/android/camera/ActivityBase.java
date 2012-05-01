@@ -382,8 +382,8 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     }
 
     private boolean onSingleTapUp(int x, int y) {
-        // Camera control is invisible. Ignore.
-        if (!mShowCameraAppView) return false;
+        // Ignore if listener is null or the camera control is invisible.
+        if (mSingleTapArea == null || !mShowCameraAppView) return false;
 
         int[] relativeLocation = Util.getRelativeLocation((View) getGLRoot(),
                 mSingleTapArea);
