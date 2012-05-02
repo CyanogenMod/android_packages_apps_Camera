@@ -16,14 +16,10 @@
 
 package com.android.camera;
 
-import android.graphics.Matrix;
-import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 
-import com.android.gallery3d.app.GalleryActivity;
 import com.android.gallery3d.ui.GLCanvas;
-import com.android.gallery3d.ui.Raw2DTexture;
-import com.android.gallery3d.ui.ScreenNail;
+import com.android.gallery3d.ui.RawTexture;
 import com.android.gallery3d.ui.SurfaceTextureScreenNail;
 
 /*
@@ -42,7 +38,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     // Animation.
     private CaptureAnimManager mAnimManager = new CaptureAnimManager();
     private int mAnimState = ANIM_NONE;
-    private Raw2DTexture mAnimTexture;
+    private RawTexture mAnimTexture;
 
     public interface RenderListener {
         void requestRender();
@@ -55,7 +51,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     @Override
     public void acquireSurfaceTexture() {
         super.acquireSurfaceTexture();
-        mAnimTexture = new Raw2DTexture(getWidth(), getHeight());
+        mAnimTexture = new RawTexture(getWidth(), getHeight(), true);
     }
 
     public void animate(int animOrientation) {
@@ -84,10 +80,8 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
         switch (mAnimState) {
             case ANIM_TO_START:
-                getSurfaceTexture().getTransformMatrix(mTextureTransformMatrix);
-                Raw2DTexture.copy(canvas, mExtTexture, mAnimTexture);
-                mAnimManager.startAnimation(x, y, width, height,
-                        mTextureTransformMatrix);
+                copyPreviewTexture(canvas, width, height);
+                mAnimManager.startAnimation(x, y, width, height);
                 mAnimState = ANIM_RUNNING;
                 // Continue to draw the animation. No break is needed here.
             case ANIM_RUNNING:
@@ -102,6 +96,18 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                 super.draw(canvas, x, y, width, height);
                 break;
         }
+    }
+
+    private void copyPreviewTexture(GLCanvas canvas, int width, int height) {
+        canvas.beginRenderTarget(mAnimTexture);
+        // Flip preview texture vertically. OpenGL uses bottom left point
+        // as the origin (0, 0).
+        canvas.translate(0, height);
+        canvas.scale(1, -1, 1);
+        getSurfaceTexture().getTransformMatrix(mTextureTransformMatrix);
+        canvas.drawTexture(mExtTexture,
+                mTextureTransformMatrix, 0, 0, width, height);
+        canvas.endRenderTarget();
     }
 
     @Override
