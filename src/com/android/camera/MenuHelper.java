@@ -82,24 +82,4 @@ public class MenuHelper {
         it.putExtra(IntentExtras.INITIAL_ORIENTATION_EXTRA, orientation);
         startCameraActivity(activity, it, className);
     }
-
-    public static void gotoVideoMode(Activity activity, boolean resetEffect) {
-        Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
-        intent.putExtra(IntentExtras.RESET_EFFECT_EXTRA, resetEffect);
-        startCameraActivity(activity, intent, VIDEO_CAMERA_CLASS);
-    }
-
-    public static void gotoCameraMode(Activity activity, int orientation) {
-        Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
-        intent.putExtra(IntentExtras.INITIAL_ORIENTATION_EXTRA, orientation);
-        startCameraActivity(activity, intent, CAMERA_CLASS);
-    }
-
-    public static void gotoVideoMode(Activity activity, Intent intent) {
-        startCameraActivity(activity, intent, VIDEO_CAMERA_CLASS);
-     }
-
-    public static void gotoCameraMode(Activity activity, Intent intent) {
-        startCameraActivity(activity, intent, CAMERA_CLASS);
-    }
 }

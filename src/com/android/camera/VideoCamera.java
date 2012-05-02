@@ -314,13 +314,6 @@ public class VideoCamera extends ActivityBase
 
         mNumberOfCameras = CameraHolder.instance().getNumberOfCameras();
         mPrefVideoEffectDefault = getString(R.string.pref_video_effect_default);
-        // Do not reset the effect if users are switching between back and front
-        // cameras.
-        mResetEffect = getIntent().getBooleanExtra(IntentExtras.RESET_EFFECT_EXTRA, true);
-        // If background replacement was on when the camera was switched, the
-        // background uri will be sent via the intent.
-        mEffectUriFromGallery = getIntent().getStringExtra(
-            IntentExtras.BACKGROUND_URI_GALLERY_EXTRA);
         resetEffect();
 
         /*
@@ -2002,24 +1995,9 @@ public class VideoCamera extends ActivityBase
             // Check if camera id is changed.
             int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
             if (mCameraId != cameraId) {
-                // Restart the activity to have a crossfade animation.
-                // TODO: Use SurfaceTexture to implement a better and faster
-                // animation.
-                Intent intent;
-                if (mIsVideoCaptureIntent) {
-                    // If the intent is video capture, stay in video capture mode.
-                    intent = getIntent();
-                } else {
-                    intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
-                }
-                // To maintain the same background in background replacer, we
-                // need to send the background video uri via the Intent (apart
-                // from the condition that the effects should not be reset).
-                intent.putExtra(IntentExtras.BACKGROUND_URI_GALLERY_EXTRA, mEffectUriFromGallery);
-                intent.putExtra(IntentExtras.RESET_EFFECT_EXTRA, false);
-                intent.putExtra(IntentExtras.INITIAL_ORIENTATION_EXTRA, mOrientationCompensation);
-                MenuHelper.gotoVideoMode(this, intent);
-                finish();
+                mCameraId = cameraId;
+                switchCamera();
+                return;
             } else {
                 readVideoPreferences();
                 showTimeLapseUI(mCaptureTimeLapse);
@@ -2039,6 +2017,31 @@ public class VideoCamera extends ActivityBase
                 }
             }
         }
+    }
+
+    private void switchCamera() {
+        Log.d(TAG, "Start to switch camera.");
+        closeCamera();
+
+        // Restart the camera and initialize the UI. From onCreate.
+        mPreferences.setLocalId(this, mCameraId);
+        CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
+        CameraOpenThread cameraOpenThread = new CameraOpenThread();
+        cameraOpenThread.start();
+        try {
+            cameraOpenThread.join();
+        } catch (InterruptedException ex) {
+            // ignore
+        }
+        readVideoPreferences();
+        startPreview();
+        initializeVideoSnapshot();
+        resizeForPreviewAspectRatio();
+        initializeIndicatorControl();
+
+        // From onResume
+        initializeZoom();
+        setOrientationIndicator(mOrientationCompensation, false);
     }
 
     private boolean updateEffectSelection() {
@@ -2165,6 +2168,8 @@ public class VideoCamera extends ActivityBase
                 // Delay the toast for one second to wait for orientation.
                 mHandler.sendEmptyMessageDelayed(SHOW_TAP_TO_SNAPSHOT_TOAST, 1000);
             }
+        } else {
+            setSingleTapUpListener(null);
         }
     }
 
