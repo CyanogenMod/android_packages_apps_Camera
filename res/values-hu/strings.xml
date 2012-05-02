@@ -123,4 +123,24 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"Csökkentés: %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Növelés: %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"%1$s kapcsoló"</string>
+
+    <!-- 20120502 -->
+
+    <string name="pref_camera_focusmode_entry_facedetect">Arcfelismerés</string>
+    <string name="pref_camera_focusmode_entry_fixed">Rögzített</string>
+    <string name="pref_camera_power_shutter_title">Bekapcs. gomb exponál</string>
+    <string name="pref_camera_scenemode_entry_backlight">Háttérvilágítás</string>
+    <string name="pref_camera_scenemode_entry_beach">Strand</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Gyertyafény</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Alkonyat</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Őszi színek</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Tűzijáték</string>
+    <string name="pref_camera_scenemode_entry_landscape">Tájkép</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portré</string>
+    <string name="pref_camera_scenemode_entry_snow">Hó</string>
+    <string name="pref_camera_scenemode_entry_sports">Sportesemény</string>
+    <string name="pref_camera_scenemode_entry_text">Szöveg</string>
+    <string name="pref_camera_storage_title">Mentés helye</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Felhős, nappali fény</string>
+
 </resources>
