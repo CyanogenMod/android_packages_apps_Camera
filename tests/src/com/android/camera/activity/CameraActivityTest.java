@@ -16,11 +16,14 @@
 
 package com.android.camera.activity;
 
+import android.hardware.Camera.Parameters;
+import android.test.suitebuilder.annotation.LargeTest;
+
 import com.android.camera.Camera;
 import com.android.camera.CameraHolder;
 import com.android.camera.R;
 
-import android.test.suitebuilder.annotation.LargeTest;
+import static com.google.testing.littlemock.LittleMock.doReturn;
 
 public class CameraActivityTest extends CameraTestCase <Camera> {
     public CameraActivityTest() {
@@ -40,6 +43,27 @@ public class CameraActivityTest extends CameraTestCase <Camera> {
     @LargeTest
     public void testOneCamera() throws Exception {
         super.internalTestOneCamera();
+    }
+
+    @LargeTest
+    public void testPriorityIndicators() throws Exception {
+        // Remove parameters.
+        Parameters param = getParameters();
+        String[] keys = {"scene-mode", "whitebalance", "flash-mode"};
+        for (String key : keys) {
+            param.remove(key);
+            param.remove(key + "-values");
+        }
+        param.set("focus-mode", "infinity");
+        param.set("focus-mode-values", "infinity");
+
+        doReturn(param).when(mOneMockCamera[0]).getParameters();
+        CameraHolder.injectMockCamera(mOneCameraInfo, mOneMockCamera);
+
+        assertViewNotVisible(R.id.onscreen_scene_indicator);
+        assertViewNotVisible(R.id.onscreen_white_balance_indicator);
+        assertViewNotVisible(R.id.onscreen_flash_indicator);
+        assertViewNotVisible(R.id.onscreen_focus_indicator);
     }
 
     @LargeTest
