@@ -63,7 +63,7 @@ public class CaptureAnimManager {
         mAnimOrientation = animOrientation;
     }
 
-    // x, y, h and h: the rectangle area where the animation takes place in.
+    // x, y, w and h: the rectangle area where the animation takes place.
     // transformMatrix: used to show the texture.
     public void startAnimation(int x, int y, int w, int h) {
         mAnimStartTime = SystemClock.uptimeMillis();

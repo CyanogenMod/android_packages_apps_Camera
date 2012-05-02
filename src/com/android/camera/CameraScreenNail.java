@@ -28,24 +28,37 @@ import com.android.gallery3d.ui.SurfaceTextureScreenNail;
 public class CameraScreenNail extends SurfaceTextureScreenNail {
     private static final String TAG = "CameraScreenNail";
     private static final int ANIM_NONE = 0;
-    private static final int ANIM_TO_START = 1;
-    private static final int ANIM_RUNNING = 2;
+    // Capture animation is about to start.
+    private static final int ANIM_CAPTURE_START = 1;
+    // Capture animation is running.
+    private static final int ANIM_CAPTURE_RUNNING = 2;
+    // Switch camera animation needs to copy texture.
+    private static final int ANIM_SWITCH_COPY_TEXTURE = 3;
+    // Switch camera animation is waiting for the first frame.
+    private static final int ANIM_SWITCH_WAITING_FIRST_FRAME = 4;
+    // Switch camera animation is about to start.
+    private static final int ANIM_SWITCH_START = 5;
+    // Switch camera animation is running.
+    private static final int ANIM_SWITCH_RUNNING = 6;
 
     private boolean mVisible;
-    private RenderListener mRenderListener;
+    private Listener mListener;
     private final float[] mTextureTransformMatrix = new float[16];
 
     // Animation.
-    private CaptureAnimManager mAnimManager = new CaptureAnimManager();
+    private CaptureAnimManager mCaptureAnimManager = new CaptureAnimManager();
+    private SwitchAnimManager mSwitchAnimManager =new SwitchAnimManager();
     private int mAnimState = ANIM_NONE;
     private RawTexture mAnimTexture;
 
-    public interface RenderListener {
+    public interface Listener {
         void requestRender();
+        // Preview has been copied to a texture.
+        void onPreviewTextureCopied();
     }
 
-    public CameraScreenNail(RenderListener listener) {
-        mRenderListener = listener;
+    public CameraScreenNail(Listener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -54,19 +67,22 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         mAnimTexture = new RawTexture(getWidth(), getHeight(), true);
     }
 
-    public void animate(int animOrientation) {
-        switch (mAnimState) {
-            case ANIM_TO_START:
-                break;
-            case ANIM_NONE:
-                mAnimManager.setOrientation(animOrientation);
-                // No break here. Continue to set the state and request for rendering.
-            case ANIM_RUNNING:
-                // Don't change the animation orientation during animation.
-                mRenderListener.requestRender();
-                mAnimState = ANIM_TO_START;
-                break;
-        }
+    public void copyTexture() {
+        mListener.requestRender();
+        mAnimState = ANIM_SWITCH_COPY_TEXTURE;
+    }
+
+    public void animateSwitchCamera(boolean backToFront) {
+        mSwitchAnimManager.setSwitchDirection(backToFront);
+        // Do not request render here because camera has been just started.
+        // We do not want to draw black frames.
+        mAnimState = ANIM_SWITCH_WAITING_FIRST_FRAME;
+    }
+
+    public void animateCapture(int animOrientation) {
+        mCaptureAnimManager.setOrientation(animOrientation);
+        mListener.requestRender();
+        mAnimState = ANIM_CAPTURE_START;
     }
 
     public void directDraw(GLCanvas canvas, int x, int y, int width, int height) {
@@ -78,23 +94,44 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         if (getSurfaceTexture() == null) return;
         if (!mVisible) setVisibility(true);
 
+        if (mAnimState == ANIM_NONE) {
+            super.draw(canvas, x, y, width, height);
+            return;
+        }
+
         switch (mAnimState) {
-            case ANIM_TO_START:
+            case ANIM_SWITCH_COPY_TEXTURE:
                 copyPreviewTexture(canvas);
-                mAnimManager.startAnimation(x, y, width, height);
-                mAnimState = ANIM_RUNNING;
-                // Continue to draw the animation. No break is needed here.
-            case ANIM_RUNNING:
-                if (mAnimManager.drawAnimation(canvas, this, mAnimTexture)) {
-                    mRenderListener.requestRender();
-                    break;
-                }
-                // No break here because we continue to the normal draw
-                // procedure if the animation is not drawn.
                 mAnimState = ANIM_NONE;
-            case ANIM_NONE:
+                mListener.onPreviewTextureCopied();
                 super.draw(canvas, x, y, width, height);
+                return;
+            case ANIM_SWITCH_START:
+                mSwitchAnimManager.startAnimation(x, y, width, height);
+                mAnimState = ANIM_SWITCH_RUNNING;
                 break;
+            case ANIM_CAPTURE_START:
+                copyPreviewTexture(canvas);
+                mCaptureAnimManager.startAnimation(x, y, width, height);
+                mAnimState = ANIM_CAPTURE_RUNNING;
+                break;
+        }
+
+        if (mAnimState == ANIM_CAPTURE_RUNNING || mAnimState == ANIM_SWITCH_RUNNING) {
+            boolean drawn;
+            if (mAnimState == ANIM_CAPTURE_RUNNING) {
+                drawn = mCaptureAnimManager.drawAnimation(canvas, this, mAnimTexture);
+            } else {
+                drawn = mSwitchAnimManager.drawAnimation(canvas, this, mAnimTexture);
+            }
+            if (drawn) {
+                mListener.requestRender();
+            } else {
+                // Continue to the normal draw procedure if the animation is not
+                // drawn.
+                mAnimState = ANIM_NONE;
+                super.draw(canvas, x, y, width, height);
+            }
         }
     }
 
@@ -125,9 +162,12 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     @Override
     public synchronized void onFrameAvailable(SurfaceTexture surfaceTexture) {
         if (mVisible) {
+            if (mAnimState == ANIM_SWITCH_WAITING_FIRST_FRAME) {
+                mAnimState = ANIM_SWITCH_START;
+            }
             // We need to ask for re-render if the SurfaceTexture receives a new
             // frame.
-            mRenderListener.requestRender();
+            mListener.requestRender();
         }
     }
 

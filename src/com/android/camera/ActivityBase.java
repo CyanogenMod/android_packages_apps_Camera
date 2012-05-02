@@ -406,13 +406,15 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         mAppBridge.setSwipingEnabled(enabled);
     }
 
+    protected void onPreviewTextureCopied() {
+    }
 
     //////////////////////////////////////////////////////////////////////////
     //  The is the communication interface between the Camera Application and
     //  the Gallery PhotoPage.
     //////////////////////////////////////////////////////////////////////////
 
-    class MyAppBridge extends AppBridge implements CameraScreenNail.RenderListener {
+    class MyAppBridge extends AppBridge implements CameraScreenNail.Listener {
         private CameraScreenNail mCameraScreenNail;
         private Server mServer;
 
@@ -447,6 +449,11 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         @Override
         public void requestRender() {
             getGLRoot().requestRender();
+        }
+
+        @Override
+        public void onPreviewTextureCopied() {
+            ActivityBase.this.onPreviewTextureCopied();
         }
 
         @Override

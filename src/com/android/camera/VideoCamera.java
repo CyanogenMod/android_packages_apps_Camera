@@ -93,6 +93,7 @@ public class VideoCamera extends ActivityBase
     private static final int UPDATE_RECORD_TIME = 5;
     private static final int ENABLE_SHUTTER_BUTTON = 6;
     private static final int SHOW_TAP_TO_SNAPSHOT_TOAST = 7;
+    private static final int SWITCH_CAMERA = 8;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
 
@@ -154,6 +155,7 @@ public class VideoCamera extends ActivityBase
     private String mPrefVideoEffectDefault;
     private boolean mResetEffect = true;
 
+    private boolean mSwitchingCamera;
     private boolean mMediaRecorderRecording = false;
     private long mRecordingStartTime;
     private boolean mRecordingTimeCountsDown = false;
@@ -238,7 +240,7 @@ public class VideoCamera extends ActivityBase
                     // take some time and the rotation value we have got may be
                     // wrong. Framework does not have a callback for this now.
                     if ((Util.getDisplayRotation(VideoCamera.this) != mDisplayRotation)
-                            && !mMediaRecorderRecording) {
+                            && !mMediaRecorderRecording && !mSwitchingCamera) {
                         startPreview();
                     }
                     if (SystemClock.uptimeMillis() - mOnResumeTime < 5000) {
@@ -249,6 +251,12 @@ public class VideoCamera extends ActivityBase
 
                 case SHOW_TAP_TO_SNAPSHOT_TOAST: {
                     showTapToSnapshotToast();
+                    break;
+                }
+
+                case SWITCH_CAMERA: {
+                    Log.d(TAG, "Start to switch camera.");
+                    switchCamera();
                     break;
                 }
 
@@ -516,7 +524,8 @@ public class VideoCamera extends ActivityBase
 
     @OnClickAttr
     public void onThumbnailClicked(View v) {
-        if (!mMediaRecorderRecording && mThumbnail != null) {
+        if (!mMediaRecorderRecording && mThumbnail != null
+                && !mSwitchingCamera) {
             gotoGallery();
         }
     }
@@ -553,7 +562,8 @@ public class VideoCamera extends ActivityBase
                 showAlert();
             }
         } else {
-            mCameraScreenNail.animate(getCameraRotation());
+            // Start capture animation.
+            mCameraScreenNail.animateCapture(getCameraRotation());
             if (!effectsActive()) getThumbnail();
         }
     }
@@ -568,7 +578,7 @@ public class VideoCamera extends ActivityBase
 
     @Override
     public void onShutterButtonClick() {
-        if (collapseCameraControls()) return;
+        if (collapseCameraControls() || mSwitchingCamera) return;
 
         boolean stop = mMediaRecorderRecording;
 
@@ -909,6 +919,8 @@ public class VideoCamera extends ActivityBase
         if (mLocationManager != null) mLocationManager.recordLocation(false);
 
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
+        mHandler.removeMessages(SWITCH_CAMERA);
+        mSwitchingCamera = false;
         // Call onPause after stopping video recording. So the camera can be
         // released as soon as possible.
         super.onPause();
@@ -1995,8 +2007,12 @@ public class VideoCamera extends ActivityBase
             // Check if camera id is changed.
             int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
             if (mCameraId != cameraId) {
+                Log.d(TAG, "Start to copy texture.");
+                // We need to keep a preview frame for the animation before
+                // releasing the camera. This will trigger onPreviewTextureCopied.
+                mCameraScreenNail.copyTexture();
                 mCameraId = cameraId;
-                switchCamera();
+                mSwitchingCamera = true;
                 return;
             } else {
                 readVideoPreferences();
@@ -2042,6 +2058,21 @@ public class VideoCamera extends ActivityBase
         // From onResume
         initializeZoom();
         setOrientationIndicator(mOrientationCompensation, false);
+
+        // Start switch camera animation.
+        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+        boolean backToFront = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
+        mCameraScreenNail.animateSwitchCamera(backToFront);
+
+        // Enable all camera controls.
+        mSwitchingCamera = false;
+    }
+
+    // Preview texture has been copied. Now camera can be released and the
+    // animation can be started.
+    @Override
+    protected void onPreviewTextureCopied() {
+        mHandler.sendEmptyMessage(SWITCH_CAMERA);
     }
 
     private boolean updateEffectSelection() {
@@ -2106,6 +2137,8 @@ public class VideoCamera extends ActivityBase
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
+        if (mSwitchingCamera) return true;
+
         // Check if the popup window should be dismissed first.
         if (m.getAction() == MotionEvent.ACTION_DOWN) {
             float x = m.getX();

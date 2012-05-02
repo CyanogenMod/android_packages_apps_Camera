@@ -94,6 +94,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private static final int CHECK_DISPLAY_ROTATION = 5;
     private static final int SHOW_TAP_TO_FOCUS_TOAST = 6;
     private static final int UPDATE_THUMBNAIL = 7;
+    private static final int SWITCH_CAMERA = 8;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -201,6 +202,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // Focus is in progress. The exact focus state is in Focus.java.
     private static final int FOCUSING = 2;
     private static final int SNAPSHOT_IN_PROGRESS = 3;
+    // Switching between cameras.
+    private static final int SWITCHING_CAMERA = 4;
     private int mCameraState = PREVIEW_STOPPED;
     private boolean mSnapshotOnIdle = false;
 
@@ -303,6 +306,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
                 case UPDATE_THUMBNAIL: {
                     mImageSaver.updateThumbnail();
+                    break;
+                }
+
+                case SWITCH_CAMERA: {
+                    switchCamera();
                     break;
                 }
             }
@@ -465,6 +473,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
+        if (mCameraState == SWITCHING_CAMERA) return true;
+
         // Check if the popup window should be dismissed first.
         if (m.getAction() == MotionEvent.ACTION_DOWN) {
             float x = m.getX();
@@ -941,6 +951,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         switch (state) {
             case SNAPSHOT_IN_PROGRESS:
             case FOCUSING:
+            case SWITCHING_CAMERA:
                 enableCameraControls(false);
                 break;
             case IDLE:
@@ -953,7 +964,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     @Override
     public boolean capture() {
         // If we are already in the middle of taking a snapshot then ignore.
-        if (mCameraState == SNAPSHOT_IN_PROGRESS || mCameraDevice == null) {
+        if (mCameraDevice == null || mCameraState == SNAPSHOT_IN_PROGRESS
+                || mCameraState == SWITCHING_CAMERA) {
             return false;
         }
         mCaptureStartTime = System.currentTimeMillis();
@@ -970,7 +982,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
         if (!mIsImageCaptureIntent) {
-            mCameraScreenNail.animate(getCameraRotation());
+            // Start capture animation.
+            mCameraScreenNail.animateCapture(getCameraRotation());
         }
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
@@ -1335,7 +1348,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void onShutterButtonClick() {
-        if (mPaused || collapseCameraControls()) return;
+        if (mPaused || collapseCameraControls()
+                || mCameraState == SWITCHING_CAMERA) return;
 
         // Do not take the picture if there is not enough storage.
         if (mStorageSpace <= Storage.LOW_STORAGE_THRESHOLD) {
@@ -1473,6 +1487,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Remove the messages in the event queue.
         mHandler.removeMessages(FIRST_TIME_INIT);
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
+        mHandler.removeMessages(SWITCH_CAMERA);
         if (mFocusManager != null) mFocusManager.removeMessages();
     }
 
@@ -1614,7 +1629,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     @Override
     protected void onSingleTapUp(View view, int x, int y) {
         if (mPaused || mCameraDevice == null || !mFirstTimeInitialized
-                || mCameraState == SNAPSHOT_IN_PROGRESS) {
+                || mCameraState == SNAPSHOT_IN_PROGRESS
+                || mCameraState == SWITCHING_CAMERA) {
             return;
         }
 
@@ -1985,7 +2001,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private boolean isCameraIdle() {
-        return (mCameraState == IDLE) || (mFocusManager.isFocusCompleted());
+        return (mCameraState == IDLE) ||
+                (mFocusManager.isFocusCompleted() && (mCameraState != SWITCHING_CAMERA));
     }
 
     private boolean isImageCaptureIntent() {
@@ -2046,8 +2063,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
         if (mCameraId != cameraId) {
+            Log.d(TAG, "Start to copy texture.");
+            // We need to keep a preview frame for the animation before
+            // releasing the camera. This will trigger onPreviewTextureCopied.
+            mCameraScreenNail.copyTexture();
             mCameraId = cameraId;
-            switchCamera();
+            // Disable all camera controls.
+            setCameraState(SWITCHING_CAMERA);
             return;
         } else {
             setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
@@ -2090,6 +2112,16 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         updateOnScreenIndicators();
         startFaceDetection();
         showTapToFocusToastIfNeeded();
+
+        // Start switch camera animation.
+        mCameraScreenNail.animateSwitchCamera(mirror);
+    }
+
+    // Preview texture has been copied. Now camera can be released and the
+    // animation can be started.
+    @Override
+    protected void onPreviewTextureCopied() {
+        mHandler.sendEmptyMessage(SWITCH_CAMERA);
     }
 
     @Override
