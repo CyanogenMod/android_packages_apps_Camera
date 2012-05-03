@@ -131,7 +131,7 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         // Set a theme with action bar. It is not specified in manifest because
         // we want to hide it by default. setTheme must happen before
         // setContentView.
-        setTheme(android.R.style.Theme_Holo);
+        setTheme(R.style.Theme_Gallery);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 
