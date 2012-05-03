@@ -967,11 +967,15 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
         if (!mIsImageCaptureIntent) {
-            mCameraScreenNail.animate(mOrientationCompensation);
+            mCameraScreenNail.animate(getCameraRotation());
         }
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
         return true;
+    }
+
+    private int getCameraRotation() {
+        return (mOrientationCompensation - mDisplayRotation + 360) % 360;
     }
 
     @Override
@@ -1157,8 +1161,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mOrientation = Util.roundOrientation(orientation, mOrientation);
             // When the screen is unlocked, display rotation may change. Always
             // calculate the up-to-date orientationCompensation.
-            int orientationCompensation = mOrientation
-                    + Util.getDisplayRotation(Camera.this);
+            int orientationCompensation =
+                    (mOrientation + Util.getDisplayRotation(Camera.this)) % 360;
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
                 setOrientationIndicator(mOrientationCompensation, true);

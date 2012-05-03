@@ -459,8 +459,8 @@ public class VideoCamera extends ActivityBase
             mOrientation = Util.roundOrientation(orientation, mOrientation);
             // When the screen is unlocked, display rotation may change. Always
             // calculate the up-to-date orientationCompensation.
-            int orientationCompensation = mOrientation
-                    + Util.getDisplayRotation(VideoCamera.this);
+            int orientationCompensation =
+                    (mOrientation + Util.getDisplayRotation(VideoCamera.this)) % 360;
 
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
@@ -560,9 +560,13 @@ public class VideoCamera extends ActivityBase
                 showAlert();
             }
         } else {
-            mCameraScreenNail.animate(mOrientationCompensation);
+            mCameraScreenNail.animate(getCameraRotation());
             if (!effectsActive()) getThumbnail();
         }
+    }
+
+    private int getCameraRotation() {
+        return (mOrientationCompensation - mDisplayRotation + 360) % 360;
     }
 
     public void onProtectiveCurtainClick(View v) {

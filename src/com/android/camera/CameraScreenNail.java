@@ -80,7 +80,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
         switch (mAnimState) {
             case ANIM_TO_START:
-                copyPreviewTexture(canvas, width, height);
+                copyPreviewTexture(canvas);
                 mAnimManager.startAnimation(x, y, width, height);
                 mAnimState = ANIM_RUNNING;
                 // Continue to draw the animation. No break is needed here.
@@ -98,7 +98,9 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         }
     }
 
-    private void copyPreviewTexture(GLCanvas canvas, int width, int height) {
+    private void copyPreviewTexture(GLCanvas canvas) {
+        int width = getWidth();
+        int height = getHeight();
         canvas.beginRenderTarget(mAnimTexture);
         // Flip preview texture vertically. OpenGL uses bottom left point
         // as the origin (0, 0).
