@@ -39,12 +39,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.View;
-import android.view.Window;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.camera.ui.PopupManager;
@@ -94,8 +97,8 @@ public class PanoramaActivity extends ActivityBase implements
     private ContentResolver mContentResolver;
 
     private GLRootView mGLRootView;
-    private View mPanoLayout;
-    private View mCaptureLayout;
+    private ViewGroup mPanoLayout;
+    private LinearLayout mCaptureLayout;
     private View mReviewLayout;
     private ImageView mReview;
     private RotateLayout mCaptureIndicator;
@@ -231,14 +234,6 @@ public class PanoramaActivity extends ActivityBase implements
 
     @Override
     public void onCreate(Bundle icicle) {
-        // TODO: remove this after panorama has swipe UI.
-        if (getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-
         super.onCreate(icicle);
 
         createContentView();
@@ -475,16 +470,15 @@ public class PanoramaActivity extends ActivityBase implements
         if (mCameraScreenNail.getSurfaceTexture() == null) {
             mCameraScreenNail.acquireSurfaceTexture();
         } else {
+            mCameraScreenNail.releaseSurfaceTexture();
+            mCameraScreenNail.acquireSurfaceTexture();
             notifyScreenNailChanged();
         }
         boolean isLandscape = (getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE);
-        if (mMosaicPreviewRenderer == null) {
-            mMosaicPreviewRenderer = new MosaicPreviewRenderer(
-                    mCameraScreenNail.getSurfaceTexture(), w, h, isLandscape);
-        } else {
-            mMosaicPreviewRenderer.reset(w, h, isLandscape);
-        }
+        if (mMosaicPreviewRenderer != null) mMosaicPreviewRenderer.release();
+        mMosaicPreviewRenderer = new MosaicPreviewRenderer(
+                mCameraScreenNail.getSurfaceTexture(), w, h, isLandscape);
 
         mCameraTexture = mMosaicPreviewRenderer.getInputSurfaceTexture();
         if (!mPaused && !mThreadRunning && mWaitProcessorTask == null) {
@@ -654,19 +648,11 @@ public class PanoramaActivity extends ActivityBase implements
         mPanoProgressBar.setProgress((angleInMajorDirection));
     }
 
-    private void createContentView() {
-        setContentView(R.layout.panorama);
-
+    private void setViews(Resources appRes) {
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
-
-        Resources appRes = getResources();
-
-        mCaptureLayout = findViewById(R.id.camera_app_root);
         mPanoProgressBar = (PanoProgressBar) findViewById(R.id.pano_pan_progress_bar);
         mPanoProgressBar.setBackgroundColor(appRes.getColor(R.color.pano_progress_empty));
         mPanoProgressBar.setDoneColor(appRes.getColor(R.color.pano_progress_done));
-        mIndicatorColor = appRes.getColor(R.color.pano_progress_indication);
-        mIndicatorColorFast = appRes.getColor(R.color.pano_progress_indication_fast);
         mPanoProgressBar.setIndicatorColor(mIndicatorColor);
         mPanoProgressBar.setOnDirectionChangeListener(
                 new PanoProgressBar.OnDirectionChangeListener () {
@@ -711,8 +697,6 @@ public class PanoramaActivity extends ActivityBase implements
         mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan);
         mShutterButton.setOnShutterButtonListener(this);
 
-        mPanoLayout = findViewById(R.id.pano_layout);
-
         mRotateDialog = new RotateDialogController(this, R.layout.rotate_dialog);
 
         if (getResources().getConfiguration().orientation
@@ -732,6 +716,16 @@ public class PanoramaActivity extends ActivityBase implements
                 r.setOrientation(270, false);
             }
         }
+    }
+
+    private void createContentView() {
+        setContentView(R.layout.panorama);
+        Resources appRes = getResources();
+        mCaptureLayout = (LinearLayout) findViewById(R.id.camera_app_root);
+        mIndicatorColor = appRes.getColor(R.color.pano_progress_indication);
+        mIndicatorColorFast = appRes.getColor(R.color.pano_progress_indication_fast);
+        mPanoLayout = (ViewGroup) findViewById(R.id.pano_layout);
+        setViews(appRes);
     }
 
     @Override
@@ -872,7 +866,7 @@ public class PanoramaActivity extends ActivityBase implements
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
 
         // We should set mGLRootView visible too. However, since there might be no
-        // frame availble yet, setting mGLRootView visible should be done right after
+        // frame available yet, setting mGLRootView visible should be done right after
         // the first camera frame is available and therefore it is done by
         // mOnFirstFrameAvailableRunnable.
         setSwipingEnabled(true);
@@ -1003,6 +997,27 @@ public class PanoramaActivity extends ActivityBase implements
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Change layout in response to configuration change
+        mCaptureLayout.setOrientation(
+                newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
+                ? LinearLayout.HORIZONTAL : LinearLayout.VERTICAL);
+        mCaptureLayout.removeAllViews();
+        LayoutInflater inflater = getLayoutInflater();
+        inflater.inflate(R.layout.preview_frame_pano, mCaptureLayout);
+        inflater.inflate(R.layout.camera_control, mCaptureLayout);
+
+        mPanoLayout.removeView(mReviewLayout);
+        inflater.inflate(R.layout.pano_review, mPanoLayout);
+
+        setViews(getResources());
+
+        updateThumbnailView();
+    }
+
+    @Override
     protected void onResume() {
         mPaused = false;
         super.onResume();
@@ -1085,7 +1100,7 @@ public class PanoramaActivity extends ActivityBase implements
         Log.v(TAG, "ImLength = " + (len) + ", W = " + width + ", H = " + height);
 
         if (width <= 0 || height <= 0) {
-            // TODO: pop up a error meesage indicating that the final result is not generated.
+            // TODO: pop up an error message indicating that the final result is not generated.
             Log.e(TAG, "width|height <= 0!!, len = " + (len) + ", W = " + width + ", H = " +
                     height);
             return new MosaicJpeg();
