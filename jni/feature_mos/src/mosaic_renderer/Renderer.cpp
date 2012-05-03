@@ -87,7 +87,7 @@ GLuint Renderer::createProgram(const char* pVertexSource, const char* pFragmentS
         GLint linkStatus = GL_FALSE;
         glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
 
-        LOGI("Program Linked!");
+        LOGI("Program Linked (%d)!", program);
 
         if (linkStatus != GL_TRUE)
         {

@@ -75,7 +75,7 @@ public class MosaicRenderer
       * update its texture and warping transformation. Any calls to step()
       * after this call will use the new image frame and transformation data.
       */
-     public static native void ready();
+     public static native void updateMatrix();
 
      /**
       * This function allows toggling between showing the input image data
