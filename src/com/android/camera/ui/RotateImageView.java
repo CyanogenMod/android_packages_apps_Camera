@@ -69,19 +69,23 @@ public class RotateImageView extends TwoStateImageView implements Rotatable {
         if (degree == mTargetDegree) return;
 
         mTargetDegree = degree;
-        mStartDegree = mCurrentDegree;
-        mAnimationStartTime = AnimationUtils.currentAnimationTimeMillis();
+        if (mEnableAnimation) {
+            mStartDegree = mCurrentDegree;
+            mAnimationStartTime = AnimationUtils.currentAnimationTimeMillis();
 
-        int diff = mTargetDegree - mCurrentDegree;
-        diff = diff >= 0 ? diff : 360 + diff; // make it in range [0, 359]
+            int diff = mTargetDegree - mCurrentDegree;
+            diff = diff >= 0 ? diff : 360 + diff; // make it in range [0, 359]
 
-        // Make it in range [-179, 180]. That's the shorted distance between the
-        // two angles
-        diff = diff > 180 ? diff - 360 : diff;
+            // Make it in range [-179, 180]. That's the shorted distance between the
+            // two angles
+            diff = diff > 180 ? diff - 360 : diff;
 
-        mClockwise = diff >= 0;
-        mAnimationEndTime = mAnimationStartTime
-                + Math.abs(diff) * 1000 / ANIMATION_SPEED;
+            mClockwise = diff >= 0;
+            mAnimationEndTime = mAnimationStartTime
+                    + Math.abs(diff) * 1000 / ANIMATION_SPEED;
+        } else {
+            mCurrentDegree = mTargetDegree;
+        }
 
         invalidate();
     }
