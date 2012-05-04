@@ -46,6 +46,11 @@ public class CameraActivityTest extends CameraTestCase <Camera> {
     }
 
     @LargeTest
+    public void testSwitchCamera() throws Exception {
+        super.internalTestSwitchCamera();
+    }
+
+    @LargeTest
     public void testPriorityIndicators() throws Exception {
         // Remove parameters.
         Parameters param = getParameters();
