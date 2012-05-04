@@ -178,10 +178,12 @@ public class CameraSettings {
                     flashMode, mParameters.getSupportedFlashModes());
         }
         if (focusMode != null) {
-            if (mParameters.getMaxNumFocusAreas() == 0) {
+            boolean wantsFocus = mContext.getResources().getBoolean(R.bool.wantsFocusModes)
+                || mSamsungCamSettings;
+            if (mParameters.getMaxNumFocusAreas() == 0 || wantsFocus) {
                 filterUnsupportedOptions(group,
                         focusMode, mParameters.getSupportedFocusModes());
-            } else if(!mSamsungCamSettings && !mContext.getResources().getBoolean(R.bool.wantsFocusModes)) {
+            } else {
                 // Remove the focus mode if we can use tap-to-focus
                 removePreference(group, focusMode.getKey());
             }
