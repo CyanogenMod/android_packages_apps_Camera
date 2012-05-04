@@ -200,6 +200,14 @@ public class CameraTestCase<T extends Activity> extends ActivityInstrumentationT
         assertViewNotExist(R.id.camera_picker);
     }
 
+    protected void internalTestSwitchCamera() throws Exception {
+        CameraHolder.injectMockCamera(mCameraInfo, mMockCamera);
+
+        getActivity();
+        getInstrumentation().waitForIdleSync();
+        performClick(R.id.camera_picker);
+    }
+
     protected void performClick(final int id) {
         Activity activity = getActivity();
         getInstrumentation().waitForIdleSync();

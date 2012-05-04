@@ -39,4 +39,9 @@ public class VideoCameraActivityTest extends CameraTestCase <VideoCamera> {
     public void testOneCamera() throws Exception {
         super.internalTestOneCamera();
     }
+
+    @LargeTest
+    public void testSwitchCamera() throws Exception {
+        super.internalTestSwitchCamera();
+    }
 }
