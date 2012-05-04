@@ -361,15 +361,19 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         initializeZoom();
         updateOnScreenIndicators();
         startFaceDetection();
+        showTapToFocusToastIfNeeded();
+
+        mFirstTimeInitialized = true;
+        addIdleHandler();
+    }
+
+    private void showTapToFocusToastIfNeeded() {
         // Show the tap to focus toast if this is the first start.
         if (mFocusAreaSupported &&
                 mPreferences.getBoolean(CameraSettings.KEY_CAMERA_FIRST_USE_HINT_SHOWN, true)) {
             // Delay the toast for one second to wait for orientation.
             mHandler.sendEmptyMessageDelayed(SHOW_TAP_TO_FOCUS_TOAST, 1000);
         }
-
-        mFirstTimeInitialized = true;
-        addIdleHandler();
     }
 
     private void addIdleHandler() {
@@ -2043,24 +2047,50 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
         if (mCameraId != cameraId) {
-            // Restart the activity to have a crossfade animation.
-            // TODO: Use SurfaceTexture to implement a better and faster
-            // animation.
-            if (mIsImageCaptureIntent) {
-                // If the intent is camera capture, stay in camera capture mode.
-                Intent it = getIntent();
-                it.putExtra(IntentExtras.INITIAL_ORIENTATION_EXTRA, mOrientationCompensation);
-                MenuHelper.gotoCameraMode(this, getIntent());
-            } else {
-                MenuHelper.gotoCameraMode(this, mOrientationCompensation);
-            }
-
-            finish();
+            mCameraId = cameraId;
+            switchCamera();
+            return;
         } else {
             setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
         }
 
         updateOnScreenIndicators();
+    }
+
+    private void switchCamera() {
+        Log.d(TAG, "Start to switch camera.");
+
+        // from onPause
+        closeCamera();
+        collapseCameraControls();
+        if (mFaceView != null) mFaceView.clear();
+        if (mFocusManager != null) mFocusManager.removeMessages();
+
+        // Restart the camera and initialize the UI. From onCreate.
+        mPreferences.setLocalId(Camera.this, mCameraId);
+        CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
+        CameraOpenThread cameraOpenThread = new CameraOpenThread();
+        cameraOpenThread.start();
+        try {
+            cameraOpenThread.join();
+        } catch (InterruptedException ex) {
+            // ignore
+        }
+        initializeCapabilities();
+        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+        boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
+        mFocusManager.setMirror(mirror);
+        mFocusManager.setParameters(mInitialParams);
+        startPreview();
+        initializeIndicatorControl();
+
+        // from onResume
+        setOrientationIndicator(mOrientationCompensation, false);
+        // from initializeFirstTime
+        initializeZoom();
+        updateOnScreenIndicators();
+        startFaceDetection();
+        showTapToFocusToastIfNeeded();
     }
 
     @Override

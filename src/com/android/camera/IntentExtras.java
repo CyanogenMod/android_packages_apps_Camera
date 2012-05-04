@@ -18,7 +18,5 @@ package com.android.camera;
 
 /** This class collects all the extras used in the intent by Camera, VideoCamera and Panorama. */
 public class IntentExtras {
-    public static final String RESET_EFFECT_EXTRA = "reset_effect";
-    public static final String BACKGROUND_URI_GALLERY_EXTRA = "background_uri_gallery";
     public static final String INITIAL_ORIENTATION_EXTRA = "initial_orientation";
 }

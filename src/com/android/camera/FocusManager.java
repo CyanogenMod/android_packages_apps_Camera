@@ -124,16 +124,21 @@ public class FocusManager {
     public FocusManager(ComboPreferences preferences, String[] defaultFocusModes,
             View focusIndicatorRotate, Parameters parameters, Listener listener,
             boolean mirror) {
+        mHandler = new MainHandler();
+        mMatrix = new Matrix();
+
         mPreferences = preferences;
         mDefaultFocusModes = defaultFocusModes;
         mFocusIndicatorRotateLayout = (FocusIndicatorRotateLayout) focusIndicatorRotate;
-        mParameters = parameters;
+        setParameters(parameters);
         mListener = listener;
-        mMirror = mirror;
+        setMirror(mirror);
 
-        mHandler = new MainHandler();
-        mMatrix = new Matrix();
         mFocusIndicator = focusIndicatorRotate.findViewById(R.id.focus_indicator);
+    }
+
+    public void setParameters(Parameters parameters) {
+        mParameters = parameters;
         mFocusAreaSupported = (mParameters.getMaxNumFocusAreas() > 0
                 && isSupported(Parameters.FOCUS_MODE_AUTO,
                         mParameters.getSupportedFocusModes()));
@@ -155,11 +160,14 @@ public class FocusManager {
         }
     }
 
+    public void setMirror(boolean mirror) {
+        mMirror = mirror;
+        setMatrix();
+    }
+
     public void setDisplayOrientation(int displayOrientation) {
         mDisplayOrientation = displayOrientation;
-        if (mPreviewWidth != 0 && mPreviewHeight != 0) {
-            setMatrix();
-        }
+        setMatrix();
     }
 
     public void setFaceView(FaceView faceView) {
@@ -167,14 +175,16 @@ public class FocusManager {
     }
 
     private void setMatrix() {
-        Matrix matrix = new Matrix();
-        Util.prepareMatrix(matrix, mMirror, mDisplayOrientation,
-                mPreviewWidth, mPreviewHeight);
-        // In face detection, the matrix converts the driver coordinates to UI
-        // coordinates. In tap focus, the inverted matrix converts the UI
-        // coordinates to driver coordinates.
-        matrix.invert(mMatrix);
-        mInitialized = true;
+        if (mPreviewWidth != 0 && mPreviewHeight != 0) {
+            Matrix matrix = new Matrix();
+            Util.prepareMatrix(matrix, mMirror, mDisplayOrientation,
+                    mPreviewWidth, mPreviewHeight);
+            // In face detection, the matrix converts the driver coordinates to UI
+            // coordinates. In tap focus, the inverted matrix converts the UI
+            // coordinates to driver coordinates.
+            matrix.invert(mMatrix);
+            mInitialized = true;
+        }
     }
 
     public void onShutterDown() {
