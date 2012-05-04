@@ -288,6 +288,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     // wrong. Framework does not have a callback for this now.
                     if (Util.getDisplayRotation(Camera.this) != mDisplayRotation) {
                         setDisplayOrientation();
+                        mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
                     }
                     if (SystemClock.uptimeMillis() - mOnResumeTime < 5000) {
                         mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
@@ -421,8 +422,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private void initializeZoom() {
-        // Get the parameter to make sure we have the up-to-date zoom value.
-        mParameters = mCameraDevice.getParameters();
         if (!mParameters.isZoomSupported()) return;
         mZoomMax = mParameters.getMaxZoom();
         // Currently we use immediate zoom for fast zooming to get better UX and
@@ -1698,7 +1697,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mDisplayRotation = Util.getDisplayRotation(this);
         mDisplayOrientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
         mCameraDisplayOrientation = Util.getDisplayOrientation(0, mCameraId);
-        mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
         if (mFaceView != null) {
             mFaceView.setDisplayOrientation(mDisplayOrientation);
         }
@@ -1717,6 +1715,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mCameraState != PREVIEW_STOPPED) stopPreview();
 
         setDisplayOrientation();
+        mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
 
         if (!mSnapshotOnIdle) {
             // If the focus mode is continuous autofocus, call cancelAutoFocus to

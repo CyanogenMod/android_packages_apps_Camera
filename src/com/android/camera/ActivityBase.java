@@ -315,13 +315,15 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     private void updateCameraAppView() {
         if (mShowCameraAppView) {
             mCameraAppView.setVisibility(View.VISIBLE);
+            // withEndAction(null) prevents the pending end action
+            // mHideCameraAppView from being executed.
             mCameraAppView.animate()
-                .setDuration(CAMERA_APP_VIEW_TOGGLE_TIME)
-                .withLayer().alpha(1);
+                    .setDuration(CAMERA_APP_VIEW_TOGGLE_TIME)
+                    .withLayer().alpha(1).withEndAction(null);
         } else {
             mCameraAppView.animate()
-                .setDuration(CAMERA_APP_VIEW_TOGGLE_TIME)
-                .withLayer().alpha(0).withEndAction(mHideCameraAppView);
+                    .setDuration(CAMERA_APP_VIEW_TOGGLE_TIME)
+                    .withLayer().alpha(0).withEndAction(mHideCameraAppView);
         }
     }
 

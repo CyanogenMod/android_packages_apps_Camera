@@ -813,7 +813,6 @@ public class VideoCamera extends ActivityBase
     private void setDisplayOrientation() {
         mDisplayRotation = Util.getDisplayRotation(this);
         mCameraDisplayOrientation = Util.getDisplayOrientation(0, mCameraId);
-        mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
     }
 
     private void startPreview() {
@@ -828,6 +827,7 @@ public class VideoCamera extends ActivityBase
         }
 
         setDisplayOrientation();
+        mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
         setCameraParameters();
 
         if (mSurfaceTexture == null) {
@@ -2144,8 +2144,6 @@ public class VideoCamera extends ActivityBase
 
     private void initializeZoom() {
         mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
-        // Get the parameter to make sure we have the up-to-date zoom value.
-        mParameters = mCameraDevice.getParameters();
         if (!mParameters.isZoomSupported()) return;
 
         mZoomMax = mParameters.getMaxZoom();
