@@ -1353,7 +1353,7 @@ public class VideoCamera extends ActivityBase
 
     private void startVideoRecording() {
         Log.v(TAG, "startVideoRecording");
-        setSwipeEnabled(false);
+        setSwipingEnabled(false);
 
         updateAndShowStorageHint();
         if (mStorageSpace <= Storage.LOW_STORAGE_THRESHOLD) {
@@ -1498,7 +1498,7 @@ public class VideoCamera extends ActivityBase
 
     private void stopVideoRecording() {
         Log.v(TAG, "stopVideoRecording");
-        setSwipeEnabled(true);
+        setSwipingEnabled(true);
 
         if (mMediaRecorderRecording) {
             boolean shouldAddToMediaStoreNow = false;

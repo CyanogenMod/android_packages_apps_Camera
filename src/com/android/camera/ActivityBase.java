@@ -402,8 +402,8 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     protected void onSingleTapUp(View view, int x, int y) {
     }
 
-    protected void setSwipeEnabled(boolean enabled) {
-        ((View) getGLRoot()).setEnabled(enabled);
+    protected void setSwipingEnabled(boolean enabled) {
+        mAppBridge.setSwipingEnabled(enabled);
     }
 
 
@@ -460,6 +460,10 @@ abstract public class ActivityBase extends AbstractGalleryActivity
 
         private void switchWithCaptureAnimation(int offset) {
             if (mServer != null) mServer.switchWithCaptureAnimation(offset);
+        }
+
+        private void setSwipingEnabled(boolean enabled) {
+            if (mServer != null) mServer.setSwipingEnabled(enabled);
         }
     }
 }
