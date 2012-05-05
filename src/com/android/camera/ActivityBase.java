@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -40,6 +39,7 @@ abstract public class ActivityBase extends Activity {
     private boolean mOnResumePending;
     private Intent mResultDataForTesting;
     protected Camera mCameraDevice;
+    protected String mCaptureMode;
 
     @Override
     public void onCreate(Bundle icicle) {
