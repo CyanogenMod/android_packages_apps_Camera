@@ -66,23 +66,24 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Сонячно"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Флуоресцентний"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Хмарно"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Хмарно, денне світло</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Режим зйомки"</string>
-    <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Автом."</string>
+    <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Авто"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Спорт"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Ніч"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Захід сонця"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"У приміщенні"</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Неможливо вибрати в режимі зйомки."</string>
-    <string name="pref_restore_title" msgid="6479274979730178961">"Налашт-ня камери"</string>
-    <string name="pref_restore_detail" msgid="5732490002291044791">"Налашт. за умовч."</string>
+    <string name="pref_restore_title" msgid="6479274979730178961">"Налаштування камери"</string>
+    <string name="pref_restore_detail" msgid="5732490002291044791">"Налаштування за умовч."</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Експозиція"</string>
     <string name="dialog_ok" msgid="6263301364153382152">"ОК"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"На носії USB недостатньо місця. Змініть налаштування якості чи видаліть зображення або інші файли."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"На карті SD недостатньо місця. Змініть налаштування якості чи видаліть зображення або інші файли."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Досягн. макс. розмір."</string>
-    <string name="switch_to_camera_label" msgid="9148663083850199582">"Перейти в режим камери"</string>
-    <string name="switch_to_video_label" msgid="1167994386902254398">"Перейти в режим відео"</string>
-    <string name="switch_to_panorama_label" msgid="858801335653517864">"Перейти в режим панорами"</string>
+    <string name="switch_to_camera_label" msgid="9148663083850199582">"Режим \"Фото\""</string>
+    <string name="switch_to_video_label" msgid="1167994386902254398">"Режим \"Відео\""</string>
+    <string name="switch_to_panorama_label" msgid="858801335653517864">"Режим \"Панорама\""</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Надіслати фото через"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Надіслати відео через"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"Немає знімків для надсилання."</string>
@@ -123,4 +124,21 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"Зменшити %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Збільшити %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"Перемикач %1$s"</string>
+    <string name="pref_camera_power_shutter_title">Фото живленням</string>
+    <string name="pref_camera_storage_title">Накопичувач</string>
+
+    <string name="pref_camera_focusmode_entry_fixed">Фіксовано</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Визнач. облищя</string>
+    <string name="pref_camera_scenemode_entry_backlight">Підсвітка</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Сутінки, світанок</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Осінь</string>
+    <string name="pref_camera_scenemode_entry_text">Текст</string>
+    <string name="pref_camera_scenemode_entry_portrait">Портрет</string>
+    <string name="pref_camera_scenemode_entry_landscape">Пейзаж</string>
+    <string name="pref_camera_scenemode_entry_beach">Пляж</string>
+    <string name="pref_camera_scenemode_entry_snow">Сніг</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Феєрверк</string>
+    <string name="pref_camera_scenemode_entry_sports">Спорт</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Штучне освітлення</string>
+
 </resources>
