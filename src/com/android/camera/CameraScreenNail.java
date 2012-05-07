@@ -34,12 +34,15 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     private static final int ANIM_CAPTURE_RUNNING = 2;
     // Switch camera animation needs to copy texture.
     private static final int ANIM_SWITCH_COPY_TEXTURE = 3;
+    // Switch camera animation shows the initial feedback by darkening the
+    // preview.
+    private static final int ANIM_SWITCH_DARK_PREVIEW = 4;
     // Switch camera animation is waiting for the first frame.
-    private static final int ANIM_SWITCH_WAITING_FIRST_FRAME = 4;
+    private static final int ANIM_SWITCH_WAITING_FIRST_FRAME = 5;
     // Switch camera animation is about to start.
-    private static final int ANIM_SWITCH_START = 5;
+    private static final int ANIM_SWITCH_START = 6;
     // Switch camera animation is running.
-    private static final int ANIM_SWITCH_RUNNING = 6;
+    private static final int ANIM_SWITCH_RUNNING = 7;
 
     private boolean mVisible;
     private Listener mListener;
@@ -73,10 +76,12 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     }
 
     public void animateSwitchCamera(boolean backToFront) {
-        mSwitchAnimManager.setSwitchDirection(backToFront);
-        // Do not request render here because camera has been just started.
-        // We do not want to draw black frames.
-        mAnimState = ANIM_SWITCH_WAITING_FIRST_FRAME;
+        if (mAnimState == ANIM_SWITCH_DARK_PREVIEW) {
+            mSwitchAnimManager.setSwitchDirection(backToFront);
+            // Do not request render here because camera has been just started.
+            // We do not want to draw black frames.
+            mAnimState = ANIM_SWITCH_WAITING_FIRST_FRAME;
+        }
     }
 
     public void animateCapture(int animOrientation) {
@@ -102,9 +107,14 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         switch (mAnimState) {
             case ANIM_SWITCH_COPY_TEXTURE:
                 copyPreviewTexture(canvas);
-                mAnimState = ANIM_NONE;
                 mListener.onPreviewTextureCopied();
-                super.draw(canvas, x, y, width, height);
+                mAnimState = ANIM_SWITCH_DARK_PREVIEW;
+                // The texture is ready. Fall through to draw darkened preview.
+            case ANIM_SWITCH_DARK_PREVIEW:
+                float alpha = canvas.getAlpha();
+                canvas.setAlpha(SwitchAnimManager.INITIAL_DARKEN_ALPHA);
+                mAnimTexture.draw(canvas, x, y, width, height);
+                canvas.setAlpha(alpha);
                 return;
             case ANIM_SWITCH_START:
                 mSwitchAnimManager.startAnimation(x, y, width, height);

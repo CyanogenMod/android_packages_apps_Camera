@@ -28,16 +28,18 @@ import com.android.gallery3d.ui.RawTexture;
  * positioned on the phone underneath the front camera.
  *
  * From back-camera to front camera:
- * -Back camera zooms-in and fades out; Front camera zooms-out and fades-in.
+ * - Back camera zooms-out and fades out; Front camera zooms-out and fades-in.
  *
  * From front camera to back camera:
- * -Front camera zooms-in and fades out; Back camera zooms-in and fades-in.
+ * - Front camera zooms-in and fades out; Back camera zooms-in and fades-in.
  */
 public class SwitchAnimManager {
     private static final String TAG = "SwitchAnimManager";
-    // The amount of change for zooming out.
-    private static final float ZOOM_DELTA = 0.5f;
+    // The amount of change for zooming in and out.
+    private static final float ZOOM_DELTA_FRONT_CAMERA = 0.5f;
+    private static final float ZOOM_DELTA_BACK_CAMERA = 0.2f;
     private static final float ANIMATION_DURATION = 800;  // ms
+    public static final float INITIAL_DARKEN_ALPHA = 0.8f;
 
     private long mAnimStartTime;  // milliseconds.
     // The center of the preview and review
@@ -75,7 +77,7 @@ public class SwitchAnimManager {
         // Calculate the position and the size of the preview and review.
         float fraction = timeDiff / ANIMATION_DURATION;
         float previewScale = calculatePreviewScale(fraction, mBackToFront);
-        float reviewScale = 1 + ZOOM_DELTA * fraction;
+        float reviewScale = calculateReviewScale(fraction, mBackToFront);
         float previewWidth = mDrawWidth * previewScale;
         float previewHeight = mDrawHeight * previewScale;
         float reviewWidth = mDrawWidth * reviewScale;
@@ -91,7 +93,8 @@ public class SwitchAnimManager {
         preview.directDraw(canvas, previewX, previewY, Math.round(previewWidth),
                 Math.round(previewHeight));
 
-        canvas.setAlpha(1f - fraction); // old camera preview fades out
+        // old camera preview fades out
+        canvas.setAlpha((1f - fraction) * INITIAL_DARKEN_ALPHA);
         review.draw(canvas, reviewX, reviewY, (int) reviewWidth,
                 (int) reviewHeight);
         canvas.setAlpha(alpha);
@@ -99,13 +102,24 @@ public class SwitchAnimManager {
     }
 
     // Calculate the zoom factor of preview based on the given time fraction.
-    private float calculatePreviewScale(float interpolation, boolean backToFront) {
+    private float calculatePreviewScale(float fraction, boolean backToFront) {
         if (backToFront) {
-            // zoom out
-            return 1 + ZOOM_DELTA - ZOOM_DELTA * interpolation;
+            // Front camera zooms out.
+            return 1 + ZOOM_DELTA_FRONT_CAMERA * (1 - fraction);
         } else {
-            // zoom in
-            return 1 - ZOOM_DELTA + ZOOM_DELTA * interpolation;
+            // Back camera zooms in.
+            return 1 - ZOOM_DELTA_BACK_CAMERA * (1 - fraction);
+        }
+    }
+
+    // Calculate the zoom factor of review based on the given time fraction.
+    private float calculateReviewScale(float fraction, boolean backToFront) {
+        if (backToFront) {
+            // Back camera zooms out.
+            return 1 - ZOOM_DELTA_BACK_CAMERA * fraction;
+        } else {
+            // Front camera zooms in.
+            return 1 + ZOOM_DELTA_FRONT_CAMERA * fraction;
         }
     }
 }
