@@ -406,16 +406,6 @@ public class EffectsRecorder {
         mGraphEnv = new GraphEnvironment();
         mGraphEnv.createGLEnvironment();
 
-        if (mLogVerbose) {
-            Log.v(TAG, "Effects framework initializing. Recording size "
-                  + mProfile.videoFrameWidth + ", " + mProfile.videoFrameHeight);
-        }
-        if (!mAppIsLandscape) {
-            int tmp;
-            tmp = mProfile.videoFrameWidth;
-            mProfile.videoFrameWidth = mProfile.videoFrameHeight;
-            mProfile.videoFrameHeight = tmp;
-        }
         mGraphEnv.addReferences(
                 "textureSourceCallback", mSourceReadyCallback,
                 "recordingWidth", mProfile.videoFrameWidth,
@@ -432,10 +422,6 @@ public class EffectsRecorder {
         if (forceReset ||
             mCurrentEffect != mEffect ||
             mCurrentEffect == EFFECT_BACKDROPPER) {
-            if (mLogVerbose) {
-                Log.v(TAG, "Effect initializing. Preview size "
-                       + mPreviewWidth + ", " + mPreviewHeight);
-            }
 
             mGraphEnv.addReferences(
                     "previewSurfaceTexture", mPreviewSurfaceTexture,
@@ -543,13 +529,10 @@ public class EffectsRecorder {
             throw new RuntimeException("No camera to record from!");
         }
 
-        if (mLogVerbose) Log.v(TAG, "Initializing filter graph");
-
+        if (mLogVerbose) Log.v(TAG, "Initializing filter framework and running the graph.");
         initializeFilterFramework();
 
         initializeEffect(true);
-
-        if (mLogVerbose) Log.v(TAG, "Starting filter graph");
 
         mState = STATE_STARTING_PREVIEW;
         mRunner.run();
@@ -578,12 +561,19 @@ public class EffectsRecorder {
                     return;
                 }
                 if (source == null) {
+                    if (mLogVerbose) {
+                        Log.v(TAG, "Ready callback: source null! Looks like graph was closed!");
+                    }
                     if (mState == STATE_PREVIEW ||
                             mState == STATE_STARTING_PREVIEW ||
                             mState == STATE_RECORD) {
                         // A null source here means the graph is shutting down
                         // unexpectedly, so we need to turn off preview before
                         // the surface texture goes away.
+                        if (mLogVerbose) {
+                            Log.v(TAG, "Ready callback: State: " + mState + ". stopCameraPreview");
+                        }
+
                         stopCameraPreview();
                     }
                     return;
@@ -876,7 +866,9 @@ public class EffectsRecorder {
                 if (mState == STATE_PREVIEW ||
                         mState == STATE_STARTING_PREVIEW) {
                     // Switching effects, start up the new runner
-                    if (mLogVerbose) Log.v(TAG, "Previous effect halted, starting new effect.");
+                    if (mLogVerbose) {
+                        Log.v(TAG, "Previous effect halted. Running graph again. state: " + mState);
+                    }
                     tryEnable3ALocks(false);
                     // In case of an error, the graph restarts from beginning and in case
                     // of the BACKDROPPER effect, the learner re-learns the background.
