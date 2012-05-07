@@ -49,7 +49,6 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     private CaptureAnimManager mCaptureAnimManager = new CaptureAnimManager();
     private SwitchAnimManager mSwitchAnimManager =new SwitchAnimManager();
     private int mAnimState = ANIM_NONE;
-    private Object mAnimStateLock = new Object(); // protect mAnimState
     private RawTexture mAnimTexture;
 
     public interface Listener {
@@ -70,20 +69,20 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
     public void copyTexture() {
         mListener.requestRender();
-        setAnimState(ANIM_SWITCH_COPY_TEXTURE);
+        mAnimState = ANIM_SWITCH_COPY_TEXTURE;
     }
 
     public void animateSwitchCamera(boolean backToFront) {
         mSwitchAnimManager.setSwitchDirection(backToFront);
         // Do not request render here because camera has been just started.
         // We do not want to draw black frames.
-        setAnimState(ANIM_SWITCH_WAITING_FIRST_FRAME);
+        mAnimState = ANIM_SWITCH_WAITING_FIRST_FRAME;
     }
 
     public void animateCapture(int animOrientation) {
         mCaptureAnimManager.setOrientation(animOrientation);
         mListener.requestRender();
-        setAnimState(ANIM_CAPTURE_START);
+        mAnimState = ANIM_CAPTURE_START;
     }
 
     public void directDraw(GLCanvas canvas, int x, int y, int width, int height) {
@@ -95,45 +94,43 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         if (getSurfaceTexture() == null) return;
         if (!mVisible) setVisibility(true);
 
-        synchronized (mAnimStateLock) {
-            if (mAnimState == ANIM_NONE) {
+        if (mAnimState == ANIM_NONE) {
+            super.draw(canvas, x, y, width, height);
+            return;
+        }
+
+        switch (mAnimState) {
+            case ANIM_SWITCH_COPY_TEXTURE:
+                copyPreviewTexture(canvas);
+                mAnimState = ANIM_NONE;
+                mListener.onPreviewTextureCopied();
                 super.draw(canvas, x, y, width, height);
                 return;
-            }
+            case ANIM_SWITCH_START:
+                mSwitchAnimManager.startAnimation(x, y, width, height);
+                mAnimState = ANIM_SWITCH_RUNNING;
+                break;
+            case ANIM_CAPTURE_START:
+                copyPreviewTexture(canvas);
+                mCaptureAnimManager.startAnimation(x, y, width, height);
+                mAnimState = ANIM_CAPTURE_RUNNING;
+                break;
+        }
 
-            switch (mAnimState) {
-                case ANIM_SWITCH_COPY_TEXTURE:
-                    copyPreviewTexture(canvas);
-                    mAnimState = ANIM_NONE;
-                    mListener.onPreviewTextureCopied();
-                    super.draw(canvas, x, y, width, height);
-                    return;
-                case ANIM_SWITCH_START:
-                    mSwitchAnimManager.startAnimation(x, y, width, height);
-                    mAnimState = ANIM_SWITCH_RUNNING;
-                    break;
-                case ANIM_CAPTURE_START:
-                    copyPreviewTexture(canvas);
-                    mCaptureAnimManager.startAnimation(x, y, width, height);
-                    mAnimState = ANIM_CAPTURE_RUNNING;
-                    break;
+        if (mAnimState == ANIM_CAPTURE_RUNNING || mAnimState == ANIM_SWITCH_RUNNING) {
+            boolean drawn;
+            if (mAnimState == ANIM_CAPTURE_RUNNING) {
+                drawn = mCaptureAnimManager.drawAnimation(canvas, this, mAnimTexture);
+            } else {
+                drawn = mSwitchAnimManager.drawAnimation(canvas, this, mAnimTexture);
             }
-
-            if (mAnimState == ANIM_CAPTURE_RUNNING || mAnimState == ANIM_SWITCH_RUNNING) {
-                boolean drawn;
-                if (mAnimState == ANIM_CAPTURE_RUNNING) {
-                    drawn = mCaptureAnimManager.drawAnimation(canvas, this, mAnimTexture);
-                } else {
-                    drawn = mSwitchAnimManager.drawAnimation(canvas, this, mAnimTexture);
-                }
-                if (drawn) {
-                    mListener.requestRender();
-                } else {
-                    // Continue to the normal draw procedure if the animation is
-                    // not drawn.
-                    mAnimState = ANIM_NONE;
-                    super.draw(canvas, x, y, width, height);
-                }
+            if (drawn) {
+                mListener.requestRender();
+            } else {
+                // Continue to the normal draw procedure if the animation is not
+                // drawn.
+                mAnimState = ANIM_NONE;
+                super.draw(canvas, x, y, width, height);
             }
         }
     }
@@ -165,10 +162,8 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     @Override
     public synchronized void onFrameAvailable(SurfaceTexture surfaceTexture) {
         if (mVisible) {
-            synchronized (mAnimStateLock) {
-                if (mAnimState == ANIM_SWITCH_WAITING_FIRST_FRAME) {
-                    mAnimState = ANIM_SWITCH_START;
-                }
+            if (mAnimState == ANIM_SWITCH_WAITING_FIRST_FRAME) {
+                mAnimState = ANIM_SWITCH_START;
             }
             // We need to ask for re-render if the SurfaceTexture receives a new
             // frame.
@@ -179,12 +174,6 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     private void setVisibility(boolean visible) {
         if (mVisible != visible) {
             mVisible = visible;
-        }
-    }
-
-    private void setAnimState(int state) {
-        synchronized (mAnimStateLock) {
-            mAnimState = state;
         }
     }
 }
