@@ -308,7 +308,9 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     private class HideCameraAppView implements Runnable {
         @Override
         public void run() {
-            mCameraAppView.setVisibility(View.GONE);
+            // We cannot set this as GONE because we want to receive the
+            // onLayoutChange() callback even when we are invisible.
+            mCameraAppView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -351,6 +353,11 @@ abstract public class ActivityBase extends AbstractGalleryActivity
             int oldLeft, int oldTop, int oldRight, int oldBottom) {
         if (mAppBridge == null) return;
 
+        if (left == oldLeft && top == oldTop && right == oldRight
+                && bottom == oldBottom) {
+            return;
+        }
+
         // Find out the coordinates of the preview frame relative to GL
         // root view.
         View root = (View) getGLRoot();
@@ -359,24 +366,13 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         root.getLocationInWindow(rootLocation);
         v.getLocationInWindow(viewLocation);
 
-        int w = root.getWidth();
-        int h = root.getHeight();
         int l = viewLocation[0] - rootLocation[0];
         int t = viewLocation[1] - rootLocation[1];
         int r = l + (right - left);
         int b = t + (bottom - top);
-        int rotation = Util.getDisplayRotation(this);
-
-        Rect frame = new Rect();
-        switch (rotation) {
-            case 0: frame.set(l, t, r, b); break;
-            case 90: frame.set(h - b, l, h - t, r); break;
-            case 180: frame.set(w - r, h - b, w - l, h - t); break;
-            case 270: frame.set(t, w - r, b, w - l); break;
-        }
-
-        Log.d(TAG, "rotation = " + rotation + ", camera natural frame = " + frame);
-        mAppBridge.setCameraNaturalFrame(frame);
+        Rect frame = new Rect(l, t, r, b);
+        Log.d(TAG, "set CameraRelativeFrame as " + frame);
+        mAppBridge.setCameraRelativeFrame(frame);
     }
 
     protected void setSingleTapUpListener(View singleTapArea) {
@@ -461,8 +457,8 @@ abstract public class ActivityBase extends AbstractGalleryActivity
             mServer = s;
         }
 
-        private void setCameraNaturalFrame(Rect frame) {
-            if (mServer != null) mServer.setCameraNaturalFrame(frame);
+        private void setCameraRelativeFrame(Rect frame) {
+            if (mServer != null) mServer.setCameraRelativeFrame(frame);
         }
 
         private void switchWithCaptureAnimation(int offset) {
