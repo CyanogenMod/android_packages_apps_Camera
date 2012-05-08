@@ -283,7 +283,7 @@ ImageType ImageUtils::readBinaryPPM(const char *filename, int &width, int &heigh
 
   FILE *imgin = NULL;
   int mval=0, format=0, eret;
-  ImageType ret = IMAGE_TYPE_NOIMAGE;
+  ImageType ret = (ImageType)IMAGE_TYPE_NOIMAGE;
 
   imgin = fopen(filename, "r");
   if (imgin == NULL) {

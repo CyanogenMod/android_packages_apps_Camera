@@ -28,24 +28,28 @@
 #define BLEND_RANGE_DEFAULT 6
 #define BORDER 8
 
+#if __cplusplus < 201103L && !defined(__GXX_EXPERIMENTAL_CXX0X__) && !defined(constexpr)
+#define constexpr const
+#endif
+
 // Percent of total mosaicing time spent on each of the following operations
-const float TIME_PERCENT_ALIGN = 20.0;
-const float TIME_PERCENT_BLEND = 75.0;
-const float TIME_PERCENT_FINAL = 5.0;
+constexpr float TIME_PERCENT_ALIGN = 20.0;
+constexpr float TIME_PERCENT_BLEND = 75.0;
+constexpr float TIME_PERCENT_FINAL = 5.0;
 
 // This threshold determines the minimum separation between the image centers
 // of the input image frames for them to be accepted for blending in the
 // STRIP_TYPE_WIDE mode.
-const float STRIP_SEPARATION_THRESHOLD_PXLS = 10;
+constexpr float STRIP_SEPARATION_THRESHOLD_PXLS = 10;
 
 // This threshold determines the number of pixels on either side of the strip
 // to cross-fade using the images contributing to each seam.
-const float STRIP_CROSS_FADE_WIDTH_PXLS = 2;
+constexpr float STRIP_CROSS_FADE_WIDTH_PXLS = 2;
 // This specifies the maximum pyramid level to which cross-fading is applied.
 // The original image resolution is Level-0, half of that size is Level-1 and
 // so on. BLEND_RANGE_DEFAULT specifies the number of pyramid levels used by
 // the blending algorithm.
-const int STRIP_CROSS_FADE_MAX_PYR_LEVEL = 2;
+constexpr int STRIP_CROSS_FADE_MAX_PYR_LEVEL = 2;
 
 /**
  *  Class for pyramid blending a mosaic.
@@ -54,19 +58,19 @@ class Blend {
 
 public:
 
-  static const int BLEND_TYPE_NONE    = -1;
-  static const int BLEND_TYPE_FULL    = 0;
-  static const int BLEND_TYPE_PAN     = 1;
-  static const int BLEND_TYPE_CYLPAN  = 2;
-  static const int BLEND_TYPE_HORZ   = 3;
+  static constexpr int BLEND_TYPE_NONE    = -1;
+  static constexpr int BLEND_TYPE_FULL    = 0;
+  static constexpr int BLEND_TYPE_PAN     = 1;
+  static constexpr int BLEND_TYPE_CYLPAN  = 2;
+  static constexpr int BLEND_TYPE_HORZ   = 3;
 
-  static const int STRIP_TYPE_THIN      = 0;
-  static const int STRIP_TYPE_WIDE      = 1;
+  static constexpr int STRIP_TYPE_THIN      = 0;
+  static constexpr int STRIP_TYPE_WIDE      = 1;
 
-  static const int BLEND_RET_ERROR        = -1;
-  static const int BLEND_RET_OK           = 0;
-  static const int BLEND_RET_ERROR_MEMORY = 1;
-  static const int BLEND_RET_CANCELLED    = -2;
+  static constexpr int BLEND_RET_ERROR        = -1;
+  static constexpr int BLEND_RET_OK           = 0;
+  static constexpr int BLEND_RET_ERROR_MEMORY = 1;
+  static constexpr int BLEND_RET_CANCELLED    = -2;
 
   Blend();
   ~Blend();
@@ -119,8 +123,8 @@ protected:
   void CropFinalMosaic(YUVinfo &imgMos, MosaicRect &cropping_rect);
 
 private:
-   static const float LIMIT_SIZE_MULTIPLIER = 5.0f * 2.0f;
-   static const float LIMIT_HEIGHT_MULTIPLIER = 2.5f;
+   static constexpr float LIMIT_SIZE_MULTIPLIER = 5.0f * 2.0f;
+   static constexpr float LIMIT_HEIGHT_MULTIPLIER = 2.5f;
    int MosaicSizeCheck(float sizeMultiplier, float heightMultiplier);
 };
 

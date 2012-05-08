@@ -29,30 +29,34 @@
 #include "ImageUtils.h"
 #include "MatrixUtils.h"
 
+#if __cplusplus < 201103L && !defined(__GXX_EXPERIMENTAL_CXX0X__) && !defined(constexpr)
+#define constexpr const
+#endif
+
 class Align {
 
 public:
   // Types of alignment possible
-  static const int ALIGN_TYPE_PAN    = 1;
+  static constexpr int ALIGN_TYPE_PAN    = 1;
 
   // Return codes
-  static const int ALIGN_RET_LOW_TEXTURE  = -2;
-  static const int ALIGN_RET_ERROR        = -1;
-  static const int ALIGN_RET_OK           = 0;
-  static const int ALIGN_RET_FEW_INLIERS  = 1;
+  static constexpr int ALIGN_RET_LOW_TEXTURE  = -2;
+  static constexpr int ALIGN_RET_ERROR        = -1;
+  static constexpr int ALIGN_RET_OK           = 0;
+  static constexpr int ALIGN_RET_FEW_INLIERS  = 1;
 
   ///// Settings for feature-based alignment
   // Number of features to use from corner detection
-  static const int DEFAULT_NR_CORNERS=750;
-  static const double DEFAULT_MAX_DISPARITY=0.1;//0.4;
+  static constexpr int DEFAULT_NR_CORNERS=750;
+  static constexpr double DEFAULT_MAX_DISPARITY=0.1;//0.4;
   // Type of homography to model
-  static const int DEFAULT_MOTION_MODEL=DB_HOMOGRAPHY_TYPE_R_T;
-// static const int DEFAULT_MOTION_MODEL=DB_HOMOGRAPHY_TYPE_PROJECTIVE;
-//  static const int DEFAULT_MOTION_MODEL=DB_HOMOGRAPHY_TYPE_AFFINE;
-  static const unsigned int DEFAULT_REFERENCE_UPDATE_PERIOD=1500; //  Manual reference frame update so set this to a large number
+  static constexpr int DEFAULT_MOTION_MODEL=DB_HOMOGRAPHY_TYPE_R_T;
+// static constexpr int DEFAULT_MOTION_MODEL=DB_HOMOGRAPHY_TYPE_PROJECTIVE;
+//  static constexpr int DEFAULT_MOTION_MODEL=DB_HOMOGRAPHY_TYPE_AFFINE;
+  static constexpr unsigned int DEFAULT_REFERENCE_UPDATE_PERIOD=1500; //  Manual reference frame update so set this to a large number
 
-  static const int MIN_NR_REF_CORNERS = 25;
-  static const int MIN_NR_INLIERS = 10;
+  static constexpr int MIN_NR_REF_CORNERS = 25;
+  static constexpr int MIN_NR_INLIERS = 10;
 
   Align();
   ~Align();
