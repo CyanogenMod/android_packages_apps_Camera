@@ -123,4 +123,22 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"Diminuir %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Aumentar %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"Botão %1$s"</string>
+    <string name="pref_camera_power_shutter_title">Tirar c/ botão Liga/Desl.</string>
+    <string name="pref_camera_storage_title">Armazenamento</string>
+    <string name="pref_camera_focusmode_entry_fixed">Fixo</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Detectar face</string>
+    <string name="pref_camera_timer_title">Modo temporizador</string>
+    <string name="pref_camera_timer_entry_0">desligado</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Nublado-Luz do dia</string>
+    <string name="pref_camera_scenemode_entry_backlight">Luz de fundo</string>
+    <string name="pref_camera_scenemode_entry_fireworks">FogosDeArtifício</string>
+    <string name="pref_camera_scenemode_entry_sports">Esportes</string>
+    <string name="pref_camera_scenemode_entry_candlelight">LuzDeVela</string>
+    <string name="pref_camera_scenemode_entry_snow">Neve</string>
+    <string name="pref_camera_scenemode_entry_beach">Praia</string>
+    <string name="pref_camera_scenemode_entry_landscape">Paisagem</string>
+    <string name="pref_camera_scenemode_entry_portrait">Retrato</string>
+    <string name="pref_camera_scenemode_entry_text">Texto</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">QuedaDeCor</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">AnoitecerAmanhe.</string>
 </resources>
