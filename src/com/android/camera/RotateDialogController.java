@@ -122,6 +122,7 @@ public class RotateDialogController implements Rotatable {
 
         if (button1Text != null) {
             mRotateDialogButton1.setText(button1Text);
+            mRotateDialogButton1.setContentDescription(button1Text);
             mRotateDialogButton1.setVisibility(View.VISIBLE);
             mRotateDialogButton1.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -134,6 +135,7 @@ public class RotateDialogController implements Rotatable {
         }
         if (button2Text != null) {
             mRotateDialogButton2.setText(button2Text);
+            mRotateDialogButton2.setContentDescription(button2Text);
             mRotateDialogButton2.setVisibility(View.VISIBLE);
             mRotateDialogButton2.setOnClickListener(new View.OnClickListener() {
                 @Override

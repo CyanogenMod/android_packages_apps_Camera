@@ -49,7 +49,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     style="?android:attr/borderlessButtonStyle"
                     android:text="@android:string/cancel"
-                    android:onClick="onCancelBgTraining"/>
+                    android:onClick="onCancelBgTraining"
+                    android:contentDescription="@android:string/cancel" />
         </LinearLayout>
     </com.android.camera.ui.RotateLayout>
 </RelativeLayout>
