@@ -794,9 +794,6 @@ public class VideoCamera extends ActivityBase
         }
         // Dismiss open menu if exists.
         PopupManager.getInstance(this).notifyShowPopup(null);
-
-        setOrientationIndicator(getIntent().getIntExtra(
-                IntentExtras.INITIAL_ORIENTATION_EXTRA, mOrientationCompensation), false);
     }
 
     private void setPreviewTexture() {
@@ -1762,7 +1759,7 @@ public class VideoCamera extends ActivityBase
     private void switchToOtherMode(int mode) {
         if (isFinishing()) return;
         if (mThumbnail != null) ThumbnailHolder.keep(mThumbnail);
-        MenuHelper.gotoMode(mode, this, mOrientationCompensation);
+        MenuHelper.gotoMode(mode, this);
         finish();
     }
 

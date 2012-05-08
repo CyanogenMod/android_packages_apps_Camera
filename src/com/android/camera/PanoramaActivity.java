@@ -430,7 +430,7 @@ public class PanoramaActivity extends ActivityBase implements
     private void switchToOtherMode(int mode) {
         if (isFinishing()) return;
         if (mThumbnail != null) ThumbnailHolder.keep(mThumbnail);
-        MenuHelper.gotoMode(mode, this, mOrientationCompensation);
+        MenuHelper.gotoMode(mode, this);
         finish();
     }
 
@@ -999,10 +999,6 @@ public class PanoramaActivity extends ActivityBase implements
 
         // Dismiss open menu if exists.
         PopupManager.getInstance(this).notifyShowPopup(null);
-
-        mOrientationEventListener.onOrientationChanged(
-                getIntent().getIntExtra(IntentExtras.INITIAL_ORIENTATION_EXTRA,
-                        mOrientationCompensation));
     }
 
     /**

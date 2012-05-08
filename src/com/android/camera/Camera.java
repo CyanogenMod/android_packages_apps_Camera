@@ -1433,9 +1433,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Dismiss open menu if exists.
         PopupManager.getInstance(this).notifyShowPopup(null);
 
-        setOrientationIndicator(getIntent().getIntExtra(
-                IntentExtras.INITIAL_ORIENTATION_EXTRA, mOrientationCompensation), false);
-
         if (mCameraSound == null) {
             mCameraSound = new MediaActionSound();
             // Not required, but reduces latency when playback is requested later.
@@ -2042,7 +2039,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (isFinishing()) return;
         if (mImageSaver != null) mImageSaver.waitDone();
         if (mThumbnail != null) ThumbnailHolder.keep(mThumbnail);
-        MenuHelper.gotoMode(mode, Camera.this, mOrientationCompensation);
+        MenuHelper.gotoMode(mode, Camera.this);
         mHandler.removeMessages(FIRST_TIME_INIT);
         finish();
     }
