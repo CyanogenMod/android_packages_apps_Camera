@@ -34,7 +34,7 @@ public class ListPreference extends CameraPreference {
     private final String TAG = "ListPreference";
     private final String mKey;
     private String mValue;
-    private final CharSequence[] mDefaultValues;
+    private CharSequence[] mDefaultValues;
 
     private CharSequence[] mEntries;
     private CharSequence[] mEntryValues;
@@ -96,6 +96,11 @@ public class ListPreference extends CameraPreference {
             mLoaded = true;
         }
         return mValue;
+    }
+
+    public void setDefaultValue(CharSequence value) {
+        mDefaultValues = new CharSequence[1];
+        mDefaultValues[0] = value;
     }
 
     // Find the first value in mDefaultValues which is supported.

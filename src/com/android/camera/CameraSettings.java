@@ -271,6 +271,7 @@ public class CameraSettings {
         }
         storage.setEntries(entries);
         storage.setEntryValues(entryValues);
+        storage.setDefaultValue(entryValues[0]); // Primary storage
 
         // Filter saved invalid value
         if (storage.findIndexOfValue(storage.getValue()) < 0) {
