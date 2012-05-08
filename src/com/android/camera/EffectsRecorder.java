@@ -28,6 +28,7 @@ import android.filterpacks.videoproc.BackDropperFilter;
 import android.filterpacks.videoproc.BackDropperFilter.LearningDoneListener;
 import android.filterpacks.videosink.MediaEncoderFilter.OnRecordingDoneListener;
 import android.filterpacks.videosrc.SurfaceTextureSource.SurfaceTextureSourceListener;
+import android.filterpacks.videosrc.SurfaceTextureTarget;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -722,10 +723,40 @@ public class EffectsRecorder {
         mState = STATE_PREVIEW;
     }
 
+    // Called to tell the filter graph that the display surfacetexture is not valid anymore.
+    // So the filter graph should not hold any reference to the surface created with that.
+    public synchronized void disconnectDisplay() {
+        if (mLogVerbose) Log.v(TAG, "Disconnecting the graph from the " +
+            "SurfaceTexture");
+        SurfaceTextureTarget display = (SurfaceTextureTarget)
+            mRunner.getGraph().getFilter("display");
+        display.disconnect(mGraphEnv.getContext());
+    }
+
+    // The VideoCamera will call this to notify that the camera is being
+    // released to the outside world. This call should happen after the
+    // stopRecording call. Else, the effects may throw an exception.
+    // With the recording stopped, the stopPreview call will not try to
+    // release the camera again.
+    // This must be called in onPause() if the effects are ON.
+    public synchronized void disconnectCamera() {
+        if (mLogVerbose) Log.v(TAG, "Disconnecting the effects from Camera");
+        if (mCameraDevice == null) {
+            Log.d(TAG, "Camera already null. Nothing to disconnect");
+            return;
+        }
+        mCameraDevice.stopPreview();
+        try {
+            mCameraDevice.setPreviewTexture(null);
+        } catch(IOException e) {
+            throw new RuntimeException("Unable to disconnect camera");
+        }
+        mCameraDevice = null;
+    }
+
     // Stop and release effect resources
     public synchronized void stopPreview() {
         if (mLogVerbose) Log.v(TAG, "Stopping preview (" + this + ")");
-
         switch (mState) {
             case STATE_CONFIGURE:
                 Log.w(TAG, "StopPreview called when preview not active!");
@@ -742,12 +773,8 @@ public class EffectsRecorder {
 
         mCurrentEffect = EFFECT_NONE;
 
-        mCameraDevice.stopPreview();
-        try {
-            mCameraDevice.setPreviewTexture(null);
-        } catch(IOException e) {
-            throw new RuntimeException("Unable to connect camera to effect input", e);
-        }
+        // This will not do anything if the camera has already been disconnected.
+        disconnectCamera();
 
         mState = STATE_CONFIGURE;
         mOldRunner = mRunner;
