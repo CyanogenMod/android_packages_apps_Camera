@@ -698,7 +698,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mTimerIndicator == null) {
             return;
         }
-        String offTimer = getResources().getString(R.string.pref_camera_timer_entry_0);
+        String offTimer = getResources().getStringArray(R.array.pref_camera_timer_duration_values)[0];
         if (offTimer.equals(mCaptureMode)) {
             mTimerIndicator.setVisibility(View.GONE);
         } else {
@@ -1536,12 +1536,18 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     @Override
     public void onShutterButtonClick() {
         if (!mTimerMode) {
-            if (!mCaptureMode.equals(getResources().getString(R.string.pref_camera_timer_entry_0))) {
+            if (!mCaptureMode.equals(getResources().getStringArray(R.array.pref_camera_timer_duration_values)[0])) {
+                int delay = 0;
+                try {
+                    delay = Integer.valueOf(mCaptureMode);
+                } catch (NumberFormatException e) {
+                    return;
+                }
                 mTimerMode = true;
                 mShutterButton.setImageDrawable(getResources().getDrawable(
                         R.drawable.btn_video_shutter_recording_holo));
                 mRecordingTimeView.setVisibility(View.VISIBLE);
-                updateTimer(Integer.valueOf(mPreferences.getString(CameraSettings.KEY_TIMER_MODE, "10")));
+                updateTimer(delay);
                 return;
             }
         } else if (mTimerMode) {
@@ -2220,7 +2226,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             // Set capture mode.
             mCaptureMode = mPreferences.getString(
                     CameraSettings.KEY_TIMER_MODE,
-                    getString(R.string.pref_camera_timer_entry_0));
+                    getResources().getStringArray(R.array.pref_camera_timer_duration_values)[0]);
         } else {
             mFocusManager.overrideFocusMode(mParameters.getFocusMode());
         }
