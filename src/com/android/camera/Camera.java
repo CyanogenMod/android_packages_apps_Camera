@@ -698,7 +698,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mTimerIndicator == null) {
             return;
         }
-        String offTimer = getResources().getString(R.string.pref_camera_timer_entry_0);
+        String offTimer = getResources().getStringArray(R.array.pref_camera_timer_duration_values)[0];
         if (offTimer.equals(mCaptureMode)) {
             mTimerIndicator.setVisibility(View.GONE);
         } else {
@@ -1536,7 +1536,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     @Override
     public void onShutterButtonClick() {
         if (!mTimerMode) {
-            if (!mCaptureMode.equals(getResources().getString(R.string.pref_camera_timer_entry_0))) {
+            if (!mCaptureMode.equals(getResources().getStringArray(R.array.pref_camera_timer_duration_values)[0])) {
                 mTimerMode = true;
                 mShutterButton.setImageDrawable(getResources().getDrawable(
                         R.drawable.btn_video_shutter_recording_holo));
