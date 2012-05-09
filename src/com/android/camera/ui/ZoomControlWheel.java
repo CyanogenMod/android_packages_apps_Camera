@@ -194,6 +194,7 @@ public class ZoomControlWheel extends ZoomControl {
         super.onDraw(canvas);
     }
 
+    @Override
     public void rotate(double angle) {
         mRotateAngle = angle;
         requestLayout();

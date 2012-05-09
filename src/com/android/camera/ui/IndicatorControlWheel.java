@@ -146,7 +146,6 @@ public class IndicatorControlWheel extends IndicatorControl implements
     private double mSectorRadians[] = new double[2];
     private double mTouchSectorRadians[] = new double[2];
 
-    private ZoomControlWheel mZoomControl;
     private boolean mInitialized;
 
     public IndicatorControlWheel(Context context, AttributeSet attrs) {
@@ -216,21 +215,30 @@ public class IndicatorControlWheel extends IndicatorControl implements
         setPreferenceGroup(group);
 
         // Add the ZoomControl if supported.
-        if (isZoomSupported) {
-            mZoomControl = (ZoomControlWheel) findViewById(R.id.zoom_control);
-            mZoomControl.setVisibility(View.VISIBLE);
-        }
+        initializeZoomControl(isZoomSupported);
 
         // Add CameraPicker.
         initializeCameraPicker();
 
         // Add second-level Indicator Icon.
-        mSecondLevelIcon = addImageButton(context, R.drawable.ic_settings_holo_light, true);
-        mSecondLevelIcon.setId(R.id.second_level_indicator);
-        mSecondLevelStartIndex = getChildCount();
+        if (mSecondLevelIcon == null) {
+            mSecondLevelIcon = addImageButton(context,
+                    R.drawable.ic_settings_holo_light, true);
+            mSecondLevelIcon.setId(R.id.second_level_indicator);
+            mSecondLevelStartIndex = getChildCount();
+        }
 
         // Add second-level buttons.
-        mCloseIcon = addImageButton(context, R.drawable.btn_wheel_close_settings, false);
+        if (mCloseIcon == null) {
+            mCloseIcon = addImageButton(context,
+                    R.drawable.btn_wheel_close_settings, false);
+        }
+        // Remove all the views after close icon. This happens when switching
+        // between front and back cameras.
+        int index = indexOfChild(mCloseIcon) + 1;
+        int count = getChildCount() - index;
+        if (count > 0) removeControls(index, count);
+
         addControls(keys, otherSettingKeys);
 
         // The angle(in radians) of each icon for touch events.
