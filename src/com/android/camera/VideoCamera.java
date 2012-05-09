@@ -255,7 +255,6 @@ public class VideoCamera extends ActivityBase
                 }
 
                 case SWITCH_CAMERA: {
-                    Log.d(TAG, "Start to switch camera.");
                     switchCamera();
                     break;
                 }
@@ -436,6 +435,8 @@ public class VideoCamera extends ActivityBase
         mIndicatorControlContainer.initialize(this, mPreferenceGroup,
                 mParameters.isZoomSupported(), SETTING_KEYS, OTHER_SETTING_KEYS);
         mIndicatorControlContainer.setListener(this);
+        mCameraPicker = (CameraPicker) mIndicatorControlContainer.findViewById(
+                R.id.camera_picker);
 
         if (effectsActive()) {
             mIndicatorControlContainer.overrideSettings(
@@ -905,6 +906,7 @@ public class VideoCamera extends ActivityBase
 
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
         mHandler.removeMessages(SWITCH_CAMERA);
+        mPendingSwitchCameraId = -1;
         mSwitchingCamera = false;
         // Call onPause after stopping video recording. So the camera can be
         // released as soon as possible.
@@ -2013,39 +2015,46 @@ public class VideoCamera extends ActivityBase
             // Check if the current effects selection has changed
             if (updateEffectSelection()) return;
 
-            // Check if camera id is changed.
-            int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
-            if (mCameraId != cameraId) {
-                Log.d(TAG, "Start to copy texture.");
-                // We need to keep a preview frame for the animation before
-                // releasing the camera. This will trigger onPreviewTextureCopied.
-                mCameraScreenNail.copyTexture();
-                mCameraId = cameraId;
-                mSwitchingCamera = true;
-                return;
-            } else {
-                readVideoPreferences();
-                showTimeLapseUI(mCaptureTimeLapse);
-                // We need to restart the preview if preview size is changed.
-                Size size = mParameters.getPreviewSize();
-                if (size.width != mDesiredPreviewWidth
-                        || size.height != mDesiredPreviewHeight) {
-                    if (!effectsActive()) {
-                        stopPreview();
-                    } else {
-                        mEffectsRecorder.release();
-                    }
-                    resizeForPreviewAspectRatio();
-                    startPreview(); // Parameters will be set in startPreview().
+            readVideoPreferences();
+            showTimeLapseUI(mCaptureTimeLapse);
+            // We need to restart the preview if preview size is changed.
+            Size size = mParameters.getPreviewSize();
+            if (size.width != mDesiredPreviewWidth
+                    || size.height != mDesiredPreviewHeight) {
+                if (!effectsActive()) {
+                    stopPreview();
                 } else {
-                    setCameraParameters();
+                    mEffectsRecorder.release();
                 }
+                resizeForPreviewAspectRatio();
+                startPreview(); // Parameters will be set in startPreview().
+            } else {
+                setCameraParameters();
             }
         }
     }
 
+    @Override
+    public void onCameraPickerClicked(int cameraId) {
+        if (mPaused || mPendingSwitchCameraId != -1) return;
+
+        Log.d(TAG, "Start to copy texture.");
+        // We need to keep a preview frame for the animation before
+        // releasing the camera. This will trigger onPreviewTextureCopied.
+        mCameraScreenNail.copyTexture();
+        mPendingSwitchCameraId = cameraId;
+        // Disable all camera controls.
+        mSwitchingCamera = true;
+    }
+
     private void switchCamera() {
+        if (mPaused) return;
+
         Log.d(TAG, "Start to switch camera.");
+        mCameraId = mPendingSwitchCameraId;
+        mPendingSwitchCameraId = -1;
+        mCameraPicker.setCameraId(mCameraId);
+
         closeCamera();
 
         // Restart the camera and initialize the UI. From onCreate.
