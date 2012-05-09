@@ -59,7 +59,7 @@ public class MenuHelper {
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    public static void gotoMode(int mode, Activity activity, int orientation) {
+    public static void gotoMode(int mode, Activity activity) {
         String action, className;
         switch (mode) {
             case ModePicker.MODE_PANORAMA:
@@ -79,7 +79,6 @@ public class MenuHelper {
                 return;
         }
         Intent it = new Intent(action);
-        it.putExtra(IntentExtras.INITIAL_ORIENTATION_EXTRA, orientation);
         startCameraActivity(activity, it, className);
     }
 }
