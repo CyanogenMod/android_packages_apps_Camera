@@ -554,14 +554,14 @@ public class VideoCamera extends ActivityBase
 
     private void onStopVideoRecording(boolean valid) {
         mEffectsDisplayResult = true;
-        stopVideoRecording();
+        boolean recordFail = stopVideoRecording();
         if (mIsVideoCaptureIntent) {
             if (mQuickCapture) {
-                doReturnToCaller(valid);
-            } else if (!effectsActive()) {
+                doReturnToCaller(valid && !recordFail);
+            } else if (!effectsActive() && !recordFail) {
                 showAlert();
             }
-        } else {
+        } else if (!recordFail){
             // Start capture animation.
             mCameraScreenNail.animateCapture(getCameraRotation());
             if (!effectsActive()) getThumbnail();
@@ -1250,7 +1250,8 @@ public class VideoCamera extends ActivityBase
         Log.v(TAG, "New video filename: " + mVideoFilename);
     }
 
-    private void addVideoToMediaStore() {
+    private boolean addVideoToMediaStore() {
+        boolean fail = false;
         if (mVideoFileDescriptor == null) {
             Uri videoTable = Uri.parse("content://media/external/video/media");
             mCurrentVideoValues.put(Video.Media.SIZE,
@@ -1274,11 +1275,13 @@ public class VideoCamera extends ActivityBase
                 // the SD card is unmounted.
                 mCurrentVideoUri = null;
                 mCurrentVideoFilename = null;
+                fail = true;
             } finally {
                 Log.v(TAG, "Current video URI: " + mCurrentVideoUri);
             }
         }
         mCurrentVideoValues = null;
+        return fail;
     }
 
     private void deleteCurrentVideo() {
@@ -1505,10 +1508,11 @@ public class VideoCamera extends ActivityBase
         }
     }
 
-    private void stopVideoRecording() {
+    private boolean stopVideoRecording() {
         Log.v(TAG, "stopVideoRecording");
         setSwipingEnabled(true);
 
+        boolean fail = false;
         if (mMediaRecorderRecording) {
             boolean shouldAddToMediaStoreNow = false;
 
@@ -1531,6 +1535,7 @@ public class VideoCamera extends ActivityBase
             } catch (RuntimeException e) {
                 Log.e(TAG, "stop fail",  e);
                 if (mVideoFilename != null) deleteVideoFile(mVideoFilename);
+                fail = true;
             }
             mMediaRecorderRecording = false;
 
@@ -1548,13 +1553,14 @@ public class VideoCamera extends ActivityBase
             setOrientationIndicator(mOrientationCompensation, true);
             keepScreenOnAwhile();
             if (shouldAddToMediaStoreNow) {
-                addVideoToMediaStore();
+                if (addVideoToMediaStore()) fail = true;
             }
         }
         // always release media recorder
         if (!effectsActive()) {
             releaseMediaRecorder();
         }
+        return fail;
     }
 
     private void resetScreenOn() {
@@ -1801,8 +1807,7 @@ public class VideoCamera extends ActivityBase
             // TODO: This assumes the codepath from onStopVideoRecording.  It
             // does not appear to cause problems for the other codepaths, but
             // should be properly thought through.
-            if (mEffectsDisplayResult) {
-                addVideoToMediaStore();
+            if (mEffectsDisplayResult && !addVideoToMediaStore()) {
                 if (mIsVideoCaptureIntent) {
                     if (!mQuickCapture) {
                         showAlert();
