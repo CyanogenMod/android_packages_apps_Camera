@@ -90,7 +90,7 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         // The baseline will be the first indicator button's top minus spacing.
         View firstIndicatorButton = getChildAt(mNonIndicatorButtonCount);
         if (isLandscape) {
-            int baseline = firstIndicatorButton.getTop() + (ICON_SPACING / 2);
+            int baseline = firstIndicatorButton.getTop() - (ICON_SPACING / 2);
             if (touchPosition < baseline) return -1;
             int iconHeight = firstIndicatorButton.getMeasuredHeight();
             int buttonRange = iconHeight + ICON_SPACING;
