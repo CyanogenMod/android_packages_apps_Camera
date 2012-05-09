@@ -39,7 +39,6 @@ public class IndicatorControlBar extends IndicatorControl implements
     public static final int ICON_SPACING = Util.dpToPixel(16);
 
     private ImageView mSecondLevelIcon;
-    private ZoomControlBar mZoomControl;
 
     public IndicatorControlBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -61,11 +60,7 @@ public class IndicatorControlBar extends IndicatorControl implements
             mCameraPicker.setBackgroundResource(R.drawable.bg_pressed);
         }
 
-        // Add the ZoomControl if supported.
-        if (zoomSupported) {
-            mZoomControl = (ZoomControlBar) findViewById(R.id.zoom_control);
-            mZoomControl.setVisibility(View.VISIBLE);
-        }
+        initializeZoomControl(zoomSupported);
 
         // Do not grey out the icons when taking a picture.
         setupFilter(mCurrentMode != MODE_CAMERA);

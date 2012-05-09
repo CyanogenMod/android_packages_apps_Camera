@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -149,6 +150,14 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
             return mPopup;
         } else {
             return null;
+        }
+    }
+
+    public void removePopupWindow() {
+        if (mPopup != null) {
+            ViewGroup root = (ViewGroup) getRootView().findViewById(R.id.frame_layout);
+            root.removeView(mPopup);
+            mPopup = null;
         }
     }
 

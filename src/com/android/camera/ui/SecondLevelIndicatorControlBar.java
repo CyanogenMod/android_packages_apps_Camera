@@ -55,13 +55,19 @@ public class SecondLevelIndicatorControlBar extends IndicatorControl implements
         mDivider = findViewById(R.id.divider);
         mCloseIcon = findViewById(R.id.back_to_first_level);
         mCloseIcon.setOnClickListener(this);
+        mNonIndicatorButtonCount = getChildCount();
     }
 
     public void initialize(Context context, PreferenceGroup group,
             String[] keys, String[] otherSettingKeys) {
 
         setPreferenceGroup(group);
-        mNonIndicatorButtonCount = getChildCount();
+
+        // Remove the original setting indicators. This happens when switching
+        // between front and back cameras.
+        int count = getChildCount() - mNonIndicatorButtonCount;
+        if (count > 0) removeControls(mNonIndicatorButtonCount, count);
+
         addControls(keys, otherSettingKeys);
         if (mOrientation != 0) setOrientation(mOrientation, false);
 

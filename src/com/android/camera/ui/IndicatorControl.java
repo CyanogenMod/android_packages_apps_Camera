@@ -43,6 +43,7 @@ public abstract class IndicatorControl extends RelativeLayout implements
     private OnPreferenceChangedListener mListener;
     protected OnIndicatorEventListener mOnIndicatorEventListener;
     protected CameraPicker mCameraPicker;
+    protected ZoomControl mZoomControl;
 
     private PreferenceGroup mPreferenceGroup;
 
@@ -103,13 +104,35 @@ public abstract class IndicatorControl extends RelativeLayout implements
         }
     }
 
+    protected void removeControls(int index, int count) {
+        for (int i = index; i < index + count; i++) {
+            AbstractIndicatorButton b = (AbstractIndicatorButton) getChildAt(i);
+            b.removePopupWindow();
+            mIndicators.remove(b);
+        }
+        removeViews(index, count);
+    }
+
     protected void initializeCameraPicker() {
+        // Ignore if camera picker has been initialized.
+        if (mCameraPicker != null) return;
+
         ListPreference pref = mPreferenceGroup.findPreference(
                 CameraSettings.KEY_CAMERA_ID);
         if (pref == null) return;
         mCameraPicker = new CameraPicker(getContext());
         mCameraPicker.initialize(pref);
         addView(mCameraPicker);
+    }
+
+    protected void initializeZoomControl(boolean zoomSupported) {
+        if (zoomSupported) {
+            mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
+            mZoomControl.setVisibility(View.VISIBLE);
+        } else if (mZoomControl != null) {
+            mZoomControl.setVisibility(View.GONE);
+            mZoomControl = null;
+        }
     }
 
     @Override

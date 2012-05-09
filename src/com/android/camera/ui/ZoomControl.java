@@ -137,4 +137,7 @@ public abstract class ZoomControl extends RelativeLayout implements Rotatable {
         mZoomIn.setActivated(activated);
         mZoomOut.setActivated(activated);
     }
+
+    public void rotate(double angle) {
+    }
 }
