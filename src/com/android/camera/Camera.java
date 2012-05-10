@@ -162,6 +162,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // We use a thread in ImageSaver to do the work of saving images and
     // generating thumbnails. This reduces the shot-to-shot time.
     private ImageSaver mImageSaver;
+    // Similarly, we use a thread to generate the name of the picture and insert
+    // it into MediaStore while picture taking is still in progress.
+    private ImageNamer mImageNamer;
 
     private MediaActionSound mCameraSound;
 
@@ -366,6 +369,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mShutterButton.setVisibility(View.VISIBLE);
 
         mImageSaver = new ImageSaver();
+        mImageNamer = new ImageNamer();
         installIntentFilter();
         initializeZoom();
         updateOnScreenIndicators();
@@ -410,6 +414,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         installIntentFilter();
         mImageSaver = new ImageSaver();
+        mImageNamer = new ImageNamer();
         initializeZoom();
         keepMediaProviderInstance();
         checkStorage();
@@ -726,8 +731,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     width = s.height;
                     height = s.width;
                 }
-                mImageSaver.addImage(jpegData, mLocation, width, height,
-                        mThumbnailViewWidth, orientation);
+                Uri uri = mImageNamer.getUri();
+                String title = mImageNamer.getTitle();
+                mImageSaver.addImage(jpegData, uri, title, mLocation,
+                        width, height, mThumbnailViewWidth, orientation);
             } else {
                 mJpegImageData = jpegData;
                 if (!mQuickCapture) {
@@ -777,9 +784,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // Each SaveRequest remembers the data needed to save an image.
     private static class SaveRequest {
         byte[] data;
+        Uri uri;
+        String title;
         Location loc;
         int width, height;
-        long dateTaken;
         int thumbnailWidth;
         int orientation;
     }
@@ -814,14 +822,16 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         // Runs in main thread
-        public void addImage(final byte[] data, Location loc,
-                int width, int height, int thumbnailWidth, int orientation) {
+        public void addImage(final byte[] data, Uri uri, String title,
+                Location loc, int width, int height, int thumbnailWidth,
+                int orientation) {
             SaveRequest r = new SaveRequest();
             r.data = data;
+            r.uri = uri;
+            r.title = title;
             r.loc = (loc == null) ? null : new Location(loc);  // make a copy
             r.width = width;
             r.height = height;
-            r.dateTaken = System.currentTimeMillis();
             r.thumbnailWidth = thumbnailWidth;
             r.orientation = orientation;
             synchronized (this) {
@@ -859,7 +869,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     }
                     r = mQueue.get(0);
                 }
-                storeImage(r.data, r.loc, r.width, r.height, r.dateTaken,
+                storeImage(r.data, r.uri, r.title, r.loc, r.width, r.height,
                         r.thumbnailWidth, r.orientation);
                 synchronized (this) {
                     mQueue.remove(0);
@@ -913,12 +923,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         // Runs in saver thread
-        private void storeImage(final byte[] data, Location loc, int width,
-                int height, long dateTaken, int thumbnailWidth, int orientation) {
-            String title = Util.createJpegName(dateTaken);
-            Uri uri = Storage.addImage(mContentResolver, title, dateTaken,
-                    loc, orientation, data, width, height);
-            if (uri != null) {
+        private void storeImage(final byte[] data, Uri uri, String title,
+                Location loc, int width, int height, int thumbnailWidth,
+                int orientation) {
+            boolean ok = Storage.updateImage(mContentResolver, uri, title, loc,
+                    orientation, data, width, height);
+            if (ok) {
                 boolean needThumbnail;
                 synchronized (this) {
                     // If the number of requests in the queue (include the
@@ -946,6 +956,90 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
+    private static class ImageNamer extends Thread {
+        private boolean mRequestPending;
+        private ContentResolver mResolver;
+        private long mDateTaken;
+        private boolean mStop;
+        private Uri mUri;
+        private String mTitle;
+
+        // Runs in main thread
+        public ImageNamer() {
+            start();
+        }
+
+        // Runs in main thread
+        public synchronized void prepareUri(ContentResolver resolver, long dateTaken) {
+            mRequestPending = true;
+            mResolver = resolver;
+            mDateTaken = dateTaken;
+            notifyAll();
+        }
+
+        // Runs in main thread
+        public synchronized Uri getUri() {
+            // wait until the request is done.
+            while (mRequestPending) {
+                try {
+                    wait();
+                } catch (InterruptedException ex) {
+                    // ignore.
+                }
+            }
+
+            // return the uri generated
+            Uri uri = mUri;
+            mUri = null;
+            return uri;
+        }
+
+        // Runs in main thread, should be called after getUri().
+        public synchronized String getTitle() {
+            return mTitle;
+        }
+
+        // Runs in namer thread
+        @Override
+        public synchronized void run() {
+            while (true) {
+                if (mStop) break;
+                if (!mRequestPending) {
+                    try {
+                        wait();
+                    } catch (InterruptedException ex) {
+                        // ignore.
+                    }
+                    continue;
+                }
+                cleanOldUri();
+                generateUri();
+                mRequestPending = false;
+                notifyAll();
+            }
+            cleanOldUri();
+        }
+
+        // Runs in main thread
+        public synchronized void finish() {
+            mStop = true;
+            notifyAll();
+        }
+
+        // Runs in namer thread
+        private void generateUri() {
+            mTitle = Util.createJpegName(mDateTaken);
+            mUri = Storage.newImage(mResolver, mTitle, mDateTaken);
+        }
+
+        // Runs in namer thread
+        private void cleanOldUri() {
+            if (mUri == null) return;
+            Storage.deleteImage(mResolver, mUri);
+            mUri = null;
+        }
+    }
+
     private void setCameraState(int state) {
         mCameraState = state;
         switch (state) {
@@ -969,6 +1063,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             return false;
         }
         mCaptureStartTime = System.currentTimeMillis();
+        mImageNamer.prepareUri(mContentResolver, mCaptureStartTime);
         mPostViewPictureCallbackTime = 0;
         mJpegImageData = null;
 
@@ -1467,6 +1562,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             if (mImageSaver != null) {
                 mImageSaver.finish();
                 mImageSaver = null;
+                mImageNamer.finish();
+                mImageNamer = null;
             }
         }
 
