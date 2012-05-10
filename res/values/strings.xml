@@ -78,7 +78,7 @@
     <!-- Button indicating to go to the image gallery -->
     <string name="camera_gallery_photos_text">Gallery</string>
 
-    <!-- A lable that overlays on top of the preview frame to indicate the camcorder is in time lapse mode [CHAR LIMIT=35] -->
+    <!-- A label that overlays on top of the preview frame to indicate the camcorder is in time lapse mode [CHAR LIMIT=35] -->
     <string name="time_lapse_title">Time lapse recording</string>
 
     <!-- Settings screen, camera selection dialog title. Users can select a camera from the phone (front-facing or back-facing). [CHAR LIMIT=20] -->
@@ -151,7 +151,7 @@
     <!-- Settings screen, Focus mode title -->
     <string name="pref_camera_focusmode_title">Focus mode</string>
 
-    <!-- Settings screen, Focue mode dialog radio button choices -->
+    <!-- Settings screen, Focus mode dialog radio button choices -->
     <string name="pref_camera_focusmode_entry_auto">Auto</string>
     <string name="pref_camera_focusmode_entry_infinity">Infinity</string>
     <string name="pref_camera_focusmode_entry_macro">Macro</string>
@@ -231,17 +231,8 @@
     <!-- Filename prefix for panorama output. -->
     <string name="pano_file_name_format" translatable="false">"'PANO'_yyyyMMdd_HHmmss"</string>
 
-    <!-- The messsage shown when video record reaches size limit. -->
+    <!-- The message shown when video record reaches size limit. -->
     <string name="video_reach_size_limit">Size limit reached.</string>
-
-    <!-- The text of menu item to switch the mode to Camera. [CHAR LIMIT=24] -->
-    <string name="switch_to_camera_label">Switch to photo</string>
-
-    <!-- The text of menu item to switch the mode to Video. [CHAR LIMIT=24] -->
-    <string name="switch_to_video_label">Switch to video</string>
-
-    <!-- The text of menu item to switch the mode to Panorama. [CHAR LIMIT=24] -->
-    <string name="switch_to_panorama_label">Switch to panorama</string>
 
     <string name="setting_increment" translatable="false">&gt;</string>
     <string name="setting_decrement" translatable="false">&lt;</string>
@@ -352,7 +343,12 @@
     <string name="accessibility_increment">Increase %1$s</string>
     <!-- The on/off switch in camera settings, such as store location. [CHAR LIMIT = NONE] -->
     <string name="accessibility_switch">%1$s switch</string>
-
+    <!-- The button to switch to Camera mode. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_switch_to_camera">Switch to photo</string>
+    <!-- The button to switch to Video mode. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_switch_to_video">Switch to video</string>
+    <!-- The button to switch to Panorama mode. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_switch_to_panorama">Switch to panorama</string>
     <!-- TODO: remove the string as it is a work-around solution to bypass the default speak of the element type. -->
     <string name="empty" translatable="false">" "</string>
 </resources>

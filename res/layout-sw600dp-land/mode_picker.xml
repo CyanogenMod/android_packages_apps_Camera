@@ -34,6 +34,7 @@
             android:layout_height="wrap_content"
             android:gravity="center">
         <com.android.camera.ui.RotateImageView android:id="@+id/mode_camera"
+                android:contentDescription="@string/accessibility_switch_to_camera"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -41,6 +42,7 @@
                 android:background="@drawable/bg_pressed"
                 android:src="@drawable/ic_switch_camera_holo_light" />
         <com.android.camera.ui.RotateImageView android:id="@+id/mode_video"
+                android:contentDescription="@string/accessibility_switch_to_video"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -48,6 +50,7 @@
                 android:background="@drawable/bg_pressed"
                 android:src="@drawable/ic_switch_video_holo_light" />
         <com.android.camera.ui.RotateImageView android:id="@+id/mode_panorama"
+                android:contentDescription="@string/accessibility_switch_to_panorama"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
