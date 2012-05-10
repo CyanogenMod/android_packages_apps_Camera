@@ -402,6 +402,10 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         mAppBridge.setSwipingEnabled(enabled);
     }
 
+    protected void notifyScreenNailChanged() {
+        mAppBridge.notifyScreenNailChanged();
+    }
+
     protected void onPreviewTextureCopied() {
     }
 
@@ -416,7 +420,9 @@ abstract public class ActivityBase extends AbstractGalleryActivity
 
         @Override
         public ScreenNail attachScreenNail() {
-            mCameraScreenNail = new CameraScreenNail(this);
+            if (mCameraScreenNail == null) {
+                mCameraScreenNail = new CameraScreenNail(this);
+            }
             return mCameraScreenNail;
         }
 
@@ -467,6 +473,10 @@ abstract public class ActivityBase extends AbstractGalleryActivity
 
         private void setSwipingEnabled(boolean enabled) {
             if (mServer != null) mServer.setSwipingEnabled(enabled);
+        }
+
+        private void notifyScreenNailChanged() {
+            if (mServer != null) mServer.notifyScreenNailChanged();
         }
     }
 }

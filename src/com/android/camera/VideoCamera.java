@@ -830,18 +830,6 @@ public class VideoCamera extends ActivityBase
         mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
         setCameraParameters();
 
-        if (mSurfaceTexture == null) {
-            Size size = mParameters.getPreviewSize();
-            if (mCameraDisplayOrientation % 180 == 0) {
-                mCameraScreenNail.setSize(size.width, size.height);
-            } else {
-                mCameraScreenNail.setSize(size.height, size.width);
-            }
-            mCameraScreenNail.acquireSurfaceTexture();
-            mSurfaceTexture = mCameraScreenNail.getSurfaceTexture();
-            mSurface = new Surface(mSurfaceTexture);
-        }
-
         try {
             if (!effectsActive()) {
                 mCameraDevice.setPreviewTexture(mSurfaceTexture);
@@ -1754,6 +1742,30 @@ public class VideoCamera extends ActivityBase
         mCameraDevice.setParameters(mParameters);
         // Keep preview size up to date.
         mParameters = mCameraDevice.getParameters();
+
+        updateCameraScreenNailSize(mDesiredPreviewWidth, mDesiredPreviewHeight);
+    }
+
+    private void updateCameraScreenNailSize(int width, int height) {
+        if (mCameraDisplayOrientation % 180 != 0) {
+            int tmp = width;
+            width = height;
+            height = tmp;
+        }
+
+        int oldWidth = mCameraScreenNail.getWidth();
+        int oldHeight = mCameraScreenNail.getHeight();
+
+        if (oldWidth != width || oldHeight != height) {
+            mCameraScreenNail.setSize(width, height);
+            notifyScreenNailChanged();
+        }
+
+        if (mSurfaceTexture == null) {
+            mCameraScreenNail.acquireSurfaceTexture();
+            mSurfaceTexture = mCameraScreenNail.getSurfaceTexture();
+            mSurface = new Surface(mSurfaceTexture);
+        }
     }
 
     private void switchToOtherMode(int mode) {
