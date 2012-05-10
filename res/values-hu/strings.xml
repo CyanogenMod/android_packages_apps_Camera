@@ -85,9 +85,6 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Az USB-táron kezd elfogyni a hely. Módosítsa a minőségi beállításokat, vagy töröljön néhány képet vagy egyéb fájlt."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Az SD-kártyán kezd elfogyni a hely. Módosítsa a minőségi beállításokat, vagy töröljön néhány képet vagy egyéb fájlt."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"A videó elérte a méretkorlátot."</string>
-    <string name="switch_to_camera_label" msgid="5909347213770678326">"Váltás fotóra"</string>
-    <string name="switch_to_video_label" msgid="1167994386902254398">"Váltás videóra"</string>
-    <string name="switch_to_panorama_label" msgid="858801335653517864">"Váltás panoráma módra"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Kép megosztása itt:"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Videó megosztása itt:"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"Nincs megosztható kép."</string>
@@ -129,4 +126,10 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"Csökkentés: %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Növelés: %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"%1$s kapcsoló"</string>
+    <!-- no translation found for accessibility_switch_to_camera (5951340774212969461) -->
+    <skip />
+    <!-- no translation found for accessibility_switch_to_video (4991396355234561505) -->
+    <skip />
+    <!-- no translation found for accessibility_switch_to_panorama (604756878371875836) -->
+    <skip />
 </resources>

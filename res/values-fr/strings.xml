@@ -85,9 +85,6 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"La mémoire de stockage USB est pleine. Définissez la qualité sur une valeur plus basse ou supprimez des images ou d\'autres types de fichiers."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Votre carte SD est pleine. Modifiez le paramètre de qualité ou supprimez des images ou des fichiers."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Taille maximale atteinte."</string>
-    <string name="switch_to_camera_label" msgid="5909347213770678326">"Mode Appareil photo"</string>
-    <string name="switch_to_video_label" msgid="1167994386902254398">"Passer en mode vidéo"</string>
-    <string name="switch_to_panorama_label" msgid="858801335653517864">"Passer en mode panoramique"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Partager l\'image via"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Partager la vidéo via"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"Aucune image à partager."</string>
@@ -129,4 +126,10 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"Diminuer %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Augmenter %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"Interrupteur %1$s"</string>
+    <!-- no translation found for accessibility_switch_to_camera (5951340774212969461) -->
+    <skip />
+    <!-- no translation found for accessibility_switch_to_video (4991396355234561505) -->
+    <skip />
+    <!-- no translation found for accessibility_switch_to_panorama (604756878371875836) -->
+    <skip />
 </resources>

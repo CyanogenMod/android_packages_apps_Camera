@@ -111,12 +111,6 @@
     <!-- no translation found for spaceIsLow_content (1732882643101247179) -->
     <skip />
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Cuntanschì la grondezza maximala."</string>
-    <!-- no translation found for switch_to_camera_label (5909347213770678326) -->
-    <skip />
-    <!-- no translation found for switch_to_video_label (1167994386902254398) -->
-    <skip />
-    <!-- no translation found for switch_to_panorama_label (858801335653517864) -->
-    <skip />
     <!-- no translation found for share_picture_via (1375127849431890447) -->
     <skip />
     <!-- no translation found for share_video_via (5152302809166549015) -->
@@ -198,5 +192,11 @@
     <!-- no translation found for accessibility_increment (8447850530444401135) -->
     <skip />
     <!-- no translation found for accessibility_switch (6995966685498958895) -->
+    <skip />
+    <!-- no translation found for accessibility_switch_to_camera (5951340774212969461) -->
+    <skip />
+    <!-- no translation found for accessibility_switch_to_video (4991396355234561505) -->
+    <skip />
+    <!-- no translation found for accessibility_switch_to_panorama (604756878371875836) -->
     <skip />
 </resources>
