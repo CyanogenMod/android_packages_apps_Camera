@@ -85,9 +85,6 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"የUSB  ማከማቻዎቦታ እየሞላበት ነው።የጥራት ቅንብር ይለውጡ ወይም አንዳንድ ምስሎችን ወይም ሌላ ፋይሎች ይሰርዙ።"</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"የSD ካርድዎ ቦታ እያለቀበት ነው። የጥራት ቅንብሩን ይልወጡ ወይም አንዳንድ ምስሎችንወይም ሌሎች ፋይሎችን ይሰርዙ።"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"መጠኑ ላይ ደርሷል፡፡"</string>
-    <string name="switch_to_camera_label" msgid="5909347213770678326">"ወደ ፎቶ ቀይር"</string>
-    <string name="switch_to_video_label" msgid="1167994386902254398">"ወደ ቪዲዮ ቀይር"</string>
-    <string name="switch_to_panorama_label" msgid="858801335653517864">"ወደ ፓኖራማ ቀይር"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"ፎቶ  አጋራ  በ"</string>
     <string name="share_video_via" msgid="5152302809166549015">"ይህን ቪዲዮ አጋራ  በ"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"ለማጋራት ምንም ፎቶ የለም"</string>
@@ -129,4 +126,10 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"ቀንስ %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"ጨምር %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"%1s ማብሪያና ማጥፊያ"</string>
+    <!-- no translation found for accessibility_switch_to_camera (5951340774212969461) -->
+    <skip />
+    <!-- no translation found for accessibility_switch_to_video (4991396355234561505) -->
+    <skip />
+    <!-- no translation found for accessibility_switch_to_panorama (604756878371875836) -->
+    <skip />
 </resources>
