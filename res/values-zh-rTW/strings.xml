@@ -85,9 +85,6 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"您的 USB 儲存裝置的空間即將用盡，請變更圖片的品質設定，或是刪除部分圖片或其他檔案。"</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"您 SD 卡的空間即將不足，請變更圖片的品質設定，或是刪除部分圖片或其他檔案。"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"已達大小上限。"</string>
-    <string name="switch_to_camera_label" msgid="5909347213770678326">"切換至相片"</string>
-    <string name="switch_to_video_label" msgid="1167994386902254398">"切換至影片"</string>
-    <string name="switch_to_panorama_label" msgid="858801335653517864">"切換至全景模式"</string>
     <string name="share_picture_via" msgid="1375127849431890447">"相片分享方式"</string>
     <string name="share_video_via" msgid="5152302809166549015">"影片分享方式"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"沒有可供分享的相片。"</string>
@@ -129,4 +126,10 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"縮小 %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"放大 %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"%1$s 開關"</string>
+    <!-- no translation found for accessibility_switch_to_camera (5951340774212969461) -->
+    <skip />
+    <!-- no translation found for accessibility_switch_to_video (4991396355234561505) -->
+    <skip />
+    <!-- no translation found for accessibility_switch_to_panorama (604756878371875836) -->
+    <skip />
 </resources>
