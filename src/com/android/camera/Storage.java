@@ -96,6 +96,90 @@ public class Storage {
         return uri;
     }
 
+    // newImage() and updateImage() together do the same work as
+    // addImage. newImage() is the first step, and it only inserts the
+    // DATE_TAKEN and DATA fields into the database.
+    public static Uri newImage(
+            ContentResolver resolver, String title, long date) {
+        String path = generateFilepath(title);
+
+        // Insert into MediaStore.
+        ContentValues values = new ContentValues(2);
+        values.put(ImageColumns.DATE_TAKEN, date);
+        values.put(ImageColumns.DATA, path);
+
+        Uri uri = null;
+        try {
+            uri = resolver.insert(Images.Media.EXTERNAL_CONTENT_URI, values);
+        } catch (Throwable th)  {
+            // This can happen when the external volume is already mounted, but
+            // MediaScanner has not notify MediaProvider to add that volume.
+            // The picture is still safe and MediaScanner will find it and
+            // insert it into MediaProvider. The only problem is that the user
+            // cannot click the thumbnail to review the picture.
+            Log.e(TAG, "Failed to new image" + th);
+        }
+        return uri;
+    }
+
+    // This is the second step. It completes the partial data added by
+    // newImage. All columns other than DATE_TAKEN and DATA are inserted
+    // here. This method also save the image data into the file.
+    //
+    // Returns true if the update is successful.
+    public static boolean updateImage(ContentResolver resolver, Uri uri,
+            String title, Location location, int orientation, byte[] jpeg,
+            int width, int height) {
+        // Save the image.
+        String path = generateFilepath(title);
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(path);
+            out.write(jpeg);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to write image", e);
+            return false;
+        } finally {
+            try {
+                out.close();
+            } catch (Exception e) {
+            }
+        }
+
+        // Insert into MediaStore.
+        ContentValues values = new ContentValues(9);
+        values.put(ImageColumns.TITLE, title);
+        values.put(ImageColumns.DISPLAY_NAME, title + ".jpg");
+        values.put(ImageColumns.MIME_TYPE, "image/jpeg");
+        // Counter-clockwise rotation in degrees. 0, 90, 180, or 270.
+        values.put(ImageColumns.ORIENTATION, orientation);
+        values.put(ImageColumns.SIZE, jpeg.length);
+        values.put(ImageColumns.WIDTH, width);
+        values.put(ImageColumns.HEIGHT, height);
+
+        if (location != null) {
+            values.put(ImageColumns.LATITUDE, location.getLatitude());
+            values.put(ImageColumns.LONGITUDE, location.getLongitude());
+        }
+
+        try {
+            resolver.update(uri, values, null, null);
+        } catch (Throwable th) {
+            Log.e(TAG, "Failed to update image" + th);
+            return false;
+        }
+
+        return true;
+    }
+
+    public static void deleteImage(ContentResolver resolver, Uri uri) {
+        try {
+            resolver.delete(uri, null, null);
+        } catch (Throwable th) {
+            Log.e(TAG, "Failed to delete image: " + uri);
+        }
+    }
+
     public static String generateFilepath(String title) {
         return DIRECTORY + '/' + title + ".jpg";
     }

@@ -168,8 +168,8 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     }
 
     private void copyPreviewTexture(GLCanvas canvas) {
-        int width = getWidth();
-        int height = getHeight();
+        int width = mAnimTexture.getWidth();
+        int height = mAnimTexture.getHeight();
         canvas.beginRenderTarget(mAnimTexture);
         // Flip preview texture vertically. OpenGL uses bottom left point
         // as the origin (0, 0).

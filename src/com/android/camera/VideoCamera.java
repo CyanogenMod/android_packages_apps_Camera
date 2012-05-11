@@ -196,6 +196,8 @@ public class VideoCamera extends ActivityBase
 
     private LocationManager mLocationManager;
 
+    private VideoNamer mVideoNamer;
+
     private final Handler mHandler = new MainHandler();
 
     private MyOrientationEventListener mOrientationListener;
@@ -795,6 +797,8 @@ public class VideoCamera extends ActivityBase
         }
         // Dismiss open menu if exists.
         PopupManager.getInstance(this).notifyShowPopup(null);
+
+        mVideoNamer = new VideoNamer();
     }
 
     private void setPreviewTexture() {
@@ -950,6 +954,8 @@ public class VideoCamera extends ActivityBase
 
         if (mOrientationListener != null) mOrientationListener.disable();
         if (mLocationManager != null) mLocationManager.recordLocation(false);
+        if (mVideoNamer != null) mVideoNamer.finish();
+        mVideoNamer = null;
 
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
         mHandler.removeMessages(SWITCH_CAMERA);
@@ -1284,12 +1290,12 @@ public class VideoCamera extends ActivityBase
             mCurrentVideoValues.put(Video.Media.LATITUDE, loc.getLatitude());
             mCurrentVideoValues.put(Video.Media.LONGITUDE, loc.getLongitude());
         }
+        mVideoNamer.prepareUri(mContentResolver, mCurrentVideoValues);
         Log.v(TAG, "New video filename: " + mVideoFilename);
     }
 
     private void addVideoToMediaStore() {
         if (mVideoFileDescriptor == null) {
-            Uri videoTable = Uri.parse("content://media/external/video/media");
             mCurrentVideoValues.put(Video.Media.SIZE,
                     new File(mCurrentVideoFilename).length());
             long duration = SystemClock.uptimeMillis() - mRecordingStartTime;
@@ -1302,13 +1308,15 @@ public class VideoCamera extends ActivityBase
                 Log.w(TAG, "Video duration <= 0 : " + duration);
             }
             try {
-                mCurrentVideoUri = mContentResolver.insert(videoTable,
-                        mCurrentVideoValues);
+                mCurrentVideoUri = mVideoNamer.getUri();
+                mContentResolver.update(mCurrentVideoUri, mCurrentVideoValues
+                        , null, null);
                 sendBroadcast(new Intent(android.hardware.Camera.ACTION_NEW_VIDEO,
                         mCurrentVideoUri));
             } catch (Exception e) {
                 // We failed to insert into the database. This can happen if
                 // the SD card is unmounted.
+                Log.e(TAG, "failed to add video to media store", e);
                 mCurrentVideoUri = null;
                 mCurrentVideoFilename = null;
             } finally {
@@ -2414,5 +2422,82 @@ public class VideoCamera extends ActivityBase
         Editor editor = mPreferences.edit();
         editor.putBoolean(CameraSettings.KEY_VIDEO_FIRST_USE_HINT_SHOWN, false);
         editor.apply();
+    }
+
+    private static class VideoNamer extends Thread {
+        private boolean mRequestPending;
+        private ContentResolver mResolver;
+        private ContentValues mValues;
+        private boolean mStop;
+        private Uri mUri;
+
+        // Runs in main thread
+        public VideoNamer() {
+            start();
+        }
+
+        // Runs in main thread
+        public synchronized void prepareUri(
+                ContentResolver resolver, ContentValues values) {
+            mRequestPending = true;
+            mResolver = resolver;
+            mValues = new ContentValues(values);
+            notifyAll();
+        }
+
+        // Runs in main thread
+        public synchronized Uri getUri() {
+            // wait until the request is done.
+            while (mRequestPending) {
+                try {
+                    wait();
+                } catch (InterruptedException ex) {
+                    // ignore.
+                }
+            }
+            Uri uri = mUri;
+            mUri = null;
+            return uri;
+        }
+
+        // Runs in namer thread
+        @Override
+        public synchronized void run() {
+            while (true) {
+                if (mStop) break;
+                if (!mRequestPending) {
+                    try {
+                        wait();
+                    } catch (InterruptedException ex) {
+                        // ignore.
+                    }
+                    continue;
+                }
+                cleanOldUri();
+                generateUri();
+                mRequestPending = false;
+                notifyAll();
+            }
+            cleanOldUri();
+        }
+
+        // Runs in main thread
+        public synchronized void finish() {
+            mStop = true;
+            notifyAll();
+        }
+
+        // Runs in namer thread
+        private void generateUri() {
+            Uri videoTable = Uri.parse("content://media/external/video/media");
+            mUri = mResolver.insert(videoTable, mValues);
+        }
+
+        // Runs in namer thread
+        private void cleanOldUri() {
+            if (mUri == null) return;
+            mResolver.delete(mUri, null, null);
+            mUri = null;
+        }
     }
 }
