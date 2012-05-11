@@ -1363,7 +1363,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // one and re-start the preview. Snapshot in progress also includes the
         // state that autofocus is focusing and a picture will be taken when
         // focus callback arrives.
-        if (mFocusManager.isFocusingSnapOnFinish() || mCameraState == SNAPSHOT_IN_PROGRESS) {
+        if ((mFocusManager.isFocusingSnapOnFinish() || mCameraState == SNAPSHOT_IN_PROGRESS)
+                && !mIsImageCaptureIntent) {
             mSnapshotOnIdle = true;
             return;
         }
