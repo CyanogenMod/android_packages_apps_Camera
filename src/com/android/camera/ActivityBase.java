@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.RotateImageView;
 import com.android.gallery3d.app.AbstractGalleryActivity;
@@ -64,10 +65,12 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     // The bitmap of the last captured picture thumbnail and the URI of the
     // original picture.
     protected Thumbnail mThumbnail;
-    // An imageview showing showing the last captured picture thumbnail.
-    protected RotateImageView mThumbnailView;
     protected int mThumbnailViewWidth; // layout width of the thumbnail
     protected AsyncTask<Void, Void, Thumbnail> mLoadThumbnailTask;
+    // An imageview showing the last captured picture thumbnail.
+    protected RotateImageView mThumbnailView;
+    protected CameraPicker mCameraPicker;
+
     protected boolean mOpenCameraFail;
     protected boolean mCameraDisabled;
     protected CameraManager.CameraProxy mCameraDevice;
@@ -80,6 +83,10 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     // multiple cameras support
     protected int mNumberOfCameras;
     protected int mCameraId;
+    // The activity is going to switch to the specified camera id. This is
+    // needed because texture copy is done in GL thread. -1 means camera is not
+    // switching.
+    protected int mPendingSwitchCameraId = -1;
 
     protected MyAppBridge mAppBridge;
     protected CameraScreenNail mCameraScreenNail; // This shows camera preview.

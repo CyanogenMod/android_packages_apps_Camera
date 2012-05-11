@@ -75,6 +75,14 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         mAnimTexture = new RawTexture(getWidth(), getHeight(), true);
     }
 
+    @Override
+    public void releaseSurfaceTexture() {
+        super.releaseSurfaceTexture();
+        synchronized (mLock) {
+            mAnimState = ANIM_NONE; // stop the animation
+        }
+    }
+
     public void copyTexture() {
         synchronized (mLock) {
             mListener.requestRender();
@@ -106,7 +114,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     }
 
     @Override
-    public synchronized void draw(GLCanvas canvas, int x, int y, int width, int height) {
+    public void draw(GLCanvas canvas, int x, int y, int width, int height) {
         if (getSurfaceTexture() == null) return;
         synchronized (mLock) {
             if (!mVisible) mVisible = true;
@@ -181,7 +189,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     }
 
     @Override
-    public synchronized void recycle() {
+    public void recycle() {
         synchronized (mLock) {
             mVisible = false;
         }
