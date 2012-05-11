@@ -38,7 +38,7 @@ public class SwitchAnimManager {
     // The amount of change for zooming in and out.
     private static final float ZOOM_DELTA_FRONT_CAMERA = 0.5f;
     private static final float ZOOM_DELTA_BACK_CAMERA = 0.2f;
-    private static final float ANIMATION_DURATION = 800;  // ms
+    private static final float ANIMATION_DURATION = 400;  // ms
     public static final float INITIAL_DARKEN_ALPHA = 0.8f;
 
     private long mAnimStartTime;  // milliseconds.
