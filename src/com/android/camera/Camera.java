@@ -1140,6 +1140,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mIndicatorControlContainer.initialize(this, mPreferenceGroup,
                 mParameters.isZoomSupported(),
                 SETTING_KEYS, OTHER_SETTING_KEYS);
+        mCameraPicker = (CameraPicker) mIndicatorControlContainer.findViewById(
+                R.id.camera_picker);
         updateSceneModeUI();
         mIndicatorControlContainer.setListener(this);
     }
@@ -1485,6 +1487,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mHandler.removeMessages(FIRST_TIME_INIT);
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
         mHandler.removeMessages(SWITCH_CAMERA);
+        mPendingSwitchCameraId = -1;
         if (mFocusManager != null) mFocusManager.removeMessages();
     }
 
@@ -2058,25 +2061,30 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 mPreferences, mContentResolver);
         mLocationManager.recordLocation(recordLocation);
 
-        int cameraId = CameraSettings.readPreferredCameraId(mPreferences);
-        if (mCameraId != cameraId) {
-            Log.d(TAG, "Start to copy texture.");
-            // We need to keep a preview frame for the animation before
-            // releasing the camera. This will trigger onPreviewTextureCopied.
-            mCameraScreenNail.copyTexture();
-            mCameraId = cameraId;
-            // Disable all camera controls.
-            setCameraState(SWITCHING_CAMERA);
-            return;
-        } else {
-            setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
-        }
-
+        setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
         updateOnScreenIndicators();
     }
 
+    @Override
+    public void onCameraPickerClicked(int cameraId) {
+        if (mPaused || mPendingSwitchCameraId != -1) return;
+
+        Log.v(TAG, "Start to copy texture. cameraId=" + cameraId);
+        // We need to keep a preview frame for the animation before
+        // releasing the camera. This will trigger onPreviewTextureCopied.
+        mCameraScreenNail.copyTexture();
+        mPendingSwitchCameraId = cameraId;
+        // Disable all camera controls.
+        setCameraState(SWITCHING_CAMERA);
+    }
+
     private void switchCamera() {
-        Log.d(TAG, "Start to switch camera.");
+        if (mPaused) return;
+
+        Log.v(TAG, "Start to switch camera. id=" + mPendingSwitchCameraId);
+        mCameraId = mPendingSwitchCameraId;
+        mPendingSwitchCameraId = -1;
+        mCameraPicker.setCameraId(mCameraId);
 
         // from onPause
         closeCamera();
