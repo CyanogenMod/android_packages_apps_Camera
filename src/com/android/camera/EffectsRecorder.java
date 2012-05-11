@@ -137,7 +137,7 @@ public class EffectsRecorder {
         mCameraSound.load(MediaActionSound.STOP_VIDEO_RECORDING);
     }
 
-    public void setCamera(Camera cameraDevice) {
+    public synchronized void setCamera(Camera cameraDevice) {
         switch (mState) {
             case STATE_PREVIEW:
                 throw new RuntimeException("setCamera cannot be called while previewing!");
@@ -584,13 +584,7 @@ public class EffectsRecorder {
                         // A null source here means the graph is shutting down
                         // unexpectedly, so we need to turn off preview before
                         // the surface texture goes away.
-                        mCameraDevice.stopPreview();
-                        try {
-                            mCameraDevice.setPreviewTexture(null);
-                        } catch(IOException e) {
-                            throw new RuntimeException("Unable to disconnect " +
-                                    "camera from effect input", e);
-                        }
+                        stopCameraPreview();
                     }
                     return;
                 }
@@ -741,6 +735,15 @@ public class EffectsRecorder {
     // This must be called in onPause() if the effects are ON.
     public synchronized void disconnectCamera() {
         if (mLogVerbose) Log.v(TAG, "Disconnecting the effects from Camera");
+        stopCameraPreview();
+        mCameraDevice = null;
+    }
+
+    // In a normal case, when the disconnect is not called, we should not
+    // set the camera device to null, since on return callback, we try to
+    // enable 3A locks, which need the cameradevice.
+    public synchronized void stopCameraPreview() {
+        if (mLogVerbose) Log.v(TAG, "Stopping camera preview.");
         if (mCameraDevice == null) {
             Log.d(TAG, "Camera already null. Nothing to disconnect");
             return;
@@ -751,7 +754,6 @@ public class EffectsRecorder {
         } catch(IOException e) {
             throw new RuntimeException("Unable to disconnect camera");
         }
-        mCameraDevice = null;
     }
 
     // Stop and release effect resources
@@ -774,7 +776,7 @@ public class EffectsRecorder {
         mCurrentEffect = EFFECT_NONE;
 
         // This will not do anything if the camera has already been disconnected.
-        disconnectCamera();
+        stopCameraPreview();
 
         mState = STATE_CONFIGURE;
         mOldRunner = mRunner;
@@ -784,7 +786,13 @@ public class EffectsRecorder {
     }
 
     // Try to enable/disable video stabilization if supported; otherwise return false
+    // It is called from a synchronized block.
     boolean tryEnableVideoStabilization(boolean toggle) {
+        if (mLogVerbose) Log.v(TAG, "tryEnableVideoStabilization.");
+        if (mCameraDevice == null) {
+            Log.d(TAG, "Camera already null. Not enabling video stabilization.");
+            return false;
+        }
         Camera.Parameters params = mCameraDevice.getParameters();
 
         String vstabSupported = params.get("video-stabilization-supported");
@@ -799,7 +807,12 @@ public class EffectsRecorder {
     }
 
     // Try to enable/disable 3A locks if supported; otherwise return false
-    boolean tryEnable3ALocks(boolean toggle) {
+    synchronized boolean tryEnable3ALocks(boolean toggle) {
+        if (mLogVerbose) Log.v(TAG, "tryEnable3ALocks");
+        if (mCameraDevice == null) {
+            Log.d(TAG, "Camera already null. Not tryenabling 3A locks.");
+            return false;
+        }
         Camera.Parameters params = mCameraDevice.getParameters();
         if (params.isAutoExposureLockSupported() &&
             params.isAutoWhiteBalanceLockSupported() ) {
@@ -813,7 +826,12 @@ public class EffectsRecorder {
 
     // Try to enable/disable 3A locks if supported; otherwise, throw error
     // Use this when locks are essential to success
-    void enable3ALocks(boolean toggle) {
+    synchronized void enable3ALocks(boolean toggle) {
+        if (mLogVerbose) Log.v(TAG, "Enable3ALocks");
+        if (mCameraDevice == null) {
+            Log.d(TAG, "Camera already null. Not enabling 3A locks.");
+            return;
+        }
         Camera.Parameters params = mCameraDevice.getParameters();
         if (!tryEnable3ALocks(toggle)) {
             throw new RuntimeException("Attempt to lock 3A on camera with no locking support!");
