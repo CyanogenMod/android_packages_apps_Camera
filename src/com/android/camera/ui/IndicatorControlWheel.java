@@ -208,7 +208,8 @@ public class IndicatorControlWheel extends IndicatorControl implements
 
     public void initialize(Context context, PreferenceGroup group,
             boolean isZoomSupported, String[] keys, String[] otherSettingKeys) {
-        mShutterButtonRadius = IndicatorControlWheelContainer.SHUTTER_BUTTON_RADIUS;
+        mShutterButtonRadius = Util.dpToPixel(
+                IndicatorControlWheelContainer.SHUTTER_BUTTON_RADIUS);
         mStrokeWidth = Util.dpToPixel(IndicatorControlWheelContainer.STROKE_WIDTH);
         mWheelRadius = mShutterButtonRadius + mStrokeWidth * 0.5;
 
