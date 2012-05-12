@@ -123,4 +123,29 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"הקטן %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"הגדל %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"מתג %1$s"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">"מעונן-אור יום"</string>
+    <string name="pref_camera_focusmode_entry_fixed">"קבוע"</string>
+    <string name="pref_camera_scenemode_entry_candlelight">"אור נר"</string>
+    <string name="pref_camera_scenemode_entry_sports">"ספורט"</string>
+    <string name="pref_camera_scenemode_entry_snow">"שלג"</string>
+    <string name="pref_camera_scenemode_entry_beach">"חוף ים"</string>
+    <string name="pref_camera_power_shutter_title">"צמצם"</string>
+    <string name="pref_camera_scenemode_entry_landscape">"מצב אופקי"</string>
+    <string name="pref_camera_scenemode_entry_fireworks">"זיקוקים"</string>
+    <string name="pref_camera_timer_entry_60">"60 שניות"</string>
+    <string name="pref_camera_timer_entry_50">"50 שניות"</string>
+    <string name="pref_camera_timer_entry_40">"40 שניות"</string>
+    <string name="pref_camera_timer_entry_30">"30 שניות"</string>
+    <string name="pref_camera_timer_entry_20">"20 שניות"</string>
+    <string name="pref_camera_timer_entry_10">"10 שניות"</string>
+    <string name="pref_camera_timer_entry_0">"מכובה"</string>
+    <string name="pref_camera_timer_title">"מצב טיימר"</string>
+    <string name="pref_camera_scenemode_entry_portrait">"מצב אנכי"</string>
+    <string name="pref_camera_focusmode_entry_facedetect">"זיהוי פנים"</string>
+    <string name="pref_camera_scenemode_entry_text">"טקסט"</string>
+    <string name="pref_camera_power_shutter_default">"מכובה"</string>
+    <string name="pref_camera_storage_title">"אחסון"</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">"זריחה \ שקיעה"</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">"צבעי שלכת"</string>
+    <string name="pref_camera_scenemode_entry_backlight">"תאורה אחורית"</string>
 </resources>
