@@ -960,6 +960,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         private boolean mRequestPending;
         private ContentResolver mResolver;
         private long mDateTaken;
+        private int mWidth, mHeight;
         private boolean mStop;
         private Uri mUri;
         private String mTitle;
@@ -970,10 +971,18 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         // Runs in main thread
-        public synchronized void prepareUri(ContentResolver resolver, long dateTaken) {
+        public synchronized void prepareUri(ContentResolver resolver,
+                long dateTaken, int width, int height, int rotation) {
+            if (rotation % 180 != 0) {
+                int tmp = width;
+                width = height;
+                height = tmp;
+            }
             mRequestPending = true;
             mResolver = resolver;
             mDateTaken = dateTaken;
+            mWidth = width;
+            mHeight = height;
             notifyAll();
         }
 
@@ -1029,7 +1038,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Runs in namer thread
         private void generateUri() {
             mTitle = Util.createJpegName(mDateTaken);
-            mUri = Storage.newImage(mResolver, mTitle, mDateTaken);
+            mUri = Storage.newImage(mResolver, mTitle, mDateTaken, mWidth, mHeight);
         }
 
         // Runs in namer thread
@@ -1063,7 +1072,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             return false;
         }
         mCaptureStartTime = System.currentTimeMillis();
-        mImageNamer.prepareUri(mContentResolver, mCaptureStartTime);
         mPostViewPictureCallbackTime = 0;
         mJpegImageData = null;
 
@@ -1076,6 +1084,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
+
+        Size size = mParameters.getPictureSize();
+        mImageNamer.prepareUri(mContentResolver, mCaptureStartTime,
+                size.width, size.height, mJpegRotation);
+
         if (!mIsImageCaptureIntent) {
             // Start capture animation.
             mCameraScreenNail.animateCapture(getCameraRotation());
