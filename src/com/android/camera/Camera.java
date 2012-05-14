@@ -1859,14 +1859,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mSurfaceTexture = mCameraScreenNail.getSurfaceTexture();
         }
 
-        try {
-            mCameraDevice.setPreviewTexture(mSurfaceTexture);
-            Log.v(TAG, "startPreview");
-            mCameraDevice.startPreview();
-        } catch (Throwable ex) {
-            closeCamera();
-            throw new RuntimeException("startPreview failed", ex);
-        }
+        mCameraDevice.setPreviewTextureAsync(mSurfaceTexture);
+        Log.v(TAG, "startPreview");
+        mCameraDevice.startPreviewAsync();
 
         setCameraState(IDLE);
         mFocusManager.onPreviewStarted();
@@ -2217,6 +2212,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         showTapToFocusToastIfNeeded();
 
         // Start switch camera animation.
+        mCameraDevice.waitForIdle(); // Wait until startPreview finishes.
         mCameraScreenNail.animateSwitchCamera(mirror);
     }
 

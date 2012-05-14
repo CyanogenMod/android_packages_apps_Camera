@@ -1049,15 +1049,6 @@ public class PanoramaActivity extends ActivityBase implements
         return new MosaicJpeg(out.toByteArray(), width, height);
     }
 
-    private void setPreviewTexture(SurfaceTexture surface) {
-        try {
-            mCameraDevice.setPreviewTexture(surface);
-        } catch (Throwable ex) {
-            releaseCamera();
-            throw new RuntimeException("setPreviewTexture failed", ex);
-        }
-    }
-
     private void startCameraPreview() {
         if (mCameraDevice == null) {
             // Camera open failed. Return.
@@ -1073,15 +1064,9 @@ public class PanoramaActivity extends ActivityBase implements
         // from SurfaceTexture.
         mCameraDevice.setDisplayOrientation(0);
 
-        setPreviewTexture(mSurfaceTexture);
+        mCameraDevice.setPreviewTextureAsync(mSurfaceTexture);
 
-        try {
-            Log.v(TAG, "startPreview");
-            mCameraDevice.startPreview();
-        } catch (Throwable ex) {
-            releaseCamera();
-            throw new RuntimeException("startPreview failed", ex);
-        }
+        mCameraDevice.startPreviewAsync();
         mCameraState = PREVIEW_ACTIVE;
     }
 

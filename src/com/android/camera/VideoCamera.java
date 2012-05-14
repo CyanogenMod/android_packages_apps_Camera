@@ -807,7 +807,7 @@ public class VideoCamera extends ActivityBase
                 mEffectsRecorder.setPreviewSurfaceTexture(mSurfaceTexture, mSurfaceWidth,
                     mSurfaceHeight);
             } else {
-                mCameraDevice.setPreviewTexture(mSurfaceTexture);
+                mCameraDevice.setPreviewTextureAsync(mSurfaceTexture);
             }
         } catch (Throwable ex) {
             closeCamera();
@@ -837,8 +837,8 @@ public class VideoCamera extends ActivityBase
 
         try {
             if (!effectsActive()) {
-                mCameraDevice.setPreviewTexture(mSurfaceTexture);
-                mCameraDevice.startPreview();
+                mCameraDevice.setPreviewTextureAsync(mSurfaceTexture);
+                mCameraDevice.startPreviewAsync();
             } else {
                 mSurfaceWidth = mCameraScreenNail.getWidth();
                 mSurfaceHeight = mCameraScreenNail.getHeight();
@@ -2167,6 +2167,7 @@ public class VideoCamera extends ActivityBase
         setOrientationIndicator(mOrientationCompensation, false);
 
         // Start switch camera animation.
+        mCameraDevice.waitForIdle(); // Wait until startPreview finishes.
         CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
         boolean backToFront = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
         mCameraScreenNail.animateSwitchCamera(backToFront);
