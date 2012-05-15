@@ -15,7 +15,7 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/pano_capture_layout"
+        android:id="@+id/camera_app_root"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="horizontal">
@@ -51,22 +51,13 @@
                 </com.android.camera.ui.RotateLayout>
             </FrameLayout>
 
-            <RelativeLayout
+            <View android:id="@+id/pano_preview_area"
+                    android:visibility="invisible"
+                    android:background="@drawable/ic_pan_border_fast"
                     android:layout_gravity="center"
                     android:layout_weight="1.67"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp">
-                <com.android.camera.MosaicRendererSurfaceView
-                        android:id="@+id/pano_renderer"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                <View
-                        android:id="@+id/pano_speed_indication_border"
-                        android:visibility="gone"
-                        android:background="@drawable/ic_pan_border_fast"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-            </RelativeLayout>
+                    android:layout_height="0dp" />
 
             <!-- The bottom bar with progress bar and direction indicators -->
             <RelativeLayout

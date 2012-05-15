@@ -4,7 +4,10 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
-extern bool checkGlError(const char* op);
+#define checkGlError(op)  checkGLErrorDetail(__FILE__, __LINE__, (op))
+
+extern bool checkGLErrorDetail(const char* file, int line, const char* op);
+extern void checkFramebufferStatus(const char* name);
 
 class FrameBuffer {
   public:

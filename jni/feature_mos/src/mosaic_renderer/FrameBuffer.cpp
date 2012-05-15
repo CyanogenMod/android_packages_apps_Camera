@@ -55,6 +55,8 @@ bool FrameBuffer::Init(int width, int height, GLenum format) {
                            GL_TEXTURE_2D,
                            mTextureName,
                            0);
+    checkFramebufferStatus("FrameBuffer.cpp");
+    checkGlError("framebuffertexture2d");
 
     if (!checkGlError("texture setup")) {
         return false;
@@ -94,6 +96,3 @@ int FrameBuffer::GetWidth() const {
 int FrameBuffer::GetHeight() const {
     return mHeight;
 }
-
-
-

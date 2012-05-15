@@ -173,11 +173,34 @@ static void printGLString(const char *name, GLenum s) {
     LOGI("GL %s = %s", name, v);
 }
 
+void checkFramebufferStatus(const char* name) {
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status == 0) {
+      LOGE("Checking completeness of Framebuffer:%s", name);
+      checkGlError("checkFramebufferStatus (is the target \"GL_FRAMEBUFFER\"?)");
+    } else if (status != GL_FRAMEBUFFER_COMPLETE) {
+        const char* msg = "not listed";
+        switch (status) {
+          case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: msg = "attachment"; break;
+          case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS: msg = "dimensions"; break;
+          case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: msg = "missing attachment"; break;
+          case GL_FRAMEBUFFER_UNSUPPORTED: msg = "unsupported"; break;
+        }
+        LOGE("Framebuffer: %s is INCOMPLETE: %s, %x", name, msg, status);
+    }
+}
+
 // @return false if there was an error
-bool checkGlError(const char* op) {
+bool checkGLErrorDetail(const char* file, int line, const char* op) {
     GLint error = glGetError();
+    const char* err_msg = "NOT_LISTED";
     if (error != 0) {
-        LOGE("after %s() glError (0x%x)", op, error);
+        switch (error) {
+            case GL_INVALID_VALUE: err_msg = "NOT_LISTED_YET"; break;
+            case GL_INVALID_OPERATION: err_msg = "INVALID_OPERATION"; break;
+            case GL_INVALID_ENUM: err_msg = "INVALID_ENUM"; break;
+        }
+        LOGE("Error after %s(). glError: %s (0x%x) in line %d of %s", op, err_msg, error, line, file);
         return false;
     }
     return true;
@@ -466,7 +489,7 @@ extern "C"
             JNIEnv * env, jobject obj);
     JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_step(
             JNIEnv * env, jobject obj);
-    JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_ready(
+    JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_updateMatrix(
             JNIEnv * env, jobject obj);
     JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_setWarping(
             JNIEnv * env, jobject obj, jboolean flag);
@@ -620,6 +643,10 @@ JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_reset(
     gWarper2.SetInputTextureType(GL_TEXTURE_2D);
 
     // gBuffer[gCurrentFBOIndex] --> gPreview --> Screen
+    // TODO: check the logic here to make sure the orientation is handled
+    // correctly.
+    // if (gIsLandscapeOrientation) gPreview.SetupGraphics(height, width);
+    // else gPreview.SetupGraphics(width, height);
     gPreview.SetupGraphics(width, height);
     gPreview.SetViewportMatrix(1, 1, 1, 1);
 
@@ -679,7 +706,7 @@ JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_transferGPUtoCPU(
                  GL_UNSIGNED_BYTE,
                  gPreviewImage[LR]);
 
-    checkGlError("glReadPixels LR");
+    checkGlError("glReadPixels LR (MosaicRenderer.transferGPUtoCPU())");
 
     // Bind to the input HR FBO and read the high-res data from there...
     glBindFramebuffer(GL_FRAMEBUFFER, gBufferInputYVU[HR].GetFrameBufferName());
@@ -692,7 +719,7 @@ JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_transferGPUtoCPU(
                  GL_UNSIGNED_BYTE,
                  gPreviewImage[HR]);
 
-    checkGlError("glReadPixels HR");
+    checkGlError("glReadPixels HR (MosaicRenderer.transferGPUtoCPU())");
 
     sem_post(&gPreviewImage_semaphore);
 }
@@ -758,7 +785,7 @@ JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_setWarping(
 }
 
 
-JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_ready(
+JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_updateMatrix(
         JNIEnv * env, jobject obj)
 {
     for(int i=0; i<16; i++)

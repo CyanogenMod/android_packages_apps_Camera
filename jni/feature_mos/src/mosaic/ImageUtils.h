@@ -47,7 +47,7 @@ public:
   /**
    *  Definition of an empty image.
    */
-  static const int IMAGE_TYPE_NOIMAGE = NULL;
+  static const int IMAGE_TYPE_NOIMAGE = 0;
 
   /**
    *  Convert image from BGR (interlaced) to YVU (non-interlaced)
