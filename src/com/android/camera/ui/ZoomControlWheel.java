@@ -57,9 +57,9 @@ public class ZoomControlWheel extends ZoomControl {
     // The center of the shutter button.
     private int mCenterX, mCenterY;
     // The width of the wheel stroke.
-    private int mStrokeWidth;
-    private double mShutterButtonRadius;
-    private double mWheelRadius;
+    private int mStrokeWidth;  // in pixel
+    private double mShutterButtonRadius;  // in pixel
+    private double mWheelRadius;  // in pixel
     private Paint mBackgroundPaint;
     private RectF mBackgroundRect;
 
@@ -77,7 +77,7 @@ public class ZoomControlWheel extends ZoomControl {
         Resources resources = context.getResources();
         TRAIL_COLOR = resources.getColor(R.color.icon_disabled_color);
 
-        mShutterButtonRadius = IndicatorControlWheelContainer.SHUTTER_BUTTON_RADIUS;
+        mShutterButtonRadius = Util.dpToPixel(IndicatorControlWheelContainer.SHUTTER_BUTTON_RADIUS);
         mStrokeWidth = Util.dpToPixel(IndicatorControlWheelContainer.STROKE_WIDTH);
         mWheelRadius = mShutterButtonRadius + mStrokeWidth * 0.5;
 
