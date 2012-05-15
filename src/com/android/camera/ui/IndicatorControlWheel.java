@@ -105,9 +105,9 @@ public class IndicatorControlWheel extends IndicatorControl implements
     // The center of the shutter button.
     private int mCenterX, mCenterY;
     // The width of the wheel stroke.
-    private int mStrokeWidth;
-    private double mShutterButtonRadius;
-    private double mWheelRadius;
+    private int mStrokeWidth;  // in pixel
+    private double mShutterButtonRadius;  // in pixel
+    private double mWheelRadius;  // in pixel
     private double mChildRadians[];
     private Paint mBackgroundPaint;
     private RectF mBackgroundRect;
@@ -273,21 +273,32 @@ public class IndicatorControlWheel extends IndicatorControl implements
         int sectors = count - 1;
         int startIndex = (mCurrentLevel == 0) ? 0 : mSecondLevelStartIndex;
         int endIndex;
-        if (mCurrentLevel == 0) {
-            // Skip the first component if it is zoom control, as we will
-            // deal with it specifically.
-            if (mZoomControl != null) startIndex++;
-            endIndex = mSecondLevelStartIndex - 1;
-        } else {
-            endIndex = getChildCount() - 1;
-        }
-
-        // Check which indicator is touched.
         double halfTouchSectorRadians = mTouchSectorRadians[mCurrentLevel];
         // The effective touch area is defined by the range [startRadians,
         // endRadians], counter-clockwise.
-        double startRadians = mChildRadians[startIndex] - halfTouchSectorRadians;
+        double startRadians = 0;
+        if (mCurrentLevel == 0) {
+            // Skip the first component if it is zoom control, as we will
+            // deal with it specifically.
+            if (mZoomControl != null) {
+                startIndex++;
+                if (mCameraPicker == null) {
+                    startRadians = Math.toRadians(FIRST_LEVEL_START_DEGREES)
+                            + halfTouchSectorRadians;
+                } else {
+                    startRadians = mChildRadians[startIndex] - halfTouchSectorRadians;
+                }
+            } else {
+                startRadians = mChildRadians[startIndex] - halfTouchSectorRadians;
+            }
+            endIndex = mSecondLevelStartIndex - 1;
+        } else {
+            endIndex = getChildCount() - 1;
+            startRadians = mChildRadians[startIndex] - halfTouchSectorRadians;
+        }
+
         if (startRadians < 0) startRadians += Math.PI * 2;
+
         double endRadians = mChildRadians[endIndex] + halfTouchSectorRadians;
         // True if the touch point is in the effective touch area.
         boolean touchInRange;
@@ -307,8 +318,8 @@ public class IndicatorControlWheel extends IndicatorControl implements
                 offset = 0;
             } else {
                 offset = 90;
+                delta = rebase(delta, offset);
             }
-            delta = rebase(delta, offset);
 
             int index = 0;
             if (mCurrentLevel == 1) { // for second-level indicators
@@ -319,13 +330,20 @@ public class IndicatorControlWheel extends IndicatorControl implements
                 // less than the center of starting indicator
                 if (index < 0) return startIndex;
             }
-            if (delta <= (rebase(mChildRadians[startIndex + index], offset)
-                    + halfTouchSectorRadians)) {
-                return (startIndex + index);
-            }
-            if (delta >= (rebase(mChildRadians[startIndex + index + 1], offset)
-                    - halfTouchSectorRadians)) {
-                return (startIndex + index + 1);
+            if ((mCurrentLevel == 0) && (mCameraPicker == null)) {
+                if (delta >= (rebase(mChildRadians[startIndex], offset)
+                        - halfTouchSectorRadians)) {
+                    return (startIndex + index);
+                }
+            } else {
+                if (delta <= (rebase(mChildRadians[startIndex + index], offset)
+                        + halfTouchSectorRadians)) {
+                    return (startIndex + index);
+                }
+                if (delta >= (rebase(mChildRadians[startIndex + index + 1], offset)
+                        - halfTouchSectorRadians)) {
+                    return (startIndex + index + 1);
+                }
             }
 
             // It must be for zoom control if the touch event is in the visible
