@@ -33,25 +33,26 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import java.io.IOException;
 
 public class CameraManager {
+    private static final String TAG = "CameraManager";
     private static CameraManager sCameraManager = new CameraManager();
 
     // Thread progress signals
     private ConditionVariable mSig = new ConditionVariable();
 
     private Parameters mParameters;
-    private IOException mSetPreviewTextureException;
     private IOException mReconnectException;
 
     private static final int RELEASE = 1;
     private static final int RECONNECT = 2;
     private static final int UNLOCK = 3;
     private static final int LOCK = 4;
-    private static final int SET_PREVIEW_TEXTURE = 5;
-    private static final int START_PREVIEW = 6;
+    private static final int SET_PREVIEW_TEXTURE_ASYNC = 5;
+    private static final int START_PREVIEW_ASYNC = 6;
     private static final int STOP_PREVIEW = 7;
     private static final int SET_PREVIEW_CALLBACK_WITH_BUFFER = 8;
     private static final int ADD_CALLBACK_BUFFER = 9;
@@ -67,6 +68,7 @@ public class CameraManager {
     private static final int SET_PARAMETERS = 19;
     private static final int GET_PARAMETERS = 20;
     private static final int SET_PARAMETERS_ASYNC = 21;
+    private static final int WAIT_FOR_IDLE = 22;
 
     private Handler mCameraHandler;
     private CameraProxy mCameraProxy;
@@ -89,102 +91,122 @@ public class CameraManager {
 
         @Override
         public void handleMessage(final Message msg) {
-            switch (msg.what) {
-                case RELEASE:
-                    mCamera.release();
+            try {
+                switch (msg.what) {
+                    case RELEASE:
+                        mCamera.release();
+                        mCamera = null;
+                        mCameraProxy = null;
+                        break;
+
+                    case RECONNECT:
+                        mReconnectException = null;
+                        try {
+                            mCamera.reconnect();
+                        } catch (IOException ex) {
+                            mReconnectException = ex;
+                        }
+                        break;
+
+                    case UNLOCK:
+                        mCamera.unlock();
+                        break;
+
+                    case LOCK:
+                        mCamera.lock();
+                        break;
+
+                    case SET_PREVIEW_TEXTURE_ASYNC:
+                        try {
+                            mCamera.setPreviewTexture((SurfaceTexture) msg.obj);
+                        } catch(IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        return;  // no need to call mSig.open()
+
+                    case START_PREVIEW_ASYNC:
+                        mCamera.startPreview();
+                        return;  // no need to call mSig.open()
+
+                    case STOP_PREVIEW:
+                        mCamera.stopPreview();
+                        break;
+
+                    case SET_PREVIEW_CALLBACK_WITH_BUFFER:
+                        mCamera.setPreviewCallbackWithBuffer(
+                            (PreviewCallback) msg.obj);
+                        break;
+
+                    case ADD_CALLBACK_BUFFER:
+                        mCamera.addCallbackBuffer((byte[]) msg.obj);
+                        break;
+
+                    case AUTO_FOCUS:
+                        mCamera.autoFocus((AutoFocusCallback) msg.obj);
+                        break;
+
+                    case CANCEL_AUTO_FOCUS:
+                        mCamera.cancelAutoFocus();
+                        break;
+
+                    case SET_AUTO_FOCUS_MOVE_CALLBACK:
+                        mCamera.setAutoFocusMoveCallback(
+                            (AutoFocusMoveCallback) msg.obj);
+                        break;
+
+                    case SET_DISPLAY_ORIENTATION:
+                        mCamera.setDisplayOrientation(msg.arg1);
+                        break;
+
+                    case SET_ZOOM_CHANGE_LISTENER:
+                        mCamera.setZoomChangeListener(
+                            (OnZoomChangeListener) msg.obj);
+                        break;
+
+                    case SET_FACE_DETECTION_LISTENER:
+                        mCamera.setFaceDetectionListener(
+                            (FaceDetectionListener) msg.obj);
+                        break;
+
+                    case START_FACE_DETECTION:
+                        mCamera.startFaceDetection();
+                        break;
+
+                    case STOP_FACE_DETECTION:
+                        mCamera.stopFaceDetection();
+                        break;
+
+                    case SET_ERROR_CALLBACK:
+                        mCamera.setErrorCallback((ErrorCallback) msg.obj);
+                        break;
+
+                    case SET_PARAMETERS:
+                        mCamera.setParameters((Parameters) msg.obj);
+                        break;
+
+                    case GET_PARAMETERS:
+                        mParameters = mCamera.getParameters();
+                        break;
+
+                    case SET_PARAMETERS_ASYNC:
+                        mCamera.setParameters((Parameters) msg.obj);
+                        return;  // no need to call mSig.open()
+
+                    case WAIT_FOR_IDLE:
+                        // do nothing
+                        break;
+                }
+            } catch (RuntimeException e) {
+                if (msg.what != RELEASE && mCamera != null) {
+                    try {
+                        mCamera.release();
+                    } catch (Exception ex) {
+                        Log.e(TAG, "Fail to release the camera.");
+                    }
                     mCamera = null;
                     mCameraProxy = null;
-                    break;
-
-                case RECONNECT:
-                    mReconnectException = null;
-                    try {
-                        mCamera.reconnect();
-                    } catch (IOException ex) {
-                        mReconnectException = ex;
-                    }
-                    break;
-
-                case UNLOCK:
-                    mCamera.unlock();
-                    break;
-
-                case LOCK:
-                    mCamera.lock();
-                    break;
-
-                case SET_PREVIEW_TEXTURE:
-                    mSetPreviewTextureException = null;
-                    try {
-                        mCamera.setPreviewTexture((SurfaceTexture) msg.obj);
-                    } catch (IOException ex) {
-                        mSetPreviewTextureException = ex;
-                    }
-                    break;
-
-                case START_PREVIEW:
-                    mCamera.startPreview();
-                    break;
-
-                case STOP_PREVIEW:
-                    mCamera.stopPreview();
-                    break;
-
-                case SET_PREVIEW_CALLBACK_WITH_BUFFER:
-                    mCamera.setPreviewCallbackWithBuffer((PreviewCallback) msg.obj);
-                    break;
-
-                case ADD_CALLBACK_BUFFER:
-                    mCamera.addCallbackBuffer((byte[]) msg.obj);
-                    break;
-
-                case AUTO_FOCUS:
-                    mCamera.autoFocus((AutoFocusCallback) msg.obj);
-                    break;
-
-                case CANCEL_AUTO_FOCUS:
-                    mCamera.cancelAutoFocus();
-                    break;
-
-                case SET_AUTO_FOCUS_MOVE_CALLBACK:
-                    mCamera.setAutoFocusMoveCallback((AutoFocusMoveCallback) msg.obj);
-                    break;
-
-                case SET_DISPLAY_ORIENTATION:
-                    mCamera.setDisplayOrientation(msg.arg1);
-                    break;
-
-                case SET_ZOOM_CHANGE_LISTENER:
-                    mCamera.setZoomChangeListener((OnZoomChangeListener) msg.obj);
-                    break;
-
-                case SET_FACE_DETECTION_LISTENER:
-                    mCamera.setFaceDetectionListener((FaceDetectionListener) msg.obj);
-                    break;
-
-                case START_FACE_DETECTION:
-                    mCamera.startFaceDetection();
-                    break;
-
-                case STOP_FACE_DETECTION:
-                    mCamera.stopFaceDetection();
-                    break;
-
-                case SET_ERROR_CALLBACK:
-                    mCamera.setErrorCallback((ErrorCallback) msg.obj);
-                    break;
-
-                case SET_PARAMETERS:
-                    mCamera.setParameters((Parameters) msg.obj);
-                    break;
-
-                case GET_PARAMETERS:
-                    mParameters = mCamera.getParameters();
-                    break;
-
-                case SET_PARAMETERS_ASYNC:
-                    mCamera.setParameters((Parameters) msg.obj);
-                    return;  // no need to call mSig.open()
+                }
+                throw e;
             }
             mSig.open();
         }
@@ -244,19 +266,12 @@ public class CameraManager {
             mSig.block();
         }
 
-        public void setPreviewTexture(final SurfaceTexture surfaceTexture) throws IOException {
-            mSig.close();
-            mCameraHandler.obtainMessage(SET_PREVIEW_TEXTURE, surfaceTexture).sendToTarget();
-            mSig.block();
-            if (mSetPreviewTextureException != null) {
-                throw mSetPreviewTextureException;
-            }
+        public void setPreviewTextureAsync(final SurfaceTexture surfaceTexture) {
+            mCameraHandler.obtainMessage(SET_PREVIEW_TEXTURE_ASYNC, surfaceTexture).sendToTarget();
         }
 
-        public void startPreview() {
-            mSig.close();
-            mCameraHandler.sendEmptyMessage(START_PREVIEW);
-            mSig.block();
+        public void startPreviewAsync() {
+            mCameraHandler.sendEmptyMessage(START_PREVIEW_ASYNC);
         }
 
         public void stopPreview() {
@@ -362,6 +377,12 @@ public class CameraManager {
             mCameraHandler.sendEmptyMessage(GET_PARAMETERS);
             mSig.block();
             return mParameters;
+        }
+
+        public void waitForIdle() {
+            mSig.close();
+            mCameraHandler.sendEmptyMessage(WAIT_FOR_IDLE);
+            mSig.block();
         }
     }
 }
