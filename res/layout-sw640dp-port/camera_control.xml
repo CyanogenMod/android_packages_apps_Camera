@@ -16,7 +16,7 @@
 <com.android.camera.ui.ControlPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:minHeight="260dp"
+        android:minHeight="@dimen/control_panel_min_length"
         android:background="@drawable/bg_camera_pattern">
         <!-- The height is determined by IndicatorControlWheel so we should set
              layout_height as wrap_contant but RelativeLayout Javadoc says that
