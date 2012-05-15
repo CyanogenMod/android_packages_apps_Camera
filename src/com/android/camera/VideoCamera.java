@@ -1265,6 +1265,7 @@ public class VideoCamera extends ActivityBase
             cleanupEmptyFile();
             mEffectsRecorder.release();
             mEffectsRecorder = null;
+            mEffectType = EffectsRecorder.EFFECT_NONE;
         }
         mVideoFilename = null;
     }
