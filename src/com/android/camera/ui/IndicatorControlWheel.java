@@ -250,6 +250,7 @@ public class IndicatorControlWheel extends IndicatorControl implements
         // Do not grey out the icons when taking a picture.
         setupFilter(mCurrentMode != MODE_CAMERA);
         mInitialized = true;
+        requestLayout();
     }
 
     private ImageView addImageButton(Context context, int resourceId, boolean rotatable) {
@@ -483,7 +484,10 @@ public class IndicatorControlWheel extends IndicatorControl implements
             double endVisibleRadians = mInAnimation
                     ? mEndVisibleRadians[1]
                     : mEndVisibleRadians[mCurrentLevel];
-            if ((!view.isEnabled() && (mCurrentLevel == 0))
+            // Only hide the views in video mode. Hiding the views when taking
+            // a picture is disturbing.
+            if ((!view.isEnabled() && (mCurrentLevel == 0)
+                    && (mCurrentMode == MODE_VIDEO))
                     || (radian < (startVisibleRadians - HIGHLIGHT_RADIANS / 2))
                     || (radian > (endVisibleRadians + HIGHLIGHT_RADIANS / 2))) {
                 view.setVisibility(View.GONE);
@@ -648,13 +652,15 @@ public class IndicatorControlWheel extends IndicatorControl implements
         if (mCurrentMode == MODE_VIDEO) {
             mSecondLevelIcon.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
             mCloseIcon.setVisibility(enabled ? View.VISIBLE : View.INVISIBLE);
-            requestLayout();
         } else {
             // We also disable the zoom button during snapshot.
             enableZoom(enabled);
         }
         mSecondLevelIcon.setEnabled(enabled);
         mCloseIcon.setEnabled(enabled);
+        // Request layout because the visibility of children may be decided by
+        // isEnabled in onLayout.
+        requestLayout();
     }
 
     public void enableZoom(boolean enabled) {
