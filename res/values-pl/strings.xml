@@ -126,10 +126,7 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"Zmniejsz: %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Zwiększ: %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"Przełącznik: %1$s"</string>
-    <!-- no translation found for accessibility_switch_to_camera (5951340774212969461) -->
-    <skip />
-    <!-- no translation found for accessibility_switch_to_video (4991396355234561505) -->
-    <skip />
-    <!-- no translation found for accessibility_switch_to_panorama (604756878371875836) -->
-    <skip />
+    <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Przełącz na zdjęcia"</string>
+    <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Przełącz na wideo"</string>
+    <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Przełącz na panoramę"</string>
 </resources>
