@@ -13,6 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+<!-- This layout is shared by phone and small size tablet. -->
 <com.android.camera.ui.IndicatorControlBarContainer xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/indicator_control"
         android:layout_width="wrap_content"
@@ -25,8 +26,8 @@
             android:layout_height="match_parent">
         <com.android.camera.ui.IndicatorControlBar
                 android:id="@+id/indicator_bar"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
+                android:paddingBottom="@dimen/indicator_bar_padding"
+                android:paddingTop="@dimen/indicator_bar_padding"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:layout_centerHorizontal="true">
@@ -48,8 +49,8 @@
                 android:id="@+id/second_level_indicator_bar"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
+                android:paddingTop="@dimen/indicator_bar_padding"
+                android:paddingBottom="@dimen/indicator_bar_padding"
                 android:layout_centerHorizontal="true"
                 android:background="@color/indicator_background"
                 android:visibility="gone">
