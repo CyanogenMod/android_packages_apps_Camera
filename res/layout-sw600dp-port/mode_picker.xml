@@ -27,8 +27,8 @@
             android:background="@color/review_control_pressed_color"/>
     <LinearLayout android:id="@+id/mode_selection"
             android:orientation="vertical"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginTop="@dimen/mode_picker_margin"
+            android:layout_marginBottom="@dimen/mode_picker_margin"
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
             android:layout_toRightOf="@id/current_mode_bar"

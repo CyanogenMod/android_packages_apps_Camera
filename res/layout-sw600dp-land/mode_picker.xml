@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2011 The Android Open Source Project
+<!-- Copyright (C) 2012 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+<!-- This layout is shared by devices above 600dp. -->
 <com.android.camera.ModePicker xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mode_picker"
         android:layout_width="match_parent"
@@ -28,8 +29,8 @@
     <LinearLayout android:id="@+id/mode_selection"
             android:orientation="horizontal"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
+            android:layout_marginLeft="@dimen/mode_picker_margin"
+            android:layout_marginRight="@dimen/mode_picker_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center">

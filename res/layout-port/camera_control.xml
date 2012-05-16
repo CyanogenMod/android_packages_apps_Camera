@@ -17,7 +17,7 @@
 <com.android.camera.ui.ControlPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="105dp"
+        android:minHeight="@dimen/control_panel_min_length"
         android:background="@drawable/bg_camera_pattern">
     <include layout="@layout/review_thumbnail" />
     <include layout="@layout/review_control" />
