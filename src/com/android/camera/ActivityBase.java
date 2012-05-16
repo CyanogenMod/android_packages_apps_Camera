@@ -324,6 +324,10 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     private void updateCameraAppView() {
         if (mShowCameraAppView) {
             mCameraAppView.setVisibility(View.VISIBLE);
+            // The "transparent region" is not recomputed when a sibling of
+            // SurfaceView changes visibility (unless it involves GONE). It's
+            // been broken since 1.0. Call requestLayout to work around it.
+            mCameraAppView.requestLayout();
             // withEndAction(null) prevents the pending end action
             // mHideCameraAppView from being executed.
             mCameraAppView.animate()
