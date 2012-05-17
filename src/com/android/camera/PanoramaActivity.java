@@ -350,6 +350,11 @@ public class PanoramaActivity extends ActivityBase implements
         };
     }
 
+    @Override
+    public boolean isPanoramaActivity() {
+        return true;
+    }
+
     private void setupCamera() throws CameraHardwareException, CameraDisabledException {
         openCamera();
         Parameters parameters = mCameraDevice.getParameters();
