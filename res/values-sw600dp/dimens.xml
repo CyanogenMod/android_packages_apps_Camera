@@ -20,7 +20,7 @@
     <dimen name="indicator_bar_width">72dp</dimen>
     <dimen name="setting_item_icon_width">48dp</dimen>
     <dimen name="onscreen_indicators_height">36dp</dimen>
-    <dimen name="mode_picker_margin">24dp</dimen>
+    <dimen name="mode_picker_margin">16dp</dimen>
     <dimen name="indicator_bar_padding">12dp</dimen>
     <dimen name="control_panel_min_length">168dp</dimen>
 </resources>
