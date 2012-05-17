@@ -24,7 +24,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -75,7 +74,6 @@ public class Util {
     private static final String EXTRAS_CAMERA_FACING =
             "android.intent.extras.CAMERA_FACING";
 
-    private static boolean sIsTabletUI;
     private static float sPixelDensity = 1;
     private static ImageFileNamer sImageFileNamer;
 
@@ -83,8 +81,6 @@ public class Util {
     }
 
     public static void initialize(Context context) {
-        sIsTabletUI = (context.getResources().getConfiguration().smallestScreenWidthDp >= 600);
-
         DisplayMetrics metrics = new DisplayMetrics();
         WindowManager wm = (WindowManager)
                 context.getSystemService(Context.WINDOW_SERVICE);
@@ -92,10 +88,6 @@ public class Util {
         sPixelDensity = metrics.density;
         sImageFileNamer = new ImageFileNamer(
                 context.getString(R.string.image_file_name_format));
-    }
-
-    public static boolean isTabletUI() {
-        return sIsTabletUI;
     }
 
     public static int dpToPixel(int dp) {
