@@ -16,32 +16,27 @@
 
 package com.android.camera;
 
-import android.app.KeyguardManager;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.hardware.Camera.Parameters;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.animation.DecelerateInterpolator;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 
 import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.RotateImageView;
 import com.android.gallery3d.app.AbstractGalleryActivity;
 import com.android.gallery3d.app.AppBridge;
-import com.android.gallery3d.app.PhotoPage;
 import com.android.gallery3d.app.GalleryActionBar;
-import com.android.gallery3d.app.StateManager;
+import com.android.gallery3d.app.PhotoPage;
 import com.android.gallery3d.ui.ScreenNail;
 import com.android.gallery3d.util.MediaSetUtils;
 
@@ -113,6 +108,16 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     public void onCreate(Bundle icicle) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         super.disableToggleStatusBar();
+        // Set a theme with action bar. It is not specified in manifest because
+        // we want to hide it by default. setTheme must happen before
+        // setContentView.
+        //
+        // This must be set before we call super.onCreate(), where the window's
+        // background is removed.
+        setTheme(R.style.Theme_Gallery);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+
         super.onCreate(icicle);
     }
 
@@ -135,13 +140,6 @@ abstract public class ActivityBase extends AbstractGalleryActivity
 
     @Override
     public void setContentView(int layoutResID) {
-        // Set a theme with action bar. It is not specified in manifest because
-        // we want to hide it by default. setTheme must happen before
-        // setContentView.
-        setTheme(R.style.Theme_Gallery);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-
         super.setContentView(layoutResID);
         // getActionBar() should be after setContentView
         mActionBar = new GalleryActionBar(this);
