@@ -2352,6 +2352,7 @@ public class PhotoModule
             updateCameraParametersPreference();
         }
 
+        CameraSettings.dumpParameters(mParameters);
         mCameraDevice.setParameters(mParameters);
     }
 
