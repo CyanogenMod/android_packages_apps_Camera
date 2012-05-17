@@ -47,6 +47,9 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     private static final int ANIM_SWITCH_RUNNING = 7;
 
     private boolean mVisible;
+    // True if first onFrameAvailable has been called. If screen nail is drawn
+    // too early, it will be all white.
+    private boolean mFirstFrameArrived;
     private Listener mListener;
     private final float[] mTextureTransformMatrix = new float[16];
 
@@ -73,6 +76,9 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
     @Override
     public void acquireSurfaceTexture() {
+        synchronized (mLock) {
+            mFirstFrameArrived = false;
+        }
         super.acquireSurfaceTexture();
         mAnimTexture = new RawTexture(getWidth(), getHeight(), true);
     }
@@ -119,6 +125,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     public void draw(GLCanvas canvas, int x, int y, int width, int height) {
         if (getSurfaceTexture() == null) return;
         synchronized (mLock) {
+            if (!mFirstFrameArrived) return;
             if (!mVisible) mVisible = true;
 
             if (mAnimState == ANIM_NONE) {
@@ -200,6 +207,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
         synchronized (mLock) {
+            mFirstFrameArrived = true;
             if (mVisible) {
                 if (mAnimState == ANIM_SWITCH_WAITING_FIRST_FRAME) {
                     mAnimState = ANIM_SWITCH_START;
