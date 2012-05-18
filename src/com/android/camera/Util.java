@@ -670,12 +670,6 @@ public class Util {
         }
     }
 
-    public static void enterLightsOutMode(Window window) {
-        WindowManager.LayoutParams params = window.getAttributes();
-        params.systemUiVisibility = View.SYSTEM_UI_FLAG_LOW_PROFILE;
-        window.setAttributes(params);
-    }
-
     private static class ImageFileNamer {
         private SimpleDateFormat mFormat;
 

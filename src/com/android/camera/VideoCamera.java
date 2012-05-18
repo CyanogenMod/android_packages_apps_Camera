@@ -332,8 +332,6 @@ public class VideoCamera extends ActivityBase
         CameraOpenThread cameraOpenThread = new CameraOpenThread();
         cameraOpenThread.start();
 
-        Util.enterLightsOutMode(getWindow());
-
         mContentResolver = getContentResolver();
 
         setContentView(R.layout.video_camera);

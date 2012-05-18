@@ -241,9 +241,6 @@ public class PanoramaActivity extends ActivityBase implements
 
         super.onCreate(icicle);
 
-        Window window = getWindow();
-        Util.enterLightsOutMode(window);
-
         createContentView();
 
         mContentResolver = getContentResolver();
