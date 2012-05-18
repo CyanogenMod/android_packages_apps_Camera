@@ -266,11 +266,16 @@ public class PanoramaActivity extends ActivityBase implements
                 // If we call onFrameAvailable after pausing, the GL thread will crash.
                 if (mPaused) return;
 
-                if (mCaptureState == CAPTURE_STATE_VIEWFINDER) {
-                    mMosaicPreviewRenderer.showPreviewFrame();
+                if (mGLRootView.getVisibility() != View.VISIBLE) {
+                    mMosaicPreviewRenderer.showPreviewFrameSync();
+                    mGLRootView.setVisibility(View.VISIBLE);
                 } else {
-                    mMosaicPreviewRenderer.alignFrame();
-                    mMosaicFrameProcessor.processFrame();
+                    if (mCaptureState == CAPTURE_STATE_VIEWFINDER) {
+                        mMosaicPreviewRenderer.showPreviewFrame();
+                    } else {
+                        mMosaicPreviewRenderer.alignFrame();
+                        mMosaicFrameProcessor.processFrame();
+                    }
                 }
             }
         };
@@ -856,10 +861,14 @@ public class PanoramaActivity extends ActivityBase implements
         gotoGallery();
     }
 
+    // This function will be called upon the first camera frame is available.
     private void reset() {
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
 
-        mGLRootView.setVisibility(View.VISIBLE);
+        // We should set mGLRootView visible too. However, since there might be no
+        // frame availble yet, setting mGLRootView visible should be done right after
+        // the first camera frame is available and therefore it is done by
+        // mOnFirstFrameAvailableRunnable.
         setSwipingEnabled(true);
         mReviewLayout.setVisibility(View.GONE);
         mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan);
