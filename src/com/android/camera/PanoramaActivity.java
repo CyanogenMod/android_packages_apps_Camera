@@ -122,6 +122,7 @@ public class PanoramaActivity extends ActivityBase implements
     private int mIndicatorColor;
     private int mIndicatorColorFast;
 
+    private boolean mUsingFrontCamera;
     private int mPreviewWidth;
     private int mPreviewHeight;
     private int mCameraState;
@@ -385,6 +386,7 @@ public class PanoramaActivity extends ActivityBase implements
         if (cameraId == -1) cameraId = 0;
         mCameraDevice = Util.openCamera(this, cameraId);
         mCameraOrientation = Util.getCameraOrientation(cameraId);
+        if (cameraId == CameraHolder.instance().getFrontCameraId()) mUsingFrontCamera = true;
     }
 
     private boolean findBestPreviewSize(List<Size> supportedSizes, boolean need4To3,
@@ -810,7 +812,14 @@ public class PanoramaActivity extends ActivityBase implements
                     // The orientation is calculated from compensating the
                     // device orientation at capture and the camera orientation respective to
                     // the natural orientation of the device.
-                    int orientation = (mDeviceOrientationAtCapture + mCameraOrientation) % 360;
+                    int orientation;
+                    if (mUsingFrontCamera) {
+                        // mCameraOrientation is negative with respect to the front facing camera.
+                        // See document of android.hardware.Camera.Parameters.setRotation.
+                        orientation = (mDeviceOrientationAtCapture - mCameraOrientation + 360) % 360;
+                    } else {
+                        orientation = (mDeviceOrientationAtCapture + mCameraOrientation) % 360;
+                    }
                     Uri uri = savePanorama(jpeg.data, jpeg.width, jpeg.height, orientation);
                     if (uri != null) {
                         // Create a thumbnail whose width and height is equal or bigger
