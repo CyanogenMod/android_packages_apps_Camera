@@ -1157,8 +1157,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // we need to reset exposure for the preview
         resetExposureCompensation();
 
-        Util.enterLightsOutMode(getWindow());
-
         // Make sure camera device is opened.
         try {
             cameraOpenThread.join();
