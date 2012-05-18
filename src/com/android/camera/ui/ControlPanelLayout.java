@@ -23,7 +23,7 @@ import android.util.Log;
 import android.widget.RelativeLayout;
 
 /**
- * A layout which handles the the width of the control panel, which contains
+ * A layout which handles the width of the control panel, which contains
  * the shutter button, thumbnail, front/back camera picker, and mode picker.
  * The purpose of this is to have a consistent width of control panel in camera,
  * camcorder, and panorama modes.
