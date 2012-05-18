@@ -59,10 +59,11 @@ public class MosaicPreviewRenderer {
 
     private class EGLHandler extends Handler {
         public static final int MSG_INIT_EGL_SYNC = 0;
-        public static final int MSG_RESET = 1;
-        public static final int MSG_SHOW_PREVIEW_FRAME = 2;
-        public static final int MSG_ALIGN_FRAME = 3;
-        public static final int MSG_RELEASE = 4;
+        public static final int MSG_SHOW_PREVIEW_FRAME_SYNC = 1;
+        public static final int MSG_RESET = 2;
+        public static final int MSG_SHOW_PREVIEW_FRAME = 3;
+        public static final int MSG_ALIGN_FRAME = 4;
+        public static final int MSG_RELEASE = 5;
 
         public EGLHandler(Looper looper) {
             super(looper);
@@ -73,6 +74,10 @@ public class MosaicPreviewRenderer {
             switch (msg.what) {
                 case MSG_INIT_EGL_SYNC:
                     doInitGL();
+                    mEglThreadBlockVar.open();
+                    break;
+                case MSG_SHOW_PREVIEW_FRAME_SYNC:
+                    doShowPreviewFrame();
                     mEglThreadBlockVar.open();
                     break;
                 case MSG_RESET:
@@ -204,6 +209,10 @@ public class MosaicPreviewRenderer {
         mHeight = h;
         mIsLandscape = isLandscape;
         mEglHandler.sendEmptyMessage(EGLHandler.MSG_RESET);
+    }
+
+    public void showPreviewFrameSync() {
+        mEglHandler.sendMessageSync(EGLHandler.MSG_SHOW_PREVIEW_FRAME_SYNC);
     }
 
     public void showPreviewFrame() {
