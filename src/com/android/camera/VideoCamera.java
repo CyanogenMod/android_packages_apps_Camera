@@ -713,7 +713,8 @@ public class VideoCamera extends ActivityBase
 
     private void getDesiredPreviewSize() {
         mParameters = mCameraDevice.getParameters();
-        if (mParameters.getSupportedVideoSizes() == null || effectsActive()) {
+        if (mParameters.getSupportedVideoSizes() == null ||
+                (!getResources().getBoolean(R.bool.alwaysUsePreferredPreviewSize) && effectsActive())) {
             mDesiredPreviewWidth = mProfile.videoFrameWidth;
             mDesiredPreviewHeight = mProfile.videoFrameHeight;
         } else {  // Driver supports separates outputs for preview and video.
