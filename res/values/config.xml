@@ -29,5 +29,7 @@
     <!-- The camera removes the focus modes by default when touch-to-focus
          exists. Use this option to change that behavior -->
     <bool name="wantsFocusModes">false</bool>
+    <!-- Don't mess with the preview size, always use preferred size from parameters -->
+    <bool name="alwaysUsePreferredPreviewSize">false</bool>
 </resources>
 
