@@ -841,9 +841,6 @@ public class VideoCamera extends ActivityBase
                 mSurfaceWidth = mCameraScreenNail.getWidth();
                 mSurfaceHeight = mCameraScreenNail.getHeight();
                 initializeEffectsPreview();
-                mEffectsRecorder.setPreviewSurfaceTexture(mSurfaceTexture, mSurfaceWidth,
-                    mSurfaceHeight);
-                Log.v(TAG, "effectsStartPreview");
                 mEffectsRecorder.startPreview();
             }
         } catch (Throwable ex) {
