@@ -34,7 +34,7 @@ public class CaptureAnimManager {
     private static final float ZOOM_DELTA = 0.2f;  // The amount of change for zooming out.
     private static final float ZOOM_IN_BEGIN = 1f - ZOOM_DELTA;  // Pre-calculated value for
                                                                  // convenience.
-    private static final float CAPTURE_ANIM_DURATION = 600;  // milliseconds.
+    private static final float CAPTURE_ANIM_DURATION = 700;  // milliseconds.
     private static final float GAP_RATIO = 0.1f;  // The gap between preview and review based
                                                   // on the view dimension.
     private static final float TOTAL_RATIO = 1f + GAP_RATIO;
