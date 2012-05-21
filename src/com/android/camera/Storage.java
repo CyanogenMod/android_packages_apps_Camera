@@ -97,16 +97,21 @@ public class Storage {
     }
 
     // newImage() and updateImage() together do the same work as
-    // addImage. newImage() is the first step, and it only inserts the
-    // DATE_TAKEN and DATA fields into the database.
-    public static Uri newImage(
-            ContentResolver resolver, String title, long date) {
+    // addImage. newImage() is the first step, and it inserts the DATE_TAKEN and
+    // DATA fields into the database.
+    //
+    // We also insert hint values for the WIDTH and HEIGHT fields to give
+    // correct aspect ratio before the real values are updated in updateImage().
+    public static Uri newImage(ContentResolver resolver, String title,
+            long date, int width, int height) {
         String path = generateFilepath(title);
 
         // Insert into MediaStore.
-        ContentValues values = new ContentValues(2);
+        ContentValues values = new ContentValues(4);
         values.put(ImageColumns.DATE_TAKEN, date);
         values.put(ImageColumns.DATA, path);
+        values.put(ImageColumns.WIDTH, width);
+        values.put(ImageColumns.HEIGHT, height);
 
         Uri uri = null;
         try {
