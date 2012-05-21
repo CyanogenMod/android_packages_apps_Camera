@@ -643,10 +643,6 @@ JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_reset(
     gWarper2.SetInputTextureType(GL_TEXTURE_2D);
 
     // gBuffer[gCurrentFBOIndex] --> gPreview --> Screen
-    // TODO: check the logic here to make sure the orientation is handled
-    // correctly.
-    // if (gIsLandscapeOrientation) gPreview.SetupGraphics(height, width);
-    // else gPreview.SetupGraphics(width, height);
     gPreview.SetupGraphics(width, height);
     gPreview.SetViewportMatrix(1, 1, 1, 1);
 
@@ -783,7 +779,6 @@ JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_setWarping(
 
     gWarpImage = (bool)flag;
 }
-
 
 JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_updateMatrix(
         JNIEnv * env, jobject obj)

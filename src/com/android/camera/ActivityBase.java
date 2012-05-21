@@ -116,6 +116,10 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         super.onCreate(icicle);
     }
 
+    public boolean isPanoramaActivity() {
+        return false;
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -472,6 +476,11 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         @Override
         public void setServer(Server s) {
             mServer = s;
+        }
+
+        @Override
+        public boolean isPanorama() {
+            return ActivityBase.this.isPanoramaActivity();
         }
 
         private void setCameraRelativeFrame(Rect frame) {
