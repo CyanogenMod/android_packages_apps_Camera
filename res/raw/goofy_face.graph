@@ -81,6 +81,7 @@
   surfaceTexture = $previewSurfaceTexture;
   width = $previewWidth;
   height = $previewHeight;
+  renderMode = "stretch";
 }
 
 // Orientation rotation filter
