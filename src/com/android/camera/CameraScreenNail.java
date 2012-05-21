@@ -123,10 +123,9 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
     @Override
     public void draw(GLCanvas canvas, int x, int y, int width, int height) {
-        if (getSurfaceTexture() == null) return;
         synchronized (mLock) {
-            if (!mFirstFrameArrived) return;
             if (!mVisible) mVisible = true;
+            if (getSurfaceTexture() == null || !mFirstFrameArrived) return;
 
             if (mAnimState == ANIM_NONE) {
                 super.draw(canvas, x, y, width, height);
