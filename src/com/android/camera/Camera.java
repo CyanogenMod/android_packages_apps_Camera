@@ -87,7 +87,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private static final String TAG = "camera";
 
-    private static final int CROP_MSG = 1;
+    // We number the request code from 1000 to avoid collision with Gallery.
+    private static final int REQUEST_CROP = 1000;
+
     private static final int FIRST_TIME_INIT = 2;
     private static final int CLEAR_SCREEN_DELAY = 3;
     private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 4;
@@ -1431,7 +1433,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             cropIntent.setData(tempUri);
             cropIntent.putExtras(newExtras);
 
-            startActivityForResult(cropIntent, CROP_MSG);
+            startActivityForResult(cropIntent, REQUEST_CROP);
         }
     }
 
@@ -1696,8 +1698,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     @Override
     protected void onActivityResult(
             int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case CROP_MSG: {
+            case REQUEST_CROP: {
                 Intent intent = new Intent();
                 if (data != null) {
                     Bundle extras = data.getExtras();
