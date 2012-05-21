@@ -23,9 +23,9 @@ import android.hardware.Camera.Area;
 import android.hardware.Camera.Parameters;
 import android.media.MediaActionSound;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -109,6 +109,10 @@ public class FocusManager {
     }
 
     private class MainHandler extends Handler {
+        public MainHandler(Looper looper) {
+            super(looper);
+        }
+
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -123,8 +127,8 @@ public class FocusManager {
 
     public FocusManager(ComboPreferences preferences, String[] defaultFocusModes,
             View focusIndicatorRotate, Parameters parameters, Listener listener,
-            boolean mirror) {
-        mHandler = new MainHandler();
+            boolean mirror, Looper looper) {
+        mHandler = new MainHandler(looper);
         mMatrix = new Matrix();
 
         mPreferences = preferences;
