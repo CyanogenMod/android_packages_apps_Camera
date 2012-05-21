@@ -37,7 +37,7 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
     private static final String TAG = "IndicatorControlWheelContainer";
 
     // From center outwards, the indicator control wheel
-    // (e.g. res/drawable-sw600dp-hdpi/btn_camera_shutter_holo.png) is composed
+    // (e.g. res/drawable-sw640dp-hdpi/btn_camera_shutter_holo.png) is composed
     // of a center colored button (could be blue, red or green), a light-black
     // circle band, a thin gray circle strip and a dark-black circle band.
     // The STROKE_WIDTH is the width of the outer-most dark-black circle band.
@@ -197,11 +197,13 @@ public class IndicatorControlWheelContainer extends IndicatorControlContainer {
         mIndicatorControlWheel.setOrientation(orientation, animation);
     }
 
+    @Override
     public void startTimeLapseAnimation(int timeLapseInterval, long startTime) {
         mIndicatorControlWheel.startTimeLapseAnimation(
                 timeLapseInterval, startTime);
     }
 
+    @Override
     public void stopTimeLapseAnimation() {
         mIndicatorControlWheel.stopTimeLapseAnimation();
     }

@@ -1475,12 +1475,9 @@ public class VideoCamera extends ActivityBase
             mRecordingTimeView.setVisibility(View.VISIBLE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.GONE);
             if (mCaptureTimeLapse) {
-                if (Util.isTabletUI()) {
-                    ((IndicatorControlWheelContainer) mIndicatorControlContainer)
-                            .startTimeLapseAnimation(
-                                    mTimeBetweenTimeLapseFrameCaptureMs,
-                                    mRecordingStartTime);
-                }
+                mIndicatorControlContainer.startTimeLapseAnimation(
+                        mTimeBetweenTimeLapseFrameCaptureMs,
+                        mRecordingStartTime);
             }
         } else {
             if (mThumbnailView != null) mThumbnailView.setEnabled(true);
@@ -1488,10 +1485,7 @@ public class VideoCamera extends ActivityBase
             mRecordingTimeView.setVisibility(View.GONE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
             if (mCaptureTimeLapse) {
-                if (Util.isTabletUI()) {
-                    ((IndicatorControlWheelContainer) mIndicatorControlContainer)
-                            .stopTimeLapseAnimation();
-                }
+                mIndicatorControlContainer.stopTimeLapseAnimation();
             }
         }
     }

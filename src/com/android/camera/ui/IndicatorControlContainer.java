@@ -35,4 +35,10 @@ public abstract class IndicatorControlContainer extends IndicatorControl
     public abstract void dismissSecondLevelIndicator();
 
     public abstract void enableFilter(boolean enabled);
+
+    public void startTimeLapseAnimation(int timeLapseInterval, long startTime) {
+    }
+
+    public void stopTimeLapseAnimation() {
+    }
 }
