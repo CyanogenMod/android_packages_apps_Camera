@@ -2160,9 +2160,7 @@ public class VideoCamera extends ActivityBase
 
         // Start switch camera animation.
         mCameraDevice.waitForIdle(); // Wait until startPreview finishes.
-        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-        boolean backToFront = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
-        mCameraScreenNail.animateSwitchCamera(backToFront);
+        mCameraScreenNail.animateSwitchCamera();
 
         // Enable all camera controls.
         mSwitchingCamera = false;
