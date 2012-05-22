@@ -2486,6 +2486,14 @@ public class VideoCamera extends ActivityBase
         // Runs in namer thread
         private void generateUri() {
             Uri videoTable = Uri.parse("content://media/external/video/media");
+            // Create a new file before inserting into MediaProvider. So
+            // MediaProvider won't try to create a file for us.
+            try {
+                File file = new File(mValues.getAsString(Video.Media.DATA));
+                file.createNewFile();
+            } catch (Throwable t) {
+                Log.w(TAG, "failed to create new file", t);
+            }
             mUri = mResolver.insert(videoTable, mValues);
         }
 
