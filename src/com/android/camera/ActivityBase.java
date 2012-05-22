@@ -49,7 +49,7 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         implements View.OnLayoutChangeListener {
 
     private static final String TAG = "ActivityBase";
-    private static boolean LOGV = false;
+    private static final boolean LOGV = false;
     private static final int CAMERA_APP_VIEW_TOGGLE_TIME = 100;  // milliseconds
     private int mResultCodeForTesting;
     private Intent mResultDataForTesting;
@@ -365,6 +365,8 @@ abstract public class ActivityBase extends AbstractGalleryActivity
                 && bottom == oldBottom) {
             return;
         }
+
+        mCameraScreenNail.setPreviewFrameLayoutSize(right - left, bottom - top);
 
         // Find out the coordinates of the preview frame relative to GL
         // root view.
