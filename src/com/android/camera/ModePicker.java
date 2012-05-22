@@ -127,7 +127,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
                 // It looks weird so fade-in animation is not used here.
                 mCurrentModeFrame.setVisibility(View.VISIBLE);
             } else {
-                Util.fadeIn(mCurrentModeFrame, 0.3F, 1F, 400);
+                Util.fadeIn(mCurrentModeFrame, 0.3F, 1F, 100);
             }
             mModeSelectionFrame.setVisibility(View.GONE);
             changeToSelectedMode();
@@ -145,10 +145,15 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     private void enableModeSelection(boolean enabled) {
         if (mCurrentModeFrame != null) {
             mSelectionEnabled = enabled;
-            // Animation Effect is applied on Phone UI only.
+            // Animation is applied on Phone UI only.
+            mModeSelectionFrame.clearAnimation();
             mModeSelectionFrame.startAnimation(enabled ? mFadeIn : mFadeOut);
             if (enabled) {
                 mModeSelectionFrame.setVisibility(View.VISIBLE);
+                // Make sure the animation is stopped. It looks like the view
+                // will still be drawn during animation even though the
+                // visibility has been set to gone.
+                mCurrentModeFrame.clearAnimation();
                 mCurrentModeFrame.setVisibility(View.GONE);
             }
         }
