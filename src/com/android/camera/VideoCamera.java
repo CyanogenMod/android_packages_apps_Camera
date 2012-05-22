@@ -1273,13 +1273,14 @@ public class VideoCamera extends ActivityBase
         // Used when emailing.
         String filename = title + convertOutputFormatToFileExt(outputFileFormat);
         String mime = convertOutputFormatToMimeType(outputFileFormat);
-        mVideoFilename = Storage.DIRECTORY + '/' + filename;
+        String path = Storage.DIRECTORY + '/' + filename;
+        String tmpPath = path + ".tmp";
         mCurrentVideoValues = new ContentValues(7);
         mCurrentVideoValues.put(Video.Media.TITLE, title);
         mCurrentVideoValues.put(Video.Media.DISPLAY_NAME, filename);
         mCurrentVideoValues.put(Video.Media.DATE_TAKEN, dateTaken);
         mCurrentVideoValues.put(Video.Media.MIME_TYPE, mime);
-        mCurrentVideoValues.put(Video.Media.DATA, mVideoFilename);
+        mCurrentVideoValues.put(Video.Media.DATA, path);
         mCurrentVideoValues.put(Video.Media.RESOLUTION,
                 Integer.toString(mProfile.videoFrameWidth) + "x" +
                 Integer.toString(mProfile.videoFrameHeight));
@@ -1289,6 +1290,7 @@ public class VideoCamera extends ActivityBase
             mCurrentVideoValues.put(Video.Media.LONGITUDE, loc.getLongitude());
         }
         mVideoNamer.prepareUri(mContentResolver, mCurrentVideoValues);
+        mVideoFilename = tmpPath;
         Log.v(TAG, "New video filename: " + mVideoFilename);
     }
 
@@ -1308,6 +1310,15 @@ public class VideoCamera extends ActivityBase
             }
             try {
                 mCurrentVideoUri = mVideoNamer.getUri();
+
+                // Rename the video file to the final name. This avoids other
+                // apps reading incomplete data.  We need to do it after the
+                // above mVideoNamer.getUri() call, so we are certain that the
+                // previous insert to MediaProvider is completed.
+                String finalName = mCurrentVideoValues.getAsString(
+                        Video.Media.DATA);
+                new File(mCurrentVideoFilename).renameTo(new File(finalName));
+
                 mContentResolver.update(mCurrentVideoUri, mCurrentVideoValues
                         , null, null);
                 sendBroadcast(new Intent(android.hardware.Camera.ACTION_NEW_VIDEO,
@@ -2488,14 +2499,6 @@ public class VideoCamera extends ActivityBase
         // Runs in namer thread
         private void generateUri() {
             Uri videoTable = Uri.parse("content://media/external/video/media");
-            // Create a new file before inserting into MediaProvider. So
-            // MediaProvider won't try to create a file for us.
-            try {
-                File file = new File(mValues.getAsString(Video.Media.DATA));
-                file.createNewFile();
-            } catch (Throwable t) {
-                Log.w(TAG, "failed to create new file", t);
-            }
             mUri = mResolver.insert(videoTable, mValues);
         }
 
