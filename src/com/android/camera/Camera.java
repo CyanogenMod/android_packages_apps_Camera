@@ -379,6 +379,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mIndicatorControlContainer == null) {
             initializeIndicatorControl();
         }
+        // This should be enabled after preview is started.
+        mIndicatorControlContainer.setEnabled(false);
         initializeZoom();
         updateOnScreenIndicators();
         startFaceDetection();
@@ -1783,7 +1785,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     protected void onSingleTapUp(View view, int x, int y) {
         if (mPaused || mCameraDevice == null || !mFirstTimeInitialized
                 || mCameraState == SNAPSHOT_IN_PROGRESS
-                || mCameraState == SWITCHING_CAMERA) {
+                || mCameraState == SWITCHING_CAMERA
+                || mCameraState == PREVIEW_STOPPED) {
             return;
         }
 
