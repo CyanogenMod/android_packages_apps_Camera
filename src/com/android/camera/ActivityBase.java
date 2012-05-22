@@ -268,13 +268,8 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     }
 
     protected void gotoGallery() {
-        // TODO: remove this check after panorama has swipe UI.
-        if (mAppBridge != null) {
-            // Move the next picture with capture animation. "1" means next.
-            mAppBridge.switchWithCaptureAnimation(1);
-        } else {
-            Util.viewUri(mThumbnail.getUri(), this);
-        }
+        // Move the next picture with capture animation. "1" means next.
+        mAppBridge.switchWithCaptureAnimation(1);
     }
 
     protected void saveThumbnailToFile() {
