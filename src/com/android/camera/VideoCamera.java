@@ -553,14 +553,16 @@ public class VideoCamera extends ActivityBase
         doReturnToCaller(false);
     }
 
-    private void onStopVideoRecording(boolean valid) {
+    private void onStopVideoRecording() {
         mEffectsDisplayResult = true;
         boolean recordFail = stopVideoRecording();
         if (mIsVideoCaptureIntent) {
-            if (mQuickCapture) {
-                doReturnToCaller(valid && !recordFail);
-            } else if (!effectsActive() && !recordFail) {
-                showAlert();
+            if (!effectsActive()) {
+                if (mQuickCapture) {
+                    doReturnToCaller(!recordFail);
+                } else if (!recordFail) {
+                    showAlert();
+                }
             }
         } else if (!recordFail){
             // Start capture animation.
@@ -584,7 +586,7 @@ public class VideoCamera extends ActivityBase
         boolean stop = mMediaRecorderRecording;
 
         if (stop) {
-            onStopVideoRecording(true);
+            onStopVideoRecording();
         } else {
             startVideoRecording();
         }
@@ -913,7 +915,7 @@ public class VideoCamera extends ActivityBase
 
         if (mMediaRecorderRecording) {
             // Camera will be released in onStopVideoRecording.
-            onStopVideoRecording(true);
+            onStopVideoRecording();
         } else {
             closeCamera();
             if (!effectsActive()) releaseMediaRecorder();
@@ -971,7 +973,7 @@ public class VideoCamera extends ActivityBase
     public void onBackPressed() {
         if (mPaused) return;
         if (mMediaRecorderRecording) {
-            onStopVideoRecording(false);
+            onStopVideoRecording();
         } else if (!collapseCameraControls()) {
             super.onBackPressed();
         }
@@ -1376,9 +1378,9 @@ public class VideoCamera extends ActivityBase
     @Override
     public void onInfo(MediaRecorder mr, int what, int extra) {
         if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
-            if (mMediaRecorderRecording) onStopVideoRecording(true);
+            if (mMediaRecorderRecording) onStopVideoRecording();
         } else if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
-            if (mMediaRecorderRecording) onStopVideoRecording(true);
+            if (mMediaRecorderRecording) onStopVideoRecording();
 
             // Show the toast.
             Toast.makeText(this, R.string.video_reach_size_limit,
@@ -1881,12 +1883,12 @@ public class VideoCamera extends ActivityBase
             mBgLearningMessageFrame.setVisibility(View.GONE);
             checkQualityAndStartPreview();
         } else if (effectMsg == EffectsRecorder.EFFECT_MSG_RECORDING_DONE) {
-            // TODO: This assumes the codepath from onStopVideoRecording.  It
-            // does not appear to cause problems for the other codepaths, but
-            // should be properly thought through.
+            // This follows the codepath from onStopVideoRecording.
             if (mEffectsDisplayResult && !addVideoToMediaStore()) {
                 if (mIsVideoCaptureIntent) {
-                    if (!mQuickCapture) {
+                    if (mQuickCapture) {
+                        doReturnToCaller(true);
+                    } else {
                         showAlert();
                     }
                 } else {
