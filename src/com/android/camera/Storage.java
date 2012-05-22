@@ -137,10 +137,15 @@ public class Storage {
             int width, int height) {
         // Save the image.
         String path = generateFilepath(title);
+        String tmpPath = path + ".tmp";
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream(path);
+            // Write to a temporary file and rename it to the final name. This
+            // avoids other apps reading incomplete data.
+            out = new FileOutputStream(tmpPath);
             out.write(jpeg);
+            out.close();
+            new File(tmpPath).renameTo(new File(path));
         } catch (Exception e) {
             Log.e(TAG, "Failed to write image", e);
             return false;
