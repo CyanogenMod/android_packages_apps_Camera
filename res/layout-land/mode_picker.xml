@@ -21,7 +21,6 @@
         android:visibility="gone">
     <!-- minWidth in camera_control.xml is used to avoid overlapping of current_mode. -->
     <RelativeLayout android:id="@+id/current_mode"
-            android:layout_alignBottom="@+id/mode_selection"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:contentDescription="@string/accessibility_mode_picker"
@@ -66,7 +65,6 @@
             android:layout_width="match_parent"
             android:layout_height="163dp"
             android:background="@drawable/bg_switcher"
-            android:layout_alignParentBottom="true"
             android:visibility="gone">
         <View android:layout_width="match_parent"
                 android:layout_height="1dp"
