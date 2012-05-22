@@ -98,10 +98,9 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         }
     }
 
-    public void animateSwitchCamera(boolean backToFront) {
+    public void animateSwitchCamera() {
         synchronized (mLock) {
             if (mAnimState == ANIM_SWITCH_DARK_PREVIEW) {
-                mSwitchAnimManager.setSwitchDirection(backToFront);
                 // Do not request render here because camera has been just
                 // started. We do not want to draw black frames.
                 mAnimState = ANIM_SWITCH_WAITING_FIRST_FRAME;

@@ -2266,7 +2266,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Start switch camera animation.
         mCameraDevice.waitForIdle(); // Wait until startPreview finishes.
-        mCameraScreenNail.animateSwitchCamera(mirror);
+        mCameraScreenNail.animateSwitchCamera();
     }
 
     // Preview texture has been copied. Now camera can be released and the
