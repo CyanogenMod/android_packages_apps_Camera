@@ -125,6 +125,11 @@ public class FocusManager {
         }
     }
 
+    public void setFocusAreaIndicator(View l) {
+        mFocusIndicatorRotateLayout = (FocusIndicatorRotateLayout) l;
+        mFocusIndicator = l.findViewById(R.id.focus_indicator);
+    }
+
     public FocusManager(ComboPreferences preferences, String[] defaultFocusModes,
             View focusIndicatorRotate, Parameters parameters, Listener listener,
             boolean mirror, Looper looper) {
@@ -133,12 +138,10 @@ public class FocusManager {
 
         mPreferences = preferences;
         mDefaultFocusModes = defaultFocusModes;
-        mFocusIndicatorRotateLayout = (FocusIndicatorRotateLayout) focusIndicatorRotate;
+        setFocusAreaIndicator(focusIndicatorRotate);
         setParameters(parameters);
         mListener = listener;
         setMirror(mirror);
-
-        mFocusIndicator = focusIndicatorRotate.findViewById(R.id.focus_indicator);
     }
 
     public void setParameters(Parameters parameters) {
@@ -497,8 +500,8 @@ public class FocusManager {
 
     public void calculateTapArea(int focusWidth, int focusHeight, float areaMultiple,
             int x, int y, int previewWidth, int previewHeight, Rect rect) {
-        int areaWidth = (int)(focusWidth * areaMultiple);
-        int areaHeight = (int)(focusHeight * areaMultiple);
+        int areaWidth = (int) (focusWidth * areaMultiple);
+        int areaHeight = (int) (focusHeight * areaMultiple);
         int left = Util.clamp(x - areaWidth / 2, 0, previewWidth - areaWidth);
         int top = Util.clamp(y - areaHeight / 2, 0, previewHeight - areaHeight);
 

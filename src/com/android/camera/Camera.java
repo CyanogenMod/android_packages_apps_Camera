@@ -1718,6 +1718,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         initializeFocusManager();
         initializeMiscControls();
         initializeIndicatorControl();
+        mFocusAreaIndicator = (RotateLayout) findViewById(
+                R.id.focus_indicator_rotate_layout);
+        mFocusManager.setFocusAreaIndicator(mFocusAreaIndicator);
 
         // from onResume()
         if (!mIsImageCaptureIntent) updateThumbnailView();
