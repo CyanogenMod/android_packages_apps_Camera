@@ -88,6 +88,9 @@ public class VideoCamera extends ActivityBase
 
     private static final String TAG = "videocamera";
 
+    // We number the request code from 1000 to avoid collision with Gallery.
+    private static final int REQUEST_EFFECT_BACKDROPPER = 1000;
+
     private static final int CHECK_DISPLAY_ROTATION = 3;
     private static final int CLEAR_SCREEN_DELAY = 4;
     private static final int UPDATE_RECORD_TIME = 5;
@@ -1865,8 +1868,9 @@ public class VideoCamera extends ActivityBase
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case EffectsRecorder.EFFECT_BACKDROPPER:
+            case REQUEST_EFFECT_BACKDROPPER:
                 if (resultCode == RESULT_OK) {
                     // onActivityResult() runs before onResume(), so this parameter will be
                     // seen by startPreview from onResume()
@@ -1878,9 +1882,6 @@ public class VideoCamera extends ActivityBase
                     Log.w(TAG, "No URI from gallery");
                     mResetEffect = true;
                 }
-                break;
-            default:
-                Log.e(TAG, "Unknown activity result sent to Camera!");
                 break;
         }
     }
@@ -2210,7 +2211,7 @@ public class VideoCamera extends ActivityBase
             i.setDataAndType(Video.Media.EXTERNAL_CONTENT_URI,
                              "video/*");
             i.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-            startActivityForResult(i, EffectsRecorder.EFFECT_BACKDROPPER);
+            startActivityForResult(i, REQUEST_EFFECT_BACKDROPPER);
             return true;
         }
         if (previousEffectType == EffectsRecorder.EFFECT_NONE) {
