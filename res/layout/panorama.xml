@@ -18,12 +18,7 @@
         android:id="@+id/pano_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <com.android.gallery3d.ui.GLRootView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/gl_root_view"
-            android:visibility="gone" />
-
+    <include layout="@layout/gl_root_group"/>
     <include layout="@layout/pano_capture" />
     <include layout="@layout/pano_review" />
 </RelativeLayout>
