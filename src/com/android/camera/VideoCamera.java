@@ -458,7 +458,20 @@ public class VideoCamera extends ActivityBase
             // the camera then point the camera to floor or sky, we still have
             // the correct orientation.
             if (orientation == ORIENTATION_UNKNOWN) return;
-            mOrientation = Util.roundOrientation(orientation, mOrientation);
+            int newOrientation = Util.roundOrientation(orientation, mOrientation);
+
+            if (mOrientation != newOrientation) {
+                mOrientation = newOrientation;
+                // The input of effects recorder is affected by
+                // android.hardware.Camera.setDisplayOrientation. Its value only
+                // compensates the camera orientation (no Display.getRotation).
+                // So the orientation hint here should only consider sensor
+                // orientation.
+                if (effectsActive()) {
+                    mEffectsRecorder.setOrientationHint(mOrientation);
+                }
+            }
+
             // When the screen is unlocked, display rotation may change. Always
             // calculate the up-to-date orientationCompensation.
             int orientationCompensation =
@@ -466,10 +479,6 @@ public class VideoCamera extends ActivityBase
 
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
-                if (effectsActive()) {
-                    mEffectsRecorder.setOrientationHint(
-                            mOrientationCompensation % 360);
-                }
                 // Do not rotate the icons during recording because the video
                 // orientation is fixed after recording.
                 if (!mMediaRecorderRecording) {
@@ -1166,7 +1175,7 @@ public class VideoCamera extends ActivityBase
 
         // TODO: Confirm none of the following need to go to initializeEffectsRecording()
         // and none of these change even when the preview is not refreshed.
-        mEffectsRecorder.setAppToLandscape(inLandscape);
+        mEffectsRecorder.setCameraDisplayOrientation(mCameraDisplayOrientation);
         mEffectsRecorder.setCamera(mCameraDevice.getCamera());
         mEffectsRecorder.setCameraFacing(info.facing);
         mEffectsRecorder.setProfile(mProfile);
@@ -1174,13 +1183,15 @@ public class VideoCamera extends ActivityBase
         mEffectsRecorder.setOnInfoListener(this);
         mEffectsRecorder.setOnErrorListener(this);
 
-        // See android.hardware.Camera.Parameters.setRotation for
-        // documentation.
-        int rotation = 0;
+        // The input of effects recorder is affected by
+        // android.hardware.Camera.setDisplayOrientation. Its value only
+        // compensates the camera orientation (no Display.getRotation). So the
+        // orientation hint here should only consider sensor orientation.
+        int orientation = 0;
         if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
-            rotation = mOrientationCompensation % 360;
+            orientation = mOrientation;
         }
-        mEffectsRecorder.setOrientationHint(rotation);
+        mEffectsRecorder.setOrientationHint(orientation);
 
         mOrientationCompensationAtRecordStart = mOrientationCompensation;
 
