@@ -22,8 +22,6 @@ import com.android.gallery3d.ui.GLCanvas;
 import com.android.gallery3d.ui.RawTexture;
 import com.android.gallery3d.ui.SurfaceTextureScreenNail;
 
-import android.util.Log;
-
 /*
  * This is a ScreenNail which can displays camera preview.
  */
@@ -55,7 +53,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
     // Animation.
     private CaptureAnimManager mCaptureAnimManager = new CaptureAnimManager();
-    private SwitchAnimManager mSwitchAnimManager =new SwitchAnimManager();
+    private SwitchAnimManager mSwitchAnimManager = new SwitchAnimManager();
     private int mAnimState = ANIM_NONE;
     private RawTexture mAnimTexture;
     // Some methods are called by GL thread and some are called by main thread.
@@ -134,6 +132,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
             switch (mAnimState) {
                 case ANIM_SWITCH_COPY_TEXTURE:
                     copyPreviewTexture(canvas);
+                    mSwitchAnimManager.setReviewDrawingSize(width, height);
                     mListener.onPreviewTextureCopied();
                     mAnimState = ANIM_SWITCH_DARK_PREVIEW;
                     // The texture is ready. Fall through to draw darkened
@@ -145,7 +144,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                     canvas.setAlpha(alpha);
                     return;
                 case ANIM_SWITCH_START:
-                    mSwitchAnimManager.startAnimation(x, y, width, height);
+                    mSwitchAnimManager.startAnimation();
                     mAnimState = ANIM_SWITCH_RUNNING;
                     break;
                 case ANIM_CAPTURE_START:
@@ -160,7 +159,8 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                 if (mAnimState == ANIM_CAPTURE_RUNNING) {
                     drawn = mCaptureAnimManager.drawAnimation(canvas, this, mAnimTexture);
                 } else {
-                    drawn = mSwitchAnimManager.drawAnimation(canvas, this, mAnimTexture);
+                    drawn = mSwitchAnimManager.drawAnimation(canvas, x, y,
+                            width, height, this, mAnimTexture);
                 }
                 if (drawn) {
                     mListener.requestRender();
@@ -215,5 +215,12 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                 mListener.requestRender();
             }
         }
+    }
+
+    // We need to keep track of the size of preview frame on the screen because
+    // it's needed when we do switch-camera animation. See comments in
+    // SwitchAnimManager.java.
+    public void setPreviewFrameLayoutSize(int width, int height) {
+        mSwitchAnimManager.setPreviewFrameLayoutSize(width, height);
     }
 }
