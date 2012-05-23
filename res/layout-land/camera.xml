@@ -17,10 +17,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <com.android.gallery3d.ui.GLRootView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/gl_root_view" />
+    <include layout="@layout/gl_root_group"/>
     <LinearLayout android:id="@+id/camera_app_root"
             android:orientation="horizontal"
             android:layout_width="match_parent"
