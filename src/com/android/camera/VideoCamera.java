@@ -2424,7 +2424,7 @@ public class VideoCamera extends ActivityBase
     }
 
     private void showTapToSnapshotToast() {
-        new RotateTextToast(this, R.string.video_snapshot_hint, mOrientation)
+        new RotateTextToast(this, R.string.video_snapshot_hint, mOrientationCompensation)
                 .show();
         // Clear the preference.
         Editor editor = mPreferences.edit();
