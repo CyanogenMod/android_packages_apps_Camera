@@ -2344,7 +2344,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private void showTapToFocusToast() {
-        new RotateTextToast(this, R.string.tap_to_focus, mOrientation).show();
+        new RotateTextToast(this, R.string.tap_to_focus, mOrientationCompensation).show();
         // Clear the preference.
         Editor editor = mPreferences.edit();
         editor.putBoolean(CameraSettings.KEY_CAMERA_FIRST_USE_HINT_SHOWN, false);
