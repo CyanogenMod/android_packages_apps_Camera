@@ -86,7 +86,7 @@ public class EffectsRecorder {
     private long mMaxFileSize = 0;
     private int mMaxDurationMs = 0;
     private int mCameraFacing = Camera.CameraInfo.CAMERA_FACING_BACK;
-    private boolean mAppIsLandscape;
+    private int mCameraDisplayOrientation;
 
     private int mEffect = EFFECT_NONE;
     private int mCurrentEffect = EFFECT_NONE;
@@ -354,14 +354,12 @@ public class EffectsRecorder {
         setRecordingOrientation();
     }
 
-    /** Passes the native orientation of the Camera app (device dependent)
-     * to allow for correct output aspect ratio. Defaults to portrait */
-    public void setAppToLandscape(boolean landscape) {
+    public void setCameraDisplayOrientation(int orientation) {
         if (mState != STATE_CONFIGURE) {
             throw new RuntimeException(
-                "setAppToLandscape called after configuration!");
+                "setCameraDisplayOrientation called after configuration!");
         }
-        mAppIsLandscape = landscape;
+        mCameraDisplayOrientation = orientation;
     }
 
     public void setCameraFacing(int facing) {
@@ -406,10 +404,18 @@ public class EffectsRecorder {
         mGraphEnv = new GraphEnvironment();
         mGraphEnv.createGLEnvironment();
 
+        int videoFrameWidth = mProfile.videoFrameWidth;
+        int videoFrameHeight = mProfile.videoFrameHeight;
+        if (mCameraDisplayOrientation == 90 || mCameraDisplayOrientation == 270) {
+            int tmp = videoFrameWidth;
+            videoFrameWidth = videoFrameHeight;
+            videoFrameHeight = tmp;
+        }
+
         mGraphEnv.addReferences(
                 "textureSourceCallback", mSourceReadyCallback,
-                "recordingWidth", mProfile.videoFrameWidth,
-                "recordingHeight", mProfile.videoFrameHeight,
+                "recordingWidth", videoFrameWidth,
+                "recordingHeight", videoFrameHeight,
                 "recordingProfile", mProfile,
                 "learningDoneListener", mLearningDoneListener,
                 "recordingDoneListener", mRecordingDoneListener);
