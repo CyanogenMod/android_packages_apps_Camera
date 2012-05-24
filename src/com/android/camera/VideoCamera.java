@@ -1331,7 +1331,9 @@ public class VideoCamera extends ActivityBase
                 // previous insert to MediaProvider is completed.
                 String finalName = mCurrentVideoValues.getAsString(
                         Video.Media.DATA);
-                new File(mCurrentVideoFilename).renameTo(new File(finalName));
+                if (new File(mCurrentVideoFilename).renameTo(new File(finalName))) {
+                    mCurrentVideoFilename = finalName;
+                }
 
                 mContentResolver.update(mCurrentVideoUri, mCurrentVideoValues
                         , null, null);
