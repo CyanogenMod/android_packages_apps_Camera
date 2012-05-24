@@ -279,6 +279,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 mHandler.sendEmptyMessage(CAMERA_OPEN_DONE);
                 startPreview();
                 mHandler.sendEmptyMessage(START_PREVIEW_DONE);
+                mOnResumeTime = SystemClock.uptimeMillis();
+                mHandler.sendEmptyMessage(CHECK_DISPLAY_ROTATION);
             } catch (CameraHardwareException e) {
                 mHandler.sendEmptyMessage(OPEN_CAMERA_FAIL);
             } catch (CameraDisabledException e) {
@@ -1559,9 +1561,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
         keepScreenOnAwhile();
 
-        mOnResumeTime = SystemClock.uptimeMillis();
-        mHandler.sendEmptyMessageDelayed(CHECK_DISPLAY_ROTATION, 100);
-
         // Dismiss open menu if exists.
         PopupManager.getInstance(this).notifyShowPopup(null);
 
@@ -2181,7 +2180,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Util.fadeOut((View) mReviewDoneButton);
 
             Util.fadeIn(mShutterButton);
-            Util.fadeIn(mIndicatorControlContainer);
+            if (mIndicatorControlContainer != null) {
+                Util.fadeIn(mIndicatorControlContainer);
+            }
         }
     }
 
