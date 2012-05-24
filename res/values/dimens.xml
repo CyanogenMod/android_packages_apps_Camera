@@ -41,4 +41,5 @@
     <dimen name="onscreen_exposure_indicator_text_size">15dp</dimen>
     <dimen name="indicator_bar_padding">8dp</dimen>
     <dimen name="control_panel_min_length">105dp</dimen>
+    <dimen name="thumbnail_size">67dp</dimen>
 </resources>
