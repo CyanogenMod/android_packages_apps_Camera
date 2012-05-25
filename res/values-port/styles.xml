@@ -65,10 +65,11 @@
         <!-- Thumbnail size calculation relies on the layout width. If this is
              changed to wrap_content or match_parent, the code should be changed
              as well. -->
-        <item name="android:layout_width">52dp</item>
-        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_width">@dimen/thumbnail_size</item>
+        <item name="android:layout_height">@dimen/thumbnail_size</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginRight">8dp</item>
         <item name="android:alpha">0.5</item>
     </style>
 </resources>
