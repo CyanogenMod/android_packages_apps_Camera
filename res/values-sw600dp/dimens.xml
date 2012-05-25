@@ -23,4 +23,5 @@
     <dimen name="mode_picker_margin">16dp</dimen>
     <dimen name="indicator_bar_padding">12dp</dimen>
     <dimen name="control_panel_min_length">168dp</dimen>
+    <dimen name="thumbnail_size">101dp</dimen>
 </resources>
