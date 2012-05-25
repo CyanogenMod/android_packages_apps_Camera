@@ -127,8 +127,6 @@
     <string name="accessibility_increment" msgid="8447850530444401135">"+%1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"%1$sの切り替え"</string>
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"カメラに切り替え"</string>
-    <!-- no translation found for accessibility_switch_to_video (4991396355234561505) -->
-    <skip />
-    <!-- no translation found for accessibility_switch_to_panorama (604756878371875836) -->
-    <skip />
+    <string name="accessibility_switch_to_video" msgid="4991396355234561505">"動画に切り替え"</string>
+    <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"パノラマに切り替え"</string>
 </resources>
