@@ -264,9 +264,18 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     // The purpose is not to block the main thread in onCreate and onResume.
     private class CameraStartUpThread extends Thread {
+        private volatile boolean mCancelled;
+
+        public void cancel() {
+            mCancelled = true;
+        }
+
         @Override
         public void run() {
             try {
+                // We need to check whether the activity is paused before long
+                // operations to ensure that onPause() can be done ASAP.
+                if (mCancelled) return;
                 mCameraDevice = Util.openCamera(Camera.this, mCameraId);
                 mParameters = mCameraDevice.getParameters();
                 // Wait until all the initialization needed by startPreview are
@@ -275,8 +284,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
                 initializeCapabilities();
                 if (mFocusManager == null) initializeFocusManager();
+                if (mCancelled) return;
                 setCameraParameters(UPDATE_PARAM_ALL);
                 mHandler.sendEmptyMessage(CAMERA_OPEN_DONE);
+                if (mCancelled) return;
                 startPreview();
                 mHandler.sendEmptyMessage(START_PREVIEW_DONE);
                 mOnResumeTime = SystemClock.uptimeMillis();
@@ -1574,6 +1585,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     void waitCameraStartUpThread() {
         try {
             if (mCameraStartUpThread != null) {
+                mCameraStartUpThread.cancel();
                 mCameraStartUpThread.join();
                 mCameraStartUpThread = null;
                 setCameraState(IDLE);
