@@ -942,14 +942,15 @@ public class VideoCamera extends ActivityBase
             // display.
             mEffectsRecorder.disconnectDisplay();
         } else {
-            // Close the file descriptor only if the effects are not active.
-            // If effects are active, we need to wait till we get the callback
-            // from the Effects that the graph is done recording before we can
-            // close the file descriptor. That also needs a change in the
-            // stopVideoRecording() call to not call closeCamera if the effects
-            // are active, because that will close down the effects are well,
-            // thus making this if condition invalid.
+            // Close the file descriptor and clear the video namer only if the
+            // effects are not active. If effects are active, we need to wait
+            // till we get the callback from the Effects that the graph is done
+            // recording. That also needs a change in the stopVideoRecording()
+            // call to not call closeCamera if the effects are active, because
+            // that will close down the effects are well, thus making this if
+            // condition invalid.
             closeVideoFileDescriptor();
+            clearVideoNamer();
         }
 
         if (mReceiver != null) {
@@ -963,8 +964,6 @@ public class VideoCamera extends ActivityBase
 
         if (mOrientationListener != null) mOrientationListener.disable();
         if (mLocationManager != null) mLocationManager.recordLocation(false);
-        if (mVideoNamer != null) mVideoNamer.finish();
-        mVideoNamer = null;
 
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
         mHandler.removeMessages(SWITCH_CAMERA);
@@ -1607,20 +1606,14 @@ public class VideoCamera extends ActivityBase
             // during recording. Release the camera as soon as possible because
             // face unlock or other applications may need to use the camera.
             // However, if the effects are active, then we can only release the
-            // camera and cannot release the effectsrecorder since that will stop
-            // the graph. That will mean that in onPause() there is no way to know
-            // when to closeVideoFileDescriptor and when not. That leads to an
-            // exception when the activity is called from another app such as
-            // Messaging, Movie Studio, etc and it goes out of focus when the recording
-            // is still going on as the effects need the mVideoFileDEscriptor to be
-            // valid till the onEffectsUpdate callback happens.
-            // It is possible to separate out the Camera release part
-            // and the effects release part. However, the effectsrecorder does hold
-            // on to the camera, hence, it needs to be "disconnected" from the camera
-            // in the closeCamera call.
+            // camera and cannot release the effects recorder since that will
+            // stop the graph. It is possible to separate out the Camera release
+            // part and the effects release part. However, the effects recorder
+            // does hold on to the camera, hence, it needs to be "disconnected"
+            // from the camera in the closeCamera call.
             if (mPaused) {
-                // Only closing camera if effects active. Effects will be closed in the
-                // callback from effects.
+                // Closing only the camera part if effects active. Effects will
+                // be closed in the callback from effects.
                 boolean closeEffects = !effectsActive();
                 closeCamera(closeEffects);
             }
@@ -1921,10 +1914,11 @@ public class VideoCamera extends ActivityBase
                 }
             }
             mEffectsDisplayResult = false;
-            // In onPause, this was not called if the effects were active. We had to
-            // wait till the effects recording is complete to do this.
+            // In onPause, these were not called if the effects were active. We
+            // had to wait till the effects recording is complete to do this.
             if (mPaused) {
                 closeVideoFileDescriptor();
+                clearVideoNamer();
             }
         } else if (effectMsg == EffectsRecorder.EFFECT_MSG_PREVIEW_RUNNING) {
             // Enable the shutter button once the preview is complete.
@@ -2443,6 +2437,13 @@ public class VideoCamera extends ActivityBase
         Editor editor = mPreferences.edit();
         editor.putBoolean(CameraSettings.KEY_VIDEO_FIRST_USE_HINT_SHOWN, false);
         editor.apply();
+    }
+
+    private void clearVideoNamer() {
+        if (mVideoNamer != null) {
+            mVideoNamer.finish();
+            mVideoNamer = null;
+        }
     }
 
     private static class VideoNamer extends Thread {
