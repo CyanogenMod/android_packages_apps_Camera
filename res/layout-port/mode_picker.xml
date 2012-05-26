@@ -58,13 +58,15 @@
         <View android:layout_height="match_parent"
                 android:layout_width="1dp"
                 android:layout_alignParentRight="true"
-                android:background="@android:color/white"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="#33ffffff"/>
     </RelativeLayout>
     <LinearLayout android:id="@+id/mode_selection"
             android:orientation="horizontal"
             android:layout_height="match_parent"
             android:layout_width="163dp"
-            android:background="@drawable/bg_switcher"
+            android:background="@android:color/black"
             android:visibility="gone">
         <com.android.camera.ui.RotateImageView android:id="@+id/mode_camera"
                 android:contentDescription="@string/accessibility_switch_to_camera"
@@ -89,6 +91,8 @@
                 android:src="@drawable/ic_switch_pan_holo_light" />
         <View android:layout_height="match_parent"
                 android:layout_width="1dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:background="@color/mode_selection_border"/>
     </LinearLayout>
 </com.android.camera.ModePicker>

@@ -58,16 +58,20 @@
         <View android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentTop="true"
-                android:background="@android:color/white"/>
+                android:layout_marginRight="8dp"
+                android:layout_marginLeft="8dp"
+                android:background="#33ffffff"/>
     </RelativeLayout>
     <LinearLayout android:id="@+id/mode_selection"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="163dp"
-            android:background="@drawable/bg_switcher"
+            android:background="@android:color/black"
             android:visibility="gone">
         <View android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginLeft="8dp"
                 android:background="@color/mode_selection_border"/>
         <com.android.camera.ui.RotateImageView android:id="@+id/mode_panorama"
                 android:contentDescription="@string/accessibility_switch_to_panorama"
