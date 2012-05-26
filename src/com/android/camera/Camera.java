@@ -792,6 +792,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Log.v(TAG, "mPictureDisplayedToJpegCallbackTime = "
                     + mPictureDisplayedToJpegCallbackTime + "ms");
 
+            mFocusManager.updateFocusUI(); // Ensure focus indicator is hidden.
             if (!mIsImageCaptureIntent) {
                 startPreview();
                 setCameraState(IDLE);
