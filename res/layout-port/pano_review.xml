@@ -16,7 +16,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pano_review_layout"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:orientation="horizontal"
         android:layout_height="match_parent"
         android:layout_width="match_parent">

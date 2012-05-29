@@ -28,6 +28,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.graphics.YuvImage;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.media.ExifInterface;
@@ -1000,6 +1001,9 @@ public class PanoramaActivity extends ActivityBase implements
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
+        Drawable lowResReview = null;
+        if (mThreadRunning) lowResReview = mReview.getDrawable();
+
         // Change layout in response to configuration change
         mCaptureLayout.setOrientation(
                 newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -1013,6 +1017,11 @@ public class PanoramaActivity extends ActivityBase implements
         inflater.inflate(R.layout.pano_review, mPanoLayout);
 
         setViews(getResources());
+        if (mThreadRunning) {
+            mReview.setImageDrawable(lowResReview);
+            mCaptureLayout.setVisibility(View.GONE);
+            mReviewLayout.setVisibility(View.VISIBLE);
+        }
 
         updateThumbnailView();
     }
@@ -1053,7 +1062,7 @@ public class PanoramaActivity extends ActivityBase implements
             mRotateDialog.showWaitingDialog(mDialogWaitingPreviousString);
             mWaitProcessorTask = new WaitProcessorTask().execute();
         } else {
-            mGLRootView.setVisibility(View.VISIBLE);
+            if (!mThreadRunning) mGLRootView.setVisibility(View.VISIBLE);
             // Camera must be initialized before MosaicFrameProcessor is
             // initialized. The preview size has to be decided by camera device.
             initMosaicFrameProcessorIfNeeded();
@@ -1123,6 +1132,13 @@ public class PanoramaActivity extends ActivityBase implements
             // Camera open failed. Return.
             return;
         }
+
+        // This works around a driver issue. startPreview may fail if
+        // stopPreview/setPreviewTexture/startPreview are called several times
+        // in a row. mCameraTexture can be null after pressing home during
+        // mosaic generation and coming back. Preview will be started later in
+        // onLayoutChange->configMosaicPreview. This also reduces the latency.
+        if (mCameraTexture == null) return;
 
         // If we're previewing already, stop the preview first (this will blank
         // the screen).
