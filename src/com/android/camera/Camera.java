@@ -2104,15 +2104,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         if (mContinousFocusSupported) {
-            try {
-                if (mParameters.getFocusMode().equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                    mCameraDevice.setAutoFocusMoveCallback(mAutoFocusMoveCallback);
-                } else {
-                    mCameraDevice.setAutoFocusMoveCallback(null);
-                }
-            } catch (RuntimeException e) {
-                // Ignore. This can be removed if CTS requires autofocus move
-                // callback.
+            if (mParameters.getFocusMode().equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                mCameraDevice.setAutoFocusMoveCallback(mAutoFocusMoveCallback);
+            } else {
+                mCameraDevice.setAutoFocusMoveCallback(null);
             }
         }
     }
