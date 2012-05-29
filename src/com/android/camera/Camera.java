@@ -525,7 +525,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void startFaceDetection() {
-        if (mFaceDetectionStarted || mCameraState != IDLE) return;
+        if (mFaceDetectionStarted) return;
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mFaceDetectionStarted = true;
             mFaceView.clear();
