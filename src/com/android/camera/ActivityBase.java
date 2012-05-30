@@ -366,7 +366,16 @@ abstract public class ActivityBase extends AbstractGalleryActivity
             return;
         }
 
-        mCameraScreenNail.setPreviewFrameLayoutSize(right - left, bottom - top);
+
+        int width = right - left;
+        int height = bottom - top;
+        if (Util.getDisplayRotation(this) % 180 == 0) {
+            mCameraScreenNail.setPreviewFrameLayoutSize(width, height);
+        } else {
+            // Swap the width and height. Camera screen nail draw() is based on
+            // natural orientation, not the view system orientation.
+            mCameraScreenNail.setPreviewFrameLayoutSize(height, width);
+        }
 
         // Find out the coordinates of the preview frame relative to GL
         // root view.
@@ -378,8 +387,8 @@ abstract public class ActivityBase extends AbstractGalleryActivity
 
         int l = viewLocation[0] - rootLocation[0];
         int t = viewLocation[1] - rootLocation[1];
-        int r = l + (right - left);
-        int b = t + (bottom - top);
+        int r = l + width;
+        int b = t + height;
         Rect frame = new Rect(l, t, r, b);
         Log.d(TAG, "set CameraRelativeFrame as " + frame);
         mAppBridge.setCameraRelativeFrame(frame);
