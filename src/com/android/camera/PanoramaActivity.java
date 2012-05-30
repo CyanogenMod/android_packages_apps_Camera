@@ -697,8 +697,6 @@ public class PanoramaActivity extends ActivityBase implements
         mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan);
         mShutterButton.setOnShutterButtonListener(this);
 
-        mRotateDialog = new RotateDialogController(this, R.layout.rotate_dialog);
-
         if (getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_PORTRAIT) {
             Rotatable[] rotateLayout = {
@@ -715,6 +713,10 @@ public class PanoramaActivity extends ActivityBase implements
             for (Rotatable r : rotateLayout) {
                 r.setOrientation(270, false);
             }
+        } else {
+            // Even if the orientation is 0, we still need to set because it might be previously
+            // set when the configuration is portrait.
+            mRotateDialog.setOrientation(0, false);
         }
     }
 
@@ -725,6 +727,7 @@ public class PanoramaActivity extends ActivityBase implements
         mIndicatorColor = appRes.getColor(R.color.pano_progress_indication);
         mIndicatorColorFast = appRes.getColor(R.color.pano_progress_indication_fast);
         mPanoLayout = (ViewGroup) findViewById(R.id.pano_layout);
+        mRotateDialog = new RotateDialogController(this, R.layout.rotate_dialog);
         setViews(appRes);
     }
 
