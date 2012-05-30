@@ -219,7 +219,8 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
     // We need to keep track of the size of preview frame on the screen because
     // it's needed when we do switch-camera animation. See comments in
-    // SwitchAnimManager.java.
+    // SwitchAnimManager.java. This is based on the natural orientation, not the
+    // view system orientation.
     public void setPreviewFrameLayoutSize(int width, int height) {
         mSwitchAnimManager.setPreviewFrameLayoutSize(width, height);
     }
