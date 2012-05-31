@@ -362,6 +362,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 case START_PREVIEW_DONE: {
                     mCameraStartUpThread = null;
                     setCameraState(IDLE);
+                    startFaceDetection();
                     break;
                 }
 
@@ -396,7 +397,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mIndicatorControlContainer.setEnabled(false);
         initializeZoom();
         updateOnScreenIndicators();
-        startFaceDetection();
         showTapToFocusToastIfNeeded();
     }
 
@@ -2265,6 +2265,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mFocusManager.setParameters(mInitialParams);
         startPreview();
         setCameraState(IDLE);
+        startFaceDetection();
         initializeIndicatorControl();
 
         // from onResume
@@ -2272,7 +2273,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // from initializeFirstTime
         initializeZoom();
         updateOnScreenIndicators();
-        startFaceDetection();
         showTapToFocusToastIfNeeded();
 
         // Start switch camera animation.
