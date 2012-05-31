@@ -215,6 +215,8 @@ public class VideoCamera extends ActivityBase
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
     private ZoomControl mZoomControl;
+    private boolean mRestoreFlash;  // This is used to check if we need to restore the flash
+                                    // status when going back from gallery.
 
     // This Handler is used to post message back onto the main thread of the
     // application
@@ -1764,9 +1766,14 @@ public class VideoCamera extends ActivityBase
         mParameters.setPreviewFrameRate(mProfile.videoFrameRate);
 
         // Set flash mode.
-        String flashMode = mPreferences.getString(
-                CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
-                getString(R.string.pref_camera_video_flashmode_default));
+        String flashMode;
+        if (mShowCameraAppView) {
+            flashMode = mPreferences.getString(
+                    CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
+                    getString(R.string.pref_camera_video_flashmode_default));
+        } else {
+            flashMode = Parameters.FLASH_MODE_OFF;
+        }
         List<String> supportedFlash = mParameters.getSupportedFlashModes();
         if (isSupported(flashMode, supportedFlash)) {
             mParameters.setFlashMode(flashMode);
@@ -2354,6 +2361,26 @@ public class VideoCamera extends ActivityBase
         mCameraDevice.takePicture(null, null, null, new JpegPictureCallback(loc));
         showVideoSnapshotUI(true);
         mSnapshotInProgress = true;
+    }
+
+    @Override
+    protected void updateCameraAppView() {
+        super.updateCameraAppView();
+
+        if (!mPreviewing || mParameters.getFlashMode() == null) return;
+
+        // When going to and back from gallery, we need to turn off/on the flash.
+        if (!mShowCameraAppView) {
+            if (mParameters.getFlashMode().equals(Parameters.FLASH_MODE_OFF)) {
+                mRestoreFlash = false;
+                return;
+            }
+            mRestoreFlash = true;
+            setCameraParameters();
+        } else if (mRestoreFlash) {
+            mRestoreFlash = false;
+            setCameraParameters();
+        }
     }
 
     private final class JpegPictureCallback implements PictureCallback {

@@ -318,7 +318,7 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         }
     }
 
-    private void updateCameraAppView() {
+    protected void updateCameraAppView() {
         if (mShowCameraAppView) {
             mCameraAppView.setVisibility(View.VISIBLE);
             // The "transparent region" is not recomputed when a sibling of
