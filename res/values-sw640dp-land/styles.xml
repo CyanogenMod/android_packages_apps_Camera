@@ -24,12 +24,12 @@
         <!-- Thumbnail size calculation relies on the layout width. If this is
              changed to wrap_content or match_parent, the code should be changed
              as well. -->
-        <item name="android:layout_width">86dp</item>
-        <item name="android:layout_height">86dp</item>
+        <item name="android:layout_width">130dp</item>
+        <item name="android:layout_height">130dp</item>
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:layout_alignParentRight">true</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginRight">28dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
     </style>
     <style name="SettingPopupWindow">
         <item name="android:layout_width">wrap_content</item>
