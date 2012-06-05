@@ -45,7 +45,7 @@ public class FocusManager {
 
     private static final int RESET_TOUCH_FOCUS = 0;
     private static final int FOCUS_BEEP_VOLUME = 100;
-    private static final int RESET_TOUCH_FOCUS_DELAY = 3000;
+    private static final int RESET_TOUCH_FOCUS_DELAY = 15000;
 
     private int mState = STATE_IDLE;
     private static final int STATE_IDLE = 0; // Focus is not active.
