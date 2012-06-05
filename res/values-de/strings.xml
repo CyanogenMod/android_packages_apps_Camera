@@ -52,10 +52,13 @@
     <string name="pref_camera_recordlocation_entry_on">An</string>
 
     <string name="pref_video_quality_title">Videoqualität</string>
+    <string name="pref_video_quality_entry_hd">HD (30m)</string>
     <string name="pref_video_quality_entry_high">Hoch (30m)</string>
+    <string name="pref_video_quality_entry_wide">16:9 (30m)</string>
     <string name="pref_video_quality_entry_low">Niedrig (30m)</string>
     <string name="pref_video_quality_entry_mms">MMS (niedrig, 30s)</string>
     <string name="pref_video_quality_entry_youtube">YouTube (hoch, 15m)</string>
+    <string name="pref_video_quality_entry_youtubehd">YouTube (HD, 15m)</string>
 
     <string name="pref_camera_settings_category">Kameraeinstellungen</string>
     <string name="pref_camcorder_settings_category">Camcordereinstellungen</string>
@@ -70,6 +73,7 @@
     <string name="pref_camera_picturesize_entry_2048x1536">3 Millionen Pixel</string>
     <string name="pref_camera_picturesize_entry_2048x1216">2,5 Millionen Pixel (16:9)</string>
     <string name="pref_camera_picturesize_entry_1600x1200">2 Millionen Pixel</string>
+    <string name="pref_camera_picturesize_entry_1600x960">1,5 Millionen Pixel (16:9)</string>
     <string name="pref_camera_picturesize_entry_1024x768">1 Million Pixel</string>
 
     <string name="pref_camera_jpegquality_title">Bildqualität</string>
@@ -89,6 +93,9 @@
     <string name="pref_camera_other_settings_title">Sonstige Optionen</string>
     <string name="pref_camera_timer_duration">Selbstauslöser</string>
     <string name="pref_camera_timer_duration_summary">Zeitverzögerung für Selbstauslöser</string>
+    <string name="pref_camera_storage_external">Externe SD-Karte verwenden</string>
+    <string name="pref_camera_storage_external_summary_off">Fotos und Videos im internen Telefonspeicher speichern (Frei: %s)</string>
+    <string name="pref_camera_storage_external_summary_on">Fotos und Videos auf der SD-Karte speichern (Frei: %s)</string>
 
     <!-- More Settings screen, zoom button title -->
     <string name="pref_camera_vol_zoom_title">Lautstärke als Zoom</string>
@@ -117,6 +124,9 @@
     <string name="pref_camera_focusmode_entry_normal">Normal</string>
     <string name="pref_camera_focusmode_entry_macro">Makro</string>
     <string name="pref_camera_focusmode_entry_infinity">Unendlich</string>
+    <string name="pref_camera_focusmode_entry_touch">Manuell (Touch)</string>
+    <string name="pref_camera_focusmode_entry_fixed">Fix</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Gesichtserkennung</string>
 
     <!-- Settings screen, Capture mode title -->
     <string name="pref_camera_capturemode_title">Aufnahmemodus</string>
@@ -215,6 +225,7 @@
     <string name="pref_camera_scenemode_entry_flowers">Blumen</string>
     <string name="pref_camera_scenemode_entry_duskdawn">Dämmerung</string>
     <string name="pref_camera_scenemode_entry_fallcolor">Herbst</string>
+    <string name="pref_camera_scenemode_entry_text">Text</string>
 
     <string name="pref_restore_title">Kameraeinstellungen</string>
     <string name="pref_restore_detail">Standard wiederherstellen</string>
@@ -264,4 +275,5 @@
      <string name="pref_camera_autoexposure_entry_frameaverage">Bildmittel</string>
      <string name="pref_camera_autoexposure_entry_centerweighted">Mittengewichtet</string>
      <string name="pref_camera_autoexposure_entry_spotmetering">Punktmessung</string>
+     <string name="pref_camera_autoexposure_entry_matrixmetering">Matrixmessung</string>
 </resources>
