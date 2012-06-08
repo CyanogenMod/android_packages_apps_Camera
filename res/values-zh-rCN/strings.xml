@@ -68,6 +68,7 @@
     <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"白炽光"</string>
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"日光"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"荧光"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">"阴天-光线"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"阴天"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"取景模式"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"自动"</string>
@@ -126,4 +127,19 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"减少%1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"增加%1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"%1$s开关"</string>
+    
+        <!-- Settings screen, Timer mode title -->
+    <string name="pref_camera_timer_title">定时拍照</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_timer_entry_0">关闭</string>
+    <string name="pref_camera_timer_entry_10">10秒</string>
+    <string name="pref_camera_timer_entry_20">20秒</string>
+    <string name="pref_camera_timer_entry_30">30秒</string>
+    <string name="pref_camera_timer_entry_40">40秒</string>
+    <string name="pref_camera_timer_entry_50">50秒</string>
+    <string name="pref_camera_timer_entry_60">60秒</string>
+    
+        <!-- More Settings screen, storage title -->
+    <string name="pref_camera_storage_title">储存</string>
 </resources>
