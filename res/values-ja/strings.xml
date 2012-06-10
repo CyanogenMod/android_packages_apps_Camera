@@ -125,6 +125,9 @@
     <string name="accessibility_switch" msgid="6995966685498958895">"%1$sの切り替え"</string>
 
     <!-- CM Extra entries -->
+    <!-- More Settings screen, storage title -->
+    <string name="pref_camera_storage_title">ストレージ</string>
+
     <string name="pref_camera_power_shutter_title">電源ボタンシャッター</string>
     <string name="pref_camera_power_shutter_default">オフ</string>
 
@@ -144,5 +147,13 @@
     <string name="pref_camera_scenemode_entry_sports">スポーツ</string>
     <string name="pref_camera_scenemode_entry_candlelight">キャンドル</string>
 
+    <string name="pref_camera_timer_title">タイマーモード</string>
+    <string name="pref_camera_timer_entry_0">オフ</string>
+    <string name="pref_camera_timer_entry_10">10秒</string>
+    <string name="pref_camera_timer_entry_20">20秒</string>
+    <string name="pref_camera_timer_entry_30">30秒</string>
+    <string name="pref_camera_timer_entry_40">40秒</string>
+    <string name="pref_camera_timer_entry_50">50秒</string>
+    <string name="pref_camera_timer_entry_60">60秒</string>
 
 </resources>
