@@ -51,11 +51,17 @@
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervallo rallentatore"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Impostazioni fotocamera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Impostazioni videocamera"</string>
+    <string name="pref_camera_power_shutter_title">Scatta tasto On/Off</string>
+    <string name="pref_camera_power_shutter_default">Off</string>
+    <string name="pref_camera_storage_title">Memoria</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Dimensioni foto"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Messa a fuoco"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatica"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
+    <string name="pref_camera_focusmode_entry_fixed">Fisso</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Rilevamento viso</string>
+    <string name="pref_camera_timer_title">Autoscatto</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Modalità flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatica"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Attiva"</string>
@@ -66,12 +72,24 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Luce diurna"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Luce neon"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Nuvoloso"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Nuvoloso-Luce diurna</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Modalità scena"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatica"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Movimento"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Notturna"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Tramonto"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Festa"</string>
+    <string name="pref_camera_scenemode_entry_backlight">Controluce</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Tramonto/Alba</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Colori autunnali</string>
+    <string name="pref_camera_scenemode_entry_text">Testo</string>
+    <string name="pref_camera_scenemode_entry_portrait">Ritratto</string>
+    <string name="pref_camera_scenemode_entry_landscape">Paesaggio</string>
+    <string name="pref_camera_scenemode_entry_beach">Spiaggia</string>
+    <string name="pref_camera_scenemode_entry_snow">Neve</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Fuochi d\'artificio</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Lume di candela</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Non selezionabile in modalità scena."</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Impostazioni fotocamera"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Ripristina predefinite"</string>
