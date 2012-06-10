@@ -150,4 +150,9 @@
 
     <!-- More Settings screen, storage title -->
     <string name="pref_camera_storage_title">Speicherort</string>
+
+    <!-- More Settings screen, power button title -->
+    <string name="pref_camera_power_shutter_title">Hardware Auslöser</string>
+    <string name="pref_camera_power_shutter_default">Aus</string>
+
 </resources>
