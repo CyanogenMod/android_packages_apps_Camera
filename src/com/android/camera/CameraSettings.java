@@ -226,16 +226,9 @@ public class CameraSettings {
             return;
         }
 
-        CharSequence[] entryValues = new CharSequence[2];
-        for (int i = 0; i < mCameraInfo.length; ++i) {
-            int index =
-                    (mCameraInfo[i].facing == CameraInfo.CAMERA_FACING_FRONT)
-                    ? CameraInfo.CAMERA_FACING_FRONT
-                    : CameraInfo.CAMERA_FACING_BACK;
-            if (entryValues[index] == null) {
-                entryValues[index] = "" + i;
-                if (entryValues[((index == 1) ? 0 : 1)] != null) break;
-            }
+        CharSequence[] entryValues = new CharSequence[numOfCameras];
+        for (int i = 0; i < numOfCameras; ++i) {
+            entryValues[i] = "" + i;
         }
         preference.setEntryValues(entryValues);
     }
