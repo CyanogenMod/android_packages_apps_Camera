@@ -107,7 +107,6 @@
     <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"Ojos pequeños"</string>
     <string name="effect_backdropper_space" msgid="7935661090723068402">"En el espacio"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Atardecer"</string>
-    <string name="effect_backdropper_disco" msgid="8494822051982972854">"Disco"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Tu video"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Desactiva el dispositivo."\n"Deja de usarlo durante unos minutos."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"No se puede seleccionar si se activó el efecto."</string>
