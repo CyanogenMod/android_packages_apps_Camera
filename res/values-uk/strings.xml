@@ -107,7 +107,6 @@
     <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"Маленькі очі"</string>
     <string name="effect_backdropper_space" msgid="7935661090723068402">"У космосі"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Захід сонця"</string>
-    <string name="effect_backdropper_disco" msgid="8494822051982972854">"Диско"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Ваше відео"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Покладіть свій пристрій."\n"На декілька секунд вийдіть із поля зору."</string>
     <string name="not_selectable_in_effect" msgid="4568604144269499202">"Неможливо вибрати, якщо ввімкнено ефект."</string>
