@@ -263,7 +263,6 @@
         <item>@string/effect_goofy_face_small_eyes</item>
         <item>@string/effect_backdropper_space</item>
         <item>@string/effect_backdropper_sunset</item>
-        <item>@string/effect_backdropper_disco</item>
         <item>@string/effect_backdropper_gallery</item>
     </string-array>
 
@@ -277,7 +276,6 @@
         <item>goofy_face/small_eyes</item>
         <item>backdropper/file:///system/media/video/AndroidInSpace.480p.mp4</item>
         <item>backdropper/file:///system/media/video/Sunset.480p.mp4</item>
-        <item>backdropper/file:///system/media/video/Disco.480p.mp4</item>
         <item>backdropper/gallery</item>
     </string-array>
 
@@ -291,7 +289,6 @@
         <item>@drawable/ic_video_effects_faces_small_eyes_holo_dark</item>
         <item>@drawable/ic_video_effects_background_intergalactic_holo</item>
         <item>@drawable/ic_video_effects_background_fields_of_wheat_holo</item>
-        <item>@drawable/ic_video_effects_background_disco_holo</item>
         <item>@drawable/ic_video_effects_background_normal_holo_dark</item>
     </array>
 
