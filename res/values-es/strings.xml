@@ -139,4 +139,5 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"Reducir %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Aumentar %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"Interruptor %1$s"</string>
+    <string name="pref_camera_focus_sound_title">Sonido Enfoque</string>
 </resources>
