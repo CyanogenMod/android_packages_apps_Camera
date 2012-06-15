@@ -74,6 +74,17 @@ abstract public class ActivityBase extends Activity {
         }
     }
 
+    protected boolean focusSound(ComboPreferences prefs) {
+        prefs.setLocalId(getApplicationContext(), 0);
+        String val = prefs.getString(CameraSettings.KEY_FOCUS_SOUND,
+                getResources().getString(R.string.pref_camera_focus_sound_default));
+        if (val.equals(CameraSettings.VALUE_ON)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

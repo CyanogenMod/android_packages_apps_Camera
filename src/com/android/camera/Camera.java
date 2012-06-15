@@ -1207,7 +1207,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void playSound(int soundId) {
-        mCameraSound.playSound(soundId);
+        if(focusSound(mPreferences)) {
+            mCameraSound.playSound(soundId);
+        }
     }
 
     private boolean saveDataToFile(String filePath, byte[] data) {
@@ -1400,6 +1402,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         final String[] OTHER_SETTING_KEYS = {
                 CameraSettings.KEY_RECORD_LOCATION,
                 CameraSettings.KEY_POWER_SHUTTER,
+                CameraSettings.KEY_FOCUS_SOUND,
                 CameraSettings.KEY_STORAGE,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_FOCUS_MODE,
