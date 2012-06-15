@@ -136,6 +136,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private boolean mMeteringAreaSupported;
     private boolean mAeLockSupported;
     private boolean mAwbLockSupported;
+    private boolean mFocusSound;
 
     private MyOrientationEventListener mOrientationListener;
     // The degrees of the device rotated clockwise from its natural orientation.
@@ -1111,7 +1112,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void playSound(int soundId) {
-        mCameraSound.playSound(soundId);
+        if(mFocusSound) {
+            mCameraSound.playSound(soundId);
+        }
     }
 
     private boolean saveDataToFile(String filePath, byte[] data) {
@@ -1164,6 +1167,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         getPreferredCameraId();
         mStorage = CameraSettings.readStorage(mPreferences);
         powerShutter(mPreferences);
+        mFocusSound = focusSound(mPreferences);
         String[] defaultFocusModes = getResources().getStringArray(
                 R.array.pref_camera_focusmode_default_array);
         mFocusManager = new FocusManager(mPreferences, defaultFocusModes);
@@ -1304,6 +1308,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         final String[] OTHER_SETTING_KEYS = {
                 CameraSettings.KEY_RECORD_LOCATION,
                 CameraSettings.KEY_POWER_SHUTTER,
+                CameraSettings.KEY_FOCUS_SOUND,
                 CameraSettings.KEY_STORAGE,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_FOCUS_MODE,
