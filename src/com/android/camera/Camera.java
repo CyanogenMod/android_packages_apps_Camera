@@ -196,6 +196,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private String mStorage;
 
+    // Stops the preview on picture taken
+    private static boolean mForceStopPreviewOnPictureTaken;
+
+    // Restarts the preview on picture size changed
+    private static boolean mRestartPreviewOnPictureSizeChange;
+
     private Runnable mDoSnapRunnable = new Runnable() {
         public void run() {
             onShutterButtonClick();
@@ -797,6 +803,15 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 final byte [] jpegData, final android.hardware.Camera camera) {
             if (mPausing) {
                 return;
+            }
+
+            mForceStopPreviewOnPictureTaken = getResources().getBoolean(R.bool.forceStopPreviewOnPictureTaken);
+            if (mForceStopPreviewOnPictureTaken) {
+                // If preview is running, restart preview
+                if (mCameraState != PREVIEW_STOPPED) {
+                    stopPreview();
+                    startPreview();
+                }
             }
 
             mJpegPictureCallbackTime = System.currentTimeMillis();
@@ -2109,6 +2124,17 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             List<Size> supported = mParameters.getSupportedPictureSizes();
             CameraSettings.setCameraPictureSize(
                     pictureSize, supported, mParameters);
+
+            mRestartPreviewOnPictureSizeChange = getResources().getBoolean(R.bool.restartPreviewOnPictureSizeChange);
+            if (mRestartPreviewOnPictureSizeChange) {
+                // If preview is running, stop preview and let startPreview call
+                // this function again because we cannot change size on the fly
+                if (mCameraState != PREVIEW_STOPPED) {
+                    stopPreview();
+                    startPreview();
+                    return;
+                }
+            }
         }
 
         // Set the preview frame aspect ratio according to the picture size.
