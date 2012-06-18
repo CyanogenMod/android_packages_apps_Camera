@@ -196,6 +196,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private String mStorage;
 
+    // Stops the preview after a picture got taken
+    private static boolean mForceStopPreview;
+
     private Runnable mDoSnapRunnable = new Runnable() {
         public void run() {
             onShutterButtonClick();
@@ -797,6 +800,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 final byte [] jpegData, final android.hardware.Camera camera) {
             if (mPausing) {
                 return;
+            }
+
+            mForceStopPreview = getResources().getBoolean(R.bool.forceStopPreviewOnPictureTaken);
+            if(mForceStopPreview) {
+                Log.i(TAG, "Picture captured, force stopPreview()");
+                stopPreview();
             }
 
             mJpegPictureCallbackTime = System.currentTimeMillis();
