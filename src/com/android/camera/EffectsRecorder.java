@@ -17,18 +17,6 @@
 package com.android.camera;
 
 import android.content.Context;
-import android.filterfw.GraphEnvironment;
-import android.filterfw.core.Filter;
-import android.filterfw.core.GLEnvironment;
-import android.filterfw.core.GraphRunner;
-import android.filterfw.core.GraphRunner.OnRunnerDoneListener;
-import android.filterfw.geometry.Point;
-import android.filterfw.geometry.Quad;
-import android.filterpacks.videoproc.BackDropperFilter;
-import android.filterpacks.videoproc.BackDropperFilter.LearningDoneListener;
-import android.filterpacks.videosink.MediaEncoderFilter.OnRecordingDoneListener;
-import android.filterpacks.videosrc.SurfaceTextureSource.SurfaceTextureSourceListener;
-import android.filterpacks.videosrc.SurfaceTextureTarget;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -37,17 +25,89 @@ import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.Surface;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 
 /**
- * Encapsulates the mobile filter framework components needed to record video with
- * effects applied. Modeled after MediaRecorder.
+ * Encapsulates the mobile filter framework components needed to record video
+ * with effects applied. Modeled after MediaRecorder.
  */
 public class EffectsRecorder {
+    private static final String TAG = "EffectsRecorder";
+
+    private static Class<?> sClassFilter;
+    private static Method sFilterIsAvailable;
+    private static EffectsRecorder sEffectsRecorder;
+
+    private static boolean sReflectionInited = false;
+
+    private static Class<?> sClsLearningDoneListener;
+    private static Class<?> sClsOnRunnerDoneListener;
+    private static Class<?> sClsOnRecordingDoneListener;
+    private static Class<?> sClsSurfaceTextureSourceListener;
+
+    private static Method sFilterSetInputValue;
+
+    private static Constructor<?> sCtPoint;
+    private static Constructor<?> sCtQuad;
+
+    private static Method sLearningDoneListenerOnLearningDone;
+
+    private static Method sObjectEquals;
+    private static Method sObjectToString;
+
+    private static Class<?> sClsGraphRunner;
+    private static Method sGraphRunnerGetGraph;
+    private static Method sGraphRunnerSetDoneCallback;
+    private static Method sGraphRunnerRun;
+    private static Method sGraphRunnerGetError;
+    private static Method sGraphRunnerStop;
+
+    private static Method sFilterGraphGetFilter;
+    private static Method sFilterGraphTearDown;
+
+    private static Method sOnRunnerDoneListenerOnRunnerDone;
+
+    private static Class<?> sClsGraphEnvironment;
+    private static Constructor<?> sCtGraphEnvironment;
+    private static Method sGraphEnvironmentCreateGLEnvironment;
+    private static Method sGraphEnvironmentGetRunner;
+    private static Method sGraphEnvironmentAddReferences;
+    private static Method sGraphEnvironmentLoadGraph;
+    private static Method sGraphEnvironmentGetContext;
+
+    private static Method sFilterContextGetGLEnvironment;
+    private static Method sGLEnvironmentIsActive;
+    private static Method sGLEnvironmentActivate;
+    private static Method sGLEnvironmentDeactivate;
+    private static Method sSurfaceTextureTargetDisconnect;
+    private static Method sOnRecordingDoneListenerOnRecordingDone;
+    private static Method sSurfaceTextureSourceListenerOnSurfaceTextureSourceReady;
+
+    private Object mLearningDoneListener;
+    private Object mRunnerDoneCallback;
+    private Object mSourceReadyCallback;
+    // A callback to finalize the media after the recording is done.
+    private Object mRecordingDoneListener;
+
+    static {
+        try {
+            sClassFilter = Class.forName("android.filterfw.core.Filter");
+            sFilterIsAvailable = sClassFilter.getMethod("isAvailable",
+                    String.class);
+        } catch (ClassNotFoundException ex) {
+            Log.v(TAG, "Can't find the class android.filterfw.core.Filter");
+        } catch (NoSuchMethodException e) {
+            Log.v(TAG, "Can't find the method Filter.isAvailable");
+        }
+    }
 
     public static final int  EFFECT_NONE        = 0;
     public static final int  EFFECT_GOOFY_FACE  = 1;
@@ -94,10 +154,10 @@ public class EffectsRecorder {
 
     private Object mEffectParameter;
 
-    private GraphEnvironment mGraphEnv;
+    private Object mGraphEnv;
     private int mGraphId;
-    private GraphRunner mRunner = null;
-    private GraphRunner mOldRunner = null;
+    private Object mRunner = null;
+    private Object mOldRunner = null;
 
     private SurfaceTexture mTextureSource;
 
@@ -110,26 +170,139 @@ public class EffectsRecorder {
     private int mState = STATE_CONFIGURE;
 
     private boolean mLogVerbose = Log.isLoggable(TAG, Log.VERBOSE);
-    private static final String TAG = "EffectsRecorder";
     private MediaActionSound mCameraSound;
 
     /** Determine if a given effect is supported at runtime
      * Some effects require libraries not available on all devices
      */
     public static boolean isEffectSupported(int effectId) {
-        switch (effectId) {
-            case EFFECT_GOOFY_FACE:
-                return Filter.isAvailable(
-                    "com.google.android.filterpacks.facedetect.GoofyRenderFilter");
-            case EFFECT_BACKDROPPER:
-                return Filter.isAvailable("android.filterpacks.videoproc.BackDropperFilter");
-            default:
-                return false;
+        if (sFilterIsAvailable == null)  return false;
+
+        try {
+            switch (effectId) {
+                case EFFECT_GOOFY_FACE:
+                    return (Boolean) sFilterIsAvailable.invoke(null,
+                            "com.google.android.filterpacks.facedetect.GoofyRenderFilter");
+                case EFFECT_BACKDROPPER:
+                    return (Boolean) sFilterIsAvailable.invoke(null,
+                            "android.filterpacks.videoproc.BackDropperFilter");
+                default:
+                    return false;
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, "Fail to check filter", ex);
         }
+        return false;
     }
 
     public EffectsRecorder(Context context) {
         if (mLogVerbose) Log.v(TAG, "EffectsRecorder created (" + this + ")");
+
+        if (!sReflectionInited) {
+            try {
+                sFilterSetInputValue = sClassFilter.getMethod("setInputValue",
+                        new Class[] {String.class, Object.class});
+
+                Class<?> clsPoint = Class.forName("android.filterfw.geometry.Point");
+                sCtPoint = clsPoint.getConstructor(new Class[] {float.class,
+                        float.class});
+
+                Class<?> clsQuad = Class.forName("android.filterfw.geometry.Quad");
+                sCtQuad = clsQuad.getConstructor(new Class[] {clsPoint, clsPoint,
+                        clsPoint, clsPoint});
+
+                Class<?> clsBackDropperFilter = Class.forName(
+                        "android.filterpacks.videoproc.BackDropperFilter");
+                sClsLearningDoneListener = Class.forName(
+                        "android.filterpacks.videoproc.BackDropperFilter$LearningDoneListener");
+                sLearningDoneListenerOnLearningDone = sClsLearningDoneListener
+                        .getMethod("onLearningDone", new Class[] {clsBackDropperFilter});
+
+                sObjectEquals = Object.class.getMethod("equals", new Class[] {Object.class});
+                sObjectToString = Object.class.getMethod("toString");
+
+                sClsOnRunnerDoneListener = Class.forName(
+                        "android.filterfw.core.GraphRunner$OnRunnerDoneListener");
+                sOnRunnerDoneListenerOnRunnerDone = sClsOnRunnerDoneListener.getMethod(
+                        "onRunnerDone", new Class[] {int.class});
+
+                sClsGraphRunner = Class.forName("android.filterfw.core.GraphRunner");
+                sGraphRunnerGetGraph = sClsGraphRunner.getMethod("getGraph");
+                sGraphRunnerSetDoneCallback = sClsGraphRunner.getMethod(
+                        "setDoneCallback", new Class[] {sClsOnRunnerDoneListener});
+                sGraphRunnerRun = sClsGraphRunner.getMethod("run");
+                sGraphRunnerGetError = sClsGraphRunner.getMethod("getError");
+                sGraphRunnerStop = sClsGraphRunner.getMethod("stop");
+
+                Class<?> clsFilterContext = Class.forName("android.filterfw.core.FilterContext");
+                sFilterContextGetGLEnvironment = clsFilterContext.getMethod(
+                        "getGLEnvironment");
+
+                Class<?> clsFilterGraph = Class.forName("android.filterfw.core.FilterGraph");
+                sFilterGraphGetFilter = clsFilterGraph.getMethod("getFilter",
+                        new Class[] {String.class});
+                sFilterGraphTearDown = clsFilterGraph.getMethod("tearDown",
+                        new Class[] {clsFilterContext});
+
+                sClsGraphEnvironment = Class.forName("android.filterfw.GraphEnvironment");
+                sCtGraphEnvironment = sClsGraphEnvironment.getConstructor();
+                sGraphEnvironmentCreateGLEnvironment = sClsGraphEnvironment.getMethod(
+                        "createGLEnvironment");
+                sGraphEnvironmentGetRunner = sClsGraphEnvironment.getMethod(
+                        "getRunner", new Class[] {int.class, int.class});
+                sGraphEnvironmentAddReferences = sClsGraphEnvironment.getMethod(
+                        "addReferences", new Class[] {Object[].class});
+                sGraphEnvironmentLoadGraph = sClsGraphEnvironment.getMethod(
+                        "loadGraph", new Class[] {Context.class, int.class});
+                sGraphEnvironmentGetContext = sClsGraphEnvironment.getMethod(
+                        "getContext");
+
+                Class<?> clsGLEnvironment = Class.forName("android.filterfw.core.GLEnvironment");
+                sGLEnvironmentIsActive = clsGLEnvironment.getMethod("isActive");
+                sGLEnvironmentActivate = clsGLEnvironment.getMethod("activate");
+                sGLEnvironmentDeactivate = clsGLEnvironment.getMethod("deactivate");
+
+                Class<?> clsSurfaceTextureTarget = Class.forName(
+                        "android.filterpacks.videosrc.SurfaceTextureTarget");
+                sSurfaceTextureTargetDisconnect = clsSurfaceTextureTarget.getMethod(
+                        "disconnect", new Class[] {clsFilterContext});
+
+                sClsOnRecordingDoneListener = Class.forName(
+                        "android.filterpacks.videosink.MediaEncoderFilter$OnRecordingDoneListener");
+                sOnRecordingDoneListenerOnRecordingDone =
+                        sClsOnRecordingDoneListener.getMethod("onRecordingDone");
+
+                sClsSurfaceTextureSourceListener = Class.forName(
+                        "android.filterpacks.videosrc.SurfaceTextureSource$SurfaceTextureSourceListener");
+                sSurfaceTextureSourceListenerOnSurfaceTextureSourceReady =
+                        sClsSurfaceTextureSourceListener.getMethod(
+                                "onSurfaceTextureSourceReady",
+                                new Class[] {SurfaceTexture.class});
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+
+            sReflectionInited = true;
+        }
+
+        sEffectsRecorder = this;
+        mLearningDoneListener = Proxy.newProxyInstance(
+                sClsLearningDoneListener.getClassLoader(),
+                new Class[] {sClsLearningDoneListener},
+                new SerializableInvocationHandler());
+        mRunnerDoneCallback = Proxy.newProxyInstance(
+                sClsOnRunnerDoneListener.getClassLoader(),
+                new Class[] {sClsOnRunnerDoneListener},
+                new SerializableInvocationHandler());
+        mSourceReadyCallback = Proxy.newProxyInstance(
+                sClsSurfaceTextureSourceListener.getClassLoader(),
+                new Class[] {sClsSurfaceTextureSourceListener},
+                new SerializableInvocationHandler());
+        mRecordingDoneListener =  Proxy.newProxyInstance(
+                sClsOnRecordingDoneListener.getClassLoader(),
+                new Class[] {sClsOnRecordingDoneListener},
+                new SerializableInvocationHandler());
+
         mContext = context;
         mHandler = new Handler(Looper.getMainLooper());
         mCameraSound = new MediaActionSound();
@@ -307,37 +480,37 @@ public class EffectsRecorder {
 
     private void setFaceDetectOrientation() {
         if (mCurrentEffect == EFFECT_GOOFY_FACE) {
-            Filter rotateFilter = mRunner.getGraph().getFilter("rotate");
-            Filter metaRotateFilter = mRunner.getGraph().getFilter("metarotate");
-            rotateFilter.setInputValue("rotation", mOrientationHint);
+            Object rotateFilter = getGraphFilter(mRunner, "rotate");
+            Object metaRotateFilter = getGraphFilter(mRunner, "metarotate");
+            setInputValue(rotateFilter, "rotation", mOrientationHint);
             int reverseDegrees = (360 - mOrientationHint) % 360;
-            metaRotateFilter.setInputValue("rotation", reverseDegrees);
+            setInputValue(metaRotateFilter, "rotation", reverseDegrees);
         }
     }
 
     private void setRecordingOrientation() {
         if ( mState != STATE_RECORD && mRunner != null) {
-            Point bl = new Point(0, 0);
-            Point br = new Point(1, 0);
-            Point tl = new Point(0, 1);
-            Point tr = new Point(1, 1);
-            Quad recordingRegion;
+            Object bl = newInstance(sCtPoint, new Object[] {0, 0});
+            Object br = newInstance(sCtPoint, new Object[] {1, 0});
+            Object tl = newInstance(sCtPoint, new Object[] {0, 1});
+            Object tr = newInstance(sCtPoint, new Object[] {1, 1});
+            Object recordingRegion;
             if (mCameraFacing == Camera.CameraInfo.CAMERA_FACING_BACK) {
                 // The back camera is not mirrored, so use a identity transform
-                recordingRegion = new Quad(bl, br, tl, tr);
+                recordingRegion = newInstance(sCtQuad, new Object[] {bl, br, tl, tr});
             } else {
                 // Recording region needs to be tweaked for front cameras, since they
                 // mirror their preview
                 if (mOrientationHint == 0 || mOrientationHint == 180) {
                     // Horizontal flip in landscape
-                    recordingRegion = new Quad(br, bl, tr, tl);
+                    recordingRegion = newInstance(sCtQuad, new Object[] {br, bl, tr, tl});
                 } else {
                     // Horizontal flip in portrait
-                    recordingRegion = new Quad(tl, tr, bl, br);
+                    recordingRegion = newInstance(sCtQuad, new Object[] {tl, tr, bl, br});
                 }
             }
-            Filter recorder = mRunner.getGraph().getFilter("recorder");
-            recorder.setInputValue("inputRegion", recordingRegion);
+            Object recorder = getGraphFilter(mRunner, "recorder");
+            setInputValue(recorder, "inputRegion", recordingRegion);
         }
     }
     public void setOrientationHint(int degrees) {
@@ -401,8 +574,8 @@ public class EffectsRecorder {
     }
 
     private void initializeFilterFramework() {
-        mGraphEnv = new GraphEnvironment();
-        mGraphEnv.createGLEnvironment();
+        mGraphEnv = newInstance(sCtGraphEnvironment);
+        invoke(mGraphEnv, sGraphEnvironmentCreateGLEnvironment);
 
         int videoFrameWidth = mProfile.videoFrameWidth;
         int videoFrameHeight = mProfile.videoFrameHeight;
@@ -412,13 +585,14 @@ public class EffectsRecorder {
             videoFrameHeight = tmp;
         }
 
-        mGraphEnv.addReferences(
+        invoke(mGraphEnv, sGraphEnvironmentAddReferences,
+                new Object[] {new Object[] {
                 "textureSourceCallback", mSourceReadyCallback,
                 "recordingWidth", videoFrameWidth,
                 "recordingHeight", videoFrameHeight,
                 "recordingProfile", mProfile,
                 "learningDoneListener", mLearningDoneListener,
-                "recordingDoneListener", mRecordingDoneListener);
+                "recordingDoneListener", mRecordingDoneListener}});
         mRunner = null;
         mGraphId = -1;
         mCurrentEffect = EFFECT_NONE;
@@ -429,11 +603,12 @@ public class EffectsRecorder {
             mCurrentEffect != mEffect ||
             mCurrentEffect == EFFECT_BACKDROPPER) {
 
-            mGraphEnv.addReferences(
+            invoke(mGraphEnv, sGraphEnvironmentAddReferences,
+                    new Object[] {new Object[] {
                     "previewSurfaceTexture", mPreviewSurfaceTexture,
                     "previewWidth", mPreviewWidth,
                     "previewHeight", mPreviewHeight,
-                    "orientation", mOrientationHint);
+                    "orientation", mOrientationHint}});
             if (mState == STATE_PREVIEW ||
                     mState == STATE_STARTING_PREVIEW) {
                 // Switching effects while running. Inform video camera.
@@ -442,11 +617,15 @@ public class EffectsRecorder {
 
             switch (mEffect) {
                 case EFFECT_GOOFY_FACE:
-                    mGraphId = mGraphEnv.loadGraph(mContext, R.raw.goofy_face);
+                    mGraphId = (Integer) invoke(mGraphEnv,
+                            sGraphEnvironmentLoadGraph,
+                            new Object[] {mContext, R.raw.goofy_face});
                     break;
                 case EFFECT_BACKDROPPER:
                     sendMessage(EFFECT_BACKDROPPER, EFFECT_MSG_STARTED_LEARNING);
-                    mGraphId = mGraphEnv.loadGraph(mContext, R.raw.backdropper);
+                    mGraphId = (Integer) invoke(mGraphEnv,
+                            sGraphEnvironmentLoadGraph,
+                            new Object[] {mContext, R.raw.backdropper});
                     break;
                 default:
                     throw new RuntimeException("Unknown effect ID" + mEffect + "!");
@@ -454,8 +633,10 @@ public class EffectsRecorder {
             mCurrentEffect = mEffect;
 
             mOldRunner = mRunner;
-            mRunner = mGraphEnv.getRunner(mGraphId, GraphEnvironment.MODE_ASYNCHRONOUS);
-            mRunner.setDoneCallback(mRunnerDoneCallback);
+            mRunner = invoke(mGraphEnv, sGraphEnvironmentGetRunner,
+                    new Object[] {mGraphId,
+                    getConstant(sClsGraphEnvironment, "MODE_ASYNCHRONOUS")});
+            invoke(mRunner, sGraphRunnerSetDoneCallback, new Object[] {mRunnerDoneCallback});
             if (mLogVerbose) {
                 Log.v(TAG, "New runner: " + mRunner
                       + ". Old runner: " + mOldRunner);
@@ -470,26 +651,26 @@ public class EffectsRecorder {
                 } catch(IOException e) {
                     throw new RuntimeException("Unable to connect camera to effect input", e);
                 }
-                mOldRunner.stop();
+                invoke(mOldRunner, sGraphRunnerStop);
             }
         }
 
         switch (mCurrentEffect) {
             case EFFECT_GOOFY_FACE:
                 tryEnableVideoStabilization(true);
-                Filter goofyFilter = mRunner.getGraph().getFilter("goofyrenderer");
-                goofyFilter.setInputValue("currentEffect",
-                                          ((Integer)mEffectParameter).intValue());
+                Object goofyFilter = getGraphFilter(mRunner, "goofyrenderer");
+                setInputValue(goofyFilter, "currentEffect",
+                        ((Integer) mEffectParameter).intValue());
                 break;
             case EFFECT_BACKDROPPER:
                 tryEnableVideoStabilization(false);
-                Filter backgroundSrc = mRunner.getGraph().getFilter("background");
-                backgroundSrc.setInputValue("sourceUrl", mEffectParameter);
+                Object backgroundSrc = getGraphFilter(mRunner, "background");
+                setInputValue(backgroundSrc, "sourceUrl", mEffectParameter);
                 // For front camera, the background video needs to be mirrored in the
                 // backdropper filter
                 if (mCameraFacing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                    Filter replacer = mRunner.getGraph().getFilter("replacer");
-                    replacer.setInputValue("mirrorBg", true);
+                    Object replacer = getGraphFilter(mRunner, "replacer");
+                    setInputValue(replacer, "mirrorBg", true);
                     if (mLogVerbose) Log.v(TAG, "Setting the background to be mirrored");
                 }
                 break;
@@ -541,98 +722,166 @@ public class EffectsRecorder {
         initializeEffect(true);
 
         mState = STATE_STARTING_PREVIEW;
-        mRunner.run();
+        invoke(mRunner, sGraphRunnerRun);
         // Rest of preview startup handled in mSourceReadyCallback
     }
 
-    private SurfaceTextureSourceListener mSourceReadyCallback =
-            new SurfaceTextureSourceListener() {
-        @Override
-        public void onSurfaceTextureSourceReady(SurfaceTexture source) {
-            if (mLogVerbose) Log.v(TAG, "SurfaceTexture ready callback received");
-            synchronized(EffectsRecorder.this) {
-                mTextureSource = source;
+    private Object invokeObjectEquals(Object proxy, Object[] args) {
+        return Boolean.valueOf(proxy == args[0]);
+    }
 
-                if (mState == STATE_CONFIGURE) {
-                    // Stop preview happened while the runner was doing startup tasks
-                    // Since we haven't started anything up, don't do anything
-                    // Rest of cleanup will happen in onRunnerDone
-                    if (mLogVerbose) Log.v(TAG, "Ready callback: Already stopped, skipping.");
-                    return;
+    private Object invokeObjectToString() {
+        return "Proxy-" + toString();
+    }
+
+    private void invokeOnLearningDone() {
+        if (mLogVerbose) Log.v(TAG, "Learning done callback triggered");
+        // Called in a processing thread, so have to post message back to UI
+        // thread
+        sendMessage(EFFECT_BACKDROPPER, EFFECT_MSG_DONE_LEARNING);
+        enable3ALocks(true);
+    }
+
+    private void invokeOnRunnerDone(Object[] args) {
+        int runnerDoneResult = (Integer) args[0];
+        synchronized(EffectsRecorder.this) {
+            if (mLogVerbose) {
+                Log.v(TAG,
+                      "Graph runner done (" + EffectsRecorder.this
+                      + ", mRunner " + mRunner
+                      + ", mOldRunner " + mOldRunner + ")");
+            }
+            if (runnerDoneResult ==
+                    (Integer) getConstant(sClsGraphRunner, "RESULT_ERROR")) {
+                // Handle error case
+                Log.e(TAG, "Error running filter graph!");
+                Exception e = null;
+                if (mRunner != null) {
+                    e = (Exception) invoke(mRunner, sGraphRunnerGetError);
+                } else if (mOldRunner != null) {
+                    e = (Exception) invoke(mOldRunner, sGraphRunnerGetError);
                 }
-                if (mState == STATE_RELEASED) {
-                    // EffectsRecorder has been released, so don't touch the camera device
-                    // or anything else
-                    if (mLogVerbose) Log.v(TAG, "Ready callback: Already released, skipping.");
-                    return;
+                raiseError(e);
+            }
+            if (mOldRunner != null) {
+                // Tear down old graph if available
+                if (mLogVerbose) Log.v(TAG, "Tearing down old graph.");
+                Object glEnv = getContextGLEnvironment(mGraphEnv);
+                if (glEnv != null && !(Boolean) invoke(glEnv, sGLEnvironmentIsActive)) {
+                    invoke(glEnv, sGLEnvironmentActivate);
                 }
-                if (source == null) {
-                    if (mLogVerbose) {
-                        Log.v(TAG, "Ready callback: source null! Looks like graph was closed!");
-                    }
-                    if (mState == STATE_PREVIEW ||
-                            mState == STATE_STARTING_PREVIEW ||
-                            mState == STATE_RECORD) {
-                        // A null source here means the graph is shutting down
-                        // unexpectedly, so we need to turn off preview before
-                        // the surface texture goes away.
-                        if (mLogVerbose) {
-                            Log.v(TAG, "Ready callback: State: " + mState + ". stopCameraPreview");
-                        }
-
-                        stopCameraPreview();
-                    }
-                    return;
+                getGraphTearDown(mOldRunner,
+                        invoke(mGraphEnv, sGraphEnvironmentGetContext));
+                if (glEnv != null && (Boolean) invoke(glEnv, sGLEnvironmentIsActive)) {
+                    invoke(glEnv, sGLEnvironmentDeactivate);
                 }
-
-                // Lock AE/AWB to reduce transition flicker
-                tryEnable3ALocks(true);
-
-                mCameraDevice.stopPreview();
-                if (mLogVerbose) Log.v(TAG, "Runner active, connecting effects preview");
-                try {
-                    mCameraDevice.setPreviewTexture(mTextureSource);
-                } catch(IOException e) {
-                    throw new RuntimeException("Unable to connect camera to effect input", e);
+                mOldRunner = null;
+            }
+            if (mState == STATE_PREVIEW ||
+                    mState == STATE_STARTING_PREVIEW) {
+                // Switching effects, start up the new runner
+                if (mLogVerbose) {
+                    Log.v(TAG, "Previous effect halted. Running graph again. state: "
+                            + mState);
                 }
-
-                mCameraDevice.startPreview();
-
-                // Unlock AE/AWB after preview started
                 tryEnable3ALocks(false);
-
-                mState = STATE_PREVIEW;
-
-                if (mLogVerbose) Log.v(TAG, "Start preview/effect switch complete");
-
-                // Sending a message to listener that preview is complete
-                sendMessage(mCurrentEffect, EFFECT_MSG_PREVIEW_RUNNING);
+                // In case of an error, the graph restarts from beginning and in case
+                // of the BACKDROPPER effect, the learner re-learns the background.
+                // Hence, we need to show the learning dialogue to the user
+                // to avoid recording before the learning is done. Else, the user
+                // could start recording before the learning is done and the new
+                // background comes up later leading to an end result video
+                // with a heterogeneous background.
+                // For BACKDROPPER effect, this path is also executed sometimes at
+                // the end of a normal recording session. In such a case, the graph
+                // does not restart and hence the learner does not re-learn. So we
+                // do not want to show the learning dialogue then.
+                if (runnerDoneResult == (Integer) getConstant(
+                        sClsGraphRunner, "RESULT_ERROR")
+                        && mCurrentEffect == EFFECT_BACKDROPPER) {
+                    sendMessage(EFFECT_BACKDROPPER, EFFECT_MSG_STARTED_LEARNING);
+                }
+                invoke(mRunner, sGraphRunnerRun);
+            } else if (mState != STATE_RELEASED) {
+                // Shutting down effects
+                if (mLogVerbose) Log.v(TAG, "Runner halted, restoring direct preview");
+                tryEnable3ALocks(false);
+                sendMessage(EFFECT_NONE, EFFECT_MSG_EFFECTS_STOPPED);
+            } else {
+                // STATE_RELEASED - camera will be/has been released as well, do nothing.
             }
         }
-    };
+    }
 
-    private LearningDoneListener mLearningDoneListener =
-            new LearningDoneListener() {
-        @Override
-        public void onLearningDone(BackDropperFilter filter) {
-            if (mLogVerbose) Log.v(TAG, "Learning done callback triggered");
-            // Called in a processing thread, so have to post message back to UI
-            // thread
-            sendMessage(EFFECT_BACKDROPPER, EFFECT_MSG_DONE_LEARNING);
-            enable3ALocks(true);
+    private void invokeOnSurfaceTextureSourceReady(Object[] args) {
+        SurfaceTexture source = (SurfaceTexture) args[0];
+        if (mLogVerbose) Log.v(TAG, "SurfaceTexture ready callback received");
+        synchronized(EffectsRecorder.this) {
+            mTextureSource = source;
+
+            if (mState == STATE_CONFIGURE) {
+                // Stop preview happened while the runner was doing startup tasks
+                // Since we haven't started anything up, don't do anything
+                // Rest of cleanup will happen in onRunnerDone
+                if (mLogVerbose) Log.v(TAG, "Ready callback: Already stopped, skipping.");
+                return;
+            }
+            if (mState == STATE_RELEASED) {
+                // EffectsRecorder has been released, so don't touch the camera device
+                // or anything else
+                if (mLogVerbose) Log.v(TAG, "Ready callback: Already released, skipping.");
+                return;
+            }
+            if (source == null) {
+                if (mLogVerbose) {
+                    Log.v(TAG, "Ready callback: source null! Looks like graph was closed!");
+                }
+                if (mState == STATE_PREVIEW ||
+                        mState == STATE_STARTING_PREVIEW ||
+                        mState == STATE_RECORD) {
+                    // A null source here means the graph is shutting down
+                    // unexpectedly, so we need to turn off preview before
+                    // the surface texture goes away.
+                    if (mLogVerbose) {
+                        Log.v(TAG, "Ready callback: State: " + mState
+                                + ". stopCameraPreview");
+                    }
+
+                    stopCameraPreview();
+                }
+                return;
+            }
+
+            // Lock AE/AWB to reduce transition flicker
+            tryEnable3ALocks(true);
+
+            mCameraDevice.stopPreview();
+            if (mLogVerbose) Log.v(TAG, "Runner active, connecting effects preview");
+            try {
+                mCameraDevice.setPreviewTexture(mTextureSource);
+            } catch(IOException e) {
+                throw new RuntimeException("Unable to connect camera to effect input", e);
+            }
+
+            mCameraDevice.startPreview();
+
+            // Unlock AE/AWB after preview started
+            tryEnable3ALocks(false);
+
+            mState = STATE_PREVIEW;
+
+            if (mLogVerbose) Log.v(TAG, "Start preview/effect switch complete");
+
+            // Sending a message to listener that preview is complete
+            sendMessage(mCurrentEffect, EFFECT_MSG_PREVIEW_RUNNING);
         }
-    };
+    }
 
-    // A callback to finalize the media after the recording is done.
-    private OnRecordingDoneListener mRecordingDoneListener =
-            new OnRecordingDoneListener() {
+    private void invokeOnRecordingDone() {
         // Forward the callback to the VideoCamera object (as an asynchronous event).
-        @Override
-        public void onRecordingDone() {
-            if (mLogVerbose) Log.v(TAG, "Recording done callback triggered");
-            sendMessage(EFFECT_NONE, EFFECT_MSG_RECORDING_DONE);
-        }
-    };
+        if (mLogVerbose) Log.v(TAG, "Recording done callback triggered");
+        sendMessage(EFFECT_NONE, EFFECT_MSG_RECORDING_DONE);
+    }
 
     public synchronized void startRecording() {
         if (mLogVerbose) Log.v(TAG, "Starting recording (" + this + ")");
@@ -655,18 +904,17 @@ public class EffectsRecorder {
             startPreview();
         }
 
-        Filter recorder = mRunner.getGraph().getFilter("recorder");
+        Object recorder = getGraphFilter(mRunner, "recorder");
         if (mFd != null) {
-            recorder.setInputValue("outputFileDescriptor", mFd);
+            setInputValue(recorder, "outputFileDescriptor", mFd);
         } else {
-            recorder.setInputValue("outputFile", mOutputFile);
+            setInputValue(recorder, "outputFile", mOutputFile);
         }
         // It is ok to set the audiosource without checking for timelapse here
         // since that check will be done in the MediaEncoderFilter itself
-        recorder.setInputValue("audioSource", MediaRecorder.AudioSource.CAMCORDER);
-
-        recorder.setInputValue("recordingProfile", mProfile);
-        recorder.setInputValue("orientationHint", mOrientationHint);
+        setInputValue(recorder, "audioSource", MediaRecorder.AudioSource.CAMCORDER);
+        setInputValue(recorder, "recordingProfile", mProfile);
+        setInputValue(recorder, "orientationHint", mOrientationHint);
         // Important to set the timelapseinterval to 0 if the capture rate is not >0
         // since the recorder does not get created every time the recording starts.
         // The recorder infers whether the capture is timelapsed based on the value of
@@ -674,21 +922,22 @@ public class EffectsRecorder {
         boolean captureTimeLapse = mCaptureRate > 0;
         if (captureTimeLapse) {
             double timeBetweenFrameCapture = 1 / mCaptureRate;
-            recorder.setInputValue("timelapseRecordingIntervalUs",
+            setInputValue(recorder, "timelapseRecordingIntervalUs",
                     (long) (1000000 * timeBetweenFrameCapture));
+
         } else {
-            recorder.setInputValue("timelapseRecordingIntervalUs", 0L);
+            setInputValue(recorder, "timelapseRecordingIntervalUs", 0L);
         }
 
         if (mInfoListener != null) {
-            recorder.setInputValue("infoListener", mInfoListener);
+            setInputValue(recorder, "infoListener", mInfoListener);
         }
         if (mErrorListener != null) {
-            recorder.setInputValue("errorListener", mErrorListener);
+            setInputValue(recorder, "errorListener", mErrorListener);
         }
-        recorder.setInputValue("maxFileSize", mMaxFileSize);
-        recorder.setInputValue("maxDurationMs", mMaxDurationMs);
-        recorder.setInputValue("recording", true);
+        setInputValue(recorder, "maxFileSize", mMaxFileSize);
+        setInputValue(recorder, "maxDurationMs", mMaxDurationMs);
+        setInputValue(recorder, "recording", true);
         mCameraSound.play(MediaActionSound.START_VIDEO_RECORDING);
         mState = STATE_RECORD;
     }
@@ -707,8 +956,8 @@ public class EffectsRecorder {
             default:
                 break;
         }
-        Filter recorder = mRunner.getGraph().getFilter("recorder");
-        recorder.setInputValue("recording", false);
+        Object recorder = getGraphFilter(mRunner, "recorder");
+        setInputValue(recorder, "recording", false);
         mCameraSound.play(MediaActionSound.STOP_VIDEO_RECORDING);
         mState = STATE_PREVIEW;
     }
@@ -718,9 +967,9 @@ public class EffectsRecorder {
     public synchronized void disconnectDisplay() {
         if (mLogVerbose) Log.v(TAG, "Disconnecting the graph from the " +
             "SurfaceTexture");
-        SurfaceTextureTarget display = (SurfaceTextureTarget)
-            mRunner.getGraph().getFilter("display");
-        display.disconnect(mGraphEnv.getContext());
+        Object display = getGraphFilter(mRunner, "display");
+        invoke(display, sSurfaceTextureTargetDisconnect, new Object[] {
+                invoke(mGraphEnv, sGraphEnvironmentGetContext)});
     }
 
     // The VideoCamera will call this to notify that the camera is being
@@ -776,7 +1025,7 @@ public class EffectsRecorder {
 
         mState = STATE_CONFIGURE;
         mOldRunner = mRunner;
-        mRunner.stop();
+        invoke(mRunner, sGraphRunnerStop);
         mRunner = null;
         // Rest of stop and release handled in mRunnerDoneCallback
     }
@@ -834,75 +1083,29 @@ public class EffectsRecorder {
         }
     }
 
-    private OnRunnerDoneListener mRunnerDoneCallback =
-            new OnRunnerDoneListener() {
+    static class SerializableInvocationHandler
+            implements InvocationHandler, Serializable {
         @Override
-        public void onRunnerDone(int result) {
-            synchronized(EffectsRecorder.this) {
-                if (mLogVerbose) {
-                    Log.v(TAG,
-                          "Graph runner done (" + EffectsRecorder.this
-                          + ", mRunner " + mRunner
-                          + ", mOldRunner " + mOldRunner + ")");
-                }
-                if (result == GraphRunner.RESULT_ERROR) {
-                    // Handle error case
-                    Log.e(TAG, "Error running filter graph!");
-                    Exception e = null;
-                    if (mRunner != null) {
-                        e = mRunner.getError();
-                    } else if (mOldRunner != null) {
-                        e = mOldRunner.getError();
-                    }
-                    raiseError(e);
-                }
-                if (mOldRunner != null) {
-                    // Tear down old graph if available
-                    if (mLogVerbose) Log.v(TAG, "Tearing down old graph.");
-                    GLEnvironment glEnv = mGraphEnv.getContext().getGLEnvironment();
-                    if (glEnv != null && !glEnv.isActive()) {
-                        glEnv.activate();
-                    }
-                    mOldRunner.getGraph().tearDown(mGraphEnv.getContext());
-                    if (glEnv != null && glEnv.isActive()) {
-                        glEnv.deactivate();
-                    }
-                    mOldRunner = null;
-                }
-                if (mState == STATE_PREVIEW ||
-                        mState == STATE_STARTING_PREVIEW) {
-                    // Switching effects, start up the new runner
-                    if (mLogVerbose) {
-                        Log.v(TAG, "Previous effect halted. Running graph again. state: " + mState);
-                    }
-                    tryEnable3ALocks(false);
-                    // In case of an error, the graph restarts from beginning and in case
-                    // of the BACKDROPPER effect, the learner re-learns the background.
-                    // Hence, we need to show the learning dialogue to the user
-                    // to avoid recording before the learning is done. Else, the user
-                    // could start recording before the learning is done and the new
-                    // background comes up later leading to an end result video
-                    // with a heterogeneous background.
-                    // For BACKDROPPER effect, this path is also executed sometimes at
-                    // the end of a normal recording session. In such a case, the graph
-                    // does not restart and hence the learner does not re-learn. So we
-                    // do not want to show the learning dialogue then.
-                    if (result == GraphRunner.RESULT_ERROR &&
-                            mCurrentEffect == EFFECT_BACKDROPPER) {
-                        sendMessage(EFFECT_BACKDROPPER, EFFECT_MSG_STARTED_LEARNING);
-                    }
-                    mRunner.run();
-                } else if (mState != STATE_RELEASED) {
-                    // Shutting down effects
-                    if (mLogVerbose) Log.v(TAG, "Runner halted, restoring direct preview");
-                    tryEnable3ALocks(false);
-                    sendMessage(EFFECT_NONE, EFFECT_MSG_EFFECTS_STOPPED);
-                } else {
-                    // STATE_RELEASED - camera will be/has been released as well, do nothing.
-                }
+        public Object invoke(Object proxy, Method method, Object[] args)
+                throws Throwable {
+            if (sEffectsRecorder == null) return null;
+            if (method.equals(sObjectEquals)) {
+                return sEffectsRecorder.invokeObjectEquals(proxy, args);
+            } else if (method.equals(sObjectToString)) {
+                return sEffectsRecorder.invokeObjectToString();
+            } else if (method.equals(sLearningDoneListenerOnLearningDone)) {
+                sEffectsRecorder.invokeOnLearningDone();
+            } else if (method.equals(sOnRunnerDoneListenerOnRunnerDone)) {
+                sEffectsRecorder.invokeOnRunnerDone(args);
+            } else if (method.equals(
+                    sSurfaceTextureSourceListenerOnSurfaceTextureSourceReady)) {
+                sEffectsRecorder.invokeOnSurfaceTextureSourceReady(args);
+            } else if (method.equals(sOnRecordingDoneListenerOnRecordingDone)) {
+                sEffectsRecorder.invokeOnRecordingDone();
             }
+            return null;
         }
-    };
+    }
 
     // Indicates that all camera/recording activity needs to halt
     public synchronized void release() {
@@ -922,6 +1125,7 @@ public class EffectsRecorder {
                 mState = STATE_RELEASED;
                 break;
         }
+        sEffectsRecorder = null;
     }
 
     private void sendMessage(final int effect, final int msg) {
@@ -950,4 +1154,80 @@ public class EffectsRecorder {
         }
     }
 
+    // invoke method on receiver with no arguments
+    private Object invoke(Object receiver, Method method) {
+        try {
+            return method.invoke(receiver);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    // invoke method on receiver with arguments
+    private Object invoke(Object receiver, Method method, Object[] args) {
+        try {
+            return method.invoke(receiver, args);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private void setInputValue(Object receiver, String key, Object value) {
+        try {
+            sFilterSetInputValue.invoke(receiver, new Object[] {key, value});
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private Object newInstance(Constructor<?> ct, Object[] initArgs) {
+        try {
+            return ct.newInstance(initArgs);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private Object newInstance(Constructor<?> ct) {
+        try {
+            return ct.newInstance();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private Object getGraphFilter(Object receiver, String name) {
+        try {
+            return sFilterGraphGetFilter.invoke(sGraphRunnerGetGraph
+                    .invoke(receiver), new Object[] {name});
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private Object getContextGLEnvironment(Object receiver) {
+        try {
+            return sFilterContextGetGLEnvironment
+                    .invoke(sGraphEnvironmentGetContext.invoke(receiver));
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private void getGraphTearDown(Object receiver, Object filterContext) {
+        try {
+            sFilterGraphTearDown.invoke(sGraphRunnerGetGraph.invoke(receiver),
+                    new Object[]{filterContext});
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private Object getConstant(Class<?> cls, String name) {
+        try {
+            return cls.getDeclaredField(name).get(null);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 }

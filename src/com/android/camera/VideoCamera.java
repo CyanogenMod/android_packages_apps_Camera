@@ -26,7 +26,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.filterpacks.videosink.MediaRecorderStopException;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.CameraInfo;
@@ -1983,9 +1982,14 @@ public class VideoCamera extends ActivityBase
         if (fileName != null && new File(fileName).exists()) {
             deleteVideoFile(fileName);
         }
-        if (exception instanceof MediaRecorderStopException) {
-            Log.w(TAG, "Problem recoding video file. Removing incomplete file.");
-            return;
+        try {
+            if (Class.forName("android.filterpacks.videosink.MediaRecorderStopException")
+                    .isInstance(exception)) {
+                Log.w(TAG, "Problem recoding video file. Removing incomplete file.");
+                return;
+            }
+        } catch (ClassNotFoundException ex) {
+            Log.w(TAG, ex);
         }
         throw new RuntimeException("Error during recording!", exception);
     }
