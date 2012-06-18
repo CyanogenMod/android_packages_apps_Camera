@@ -196,6 +196,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private String mStorage;
 
+    // Restarts the preview on picture taken
+    private static boolean mRestartPreviewOnPictureTaken;
+
+    // Restarts the preview on picture size changes
+    private static boolean mRestartPreviewOnPictureSizeChange;
+
     private Runnable mDoSnapRunnable = new Runnable() {
         public void run() {
             onShutterButtonClick();
@@ -797,6 +803,15 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 final byte [] jpegData, final android.hardware.Camera camera) {
             if (mPausing) {
                 return;
+            }
+
+            mRestartPreviewOnPictureTaken = getResources().getBoolean(R.bool.restartPreviewOnPictureTaken);
+            if (mRestartPreviewOnPictureTaken) {
+                // If preview is running, restart it
+                if (mCameraState != PREVIEW_STOPPED) {
+                    stopPreview();
+                    startPreview();
+                }
             }
 
             mJpegPictureCallbackTime = System.currentTimeMillis();
@@ -2109,6 +2124,15 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             List<Size> supported = mParameters.getSupportedPictureSizes();
             CameraSettings.setCameraPictureSize(
                     pictureSize, supported, mParameters);
+
+            mRestartPreviewOnPictureSizeChange = getResources().getBoolean(R.bool.restartPreviewOnPictureSizeChange);
+            if (mRestartPreviewOnPictureSizeChange) {
+                // If preview is running, restart it
+                if (mCameraState != PREVIEW_STOPPED) {
+                    stopPreview();
+                    startPreview();
+                }
+            }
         }
 
         // Set the preview frame aspect ratio according to the picture size.
