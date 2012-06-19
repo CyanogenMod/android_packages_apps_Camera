@@ -97,10 +97,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private static final int SHOW_TAP_TO_FOCUS_TOAST = 6;
     private static final int UPDATE_THUMBNAIL = 7;
     private static final int SWITCH_CAMERA = 8;
-    private static final int CAMERA_OPEN_DONE = 9;
-    private static final int START_PREVIEW_DONE = 10;
-    private static final int OPEN_CAMERA_FAIL = 11;
-    private static final int CAMERA_DISABLED = 12;
+    private static final int SWITCH_CAMERA_START_ANIMATION = 9;
+    private static final int CAMERA_OPEN_DONE = 10;
+    private static final int START_PREVIEW_DONE = 11;
+    private static final int OPEN_CAMERA_FAIL = 12;
+    private static final int CAMERA_DISABLED = 13;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -351,6 +352,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
                 case SWITCH_CAMERA: {
                     switchCamera();
+                    break;
+                }
+
+                case SWITCH_CAMERA_START_ANIMATION: {
+                    mCameraScreenNail.animateSwitchCamera();
                     break;
                 }
 
@@ -1646,6 +1652,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mHandler.removeMessages(FIRST_TIME_INIT);
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
         mHandler.removeMessages(SWITCH_CAMERA);
+        mHandler.removeMessages(SWITCH_CAMERA_START_ANIMATION);
         mHandler.removeMessages(CAMERA_OPEN_DONE);
         mHandler.removeMessages(START_PREVIEW_DONE);
         mHandler.removeMessages(OPEN_CAMERA_FAIL);
@@ -2276,9 +2283,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         updateOnScreenIndicators();
         showTapToFocusToastIfNeeded();
 
-        // Start switch camera animation.
-        mCameraDevice.waitForIdle(); // Wait until startPreview finishes.
-        mCameraScreenNail.animateSwitchCamera();
+        // Start switch camera animation. Post a message because
+        // onFrameAvailable from the old camera may already exist.
+        mHandler.sendEmptyMessage(SWITCH_CAMERA_START_ANIMATION);
     }
 
     // Preview texture has been copied. Now camera can be released and the

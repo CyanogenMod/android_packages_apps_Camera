@@ -97,6 +97,7 @@ public class VideoCamera extends ActivityBase
     private static final int ENABLE_SHUTTER_BUTTON = 6;
     private static final int SHOW_TAP_TO_SNAPSHOT_TOAST = 7;
     private static final int SWITCH_CAMERA = 8;
+    private static final int SWITCH_CAMERA_START_ANIMATION = 9;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
 
@@ -263,6 +264,14 @@ public class VideoCamera extends ActivityBase
 
                 case SWITCH_CAMERA: {
                     switchCamera();
+                    break;
+                }
+
+                case SWITCH_CAMERA_START_ANIMATION: {
+                    mCameraScreenNail.animateSwitchCamera();
+
+                    // Enable all camera controls.
+                    mSwitchingCamera = false;
                     break;
                 }
 
@@ -969,6 +978,7 @@ public class VideoCamera extends ActivityBase
 
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
         mHandler.removeMessages(SWITCH_CAMERA);
+        mHandler.removeMessages(SWITCH_CAMERA_START_ANIMATION);
         mPendingSwitchCameraId = -1;
         mSwitchingCamera = false;
         // Call onPause after stopping video recording. So the camera can be
@@ -2184,12 +2194,9 @@ public class VideoCamera extends ActivityBase
         initializeZoom();
         setOrientationIndicator(mOrientationCompensation, false);
 
-        // Start switch camera animation.
-        mCameraDevice.waitForIdle(); // Wait until startPreview finishes.
-        mCameraScreenNail.animateSwitchCamera();
-
-        // Enable all camera controls.
-        mSwitchingCamera = false;
+        // Start switch camera animation. Post a message because
+        // onFrameAvailable from the old camera may already exist.
+        mHandler.sendEmptyMessage(SWITCH_CAMERA_START_ANIMATION);
     }
 
     // Preview texture has been copied. Now camera can be released and the
