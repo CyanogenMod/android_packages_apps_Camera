@@ -117,4 +117,30 @@ public class SwitchAnimManager {
         canvas.setAlpha(alpha);
         return true;
     }
+
+    public boolean drawDarkPreview(GLCanvas canvas, int x, int y, int width,
+            int height, RawTexture review) {
+        // Calculate the position and the size.
+        float centerX = x + width / 2f;
+        float centerY = y + height / 2f;
+        float scaleRatio = 1;
+        if (mPreviewFrameLayoutWidth != 0) {
+            scaleRatio = (float) width / mPreviewFrameLayoutWidth;
+        } else {
+            Log.e(TAG, "mPreviewFrameLayoutWidth is 0.");
+        }
+        float reviewWidth = mReviewDrawingWidth * scaleRatio;
+        float reviewHeight = mReviewDrawingHeight * scaleRatio;
+        int reviewX = Math.round(centerX - reviewWidth / 2);
+        int reviewY = Math.round(centerY - reviewHeight / 2);
+
+        // Draw the review.
+        float alpha = canvas.getAlpha();
+        canvas.setAlpha(INITIAL_DARKEN_ALPHA);
+        review.draw(canvas, reviewX, reviewY, Math.round(reviewWidth),
+                Math.round(reviewHeight));
+        canvas.setAlpha(alpha);
+        return true;
+    }
+
 }
