@@ -17,6 +17,7 @@
 package com.android.camera;
 
 import android.graphics.SurfaceTexture;
+import android.util.Log;
 
 import com.android.gallery3d.ui.GLCanvas;
 import com.android.gallery3d.ui.RawTexture;
@@ -57,9 +58,9 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     private int mAnimState = ANIM_NONE;
     private RawTexture mAnimTexture;
     // Some methods are called by GL thread and some are called by main thread.
-    // This protects mAnimState and mVisible. The access of either one should be
-    // synchronized. This also makes sure some code are atomic. For example,
-    // requestRender and setting mAnimState.
+    // This protects mAnimState, mVisible, and surface texture. This also makes
+    // sure some code are atomic. For example, requestRender and setting
+    // mAnimState.
     private Object mLock = new Object();
 
     public interface Listener {
@@ -76,15 +77,15 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     public void acquireSurfaceTexture() {
         synchronized (mLock) {
             mFirstFrameArrived = false;
+            super.acquireSurfaceTexture();
+            mAnimTexture = new RawTexture(getWidth(), getHeight(), true);
         }
-        super.acquireSurfaceTexture();
-        mAnimTexture = new RawTexture(getWidth(), getHeight(), true);
     }
 
     @Override
     public void releaseSurfaceTexture() {
-        super.releaseSurfaceTexture();
         synchronized (mLock) {
+            super.releaseSurfaceTexture();
             mAnimState = ANIM_NONE; // stop the animation
         }
     }
@@ -97,6 +98,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     }
 
     public void animateSwitchCamera() {
+        Log.v(TAG, "animateSwitchCamera");
         synchronized (mLock) {
             if (mAnimState == ANIM_SWITCH_DARK_PREVIEW) {
                 // Do not request render here because camera has been just
@@ -122,7 +124,8 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     public void draw(GLCanvas canvas, int x, int y, int width, int height) {
         synchronized (mLock) {
             if (!mVisible) mVisible = true;
-            if (getSurfaceTexture() == null || !mFirstFrameArrived) return;
+            SurfaceTexture surfaceTexture = getSurfaceTexture();
+            if (surfaceTexture == null || !mFirstFrameArrived) return;
 
             if (mAnimState == ANIM_NONE) {
                 super.draw(canvas, x, y, width, height);
@@ -138,10 +141,13 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                     // The texture is ready. Fall through to draw darkened
                     // preview.
                 case ANIM_SWITCH_DARK_PREVIEW:
-                    float alpha = canvas.getAlpha();
-                    canvas.setAlpha(SwitchAnimManager.INITIAL_DARKEN_ALPHA);
-                    mAnimTexture.draw(canvas, x, y, width, height);
-                    canvas.setAlpha(alpha);
+                case ANIM_SWITCH_WAITING_FIRST_FRAME:
+                    // Consume the frame. If the buffers are full,
+                    // onFrameAvailable will not be called. Animation state
+                    // relies on onFrameAvailable.
+                    surfaceTexture.updateTexImage();
+                    mSwitchAnimManager.drawDarkPreview(canvas, x, y, width,
+                            height, mAnimTexture);
                     return;
                 case ANIM_SWITCH_START:
                     mSwitchAnimManager.startAnimation();
@@ -222,6 +228,8 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     // SwitchAnimManager.java. This is based on the natural orientation, not the
     // view system orientation.
     public void setPreviewFrameLayoutSize(int width, int height) {
-        mSwitchAnimManager.setPreviewFrameLayoutSize(width, height);
+        synchronized (mLock) {
+            mSwitchAnimManager.setPreviewFrameLayoutSize(width, height);
+        }
     }
 }
