@@ -1491,6 +1491,12 @@ public class VideoCamera extends ActivityBase
             }
         }
 
+        // Parameters may have been changed by media recorder when recording
+        // starts. To reduce latency, we do not update mParameters during zoom.
+        // Keep this up-to-date now. Otherwise, we may revert the video size
+        // unexpectedly.
+        mParameters = mCameraDevice.getParameters();
+
         enableCameraControls(false);
 
         mMediaRecorderRecording = true;
