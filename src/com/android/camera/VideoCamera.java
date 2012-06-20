@@ -1511,7 +1511,7 @@ public class VideoCamera extends ActivityBase
         if (recording) {
             mIndicatorControlContainer.dismissSecondLevelIndicator();
             if (mThumbnailView != null) mThumbnailView.setEnabled(false);
-            mShutterButton.setBackgroundResource(R.drawable.btn_shutter_video_recording);
+            mShutterButton.setImageResource(R.drawable.btn_shutter_video_recording);
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.GONE);
@@ -1522,7 +1522,7 @@ public class VideoCamera extends ActivityBase
             }
         } else {
             if (mThumbnailView != null) mThumbnailView.setEnabled(true);
-            mShutterButton.setBackgroundResource(R.drawable.btn_shutter_video);
+            mShutterButton.setImageResource(R.drawable.btn_shutter_video);
             mRecordingTimeView.setVisibility(View.GONE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
             if (mCaptureTimeLapse) {
@@ -2024,7 +2024,7 @@ public class VideoCamera extends ActivityBase
         mReviewImage = (ImageView) findViewById(R.id.review_image);
 
         mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
-        mShutterButton.setBackgroundResource(R.drawable.btn_shutter_video);
+        mShutterButton.setImageResource(R.drawable.btn_shutter_video);
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
 

@@ -39,7 +39,7 @@
             android:focusable="true"
             android:visibility="gone"
             android:onClick="onReviewRetakeClicked"
-            android:background="@drawable/btn_shutter_retake" />
+            android:src="@drawable/btn_shutter_retake" />
     <com.android.camera.ui.RotateLayout
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"

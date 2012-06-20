@@ -538,7 +538,7 @@ public class PanoramaActivity extends ActivityBase implements
         mTimeTaken = System.currentTimeMillis();
         setSwipingEnabled(false);
         mCaptureState = CAPTURE_STATE_MOSAIC;
-        mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan_recording);
+        mShutterButton.setImageResource(R.drawable.btn_shutter_pan_recording);
         mCaptureIndicator.setVisibility(View.VISIBLE);
         showDirectionIndicators(PanoProgressBar.DIRECTION_NONE);
         mThumbnailView.setEnabled(false);
@@ -695,7 +695,7 @@ public class PanoramaActivity extends ActivityBase implements
         mModePicker.setCurrentMode(ModePicker.MODE_PANORAMA);
 
         mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
-        mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan);
+        mShutterButton.setImageResource(R.drawable.btn_shutter_pan);
         mShutterButton.setOnShutterButtonListener(this);
 
         if (getResources().getConfiguration().orientation
@@ -875,7 +875,7 @@ public class PanoramaActivity extends ActivityBase implements
         // mOnFirstFrameAvailableRunnable.
         setSwipingEnabled(true);
         mReviewLayout.setVisibility(View.GONE);
-        mShutterButton.setBackgroundResource(R.drawable.btn_shutter_pan);
+        mShutterButton.setImageResource(R.drawable.btn_shutter_pan);
         mPanoProgressBar.setVisibility(View.GONE);
         mCaptureLayout.setVisibility(View.VISIBLE);
         mMosaicFrameProcessor.reset();

@@ -37,7 +37,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:contentDescription="@string/accessibility_shutter_button"
-                android:background="@drawable/btn_shutter" />
+                android:src="@drawable/btn_shutter" />
         <com.android.camera.ui.IndicatorControlWheel android:id="@+id/indicator_control_wheel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">

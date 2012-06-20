@@ -24,11 +24,12 @@
     <com.android.camera.ShutterButton android:id="@+id/shutter_button"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:padding="20dp"
             android:layout_centerInParent="true"
             android:scaleType="center"
             android:clickable="true"
             android:focusable="true"
             android:contentDescription="@string/accessibility_shutter_button"
-            android:background="@drawable/btn_shutter" />
+            android:src="@drawable/btn_shutter" />
     <include layout="@layout/mode_picker" />
 </com.android.camera.ui.ControlPanelLayout>
