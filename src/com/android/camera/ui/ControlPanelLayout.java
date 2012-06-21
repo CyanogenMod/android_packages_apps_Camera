@@ -18,6 +18,7 @@ package com.android.camera.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.RelativeLayout;
@@ -30,9 +31,17 @@ import android.widget.RelativeLayout;
  */
 public class ControlPanelLayout extends RelativeLayout {
     private static final String TAG = "ControlPanelLayout";
+    private int mMinWidth;
+    private int mMinHeight;
 
     public ControlPanelLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        int[] attrsList = {android.R.styleable.View_minWidth,
+              android.R.styleable.View_minHeight};
+        TypedArray a = context.obtainStyledAttributes(attrs, attrsList);
+        mMinWidth = a.getDimensionPixelSize(android.R.styleable.View_minWidth, 0);
+        mMinHeight = a.getDimensionPixelSize(android.R.styleable.View_minHeight, 0);
+        a.recycle();
     }
 
     @Override
@@ -66,7 +75,7 @@ public class ControlPanelLayout extends RelativeLayout {
         }
 
         // The size cannot be smaller than minimum constraint.
-        int minimumSize = (isLandscape) ? getMinimumWidth() : getMinimumHeight();
+        int minimumSize = (isLandscape) ? mMinWidth : mMinHeight;
         if (measuredSize < minimumSize) {
             measuredSize = minimumSize;
         }
