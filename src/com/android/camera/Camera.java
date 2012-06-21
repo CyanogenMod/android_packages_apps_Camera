@@ -1105,6 +1105,20 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         Util.setGpsParameters(mParameters, loc);
         mCameraDevice.setParameters(mParameters);
 
+        // Restart the preview
+        if (getResources().getBoolean(R.bool.restartPreviewBeforeTakePicture)) {
+            if (mCameraState != PREVIEW_STOPPED) {
+                mCameraDevice.stopPreview();
+                try {
+                    Log.v(TAG, "startPreview");
+                    mCameraDevice.startPreview();
+                } catch (Throwable ex) {
+                    closeCamera();
+                    throw new RuntimeException("startPreview failed", ex);
+                }
+            }
+        }
+
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
         mFaceDetectionStarted = false;
