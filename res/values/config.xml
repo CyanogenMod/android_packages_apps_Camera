@@ -35,5 +35,11 @@
     <bool name="noFaceDetectOnFrontCamera">false</bool>
     <!-- Use ZSL mode -->
     <bool name="enableZSL">false</bool>
+    <!-- Restart the preview on picture taken -->
+    <bool name="restartPreviewBeforeTakePicture">false</bool>
+    <!-- Restart the preview if the picture size changes -->
+    <bool name="restartPreviewOnPictureSizeChange">false</bool>
+    <!-- Restart the preview on picture taken -->
+    <bool name="restartPreviewOnPictureTaken">false</bool>
 </resources>
 
