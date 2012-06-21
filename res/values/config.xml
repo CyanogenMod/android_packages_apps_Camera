@@ -31,9 +31,11 @@
     <bool name="wantsFocusModes">false</bool>
     <!-- Don't mess with the preview size, always use preferred size from parameters -->
     <bool name="alwaysUsePreferredPreviewSize">false</bool>
-    <!-- Restart the preview on picture taken -->
-    <bool name="restartPreviewOnPictureTaken">false</bool>
     <!-- Restart the preview if the picture size changes -->
     <bool name="restartPreviewOnPictureSizeChange">false</bool>
+    <!-- Restart the preview before taking a picture -->
+    <bool name="restartPreviewBeforeTakePicture">false</bool>
+    <!-- Restart the preview on picture taken -->
+    <bool name="restartPreviewOnPictureTaken">false</bool>
 </resources>
 
