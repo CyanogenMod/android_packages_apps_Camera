@@ -2121,8 +2121,14 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             if (getResources().getBoolean(R.bool.restartPreviewOnPictureSizeChange)) {
                 // If preview is running, restart it
                 if (mCameraState != PREVIEW_STOPPED) {
-                    stopPreview();
-                    startPreview();
+                    mCameraDevice.stopPreview();
+                    try {
+                        Log.v(TAG, "startPreview");
+                        mCameraDevice.startPreview();
+                    } catch (Throwable ex) {
+                        closeCamera();
+                        throw new RuntimeException("startPreview failed", ex);
+                    }
                 }
             }
         }
