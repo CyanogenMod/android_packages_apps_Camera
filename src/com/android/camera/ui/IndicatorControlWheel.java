@@ -163,10 +163,9 @@ public class IndicatorControlWheel extends IndicatorControl implements
         setPreferenceGroup(group);
 
         // Add the ZoomControl if supported.
-        if (isZoomSupported) {
-            mZoomControl = (ZoomControlWheel) findViewById(R.id.zoom_control);
-            mZoomControl.setVisibility(View.VISIBLE);
-        }
+        mZoomControl = (ZoomControlWheel) findViewById(R.id.zoom_control);
+        mZoomControl.setVisibility(View.VISIBLE);
+        enableZoom(isZoomSupported);
 
         // Add CameraPicker.
         initializeCameraPicker();
