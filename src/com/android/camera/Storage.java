@@ -16,15 +16,20 @@
 
 package com.android.camera;
 
+import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.ImageColumns;
+import android.provider.MediaStore.MediaColumns;
 import android.util.Log;
+
+import com.android.gallery3d.common.ApiHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,6 +50,15 @@ public class Storage {
     public static final long PREPARING = -2L;
     public static final long UNKNOWN_SIZE = -3L;
     public static final long LOW_STORAGE_THRESHOLD= 50000000;
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private static void setImageSize(ContentValues values, int width, int height) {
+        // The two fields are available since ICS but got published in JB
+        if (ApiHelper.HAS_MEDIA_COLUMNS_WIDTH_AND_HEIGHT) {
+            values.put(MediaColumns.WIDTH, width);
+            values.put(MediaColumns.HEIGHT, height);
+        }
+    }
 
     public static Uri addImage(ContentResolver resolver, String title, long date,
                 Location location, int orientation, byte[] jpeg, int width, int height) {
@@ -74,8 +88,8 @@ public class Storage {
         values.put(ImageColumns.ORIENTATION, orientation);
         values.put(ImageColumns.DATA, path);
         values.put(ImageColumns.SIZE, jpeg.length);
-        values.put(ImageColumns.WIDTH, width);
-        values.put(ImageColumns.HEIGHT, height);
+
+        setImageSize(values, width, height);
 
         if (location != null) {
             values.put(ImageColumns.LATITUDE, location.getLatitude());
@@ -110,8 +124,8 @@ public class Storage {
         ContentValues values = new ContentValues(4);
         values.put(ImageColumns.DATE_TAKEN, date);
         values.put(ImageColumns.DATA, path);
-        values.put(ImageColumns.WIDTH, width);
-        values.put(ImageColumns.HEIGHT, height);
+
+        setImageSize(values, width, height);
 
         Uri uri = null;
         try {
@@ -164,8 +178,8 @@ public class Storage {
         // Clockwise rotation in degrees. 0, 90, 180, or 270.
         values.put(ImageColumns.ORIENTATION, orientation);
         values.put(ImageColumns.SIZE, jpeg.length);
-        values.put(ImageColumns.WIDTH, width);
-        values.put(ImageColumns.HEIGHT, height);
+
+        setImageSize(values, width, height);
 
         if (location != null) {
             values.put(ImageColumns.LATITUDE, location.getLatitude());
