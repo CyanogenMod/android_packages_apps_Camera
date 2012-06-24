@@ -287,6 +287,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private boolean mQuickCapture;
 
+    private int mSnapshotMode;
+    private boolean zslrestartPreview;
+    private int mBurstSnapNum;
+    private int mReceivedSnapNum;
+
     /**
      * This Handler is used to post message back onto the main thread of the
      * application
@@ -807,6 +812,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 }
             }
 
+            mReceivedSnapNum = mReceivedSnapNum + 1;
+
             mJpegPictureCallbackTime = System.currentTimeMillis();
             // If postview callback has arrived, the captured image is displayed
             // in postview callback. If not, the captured image is displayed in
@@ -825,9 +832,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Log.v(TAG, "mPictureDisplayedToJpegCallbackTime = "
                     + mPictureDisplayedToJpegCallbackTime + "ms");
 
-            if (!mIsImageCaptureIntent) {
+            if (!mIsImageCaptureIntent && mSnapshotMode != CameraInfo.CAMERA_SUPPORT_MODE_ZSL
+                    && mReceivedSnapNum == mBurstSnapNum) {
                 startPreview();
                 startFaceDetection();
+            } else if (mReceivedSnapNum == mBurstSnapNum) {
+                setCameraState(IDLE);
             }
 
             if (!mIsImageCaptureIntent) {
@@ -852,7 +862,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mJpegCallbackFinishTime = now - mJpegPictureCallbackTime;
             Log.v(TAG, "mJpegCallbackFinishTime = "
                     + mJpegCallbackFinishTime + "ms");
-            mJpegPictureCallbackTime = 0;
+            if (mReceivedSnapNum == mBurstSnapNum) {
+                mJpegPictureCallbackTime = 0;
+            }
         }
     }
 
@@ -1119,10 +1131,16 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             }
         }
 
+        mReceivedSnapNum = 0;
         mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc));
+        if (mSnapshotMode == CameraInfo.CAMERA_SUPPORT_MODE_ZSL) {
+            zslrestartPreview = false;
+        }
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
+        mParameters = mCameraDevice.getParameters();
+        mBurstSnapNum = mParameters.getInt("num-snaps-per-shutter");
         return true;
     }
 
@@ -1595,6 +1613,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         mSnapshotOnIdle = false;
+        if (mSnapshotMode == CameraInfo.CAMERA_SUPPORT_MODE_ZSL) {
+            mFocusManager.setZslEnable(true);
+        } else {
+            mFocusManager.setZslEnable(false);
+        }
         mFocusManager.doSnap();
     }
 
@@ -2200,6 +2223,19 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             }
         }
 
+        String zsl = mPreferences.getString(CameraSettings.KEY_ZSL,
+                getString(R.string.pref_camera_zsl_default));
+        if (zsl.equals("on")) {
+            // Switch on ZSL mode
+            mSnapshotMode = CameraInfo.CAMERA_SUPPORT_MODE_ZSL;
+            mParameters.setCameraMode(1);
+            mFocusManager.setZslEnable(true);
+        } else {
+            mSnapshotMode = CameraInfo.CAMERA_SUPPORT_MODE_NONZSL;
+            mParameters.setCameraMode(0);
+            mFocusManager.setZslEnable(false);
+        }
+
         // Set JPEG quality.
         int jpegQuality = CameraProfile.getJpegEncodingQualityParameter(mCameraId,
                 CameraProfile.QUALITY_HIGH);
@@ -2297,6 +2333,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mUpdateSet = 0;
             return;
         } else if (isCameraIdle()) {
+            if (zslrestartPreview) {
+                Log.e(TAG, "ZSL enabled, restarting preview");
+                startPreview();
+                zslrestartPreview = false;
+            }
             setCameraParameters(mUpdateSet);
             updateSceneModeUI();
             mUpdateSet = 0;
@@ -2448,6 +2489,16 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
             finish();
         } else {
+            String zsl = mPreferences.getString(CameraSettings.KEY_ZSL,
+                    getString(R.string.pref_camera_zsl_default));
+            if ((mSnapshotMode != CameraInfo.CAMERA_SUPPORT_MODE_ZSL && zsl.equals("on"))) {
+                Log.v(TAG, "Camera App Enabled ZSL. Restart Preview " + zsl);
+                zslrestartPreview = true;
+            }
+            if ((mSnapshotMode == CameraInfo.CAMERA_SUPPORT_MODE_ZSL && zsl.equals("off"))) {
+                Log.v(TAG, "Camera App Disabled ZSL. Restart Preview " + zsl);
+                zslrestartPreview = true;
+            }
             setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
         }
 

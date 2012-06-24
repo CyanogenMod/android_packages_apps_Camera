@@ -56,6 +56,7 @@ public class FocusManager {
     private static final int STATE_FAIL = 4; // Focus finishes and fails.
 
     private boolean mInitialized;
+    private boolean mZslEnabled = false;
     private boolean mFocusAreaSupported;
     private boolean mLockAeAwbNeeded;
     private boolean mAeAwbLock;
@@ -142,7 +143,7 @@ public class FocusManager {
         if (!mInitialized) return;
 
         // Lock AE and AWB so users can half-press shutter and recompose.
-        if (mLockAeAwbNeeded && !mAeAwbLock) {
+        if (mLockAeAwbNeeded && !mAeAwbLock && !mZslEnabled) {
             mAeAwbLock = true;
             mListener.setFocusParameters();
         }
@@ -246,7 +247,8 @@ public class FocusManager {
 
         // Let users be able to cancel previous touch focus.
         if ((mFocusArea != null) && (mState == STATE_FOCUSING ||
-                    mState == STATE_SUCCESS || mState == STATE_FAIL)) {
+                    mState == STATE_SUCCESS || mState == STATE_FAIL)
+                    && needAutoFocusCall()) {
             cancelAutoFocus();
         }
 
@@ -288,7 +290,7 @@ public class FocusManager {
 
         // Set the focus area and metering area.
         mListener.setFocusParameters();
-        if (mFocusAreaSupported && (e.getAction() == MotionEvent.ACTION_UP)) {
+        if (mFocusAreaSupported && (e.getAction() == MotionEvent.ACTION_UP) && needAutoFocusCall()) {
             autoFocus();
         } else {  // Just show the indicator in all other cases.
             updateFocusUI();
@@ -485,9 +487,15 @@ public class FocusManager {
     }
 
     private boolean needAutoFocusCall() {
+        if(mZslEnabled) return false;
         String focusMode = getFocusMode();
         return !(focusMode.equals(Parameters.FOCUS_MODE_INFINITY)
                 || focusMode.equals(Parameters.FOCUS_MODE_FIXED)
+                || focusMode.equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)
                 || focusMode.equals(Parameters.FOCUS_MODE_EDOF));
+    }
+
+    public void setZslEnable(boolean enable) {
+        mZslEnabled = enable;
     }
 }

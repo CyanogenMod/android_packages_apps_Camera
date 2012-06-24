@@ -400,4 +400,7 @@
 
     <!-- TODO: remove the string as it is a work-around solution to bypass the default speak of the element type. -->
     <string name="empty" translatable="false">" "</string>
+
+    <!-- Default value for ZSL -->
+    <string name="pref_camera_zsl_default" translatable="false">on</string>
 </resources>
