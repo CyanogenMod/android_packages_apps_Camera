@@ -2129,22 +2129,23 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             CameraSettings.initialCameraPictureSize(this, mParameters);
         } else {
             List<Size> supported = mParameters.getSupportedPictureSizes();
-            CameraSettings.setCameraPictureSize(
-                    pictureSize, supported, mParameters);
 
             if (getResources().getBoolean(R.bool.restartPreviewOnPictureSizeChange)) {
-                // If preview is running, restart it
-                if (mCameraState != PREVIEW_STOPPED) {
-                    mCameraDevice.stopPreview();
-                    try {
-                        Log.v(TAG, "startPreview");
-                        mCameraDevice.startPreview();
-                    } catch (Throwable ex) {
-                        closeCamera();
-                        throw new RuntimeException("startPreview failed", ex);
+                // We cannot change picture size on the fly, so stop the preview here
+                Size currentSize = mParameters.getPictureSize();
+                String currentPictureSize = currentSize.width + "x" + currentSize.height;
+
+                if (currentPictureSize.equals(pictureSize) == false) {
+                    if (mCameraState != PREVIEW_STOPPED) {
+                        Log.i(TAG, "pictureSize has changed, currentPictureSize=" + currentPictureSize + ", pictureSize=" + pictureSize + ", stopPreview");
+                        mCameraDevice.stopPreview();
+                        mCameraState = PREVIEW_STOPPED;
                     }
                 }
             }
+
+            CameraSettings.setCameraPictureSize(
+                    pictureSize, supported, mParameters);
         }
 
         // Set the preview frame aspect ratio according to the picture size.
@@ -2285,6 +2286,20 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         CameraSettings.dumpParameters(mParameters);
         mCameraDevice.setParameters(mParameters);
+
+        if (getResources().getBoolean(R.bool.restartPreviewOnPictureSizeChange)) {
+            // Start the preview again, in case we stopped it before
+            if (mCameraState == PREVIEW_STOPPED) {
+                try {
+                    Log.i(TAG, "startPreview");
+                    mCameraDevice.startPreview();
+                    mCameraState = IDLE;
+                } catch (Throwable ex) {
+                    closeCamera();
+                    throw new RuntimeException("startPreview failed", ex);
+                }
+            }
+        }
     }
 
     // If the Camera is idle, update the parameters immediately, otherwise
