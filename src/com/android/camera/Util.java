@@ -86,6 +86,13 @@ public class Util {
     private static float sPixelDensity = 1;
     private static ImageFileNamer sImageFileNamer;
 
+    // For setting video size before recording starts
+    private static boolean sEarlyVideoSize;
+
+    // Samsung camcorder mode
+    private static boolean sSamsungCamMode;
+    private static boolean sSamsungCamSettings;
+
     private Util() {
     }
 
@@ -99,6 +106,24 @@ public class Util {
         sPixelDensity = metrics.density;
         sImageFileNamer = new ImageFileNamer(
                 context.getString(R.string.image_file_name_format));
+
+        // These come from the config, but are needed before parameters are set.
+        sEarlyVideoSize = context.getResources().getBoolean(R.bool.needsEarlyVideoSize);
+        sSamsungCamMode = context.getResources().getBoolean(R.bool.needsSamsungCamMode);
+        sSamsungCamSettings = context.getResources().getBoolean(R.bool.hasSamsungCamSettings);
+
+    }
+
+    public static boolean needsEarlyVideoSize() {
+        return sEarlyVideoSize;
+    }
+
+    public static boolean useSamsungCamMode() {
+        return sSamsungCamMode;
+    }
+
+    public static boolean useSamsungCamSettings() {
+        return sSamsungCamSettings;
     }
 
     public static boolean isTabletUI() {
