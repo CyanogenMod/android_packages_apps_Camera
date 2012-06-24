@@ -56,6 +56,8 @@ public class FocusManager {
     private static final int STATE_FAIL = 4; // Focus finishes and fails.
 
     private boolean mInitialized;
+    private boolean mZslEnabled = false;
+    private boolean mIsFocused = false;
     private boolean mFocusAreaSupported;
     private boolean mLockAeAwbNeeded;
     private boolean mAeAwbLock;
@@ -142,15 +144,23 @@ public class FocusManager {
         if (!mInitialized) return;
 
         // Lock AE and AWB so users can half-press shutter and recompose.
-        if (mLockAeAwbNeeded && !mAeAwbLock) {
+        if (mLockAeAwbNeeded && !mAeAwbLock && !mZslEnabled) {
             mAeAwbLock = true;
             mListener.setFocusParameters();
         }
 
         if (needAutoFocusCall()) {
-            // Do not focus if touch focus has been triggered.
-            if (mState != STATE_SUCCESS && mState != STATE_FAIL) {
-                autoFocus();
+            if (mZslEnabled) {
+                /* FIXME: longpress shutter should trigger AF */
+                if (!mIsFocused) {
+                    autoFocus();
+                    mIsFocused = true;
+                }
+            } else {
+                /* Do not focus if touch focus has been triggered */
+                if (mState != STATE_SUCCESS && mState != STATE_FAIL) {
+                    autoFocus();
+                }
             }
         }
     }
@@ -180,7 +190,7 @@ public class FocusManager {
         // If the user has half-pressed the shutter and focus is completed, we
         // can take the photo right away. If the focus mode is infinity, we can
         // also take the photo.
-        if (!needAutoFocusCall() || (mState == STATE_SUCCESS || mState == STATE_FAIL)) {
+        if ((!needAutoFocusCall() && !mZslEnabled ) || (mState == STATE_SUCCESS || mState == STATE_FAIL)) {
             capture();
         } else if (mState == STATE_FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
@@ -197,8 +207,11 @@ public class FocusManager {
     }
 
     public void onShutter() {
-        resetTouchFocus();
-        updateFocusUI();
+        /* Reset TF if we're not in ZSL mode */
+        if(!mZslEnabled) {
+            resetTouchFocus();
+            updateFocusUI();
+        }
     }
 
     public void onAutoFocus(boolean focused) {
@@ -288,7 +301,7 @@ public class FocusManager {
 
         // Set the focus area and metering area.
         mListener.setFocusParameters();
-        if (mFocusAreaSupported && (e.getAction() == MotionEvent.ACTION_UP)) {
+        if (mFocusAreaSupported && (e.getAction() == MotionEvent.ACTION_UP) && needAutoFocusCall()) {
             autoFocus();
         } else {  // Just show the indicator in all other cases.
             updateFocusUI();
@@ -316,7 +329,7 @@ public class FocusManager {
     }
 
     private void autoFocus() {
-        Log.v(TAG, "Start autofocus.");
+        Log.i(TAG, "Start autofocus.");
         mListener.autoFocus();
         mState = STATE_FOCUSING;
         // Pause the face view because the driver will keep sending face
@@ -327,7 +340,7 @@ public class FocusManager {
     }
 
     private void cancelAutoFocus() {
-        Log.v(TAG, "Cancel autofocus.");
+        Log.i(TAG, "Cancel autofocus.");
 
         // Reset the tap area before calling mListener.cancelAutofocus.
         // Otherwise, focus mode stays at auto and the tap area passed to the
@@ -432,7 +445,7 @@ public class FocusManager {
 
     public void resetTouchFocus() {
         if (!mInitialized) return;
-
+        Log.i(TAG, "Reset touchfocus");
         // Put focus indicator to the center.
         RelativeLayout.LayoutParams p =
                 (RelativeLayout.LayoutParams) mFocusIndicatorRotateLayout.getLayoutParams();
@@ -488,6 +501,11 @@ public class FocusManager {
         String focusMode = getFocusMode();
         return !(focusMode.equals(Parameters.FOCUS_MODE_INFINITY)
                 || focusMode.equals(Parameters.FOCUS_MODE_FIXED)
+                || focusMode.equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)
                 || focusMode.equals(Parameters.FOCUS_MODE_EDOF));
+    }
+
+    public void setZslEnable(boolean enable) {
+        mZslEnabled = enable;
     }
 }
