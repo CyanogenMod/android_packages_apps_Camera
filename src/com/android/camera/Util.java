@@ -84,6 +84,12 @@ public class Util {
     private static boolean sSamsungCamMode;
     private static boolean sSamsungCamSettings;
 
+    // Samsung ZSL mode
+    private static boolean sEnableZSL;
+
+    // Workaround for QC cameras with broken face detection on front camera
+    private static boolean sNoFaceDetectOnFrontCamera;
+
     private Util() {
     }
 
@@ -100,7 +106,9 @@ public class Util {
         sEarlyVideoSize = context.getResources().getBoolean(R.bool.needsEarlyVideoSize);
         sSamsungCamMode = context.getResources().getBoolean(R.bool.needsSamsungCamMode);
         sSamsungCamSettings = context.getResources().getBoolean(R.bool.hasSamsungCamSettings);
-
+        sEnableZSL = context.getResources().getBoolean(R.bool.enableZSL);
+        sNoFaceDetectOnFrontCamera = context.getResources().getBoolean(
+                R.bool.noFaceDetectOnFrontCamera);
     }
 
     public static boolean needsEarlyVideoSize() {
@@ -123,6 +131,14 @@ public class Util {
     // If a new bitmap is created, the original bitmap is recycled.
     public static Bitmap rotate(Bitmap b, int degrees) {
         return rotateAndMirror(b, degrees, false);
+    }
+
+    public static boolean enableZSL() {
+        return sEnableZSL;
+    }
+
+    public static boolean noFaceDetectOnFrontCamera() {
+        return sNoFaceDetectOnFrontCamera;
     }
 
     // Rotates and/or mirrors the bitmap. If a new bitmap is created, the
