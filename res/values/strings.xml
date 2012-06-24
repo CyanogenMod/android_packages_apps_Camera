@@ -402,4 +402,5 @@
 
     <!-- TODO: remove the string as it is a work-around solution to bypass the default speak of the element type. -->
     <string name="empty" translatable="false">" "</string>
+
 </resources>

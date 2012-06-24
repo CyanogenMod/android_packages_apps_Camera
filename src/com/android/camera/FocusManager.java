@@ -44,8 +44,10 @@ public class FocusManager {
     private static final String TAG = "FocusManager";
 
     private static final int RESET_TOUCH_FOCUS = 0;
+    private static final int DO_AUTO_FOCUS = 1;
     private static final int FOCUS_BEEP_VOLUME = 100;
     private static final int RESET_TOUCH_FOCUS_DELAY = 15000;
+    private static final int ZSL_AUTO_FOCUS_DELAY = 800;
 
     private int mState = STATE_IDLE;
     private static final int STATE_IDLE = 0; // Focus is not active.
@@ -56,6 +58,8 @@ public class FocusManager {
     private static final int STATE_FAIL = 4; // Focus finishes and fails.
 
     private boolean mInitialized;
+    private boolean mZslEnabled = false;
+    private boolean mIsFocused = false;
     private boolean mFocusAreaSupported;
     private boolean mLockAeAwbNeeded;
     private boolean mAeAwbLock;
@@ -91,6 +95,10 @@ public class FocusManager {
                 case RESET_TOUCH_FOCUS: {
                     cancelAutoFocus();
                     mListener.startFaceDetection();
+                    break;
+                }
+                case DO_AUTO_FOCUS: {
+                    autoFocus();
                     break;
                 }
             }
@@ -142,16 +150,28 @@ public class FocusManager {
         if (!mInitialized) return;
 
         // Lock AE and AWB so users can half-press shutter and recompose.
-        if (mLockAeAwbNeeded && !mAeAwbLock) {
+        if (mLockAeAwbNeeded && !mAeAwbLock && !mZslEnabled) {
             mAeAwbLock = true;
             mListener.setFocusParameters();
         }
 
         if (needAutoFocusCall()) {
-            // Do not focus if touch focus has been triggered.
-            if (mState != STATE_SUCCESS && mState != STATE_FAIL) {
+            if (mZslEnabled && mState != STATE_SUCCESS && mState != STATE_FAIL) {
+                if (!mIsFocused) {
+                    autoFocus();
+                } else {
+                    mHandler.sendEmptyMessageDelayed(DO_AUTO_FOCUS, ZSL_AUTO_FOCUS_DELAY);
+                }
+            } else if (mState != STATE_SUCCESS && mState != STATE_FAIL) {
+                /* Do not focus if touch focus has been triggered */
                 autoFocus();
             }
+        }
+    }
+
+    public void zslPreventAutoFocus() {
+        if (mIsFocused) {
+            mHandler.removeMessages(DO_AUTO_FOCUS);
         }
     }
 
@@ -180,7 +200,7 @@ public class FocusManager {
         // If the user has half-pressed the shutter and focus is completed, we
         // can take the photo right away. If the focus mode is infinity, we can
         // also take the photo.
-        if (!needAutoFocusCall() || (mState == STATE_SUCCESS || mState == STATE_FAIL)) {
+        if ((!needAutoFocusCall() && !mZslEnabled ) || (mState == STATE_SUCCESS || mState == STATE_FAIL)) {
             capture();
         } else if (mState == STATE_FOCUSING) {
             // Half pressing the shutter (i.e. the focus button event) will
@@ -197,8 +217,11 @@ public class FocusManager {
     }
 
     public void onShutter() {
-        resetTouchFocus();
-        updateFocusUI();
+        /* Reset TF if we're not in ZSL mode */
+        if(!mZslEnabled) {
+            resetTouchFocus();
+            updateFocusUI();
+        }
     }
 
     public void onAutoFocus(boolean focused) {
@@ -288,7 +311,7 @@ public class FocusManager {
 
         // Set the focus area and metering area.
         mListener.setFocusParameters();
-        if (mFocusAreaSupported && (e.getAction() == MotionEvent.ACTION_UP)) {
+        if (mFocusAreaSupported && (e.getAction() == MotionEvent.ACTION_UP) && needAutoFocusCall()) {
             autoFocus();
         } else {  // Just show the indicator in all other cases.
             updateFocusUI();
@@ -324,6 +347,7 @@ public class FocusManager {
         if (mFaceView != null) mFaceView.pause();
         updateFocusUI();
         mHandler.removeMessages(RESET_TOUCH_FOCUS);
+        mIsFocused = true;
     }
 
     private void cancelAutoFocus() {
@@ -338,6 +362,7 @@ public class FocusManager {
         mState = STATE_IDLE;
         updateFocusUI();
         mHandler.removeMessages(RESET_TOUCH_FOCUS);
+        mIsFocused = false;
     }
 
     private void capture() {
@@ -432,7 +457,7 @@ public class FocusManager {
 
     public void resetTouchFocus() {
         if (!mInitialized) return;
-
+        Log.i(TAG, "Reset touchfocus");
         // Put focus indicator to the center.
         RelativeLayout.LayoutParams p =
                 (RelativeLayout.LayoutParams) mFocusIndicatorRotateLayout.getLayoutParams();
@@ -488,6 +513,11 @@ public class FocusManager {
         String focusMode = getFocusMode();
         return !(focusMode.equals(Parameters.FOCUS_MODE_INFINITY)
                 || focusMode.equals(Parameters.FOCUS_MODE_FIXED)
+                || focusMode.equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)
                 || focusMode.equals(Parameters.FOCUS_MODE_EDOF));
+    }
+
+    public void setZslEnable(boolean enable) {
+        mZslEnabled = enable;
     }
 }
