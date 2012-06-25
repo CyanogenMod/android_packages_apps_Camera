@@ -22,17 +22,17 @@
     <string name="video_camera_label" msgid="2899292505526427293">"Camcorder"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Camerafoto\'s"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Cameravideo\'s"</string>
-    <string name="wait" msgid="8600187532323801552">"Een ogenblik geduld..."</string>
+    <string name="wait" msgid="8600187532323801552">"Een ogenblik geduld a.u.b.\u2026"</string>
     <string name="no_storage" product="nosdcard" msgid="5876548364041592119">"Koppel de USB-opslag voordat u de camera gebruikt."</string>
     <string name="no_storage" product="default" msgid="820691042667338625">"Plaats een SD-kaart voordat u de camera gebruikt."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Uw USB-opslag is vol."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"De SD-kaart is vol."</string>
-    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"USB-opslag voorbereiden…"</string>
-    <string name="preparing_sd" product="default" msgid="2914969119574812666">"SD-kaart voorbereiden…"</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"USB-opslag voorbereiden\u2026"</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"SD-kaart voorbereiden\u2026"</string>
     <string name="access_sd_fail" product="nosdcard" msgid="7361816489339518850">"Toegang krijgen tot USB-opslag is mislukt."</string>
     <string name="access_sd_fail" product="default" msgid="4427585260986849912">"Toegang krijgen tot SD-kaart is mislukt."</string>
-    <string name="confirm_restore_title" msgid="1229914538263792180">"Standaardwaarden herstellen"</string>
-    <string name="confirm_restore_message" msgid="5239464943578877295">"De standaardwaarden voor de camera-instellingen worden hersteld."</string>
+    <string name="confirm_restore_title" msgid="1229914538263792180">"Standaardinstellingen herstellen"</string>
+    <string name="confirm_restore_message" msgid="5239464943578877295">"De standaardinstellingen voor de camera-instellingen worden hersteld."</string>
     <string name="review_play" msgid="6015456244323302817">"AFSPELEN"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ANNULEREN"</string>
     <string name="review_ok" msgid="5305096180300056529">"OK"</string>
@@ -53,7 +53,7 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Camera-instellingen"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Camcorder-instellingen"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Grootte van foto"</string>
-    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5000 pixels"</string>
+    <string name="pref_camera_picturesize_entry_2592x1936" msgid="1871154452633783418">"5 megapixels"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="8763841848102861602">"3 megapixels"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="3802531502504271124">"2 megapixels"</string>
     <string name="pref_camera_picturesize_entry_1024x768" msgid="6557686202570581693">"1 megapixels"</string>
@@ -61,35 +61,8 @@
     <string name="pref_camera_jpegquality_entry_superfine" msgid="4087830022547613205">"Zeer fijn"</string>
     <string name="pref_camera_jpegquality_entry_fine" msgid="4474043704802385370">"Fijn"</string>
     <string name="pref_camera_jpegquality_entry_normal" msgid="1274801937207351293">"Normaal"</string>
-	
-	<string name="advanced_options_label">Geadvanceerde opties</string>
-
-    <string name="pref_camera_vol_shutter_title">Foto maken met volume knoppen</string>
-    <string name="pref_camera_vol_up_shutter">Volume omhoog</string>
-    <string name="pref_camera_vol_up_shutter_summary">Druk op volume omhoog om een foto te maken</string>
-    <string name="pref_camera_vol_down_shutter">Volume omlaag</string>
-    <string name="pref_camera_vol_down_shutter_summary">Druk op volume omlaag om een foto te maken</string>
-
-    <!-- More Settings screen, zoom button title -->
-    <string name="pref_camera_vol_zoom_title">Zoomen met volume knoppen</string>
-    <string name="pref_camera_vol_zoom">Zoomen met volume knoppen</string>
-    <string name="pref_camera_vol_zoom_summary">Gebruik de volume omhoog/omlaag knoppen om in te zoomen en uit te zoomen</string>
-
-    <!-- More Settings screen, search button-->
-    <string name="pref_camera_search_shutter_title">Foto maken met zoek knop</string>
-    <string name="pref_camera_search_shutter">Zoek knop</string>
-    <string name="pref_camera_search_shutter_summary">Druk op de zoek knop om een foto te maken</string>
-
-    <!-- Settings screen, custom focus -->
-    <string name="pref_camera_settings_focus_title">Focus</string>
-    <string name="pref_camera_settings_focus">Voor-focus</string>
-    <string name="pref_camera_settings_focus_summary">Focus voor het maken van een foto</string>
-    <string name="pref_camera_settings_long_focus">Lange focus</string>
-    <string name="pref_camera_settings_long_focus_summary">Druk de knop om een foto te maken lang in om te focussen, laat vervolgens de knop los om de foto te maken</string>
-	
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Scherpstelmodus"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatisch"</string>
-	<string name="pref_camera_focusmode_entry_normal">Normaal</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Oneindig"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Flitsmodus"</string>
@@ -115,35 +88,16 @@
     <string name="pref_camera_coloreffect_entry_redtint" msgid="7135044258970245718">"Roodtinten"</string>
     <string name="pref_camera_coloreffect_entry_bluetint" msgid="987468567611774716">"Blauwtinten"</string>
     <string name="pref_camera_coloreffect_entry_greentint" msgid="4205380735971677893">"Groentinten"</string>
-	
-    <!-- Settings screen, Multiple levels entries -->
-    <string name="pref_camera_sharpness_entry_level0">Level 0</string>
-    <string name="pref_camera_sharpness_entry_level1">Level 1</string>
-    <string name="pref_camera_sharpness_entry_level2">Level 2(Standaard)</string>
-    <string name="pref_camera_sharpness_entry_level3">Level 3</string>
-    <string name="pref_camera_sharpness_entry_level4">Level 4</string>
-    <string name="pref_camera_sharpness_entry_level5">Level 5</string>
-    <!-- Settings screen, Multiple levels entries -->
-    <string name="pref_camera_contrast_entry_level0">Level 0</string>
-    <string name="pref_camera_contrast_entry_level1">Level 1</string>
-    <string name="pref_camera_contrast_entry_level2">Level 2</string>
-    <string name="pref_camera_contrast_entry_level3">Level 3(Standaard)</string>
-    <string name="pref_camera_contrast_entry_level4">Level 4</string>
-    <string name="pref_camera_contrast_entry_level5">Level 5</string>
-    <!-- Settings screen, Multiple levels entries -->
-    <string name="pref_camera_saturation_entry_level0">Level 0</string>
-    <string name="pref_camera_saturation_entry_level1">Level 1</string>
-    <string name="pref_camera_saturation_entry_level2">Level 2</string>
-    <string name="pref_camera_saturation_entry_level3">Level 3(Standaard)</string>
-    <string name="pref_camera_saturation_entry_level4">Level 4</string>
-    <string name="pref_camera_saturation_entry_level5">Level 5</string>
-    <!-- Settings screen, Select sharpness title -->
-    <string name="pref_camera_sharpness_title">Scherpte</string>
-    <!-- Settings screen, Select contrast title -->
-    <string name="pref_camera_contrast_title">Contrast</string>
-    <!-- Settings screen, Select saturation title -->
-    <string name="pref_camera_saturation_title">Verzadiging</string>
-	
+    <string name="pref_restore_title" msgid="6479274979730178961">"Camera-instellingen"</string>
+    <string name="pref_restore_detail" msgid="5732490002291044791">"Standaardinstellingen herstellen"</string>
+    <string name="pref_exposure_title" msgid="1229093066434614811">"Belichting"</string>
+    <string name="details_ok" msgid="6848594369924424312">"OK"</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Uw USB-opslag is bijna vol. Wijzig de kwaliteitsinstelling of verwijder enkele afbeeldingen of andere bestanden."</string>
+    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Uw SD-kaart is bijna vol. Wijzig de kwaliteitsinstelling of verwijder enkele afbeeldingen of andere bestanden."</string>
+    <string name="video_reach_size_limit" msgid="6179877322015552390">"Maximale grootte bereikt"</string>
+    <string name="zoom_control_title" msgid="6532562653386981815">"Zoomen"</string>
+    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Overschakelen naar camera"</string>
+    <string name="switch_to_video_lable" msgid="4525451949497982385">"Overschakelen naar video"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Scènemodus"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatisch"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Actie"</string>
@@ -157,56 +111,130 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Zonsondergang"</string>
     <string name="pref_camera_scenemode_entry_steadyphoto" msgid="5751266665823209065">"Stabiele foto"</string>
     <string name="pref_camera_scenemode_entry_fireworks" msgid="3530608172188797432">"Vuurwerk"</string>
-	<string name="pref_camera_scenemode_entry_sports">Sport</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Feest"</string>
     <string name="pref_camera_scenemode_entry_candlelight" msgid="2066183182126946813">"Kaarslicht"</string>
-	<string name="pref_camera_scenemode_entry_backlight">Achtergrondlicht</string>
+
+    <!-- CYANOGENMOD EDITS -->
+    <string name="pref_camera_focusmode_entry_normal">Normaal</string>
+    <string name="advanced_options_label">Geavanceerde instellingen</string>
+
+    <string name="pref_camera_vol_shutter_title">Foto maken met volumeknoppen</string>
+    <string name="pref_camera_vol_up_shutter">Volume-omhoog</string>
+    <string name="pref_camera_vol_up_shutter_summary">Foto maken door op de volume-omhoogknop te drukken</string>
+    <string name="pref_camera_vol_down_shutter">Volume-omlaag</string>
+    <string name="pref_camera_vol_down_shutter_summary">Foto maken door op de volume-omlaagknop te drukken</string>
+
+    <!-- More Settings screen, zoom button title -->
+    <string name="pref_camera_vol_zoom_title">In-/uitzoomen met volumeknoppen</string>
+    <string name="pref_camera_vol_zoom">In-/uitzoomen met volumeknoppen</string>
+    <string name="pref_camera_vol_zoom_summary">Volumeknoppen gebruiken om in en uit te zoomen</string>
+
+    <!-- More Settings screen, search button-->
+    <string name="pref_camera_search_shutter_title">Foto maken met zoekknop</string>
+    <string name="pref_camera_search_shutter">Zoekknop</string>
+    <string name="pref_camera_search_shutter_summary">Foto maken door op de zoekknop te drukken</string>
+
+    <!-- Settings screen, custom focus -->
+    <string name="pref_camera_settings_focus_title">Focussen</string>
+    <string name="pref_camera_settings_focus">Voor-focus</string>
+    <string name="pref_camera_settings_focus_summary">Focussen voor het maken van een foto</string>
+    <string name="pref_camera_settings_long_focus">Lange focus</string>
+    <string name="pref_camera_settings_long_focus_summary">Knop voor maken van een foto lang ingedrukt houden om te focussen en de knop vervolgens loslaten om de foto te maken</string>
+
+    <!-- Settings screen, Multiple levels entries -->
+    <string name="pref_camera_sharpness_entry_level0">Niveau 0</string>
+    <string name="pref_camera_sharpness_entry_level1">Niveau 1</string>
+    <string name="pref_camera_sharpness_entry_level2">Niveau 2 (standaard)</string>
+    <string name="pref_camera_sharpness_entry_level3">Niveau 3</string>
+    <string name="pref_camera_sharpness_entry_level4">Niveau 4</string>
+    <string name="pref_camera_sharpness_entry_level5">Niveau 5</string>
+    <!-- Settings screen, Multiple levels entries -->
+    <string name="pref_camera_contrast_entry_level0">Niveau 0</string>
+    <string name="pref_camera_contrast_entry_level1">Niveau 1</string>
+    <string name="pref_camera_contrast_entry_level2">Niveau 2</string>
+    <string name="pref_camera_contrast_entry_level3">Niveau 3 (standaard)</string>
+    <string name="pref_camera_contrast_entry_level4">Niveau 4</string>
+    <string name="pref_camera_contrast_entry_level5">Niveau 5</string>
+    <!-- Settings screen, Multiple levels entries -->
+    <string name="pref_camera_saturation_entry_level0">Niveau 0</string>
+    <string name="pref_camera_saturation_entry_level1">Niveau 1</string>
+    <string name="pref_camera_saturation_entry_level2">Niveau 2</string>
+    <string name="pref_camera_saturation_entry_level3">Niveau 3 (standaard)</string>
+    <string name="pref_camera_saturation_entry_level4">Niveau 4</string>
+    <string name="pref_camera_saturation_entry_level5">Niveau 5</string>
+
+    <string name="pref_camera_sharpness_title">Scherpte</string>
+    <string name="pref_camera_contrast_title">Contrast</string>
+    <string name="pref_camera_saturation_title">Verzadiging</string>
+
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_backlight">Achtergrondlicht</string>
     <string name="pref_camera_scenemode_entry_flowers">Bloemen</string>
-	
-    <string name="pref_restore_title" msgid="6479274979730178961">"Camera-instellingen"</string>
-    <string name="pref_restore_detail" msgid="5732490002291044791">"Standaardwaarden herstellen"</string>
-    <string name="pref_exposure_title" msgid="1229093066434614811">"Belichting"</string>
-    <string name="details_ok" msgid="6848594369924424312">"OK"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Uw USB-opslag is bijna vol. Wijzig de kwaliteitsinstelling of verwijder enkele afbeeldingen of andere bestanden."</string>
-    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Uw SD-kaart is bijna vol. Wijzig de kwaliteitsinstelling of verwijder enkele afbeeldingen of andere bestanden."</string>
-    <string name="video_reach_size_limit" msgid="6179877322015552390">"Maximale grootte bereikt"</string>
-    <string name="zoom_control_title" msgid="6532562653386981815">"Zoomen"</string>
-    <string name="switch_to_camera_lable" msgid="8248495141797448471">"Overschakelen naar camera"</string>
-    <string name="switch_to_video_lable" msgid="4525451949497982385">"Overschakelen naar video"</string>
-	
-     <!-- Settings screen, Select Iso title -->
-     <string name="pref_camera_iso_title">ISO</string>
 
-     <!-- Settings screen, ISO dialog radio button choices -->
-     <string name="pref_camera_iso_entry_auto">Auto</string>
-     <string name="pref_camera_iso_entry_isodeblur">Deblur</string>
-     <string name="pref_camera_iso_entry_iso100">ISO100</string>
-     <string name="pref_camera_iso_entry_iso200">ISO200</string>
-     <string name="pref_camera_iso_entry_iso400">ISO400</string>
-     <string name="pref_camera_iso_entry_iso800">ISO800</string>
-     <string name="pref_camera_iso_entry_iso1250">ISO1250</string>
+    <!-- Settings screen, ISO dialog radio button choices -->
+    <string name="pref_camera_iso_entry_auto">Automatisch</string>
+    <string name="pref_camera_iso_entry_isodeblur">Verscherpen</string>
 
-     <!-- Settings screen, Select lens shading title -->
-     <string name="pref_camera_lensshading_title">Lens schaduw</string>
+    <!-- Settings screen, Select lens shading title -->
+    <string name="pref_camera_lensshading_title">Lensschaduw</string>
 
-     <!-- Settings screen, lens shading radio button choices -->
-     <string name="pref_camera_lensshading_entry_enable">Inschakelen</string>
-     <string name="pref_camera_lensshading_entry_disable">Uitschakelen</string>
+    <!-- Settings screen, lens shading radio button choices -->
+    <string name="pref_camera_lensshading_entry_enable">Inschakelen</string>
+    <string name="pref_camera_lensshading_entry_disable">Uitschakelen</string>
 
-     <!-- Settings screen, Anti Banding title -->
-     <string name="pref_camera_antibanding_title">Flikker reductie</string>
+    <!-- Settings screen, Anti Banding title -->
+    <string name="pref_camera_antibanding_title">Flikkervermindering</string>
 
-     <!-- Settings screen, Anti Banding entries -->
-     <string name="pref_camera_antibanding_entry_0">Uit</string>
-     <string name="pref_camera_antibanding_entry_1">50 Hz</string>
-     <string name="pref_camera_antibanding_entry_2">60 Hz</string>
-     <string name="pref_camera_antibanding_entry_3">Auto</string>
+    <!-- Settings screen, Anti Banding entries -->
+    <string name="pref_camera_antibanding_entry_0">Uit</string>
+    <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+    <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+    <string name="pref_camera_antibanding_entry_3">Automatisch</string>
 
-     <!-- Settings screen, Select auto exposure title -->
-     <string name="pref_camera_autoexposure_title">Lichtmeet modus</string>
+    <!-- Settings screen, Select auto exposure title -->
+    <string name="pref_camera_autoexposure_title">Lichtmetingsmodus</string>
 
-     <!-- Settings screen, auto exposure dialog radio button choices -->
-     <string name="pref_camera_autoexposure_entry_frameaverage">Frame gemiddelde</string>
-     <string name="pref_camera_autoexposure_entry_centerweighted">Gewogen gemiddelde</string>
-     <string name="pref_camera_autoexposure_entry_spotmetering">Punts meting</string>
+    <string name="pref_camera_autoexposure_entry_frameaverage">Framegemiddelde</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">Gewogen gemiddelde</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">Puntsmeting</string>
+    <string name="pref_video_quality_entry_wide">Breed (30m)</string>
+    <string name="pref_camera_picturesize_entry_3264x2448">8 MP</string>
+    <string name="pref_camera_picturesize_entry_3264x1968">6,5 MP (breed)</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">6 MP (breed)</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">4 MP (breed)</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">4 MP</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">4 MP</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">2,5 MP (breed)</string>
+    <string name="pref_camera_picturesize_entry_1920x1080">1080p</string>
+    <string name="pref_camera_picturesize_entry_1600x960">1,5 MP (breed)</string>
+    <string name="pref_camera_other_settings_title">Andere instellingen</string>
+    <string name="pref_camera_timer_duration">Duur zelfontspanner</string>
+    <string name="pref_camera_timer_duration_summary">Duur zelfontspanner selecteren</string>
+    <string name="pref_camera_storage_external">Externe SD-kaart gebruiken</string>
+    <string name="pref_camera_storage_external_summary_off">Foto\'s en video\'s opslaan op het interne geheugen (vrije ruimte: %s)</string>
+    <string name="pref_camera_storage_external_summary_on">Foto\'s en video\'s opslaan op de SD-kaart (vrije ruimte: %s)</string>
+    <string name="pref_camera_power_shutter_title">Aan/uit-knop bedient sluiter</string>
+    <string name="pref_camera_power_shutter">Aan/uit-knop</string>
+    <string name="pref_camera_power_shutter_summary">Foto nemen bij drukken op aan/uit-knop</string>
+    <string name="pref_camera_focusmode_entry_touch">Aanraken</string>
+    <string name="pref_camera_focusmode_entry_fixed">Vast</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Gezichtsherkenning</string>
+    <string name="pref_camera_capturemode_title">Opnamemodus</string>
+    <string name="pref_camera_capturemode_entry_default">Onmiddelijk</string>
+    <string name="pref_camera_capturemode_entry_timer">Zelfontspanner</string>
+    <string name="pref_camera_capturemode_entry_10">10 seconden</string>
+    <string name="pref_camera_capturemode_entry_20">20 seconden</string>
+    <string name="pref_camera_capturemode_entry_30">30 seconden</string>
+    <string name="pref_camera_capturemode_entry_40">40 seconden</string>
+    <string name="pref_camera_capturemode_entry_50">50 seconden</string>
+    <string name="pref_camera_capturemode_entry_60">60 seconden</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Bewolkt-daglicht</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Reliëf</string>
+    <string name="pref_camera_coloreffect_entry_vivid">Levendig</string>
+    <string name="pref_camera_coloreffect_entry_blue">Blauw</string>
+    <string name="pref_camera_coloreffect_entry_negative_sepia">Negatieve sepia</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Schemering</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Herfstkleur</string>
+    <string name="pref_camera_scenemode_entry_text">Tekst</string>
+    <string name="pref_camera_autoexposure_entry_matrixmetering">Meerveldsmeting</string>
 </resources>
