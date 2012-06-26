@@ -157,10 +157,15 @@ public class Thumbnail {
         return thumbnail;
     }
 
-    public static Thumbnail getLastThumbnailFromContentResolver(ContentResolver resolver) {
+    public static final int THUMBNAIL_NOT_FOUND = 0;
+    public static final int THUMBNAIL_FOUND = 1;
+    // The media is deleted while we are getting its thumbnail from media provider.
+    public static final int THUMBNAIL_DELETED = 2;
+
+    public static int getLastThumbnailFromContentResolver(ContentResolver resolver, Thumbnail[] result) {
         Media image = getLastImageThumbnail(resolver);
         Media video = getLastVideoThumbnail(resolver);
-        if (image == null && video == null) return null;
+        if (image == null && video == null) return THUMBNAIL_NOT_FOUND;
 
         Bitmap bitmap = null;
         Media lastMedia;
@@ -178,9 +183,10 @@ public class Thumbnail {
 
         // Ensure database and storage are in sync.
         if (Util.isUriValid(lastMedia.uri, resolver)) {
-            return createThumbnail(lastMedia.uri, bitmap, lastMedia.orientation);
+            result[0] = createThumbnail(lastMedia.uri, bitmap, lastMedia.orientation);
+            return THUMBNAIL_FOUND;
         }
-        return null;
+        return THUMBNAIL_DELETED;
     }
 
     private static class Media {
