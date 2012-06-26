@@ -1349,7 +1349,7 @@ public class VideoCamera extends ActivityBase
 
                 mContentResolver.update(mCurrentVideoUri, mCurrentVideoValues
                         , null, null);
-                sendBroadcast(new Intent(android.hardware.Camera.ACTION_NEW_VIDEO,
+                sendBroadcast(new Intent(Util.ACTION_NEW_VIDEO,
                         mCurrentVideoUri));
             } catch (Exception e) {
                 // We failed to insert into the database. This can happen if

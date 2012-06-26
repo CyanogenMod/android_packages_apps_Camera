@@ -69,6 +69,10 @@ public class Util {
     public static final int ORIENTATION_HYSTERESIS = 5;
 
     public static final String REVIEW_ACTION = "com.android.camera.action.REVIEW";
+    // See android.hardware.Camera.ACTION_NEW_PICTURE.
+    public static final String ACTION_NEW_PICTURE = "android.hardware.action.NEW_PICTURE";
+    // See android.hardware.Camera.ACTION_NEW_VIDEO.
+    public static final String ACTION_NEW_VIDEO = "android.hardware.action.NEW_VIDEO";
 
     // Private intent extras. Test only.
     private static final String EXTRAS_CAMERA_FACING =
@@ -584,7 +588,7 @@ public class Util {
     }
 
     public static void broadcastNewPicture(Context context, Uri uri) {
-        context.sendBroadcast(new Intent(android.hardware.Camera.ACTION_NEW_PICTURE, uri));
+        context.sendBroadcast(new Intent(ACTION_NEW_PICTURE, uri));
         // Keep compatibility
         context.sendBroadcast(new Intent("com.android.camera.NEW_PICTURE", uri));
     }
