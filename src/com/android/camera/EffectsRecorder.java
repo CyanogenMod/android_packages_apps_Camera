@@ -37,7 +37,6 @@ import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.Surface;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
