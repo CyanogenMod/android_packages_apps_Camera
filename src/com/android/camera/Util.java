@@ -93,6 +93,9 @@ public class Util {
     private static boolean sSamsungCamMode;
     private static boolean sSamsungCamSettings;
 
+    // Enables to compensate the screen rotation
+    private static int sDeviceScreenRotation;
+
     private Util() {
     }
 
@@ -111,6 +114,8 @@ public class Util {
         sEarlyVideoSize = context.getResources().getBoolean(R.bool.needsEarlyVideoSize);
         sSamsungCamMode = context.getResources().getBoolean(R.bool.needsSamsungCamMode);
         sSamsungCamSettings = context.getResources().getBoolean(R.bool.hasSamsungCamSettings);
+
+        sDeviceScreenRotation = context.getResources().getInteger(R.integer.deviceScreenRotation);
 
     }
 
@@ -367,10 +372,10 @@ public class Util {
         Camera.getCameraInfo(cameraId, info);
         int result;
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            result = (info.orientation + degrees) % 360;
+            result = (info.orientation + degrees + sDeviceScreenRotation ) % 360;
             result = (360 - result) % 360;  // compensate the mirror
         } else {  // back-facing
-            result = (info.orientation - degrees + 360) % 360;
+            result = (info.orientation - degrees - sDeviceScreenRotation + 360) % 360;
         }
         return result;
     }
@@ -647,9 +652,9 @@ public class Util {
         if (orientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
             CameraInfo info = CameraHolder.instance().getCameraInfo()[cameraId];
             if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
-                rotation = (info.orientation - orientation + 360) % 360;
+                rotation = (info.orientation - orientation + sDeviceScreenRotation + 360) % 360;
             } else {  // back-facing camera
-                rotation = (info.orientation + orientation) % 360;
+                rotation = (info.orientation + orientation - sDeviceScreenRotation ) % 360;
             }
         }
         parameters.setRotation(rotation);

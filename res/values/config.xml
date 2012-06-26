@@ -37,5 +37,8 @@
     <bool name="restartPreviewBeforeTakePicture">false</bool>
     <!-- Restart the preview on picture taken -->
     <bool name="restartPreviewOnPictureTaken">false</bool>
+
+    <!-- Compensation of the device's screen orientation (0, 90, 180, 270) -->
+    <integer name="deviceScreenRotation">0</integer>
 </resources>
 
