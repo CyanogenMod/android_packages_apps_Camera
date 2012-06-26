@@ -148,6 +148,7 @@
     <string name="pref_camera_picturesize_entry_3264x2448">8MP</string>
     <string name="pref_camera_picturesize_entry_3264x1968">6.5MP(W)</string>
     <string name="pref_camera_picturesize_entry_3264x1952">6MP(W)</string>
+    <string name="pref_camera_picturesize_entry_3264x1836">6MP(W)</string>
     <string name="pref_camera_picturesize_entry_2592x1936">5MP</string>
     <string name="pref_camera_picturesize_entry_2592x1552">4MP(W)</string>
     <string name="pref_camera_picturesize_entry_2560x1712">4MP</string>
@@ -157,6 +158,7 @@
     <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
     <string name="pref_camera_picturesize_entry_1600x1200">UXGA</string>
     <string name="pref_camera_picturesize_entry_1600x960">1.5MP(W)</string>
+    <string name="pref_camera_picturesize_entry_1392x1392">2MP</string>
     <string name="pref_camera_picturesize_entry_1280x1024">SXGA</string>
     <string name="pref_camera_picturesize_entry_1280x960">SXGA(4:3)</string>
     <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>

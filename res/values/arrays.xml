@@ -86,6 +86,7 @@
         <item>@string/pref_camera_picturesize_entry_3264x2448</item>
         <item>@string/pref_camera_picturesize_entry_3264x1968</item>
         <item>@string/pref_camera_picturesize_entry_3264x1952</item>
+        <item>@string/pref_camera_picturesize_entry_3264x1836</item>
         <item>@string/pref_camera_picturesize_entry_2592x1936</item>
         <item>@string/pref_camera_picturesize_entry_2592x1936</item>
         <item>@string/pref_camera_picturesize_entry_2592x1936</item>
@@ -102,6 +103,7 @@
         <item>@string/pref_camera_picturesize_entry_1920x1080</item>
         <item>@string/pref_camera_picturesize_entry_1600x1200</item>
         <item>@string/pref_camera_picturesize_entry_1600x960</item>
+        <item>@string/pref_camera_picturesize_entry_1392x1392</item>
         <item>@string/pref_camera_picturesize_entry_1280x960</item>
         <item>@string/pref_camera_picturesize_entry_1280x1024</item>
         <item>@string/pref_camera_picturesize_entry_1280x768</item>
@@ -122,6 +124,7 @@
         <item>3264x2448</item>
         <item>3264x1968</item>
         <item>3264x1952</item>
+        <item>3264x1836</item>
         <item>2592x1944</item>
         <item>2592x1936</item>
         <item>2560x1920</item>
@@ -138,6 +141,7 @@
         <item>1920x1080</item>
         <item>1600x1200</item>
         <item>1600x960</item>
+        <item>1392x1392</item>
         <item>1280x960</item>
         <item>1280x1024</item>
         <item>1280x768</item>
