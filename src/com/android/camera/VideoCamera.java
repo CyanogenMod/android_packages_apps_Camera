@@ -943,14 +943,11 @@ public class VideoCamera extends ActivityBase
             closeCamera();
             if (!effectsActive()) releaseMediaRecorder();
         }
-        if (mSurfaceTexture != null) {
-            mCameraScreenNail.releaseSurfaceTexture();
-            mSurfaceTexture = null;
-        }
         if (effectsActive()) {
             // If the effects are active, make sure we tell the graph that the
-            // surfacetexture is not valid anymore. Disconnect the graph from the
-            // display.
+            // surfacetexture is not valid anymore. Disconnect the graph from
+            // the display. This should be done before releasing the surface
+            // texture.
             mEffectsRecorder.disconnectDisplay();
         } else {
             // Close the file descriptor and clear the video namer only if the
@@ -962,6 +959,10 @@ public class VideoCamera extends ActivityBase
             // condition invalid.
             closeVideoFileDescriptor();
             clearVideoNamer();
+        }
+        if (mSurfaceTexture != null) {
+            mCameraScreenNail.releaseSurfaceTexture();
+            mSurfaceTexture = null;
         }
 
         if (mReceiver != null) {
