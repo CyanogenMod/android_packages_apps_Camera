@@ -100,6 +100,9 @@ public class Util {
     private static boolean sNoFaceDetectOnFrontCamera;
     private static boolean sNoFaceDetectOnRearCamera;
     
+    // Enables to compensate the screen rotation
+    private static int sDeviceScreenRotation;
+
     private Util() {
     }
 
@@ -121,6 +124,9 @@ public class Util {
         sEnableZSL = context.getResources().getBoolean(R.bool.enableZSL);
         sNoFaceDetectOnFrontCamera = context.getResources().getBoolean(R.bool.noFaceDetectOnFrontCamera);
         sNoFaceDetectOnRearCamera = context.getResources().getBoolean(R.bool.noFaceDetectOnRearCamera);
+
+        sDeviceScreenRotation = context.getResources().getInteger(R.integer.deviceScreenRotation);
+
     }
 
     public static boolean needsEarlyVideoSize() {
@@ -388,10 +394,10 @@ public class Util {
         Camera.getCameraInfo(cameraId, info);
         int result;
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            result = (info.orientation + degrees) % 360;
+            result = (info.orientation + degrees + sDeviceScreenRotation ) % 360;
             result = (360 - result) % 360;  // compensate the mirror
         } else {  // back-facing
-            result = (info.orientation - degrees + 360) % 360;
+            result = (info.orientation - degrees - sDeviceScreenRotation + 360) % 360;
         }
         return result;
     }
@@ -679,9 +685,9 @@ public class Util {
         if (orientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
             CameraInfo info = CameraHolder.instance().getCameraInfo()[cameraId];
             if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
-                rotation = (info.orientation - orientation + 360) % 360;
+                rotation = (info.orientation - orientation + sDeviceScreenRotation + 360) % 360;
             } else {  // back-facing camera
-                rotation = (info.orientation + orientation) % 360;
+                rotation = (info.orientation + orientation - sDeviceScreenRotation ) % 360;
             }
         }
         parameters.setRotation(rotation);

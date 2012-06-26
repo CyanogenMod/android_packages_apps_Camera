@@ -39,5 +39,7 @@
     <bool name="noFaceDetectOnRearCamera">false</bool>
     <!-- Use ZSL mode -->
     <bool name="enableZSL">false</bool>
+    <!-- Compensation of the device's screen orientation (0, 90, 180, 270) -->
+    <integer name="deviceScreenRotation">0</integer>
 </resources>
 
