@@ -16,12 +16,16 @@
 
 package com.android.camera;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.hardware.Camera.Parameters;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -51,6 +55,8 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     private static final String TAG = "ActivityBase";
     private static final boolean LOGV = false;
     private static final int CAMERA_APP_VIEW_TOGGLE_TIME = 100;  // milliseconds
+    private static final String ACTION_DELETE_PICTURE =
+            "com.android.gallery3d.action.DELETE_PICTURE";
     private int mResultCodeForTesting;
     private Intent mResultDataForTesting;
     private OnScreenHint mStorageHint;
@@ -89,6 +95,20 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     // indicator bar, focus indicator and etc.
     protected View mCameraAppView;
     protected boolean mShowCameraAppView = true;
+    private boolean mUpdateThumbnailDelayed;
+    private IntentFilter mDeletePictureFilter =
+            new IntentFilter(ACTION_DELETE_PICTURE);
+    private BroadcastReceiver mDeletePictureReceiver =
+            new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (mShowCameraAppView) {
+                        getLastThumbnailUncached();
+                    } else {
+                        mUpdateThumbnailDelayed = true;
+                    }
+                }
+            };
 
     protected class CameraOpenThread extends Thread {
         @Override
@@ -126,8 +146,18 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        manager.registerReceiver(mDeletePictureReceiver, mDeletePictureFilter);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        manager.unregisterReceiver(mDeletePictureReceiver);
+
         if (LOGV) Log.v(TAG, "onPause");
         saveThumbnailToFile();
 
@@ -240,28 +270,54 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         // view should be set to gone to prevent from opening the invalid image.
         updateThumbnailView();
         if (mThumbnail == null) {
-            mLoadThumbnailTask = new LoadThumbnailTask().execute();
+            mLoadThumbnailTask = new LoadThumbnailTask(true).execute();
         }
     }
 
+    protected void getLastThumbnailUncached() {
+        if (mLoadThumbnailTask != null) mLoadThumbnailTask.cancel(true);
+        mLoadThumbnailTask = new LoadThumbnailTask(false).execute();
+    }
+
     private class LoadThumbnailTask extends AsyncTask<Void, Void, Thumbnail> {
+        private boolean mLookAtCache;
+
+        public LoadThumbnailTask(boolean lookAtCache) {
+            mLookAtCache = lookAtCache;
+        }
+
         @Override
         protected Thumbnail doInBackground(Void... params) {
             // Load the thumbnail from the file.
             ContentResolver resolver = getContentResolver();
-            Thumbnail t = Thumbnail.getLastThumbnailFromFile(getFilesDir(), resolver);
+            Thumbnail t = null;
+            if (mLookAtCache) {
+                t = Thumbnail.getLastThumbnailFromFile(getFilesDir(), resolver);
+            }
 
             if (isCancelled()) return null;
 
             if (t == null) {
+                Thumbnail result[] = new Thumbnail[1];
                 // Load the thumbnail from the media provider.
-                t = Thumbnail.getLastThumbnailFromContentResolver(resolver);
+                int code = Thumbnail.getLastThumbnailFromContentResolver(
+                        resolver, result);
+                switch (code) {
+                    case Thumbnail.THUMBNAIL_FOUND:
+                        return result[0];
+                    case Thumbnail.THUMBNAIL_NOT_FOUND:
+                        return null;
+                    case Thumbnail.THUMBNAIL_DELETED:
+                        cancel(true);
+                        return null;
+                }
             }
             return t;
         }
 
         @Override
         protected void onPostExecute(Thumbnail thumbnail) {
+            if (isCancelled()) return;
             mThumbnail = thumbnail;
             updateThumbnailView();
         }
@@ -348,6 +404,13 @@ abstract public class ActivityBase extends AbstractGalleryActivity
                 .setInterpolator(new DecelerateInterpolator());
         }
         updateCameraAppView();
+
+        // If we received DELETE_PICTURE broadcasts while the Camera UI is
+        // hidden, we update the thumbnail now.
+        if (full && mUpdateThumbnailDelayed) {
+            getLastThumbnailUncached();
+            mUpdateThumbnailDelayed = false;
+        }
     }
 
     @Override
