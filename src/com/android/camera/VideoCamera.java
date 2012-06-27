@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -38,6 +39,7 @@ import android.media.CamcorderProfile;
 import android.media.CameraProfile;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -1114,12 +1116,7 @@ public class VideoCamera extends ActivityBase
             mMediaRecorder.setCaptureRate((1000 / (double) mTimeBetweenTimeLapseFrameCaptureMs));
         }
 
-        Location loc = mLocationManager.getCurrentLocation();
-        if (loc != null) {
-            mMediaRecorder.setLocation((float) loc.getLatitude(),
-                    (float) loc.getLongitude());
-        }
-
+        setRecordLocation();
 
         // Set output file.
         // Try Uri in the intent first. If it doesn't exist, use our own
@@ -1173,6 +1170,17 @@ public class VideoCamera extends ActivityBase
 
         mMediaRecorder.setOnErrorListener(this);
         mMediaRecorder.setOnInfoListener(this);
+    }
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private void setRecordLocation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            Location loc = mLocationManager.getCurrentLocation();
+            if (loc != null) {
+                mMediaRecorder.setLocation((float) loc.getLatitude(),
+                        (float) loc.getLongitude());
+            }
+        }
     }
 
     private void initializeEffectsPreview() {
