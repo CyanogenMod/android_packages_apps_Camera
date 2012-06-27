@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.admin.DevicePolicyManager;
@@ -46,7 +47,6 @@ import android.view.Display;
 import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -357,6 +357,18 @@ public class Util {
         return orientationHistory;
     }
 
+    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private static Point getDefaultDisplaySize(Activity activity, Point size) {
+        Display d = activity.getWindowManager().getDefaultDisplay();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            d.getSize(size);
+        } else {
+            size.set(d.getWidth(), d.getHeight());
+        }
+        return size;
+    }
+
     public static Size getOptimalPreviewSize(Activity currentActivity,
             List<Size> sizes, double targetRatio) {
         // Use a very small tolerance because we want an exact match.
@@ -371,9 +383,7 @@ public class Util {
         // wrong size of preview surface. When we change the preview size, the
         // new overlay will be created before the old one closed, which causes
         // an exception. For now, just get the screen size.
-        Display display = currentActivity.getWindowManager().getDefaultDisplay();
-        Point point = new Point();
-        display.getSize(point);
+        Point point = getDefaultDisplaySize(currentActivity, new Point());
         int targetHeight = Math.min(point.x, point.y);
 
         // Try to find an size match aspect ratio and size
