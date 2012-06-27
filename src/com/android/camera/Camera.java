@@ -36,7 +36,6 @@ import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.location.Location;
 import android.media.CameraProfile;
-import android.media.MediaActionSound;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ConditionVariable;
@@ -175,7 +174,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // it into MediaStore while picture taking is still in progress.
     private ImageNamer mImageNamer;
 
-    private MediaActionSound mCameraSound;
+    private SoundClips.Player mSoundPlayer;
 
     private Runnable mDoSnapRunnable = new Runnable() {
         @Override
@@ -1207,7 +1206,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void playSound(int soundId) {
-        mCameraSound.play(soundId);
+        mSoundPlayer.play(soundId);
     }
 
     private int getPreferredCameraId(ComboPreferences preferences) {
@@ -1594,11 +1593,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Dismiss open menu if exists.
         PopupManager.getInstance(this).notifyShowPopup(null);
 
-        if (mCameraSound == null) {
-            mCameraSound = new MediaActionSound();
-            // Not required, but reduces latency when playback is requested later.
-            mCameraSound.load(MediaActionSound.FOCUS_COMPLETE);
-        }
+        mSoundPlayer = SoundClips.getPlayer(this);
     }
 
     void waitCameraStartUpThread() {
@@ -1629,9 +1624,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mCameraScreenNail.releaseSurfaceTexture();
             mSurfaceTexture = null;
         }
-        if (mCameraSound != null) {
-            mCameraSound.release();
-            mCameraSound = null;
+        if (mSoundPlayer != null) {
+            mSoundPlayer.release();
+            mSoundPlayer = null;
         }
         resetScreenOn();
 

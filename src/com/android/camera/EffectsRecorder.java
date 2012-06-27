@@ -21,7 +21,6 @@ import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
-import android.media.MediaActionSound;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Looper;
@@ -173,7 +172,7 @@ public class EffectsRecorder {
     private int mState = STATE_CONFIGURE;
 
     private boolean mLogVerbose = Log.isLoggable(TAG, Log.VERBOSE);
-    private MediaActionSound mCameraSound;
+    private SoundClips.Player mSoundPlayer;
 
     /** Determine if a given effect is supported at runtime
      * Some effects require libraries not available on all devices
@@ -308,9 +307,7 @@ public class EffectsRecorder {
 
         mContext = context;
         mHandler = new Handler(Looper.getMainLooper());
-        mCameraSound = new MediaActionSound();
-        mCameraSound.load(MediaActionSound.START_VIDEO_RECORDING);
-        mCameraSound.load(MediaActionSound.STOP_VIDEO_RECORDING);
+        mSoundPlayer = SoundClips.getPlayer(context);
     }
 
     public synchronized void setCamera(Camera cameraDevice) {
@@ -435,7 +432,7 @@ public class EffectsRecorder {
                 break;
         }
 
-        mPreviewSurfaceTexture= previewSurfaceTexture;
+        mPreviewSurfaceTexture = previewSurfaceTexture;
         mPreviewWidth = previewWidth;
         mPreviewHeight = previewHeight;
 
@@ -453,7 +450,7 @@ public class EffectsRecorder {
     public void setEffect(int effect, Object effectParameter) {
         if (mLogVerbose) Log.v(TAG,
                                "setEffect: effect ID " + effect +
-                               ", parameter " + effectParameter.toString() );
+                               ", parameter " + effectParameter.toString());
         switch (mState) {
             case STATE_RECORD:
                 throw new RuntimeException("setEffect cannot be called while recording!");
@@ -492,7 +489,7 @@ public class EffectsRecorder {
     }
 
     private void setRecordingOrientation() {
-        if ( mState != STATE_RECORD && mRunner != null) {
+        if (mState != STATE_RECORD && mRunner != null) {
             Object bl = newInstance(sCtPoint, new Object[] {0, 0});
             Object br = newInstance(sCtPoint, new Object[] {1, 0});
             Object tl = newInstance(sCtPoint, new Object[] {0, 1});
@@ -651,7 +648,7 @@ public class EffectsRecorder {
                 mCameraDevice.stopPreview();
                 try {
                     mCameraDevice.setPreviewTexture(null);
-                } catch(IOException e) {
+                } catch (IOException e) {
                     throw new RuntimeException("Unable to connect camera to effect input", e);
                 }
                 invoke(mOldRunner, sGraphRunnerStop);
@@ -747,7 +744,7 @@ public class EffectsRecorder {
 
     private void invokeOnRunnerDone(Object[] args) {
         int runnerDoneResult = (Integer) args[0];
-        synchronized(EffectsRecorder.this) {
+        synchronized (EffectsRecorder.this) {
             if (mLogVerbose) {
                 Log.v(TAG,
                       "Graph runner done (" + EffectsRecorder.this
@@ -819,7 +816,7 @@ public class EffectsRecorder {
     private void invokeOnSurfaceTextureSourceReady(Object[] args) {
         SurfaceTexture source = (SurfaceTexture) args[0];
         if (mLogVerbose) Log.v(TAG, "SurfaceTexture ready callback received");
-        synchronized(EffectsRecorder.this) {
+        synchronized (EffectsRecorder.this) {
             mTextureSource = source;
 
             if (mState == STATE_CONFIGURE) {
@@ -862,7 +859,7 @@ public class EffectsRecorder {
             if (mLogVerbose) Log.v(TAG, "Runner active, connecting effects preview");
             try {
                 mCameraDevice.setPreviewTexture(mTextureSource);
-            } catch(IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException("Unable to connect camera to effect input", e);
             }
 
@@ -941,7 +938,7 @@ public class EffectsRecorder {
         setInputValue(recorder, "maxFileSize", mMaxFileSize);
         setInputValue(recorder, "maxDurationMs", mMaxDurationMs);
         setInputValue(recorder, "recording", true);
-        mCameraSound.play(MediaActionSound.START_VIDEO_RECORDING);
+        mSoundPlayer.play(SoundClips.START_VIDEO_RECORDING);
         mState = STATE_RECORD;
     }
 
@@ -961,7 +958,7 @@ public class EffectsRecorder {
         }
         Object recorder = getGraphFilter(mRunner, "recorder");
         setInputValue(recorder, "recording", false);
-        mCameraSound.play(MediaActionSound.STOP_VIDEO_RECORDING);
+        mSoundPlayer.play(SoundClips.STOP_VIDEO_RECORDING);
         mState = STATE_PREVIEW;
     }
 
@@ -999,7 +996,7 @@ public class EffectsRecorder {
         mCameraDevice.stopPreview();
         try {
             mCameraDevice.setPreviewTexture(null);
-        } catch(IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("Unable to disconnect camera");
         }
     }
@@ -1064,7 +1061,7 @@ public class EffectsRecorder {
         }
         Camera.Parameters params = mCameraDevice.getParameters();
         if (Util.isAutoExposureLockSupported(params) &&
-            Util.isAutoWhiteBalanceLockSupported(params) ) {
+            Util.isAutoWhiteBalanceLockSupported(params)) {
             params.setAutoExposureLock(toggle);
             params.setAutoWhiteBalanceLock(toggle);
             mCameraDevice.setParameters(params);
@@ -1122,9 +1119,9 @@ public class EffectsRecorder {
                 stopPreview();
                 // Fall-through
             default:
-                if (mCameraSound != null) {
-                    mCameraSound.release();
-                    mCameraSound = null;
+                if (mSoundPlayer != null) {
+                    mSoundPlayer.release();
+                    mSoundPlayer = null;
                 }
                 mState = STATE_RELEASED;
                 break;

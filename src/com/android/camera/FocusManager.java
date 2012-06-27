@@ -21,7 +21,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera.Area;
 import android.hardware.Camera.Parameters;
-import android.media.MediaActionSound;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -274,7 +273,7 @@ public class FocusManager {
                 // not do a full scan. The focus callback arrives before doSnap
                 // so the state is always STATE_FOCUSING.
                 if (!Util.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)) {
-                    mListener.playSound(MediaActionSound.FOCUS_COMPLETE);
+                    mListener.playSound(SoundClips.FOCUS_COMPLETE);
                 }
             } else {
                 mState = STATE_FAIL;
