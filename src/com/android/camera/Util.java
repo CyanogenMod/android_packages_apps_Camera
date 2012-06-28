@@ -51,6 +51,8 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 
+import com.android.gallery3d.common.ApiHelper;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -365,7 +367,7 @@ public class Util {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private static Point getDefaultDisplaySize(Activity activity, Point size) {
         Display d = activity.getWindowManager().getDefaultDisplay();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+        if (Build.VERSION.SDK_INT >= ApiHelper.VERSION_CODES.HONEYCOMB_MR2) {
             d.getSize(size);
         } else {
             size.set(d.getWidth(), d.getHeight());
