@@ -231,6 +231,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private static final int SNAPSHOT_IN_PROGRESS = 3;
     private int mCameraState = PREVIEW_STOPPED;
     private boolean mSnapshotOnIdle = false;
+    private boolean mAspectRatioChanged = false;
 
     private ContentResolver mContentResolver;
     private boolean mDidRegister = false;
@@ -354,6 +355,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             }
         }
     }
+
+
+
+
+
+
+
 
     private void resetExposureCompensation() {
         String value = mPreferences.getString(CameraSettings.KEY_EXPOSURE,
@@ -2122,6 +2130,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mParameters.setMeteringAreas(mFocusManager.getMeteringAreas());
         }
 
+        Size old_size = mParameters.getPictureSize();
+
         // Set picture size.
         String pictureSize = mPreferences.getString(
                 CameraSettings.KEY_PICTURE_SIZE, null);
@@ -2150,6 +2160,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // Set the preview frame aspect ratio according to the picture size.
         Size size = mParameters.getPictureSize();
+
+        // Stop preview if aspect ratio changed
+        if (!size.equals(old_size) && mCameraState != PREVIEW_STOPPED) {
+            Log.v(TAG, "new picture size id different from old picture size , stop preview. Start preview will be called at a later point");
+            stopPreview();
+            mAspectRatioChanged = true;
+        }
 
         mPreviewPanel = findViewById(R.id.frame_layout);
         mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
@@ -2320,6 +2337,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 mHandler.sendEmptyMessageDelayed(
                         SET_CAMERA_PARAMETERS_WHEN_IDLE, 1000);
             }
+        }
+
+        // Start preview in case we've stopped it before because of aspect ratio change
+        if (mAspectRatioChanged) {
+            Log.v(TAG, "Picture Aspect Ratio changed, restarting preview");
+            startPreview();
+            mAspectRatioChanged = false;
         }
     }
 
