@@ -31,17 +31,9 @@ import android.widget.RelativeLayout;
  */
 public class ControlPanelLayout extends RelativeLayout {
     private static final String TAG = "ControlPanelLayout";
-    private int mMinWidth;
-    private int mMinHeight;
 
     public ControlPanelLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        int[] attrsList = {android.R.styleable.View_minWidth,
-              android.R.styleable.View_minHeight};
-        TypedArray a = context.obtainStyledAttributes(attrs, attrsList);
-        mMinWidth = a.getDimensionPixelSize(android.R.styleable.View_minWidth, 0);
-        mMinHeight = a.getDimensionPixelSize(android.R.styleable.View_minHeight, 0);
-        a.recycle();
     }
 
     @Override
@@ -75,7 +67,8 @@ public class ControlPanelLayout extends RelativeLayout {
         }
 
         // The size cannot be smaller than minimum constraint.
-        int minimumSize = (isLandscape) ? mMinWidth : mMinHeight;
+        int minimumSize = (isLandscape) ? getSuggestedMinimumWidth()
+                : getSuggestedMinimumHeight();
         if (measuredSize < minimumSize) {
             measuredSize = minimumSize;
         }
