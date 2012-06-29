@@ -404,6 +404,7 @@ public class Util {
 
         Size optimalSize = null;
         double minDiff = Double.MAX_VALUE;
+        double minAspectRatioDiff = Double.MAX_VALUE;
 
         // Because of bugs of overlay and layout, we sometimes will try to
         // layout the viewfinder in the portrait orientation and thus get the
@@ -419,13 +420,22 @@ public class Util {
             targetHeight = display.getHeight();
         }
 
-        // Try to find an size match aspect ratio and size
+        // First in all sizes not greater than target size, find an aspect ratio
+        // that is closest to requested ratio
         for (Size size : sizes) {
             double ratio = (double) size.width / size.height;
-            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
-            if (Math.abs(size.height - targetHeight) < minDiff) {
-                optimalSize = size;
-                minDiff = Math.abs(size.height - targetHeight);
+            if (size.height <= targetHeight && Math.abs(ratio - targetRatio) < minAspectRatioDiff)
+                minAspectRatioDiff = Math.abs(ratio-targetRatio);
+        }
+        // Then find the size with minAspectRatioDiff closest to target size
+        for (Size size : sizes) {
+            double ratio = (double) size.width / size.height;
+            double aspectRatioDiff = Math.abs(ratio - targetRatio);
+            if (size.height <= targetHeight) {
+                if (aspectRatioDiff - minAspectRatioDiff > ASPECT_TOLERANCE)
+                    continue;
+                if (optimalSize == null || optimalSize.height < size.height)
+                    optimalSize = size;
             }
         }
 
