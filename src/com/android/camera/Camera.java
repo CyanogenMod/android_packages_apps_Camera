@@ -231,6 +231,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private static final int SNAPSHOT_IN_PROGRESS = 3;
     private int mCameraState = PREVIEW_STOPPED;
     private boolean mSnapshotOnIdle = false;
+    private boolean mAspectRatioChanged = false;
 
     private ContentResolver mContentResolver;
     private boolean mDidRegister = false;
@@ -354,6 +355,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             }
         }
     }
+
+
+
+
+
+
+
 
     private void resetExposureCompensation() {
         String value = mPreferences.getString(CameraSettings.KEY_EXPOSURE,
@@ -2122,6 +2130,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mParameters.setMeteringAreas(mFocusManager.getMeteringAreas());
         }
 
+        Size old_size = mParameters.getPictureSize();
+
         // Set picture size.
         String pictureSize = mPreferences.getString(
                 CameraSettings.KEY_PICTURE_SIZE, null);
@@ -2130,26 +2140,19 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         } else {
             List<Size> supported = mParameters.getSupportedPictureSizes();
 
-            if (getResources().getBoolean(R.bool.restartPreviewOnPictureSizeChange)) {
-                // We cannot change picture size on the fly, so stop the preview here
-                Size currentSize = mParameters.getPictureSize();
-                String currentPictureSize = currentSize.width + "x" + currentSize.height;
-
-                if (currentPictureSize.equals(pictureSize) == false) {
-                    if (mCameraState != PREVIEW_STOPPED) {
-                        Log.i(TAG, "pictureSize has changed, currentPictureSize=" + currentPictureSize + ", pictureSize=" + pictureSize + ", stopPreview");
-                        mCameraDevice.stopPreview();
-                        mCameraState = PREVIEW_STOPPED;
-                    }
-                }
-            }
-
             CameraSettings.setCameraPictureSize(
                     pictureSize, supported, mParameters);
         }
 
         // Set the preview frame aspect ratio according to the picture size.
         Size size = mParameters.getPictureSize();
+
+        // Stop preview if aspect ratio changed
+        if (!size.equals(old_size) && mCameraState != PREVIEW_STOPPED) {
+            Log.v(TAG, "new picture size id different from old picture size , stop preview. Start preview will be called at a later point");
+            stopPreview();
+            mAspectRatioChanged = true;
+        }
 
         mPreviewPanel = findViewById(R.id.frame_layout);
         mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
@@ -2286,20 +2289,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         CameraSettings.dumpParameters(mParameters);
         mCameraDevice.setParameters(mParameters);
-
-        if (getResources().getBoolean(R.bool.restartPreviewOnPictureSizeChange)) {
-            // Start the preview again, in case we stopped it before
-            if (mCameraState == PREVIEW_STOPPED) {
-                try {
-                    Log.i(TAG, "startPreview");
-                    mCameraDevice.startPreview();
-                    mCameraState = IDLE;
-                } catch (Throwable ex) {
-                    closeCamera();
-                    throw new RuntimeException("startPreview failed", ex);
-                }
-            }
-        }
     }
 
     // If the Camera is idle, update the parameters immediately, otherwise
@@ -2320,6 +2309,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 mHandler.sendEmptyMessageDelayed(
                         SET_CAMERA_PARAMETERS_WHEN_IDLE, 1000);
             }
+        }
+
+        // Start preview in case we've stopped it before because of aspect ratio change
+        if (mAspectRatioChanged) {
+            Log.v(TAG, "Picture Aspect Ratio changed, restarting preview");
+            startPreview();
+            mAspectRatioChanged = false;
         }
     }
 
