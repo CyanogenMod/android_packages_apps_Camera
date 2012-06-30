@@ -54,11 +54,28 @@
     <!-- More Settings screen, power button title -->
     <string name="pref_camera_power_shutter_title">电源键快门</string>
     <string name="pref_camera_power_shutter_default">关闭</string>
+
+    <!-- More Settings screen, storage title -->
+    <string name="pref_camera_storage_title">存储</string>
+
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"照片大小"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"对焦方式"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"自动"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"无限远"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"微距"</string>
+
+    <!-- Settings screen, Timer mode title -->
+    <string name="pref_camera_timer_title">定时模式</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_timer_entry_0">关闭</string>
+    <string name="pref_camera_timer_entry_10">10 秒</string>
+    <string name="pref_camera_timer_entry_20">20 秒</string>
+    <string name="pref_camera_timer_entry_30">30 秒</string>
+    <string name="pref_camera_timer_entry_40">40 秒</string>
+    <string name="pref_camera_timer_entry_50">50 秒</string>
+    <string name="pref_camera_timer_entry_60">60 秒</string>
+
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"闪光模式"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"自动"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"开"</string>
@@ -69,12 +86,28 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"日光"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"荧光"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"阴天"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">阴天日光</string>
+
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"取景模式"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"自动"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"运动"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"夜景"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"日落"</string>
+
+    <!-- Scene mode optimized for taking indoor low-lights pictures. [CHAR LIMIT=16] -->
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"派对"</string>
+    <string name="pref_camera_scenemode_entry_backlight">背光</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">黄昏/黎明</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">秋色</string>
+    <string name="pref_camera_scenemode_entry_text">文字</string>
+    <string name="pref_camera_scenemode_entry_portrait">肖像</string>
+    <string name="pref_camera_scenemode_entry_landscape">风景</string>
+    <string name="pref_camera_scenemode_entry_beach">沙滩</string>
+    <string name="pref_camera_scenemode_entry_snow">雪景</string>
+    <string name="pref_camera_scenemode_entry_fireworks">烟火</string>
+    <string name="pref_camera_scenemode_entry_sports">体育</string>
+    <string name="pref_camera_scenemode_entry_candlelight">烛光</string>
+
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"无法在取景模式下选择。"</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"相机设置"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"还原默认设置"</string>
