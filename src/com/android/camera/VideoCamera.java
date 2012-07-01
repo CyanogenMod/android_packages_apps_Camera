@@ -2253,10 +2253,9 @@ public class VideoCamera extends ActivityBase
         if (size.width != mDesiredPreviewWidth
                 || size.height != mDesiredPreviewHeight) {
             resizeForPreviewAspectRatio();
-        } else {
-            // Start up preview again
-            startPreview();
         }
+        // Start up preview
+        startPreview();
     }
 
     private void showTimeLapseUI(boolean enable) {
