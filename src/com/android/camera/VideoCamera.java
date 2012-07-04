@@ -123,7 +123,6 @@ public class VideoCamera extends ActivityBase
 
     private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceTexture mSurfaceTexture;
-    private Surface mSurface;
     private IndicatorControlContainer mIndicatorControlContainer;
     private int mSurfaceWidth;
     private int mSurfaceHeight;
@@ -1887,7 +1886,6 @@ public class VideoCamera extends ActivityBase
         if (mSurfaceTexture == null) {
             mCameraScreenNail.acquireSurfaceTexture();
             mSurfaceTexture = mCameraScreenNail.getSurfaceTexture();
-            mSurface = new Surface(mSurfaceTexture);
         }
     }
 
