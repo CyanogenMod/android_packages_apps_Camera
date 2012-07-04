@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentProviderClient;
@@ -67,6 +68,8 @@ import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomControl;
+
+import com.android.gallery3d.common.ApiHelper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -228,8 +231,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             new RawPictureCallback();
     private final AutoFocusCallback mAutoFocusCallback =
             new AutoFocusCallback();
-    private final AutoFocusMoveCallback mAutoFocusMoveCallback =
-            new AutoFocusMoveCallback();
+    private final Object mAutoFocusMoveCallback =
+            ApiHelper.HAS_AUTO_FOCUS_MOVE_CALLBACK
+            ? new AutoFocusMoveCallback()
+            : null;
+
     private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
 
     private long mFocusStartTime;
@@ -858,6 +864,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
     private final class AutoFocusMoveCallback
             implements android.hardware.Camera.AutoFocusMoveCallback {
         @Override
@@ -2111,12 +2118,18 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mFocusManager.overrideFocusMode(mParameters.getFocusMode());
         }
 
-        if (mContinousFocusSupported) {
-            if (mParameters.getFocusMode().equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                mCameraDevice.setAutoFocusMoveCallback(mAutoFocusMoveCallback);
-            } else {
-                mCameraDevice.setAutoFocusMoveCallback(null);
-            }
+        if (mContinousFocusSupported && ApiHelper.HAS_AUTO_FOCUS_MOVE_CALLBACK) {
+            updateAutoFocusMoveCallback();
+        }
+    }
+
+    @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
+    private void updateAutoFocusMoveCallback() {
+        if (mParameters.getFocusMode().equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+            mCameraDevice.setAutoFocusMoveCallback(
+                (AutoFocusMoveCallback) mAutoFocusMoveCallback);
+        } else {
+            mCameraDevice.setAutoFocusMoveCallback(null);
         }
     }
 
