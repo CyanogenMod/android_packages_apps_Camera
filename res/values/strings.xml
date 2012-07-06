@@ -204,6 +204,16 @@
     <string name="pref_camera_iso_entry_iso1200">1200</string>
     <string name="pref_camera_iso_entry_iso1600">1600</string>
 
+    <!-- Settings screen, Burst mode title -->
+    <string name="pref_camera_burst_title">Burst</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_off">Off</string>
+    <string name="pref_camera_burst_entry_5">5 shots</string>
+    <string name="pref_camera_burst_entry_10">10 shots</string>
+    <string name="pref_camera_burst_entry_15">15 shots</string>
+    <string name="pref_camera_burst_entry_20">20 shots</string>
+
     <!-- Settings screen, Timer mode title -->
     <string name="pref_camera_timer_title">Timer mode</string>
     <string name="pref_camera_timer_default" translatable="false">0</string>
