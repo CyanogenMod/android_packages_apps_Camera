@@ -50,6 +50,7 @@ public class CameraSettings {
     public static final String KEY_JPEG_QUALITY = "pref_camera_jpegquality_key";
     public static final String KEY_FOCUS_MODE = "pref_camera_focusmode_key";
     public static final String KEY_TIMER_MODE = "pref_camera_timer_key";
+    public static final String KEY_BURST_MODE = "pref_camera_burst_key";
     public static final String KEY_FLASH_MODE = "pref_camera_flashmode_key";
     public static final String KEY_VIDEOCAMERA_FLASH_MODE = "pref_camera_video_flashmode_key";
     public static final String KEY_WHITE_BALANCE = "pref_camera_whitebalance_key";
@@ -159,6 +160,7 @@ public class CameraSettings {
                 group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
         ListPreference videoEffect = group.findPreference(KEY_VIDEO_EFFECT);
         ListPreference storage = group.findPreference(KEY_STORAGE);
+        ListPreference burstMode = group.findPreference(KEY_BURST_MODE);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -206,6 +208,7 @@ public class CameraSettings {
             resetIfInvalid(videoEffect);
         }
         if (storage != null) buildStorage(group, storage);
+        if (burstMode != null) burstMode.setValueIndex(0);
     }
 
     private void buildExposureCompensation(
