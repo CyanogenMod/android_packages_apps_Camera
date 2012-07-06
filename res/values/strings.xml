@@ -192,6 +192,16 @@
     <string name="pref_camera_iso_entry_iso100">100</string>
     <string name="pref_camera_iso_entry_iso50">50</string>
 
+    <!-- Settings screen, Burst mode title -->
+    <string name="pref_camera_burst_title">Burst mode</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_off">Off</string>
+    <string name="pref_camera_burst_entry_5">5 shots</string>
+    <string name="pref_camera_burst_entry_10">10 shots</string>
+    <string name="pref_camera_burst_entry_15">15 shots</string>
+    <string name="pref_camera_burst_entry_20">20 shots</string>
+
     <!-- Default flash mode setting.-->
     <string name="pref_camera_flashmode_default" translatable="false">auto</string>
 
