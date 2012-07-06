@@ -93,6 +93,9 @@ public class Util {
     private static boolean sSamsungCamMode;
     private static boolean sSamsungCamSettings;
 
+    // HTC camcorder mode
+    private static boolean sHTCCamMode;
+
     private Util() {
     }
 
@@ -111,11 +114,16 @@ public class Util {
         sEarlyVideoSize = context.getResources().getBoolean(R.bool.needsEarlyVideoSize);
         sSamsungCamMode = context.getResources().getBoolean(R.bool.needsSamsungCamMode);
         sSamsungCamSettings = context.getResources().getBoolean(R.bool.hasSamsungCamSettings);
+        sHTCCamMode = context.getResources().getBoolean(R.bool.needsHTCCamMode);
 
     }
 
     public static boolean needsEarlyVideoSize() {
         return sEarlyVideoSize;
+    }
+
+    public static boolean useHTCCamMode() {
+        return sHTCCamMode;
     }
 
     public static boolean useSamsungCamMode() {

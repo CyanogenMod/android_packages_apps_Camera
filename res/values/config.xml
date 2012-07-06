@@ -24,6 +24,8 @@
     <bool name="needsEarlyVideoSize">false</bool>
     <!-- Samsung Camcorder Mode -->
     <bool name="needsSamsungCamMode">false</bool>
+    <!-- HTC Camcorder Mode -->
+    <bool name="needsHTCCamMode">false</bool>
     <!-- Samsung Camera Settings -->
     <bool name="hasSamsungCamSettings">false</bool>
     <!-- The camera removes the focus modes by default when touch-to-focus
