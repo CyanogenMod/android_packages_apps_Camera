@@ -167,6 +167,7 @@
     <string name="pref_camera_focusmode_entry_macro">Macro</string>
     <string name="pref_camera_focusmode_entry_fixed">Fixed</string>
     <string name="pref_camera_focusmode_entry_facedetect">Face detect</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Continuous Picture</string>
 
     <!-- Default flash mode setting.-->
     <string name="pref_camera_flashmode_default" translatable="false">auto</string>

@@ -158,6 +158,7 @@
         <item>@string/pref_camera_focusmode_entry_macro</item>
         <item>@string/pref_camera_focusmode_entry_fixed</item>
         <item>@string/pref_camera_focusmode_entry_facedetect</item>
+        <item>@string/pref_camera_focusmode_entry_continuouspicture</item>
     </string-array>
 
     <string-array name="pref_camera_focusmode_entryvalues" translatable="false">
@@ -166,6 +167,7 @@
         <item>macro</item>
         <item>fixed</item>
         <item>facedetect</item>
+        <item>continuous-picture</item>
     </string-array>
 
     <!-- Camera Preferences flash mode dialog box entries -->
