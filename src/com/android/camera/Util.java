@@ -92,6 +92,9 @@ public class Util {
     // Samsung camcorder mode
     private static boolean sSamsungCamMode;
     private static boolean sSamsungCamSettings;
+    
+    // HTC camcorder mode
+    private static boolean sHTCCamMode;
 
     // Samsung ZSL mode
     private static boolean sEnableZSL;
@@ -118,6 +121,7 @@ public class Util {
         sEarlyVideoSize = context.getResources().getBoolean(R.bool.needsEarlyVideoSize);
         sSamsungCamMode = context.getResources().getBoolean(R.bool.needsSamsungCamMode);
         sSamsungCamSettings = context.getResources().getBoolean(R.bool.hasSamsungCamSettings);
+        sHTCCamMode = context.getResources().getBoolean(R.bool.needsHTCCamMode);
         sEnableZSL = context.getResources().getBoolean(R.bool.enableZSL);
         sNoFaceDetectOnFrontCamera = context.getResources().getBoolean(R.bool.noFaceDetectOnFrontCamera);
         sNoFaceDetectOnRearCamera = context.getResources().getBoolean(R.bool.noFaceDetectOnRearCamera);
@@ -125,6 +129,10 @@ public class Util {
 
     public static boolean needsEarlyVideoSize() {
         return sEarlyVideoSize;
+    }
+
+    public static boolean useHTCCamMode() {
+        return sHTCCamMode;
     }
 
     public static boolean useSamsungCamMode() {
