@@ -616,7 +616,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 && (CameraHolder.instance().getCameraInfo()[mCameraId].facing == CameraInfo.CAMERA_FACING_FRONT)) {
             return;
         }
-
+        if (Util.noFaceDetectOnRearCamera() 
+                && (CameraHolder.instance().getCameraInfo()[mCameraId].facing == CameraInfo.CAMERA_FACING_BACK)) {
+            return;
+        }
         if (mFaceDetectionStarted) return;
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mFaceDetectionStarted = true;
