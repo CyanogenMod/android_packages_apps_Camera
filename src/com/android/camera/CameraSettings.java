@@ -62,6 +62,7 @@ public class CameraSettings {
     public static final String KEY_POWER_SHUTTER = "pref_power_shutter";
     public static final String KEY_STORAGE = "pref_camera_storage_key";
     public static final String KEY_ZSL = "pref_camera_zsl_key";
+    public static final String KEY_ISO = "pref_camera_iso_key";
 
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
 
@@ -159,6 +160,7 @@ public class CameraSettings {
                 group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
         ListPreference videoEffect = group.findPreference(KEY_VIDEO_EFFECT);
         ListPreference storage = group.findPreference(KEY_STORAGE);
+        ListPreference iso = group.findPreference(KEY_ISO);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -206,6 +208,10 @@ public class CameraSettings {
             resetIfInvalid(videoEffect);
         }
         if (storage != null) buildStorage(group, storage);
+        if (iso != null) {
+            filterUnsupportedOptions(group,
+                    iso, mParameters.getSupportedIsoValues());
+        }
     }
 
     private void buildExposureCompensation(
