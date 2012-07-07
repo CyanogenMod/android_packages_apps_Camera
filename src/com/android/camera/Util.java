@@ -98,7 +98,8 @@ public class Util {
 
     // Workaround for QC cameras with broken face detection on front camera
     private static boolean sNoFaceDetectOnFrontCamera;
-
+    private static boolean sNoFaceDetectOnRearCamera;
+    
     private Util() {
     }
 
@@ -119,6 +120,7 @@ public class Util {
         sSamsungCamSettings = context.getResources().getBoolean(R.bool.hasSamsungCamSettings);
         sEnableZSL = context.getResources().getBoolean(R.bool.enableZSL);
         sNoFaceDetectOnFrontCamera = context.getResources().getBoolean(R.bool.noFaceDetectOnFrontCamera);
+        sNoFaceDetectOnRearCamera = context.getResources().getBoolean(R.bool.noFaceDetectOnRearCamera);
     }
 
     public static boolean needsEarlyVideoSize() {
@@ -139,6 +141,10 @@ public class Util {
 
     public static boolean noFaceDetectOnFrontCamera() {
         return sNoFaceDetectOnFrontCamera;
+    }
+    
+    public static boolean noFaceDetectOnRearCamera() {
+        return sNoFaceDetectOnRearCamera;
     }
 
     public static boolean isTabletUI() {
