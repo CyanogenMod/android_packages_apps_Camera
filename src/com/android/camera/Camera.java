@@ -1399,6 +1399,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 CameraSettings.KEY_STORAGE,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_FOCUS_MODE,
+                CameraSettings.KEY_ISO,
                 CameraSettings.KEY_TIMER_MODE};
 
         CameraPicker.setImageResourceId(R.drawable.ic_switch_photo_facing_holo_light);
@@ -2249,6 +2250,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // For the following settings, we need to check if the settings are
         // still supported by latest driver, if not, ignore the settings.
+
+        // Set ISO speed.
+        String iso = mPreferences.getString(
+                CameraSettings.KEY_ISO,
+                getString(R.string.pref_camera_iso_default));
+        if (isSupported(iso, mParameters.getSupportedIsoValues()))
+                 mParameters.setISOValue(iso);
 
         // Set exposure compensation
         int value = CameraSettings.readExposure(mPreferences);
