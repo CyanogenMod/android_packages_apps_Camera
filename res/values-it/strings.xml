@@ -61,6 +61,7 @@
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
     <string name="pref_camera_focusmode_entry_fixed">Fisso</string>
     <string name="pref_camera_focusmode_entry_facedetect">Rilevamento viso</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Continuo</string>
     <string name="pref_camera_timer_title">Autoscatto</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Modalità flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatica"</string>
