@@ -19,6 +19,7 @@
         android:layout_height="match_parent">
     <com.android.camera.ui.RotateLayout
             android:id="@+id/btn_done"
+            android:contentDescription="@string/accessibility_review_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -31,6 +32,7 @@
                 android:drawableLeft="@drawable/ic_menu_done_holo_light" />
     </com.android.camera.ui.RotateLayout>
     <ImageView android:id="@+id/btn_retake"
+            android:contentDescription="@string/accessibility_review_retake"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -42,6 +44,7 @@
             android:src="@drawable/btn_shutter_retake" />
     <com.android.camera.ui.RotateLayout
             android:id="@+id/btn_cancel"
+	    android:contentDescription="@string/accessibility_review_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

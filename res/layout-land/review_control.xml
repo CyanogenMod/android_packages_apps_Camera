@@ -18,12 +18,14 @@
         android:layout_width="match_parent">
     <com.android.camera.ui.RotateImageView android:id="@+id/btn_done"
             style="@style/ReviewControlIcon"
+            android:contentDescription="@string/accessibility_review_ok"
             android:visibility="gone"
             android:layout_alignParentTop="true"
             android:layout_marginTop="20dp"
             android:onClick="onReviewDoneClicked"
             android:src="@drawable/ic_menu_done_holo_light" />
     <ImageView android:id="@+id/btn_retake"
+            android:contentDescription="@string/accessibility_review_retake"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:padding="20dp"
@@ -36,6 +38,7 @@
             android:src="@drawable/btn_shutter_retake" />
     <com.android.camera.ui.RotateImageView android:id="@+id/btn_cancel"
             style="@style/ReviewControlIcon"
+	    android:contentDescription="@string/accessibility_review_cancel"
             android:visibility="gone"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="20dp"

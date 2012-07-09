@@ -347,6 +347,12 @@
     <string name="accessibility_switch_to_video">Switch to video</string>
     <!-- The button to switch to Panorama mode. [CHAR LIMIT = NONE] -->
     <string name="accessibility_switch_to_panorama">Switch to panorama</string>
+    <!-- The button in review mode indicating that the photo taking, video recording, and panorama saving session should be canceled [CHAR LIMIT = NONE] -->
+    <string name="accessibility_review_cancel">Review cancel</string>
+    <!-- The button in review mode indicating that the taken photo/video is OK to be attached/uploaded [CHAR LIMIT = NONE] -->
+    <string name="accessibility_review_ok">Review done</string>
+    <!-- button in review mode indicate the user want to retake another photo/video for attachment [CHAR LIMIT = NONE] -->
+    <string name="accessibility_review_retake">Review rekate</string>
     <!-- TODO: remove the string as it is a work-around solution to bypass the default speak of the element type. -->
     <string name="empty" translatable="false">" "</string>
 </resources>
