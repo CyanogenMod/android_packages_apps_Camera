@@ -1,0 +1,8 @@
+Change-Id: Ib4bcf9d7a6978b8f9558eecabcec73c11d45e17a
+Code-Review+2: Steve Kondik <shade@chemlab.org>
+Verified+1: Steve Kondik <shade@chemlab.org>
+Submitted-by: Steve Kondik <shade@chemlab.org>
+Submitted-at: Mon, 09 Jul 2012 10:11:49 +0400
+Reviewed-on: http://review.cyanogenmod.com/18623
+Project: CyanogenMod/android_packages_apps_Camera
+Branch: refs/heads/ics
