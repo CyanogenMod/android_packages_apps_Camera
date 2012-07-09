@@ -21,23 +21,17 @@
     <string name="camera_disabled" msgid="8923911090533439312">"Камера адключана з-за палітыкі бяспекі."</string>
     <string name="camera_label" msgid="6346560772074764302">"Камера"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Відэакамера"</string>
-    <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Фота з камеры"</string>
-    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Відэа з камеры"</string>
     <string name="wait" msgid="8600187532323801552">"Чакайце..."</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Перш чым выкарыстоўваць камеру, падключыце USB-назапашвальнiк."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Устаўце SD-карту перад выкарыстаннем камеры."</string>
-    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"Ваш USB-назапашвальнiк поўны."</string>
-    <string name="not_enough_space" product="default" msgid="6655334407957844653">"Ваша SD-карта запоўненая."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Падрыхтоўка USB-назапашвальнiка..."</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Падрыхтоўка SD-карты..."</string>
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Немагчыма атрымаць доступ да USB-назапашвальніка."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Немагчыма атрымаць доступ да SD-карты."</string>
     <string name="confirm_restore_message" msgid="4726518572923160939">"Аднавіць налады камеры па змаўчанні?"</string>
-    <string name="review_play" msgid="6378271587740884696">"Прайграць"</string>
     <string name="review_cancel" msgid="8188009385853399254">"АДМЯНІЦЬ"</string>
     <string name="review_ok" msgid="1156261588693116433">"ГАТОВА"</string>
     <string name="review_retake" msgid="7804864054896088338">"ЗРАБІЦЬ ЗНОЎ"</string>
-    <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Галерэя"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Запіс на працягу доўгага часу"</string>
     <string name="pref_camera_id_title" msgid="4040791582294635851">"Выбраць камеру"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Назад"</string>
@@ -78,17 +72,12 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Заход"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Вечарына"</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Немагчыма выбраць у рэжыме здымкi."</string>
-    <string name="pref_restore_title" msgid="6479274979730178961">"Налады камеры"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Усталяваць налады па змаўчанні"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Экспазіцыя"</string>
     <string name="dialog_ok" msgid="6263301364153382152">"ОК"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Месца на вашым USB-назапашвальнiку заканчваецца. Змяніце параметры якасці або выдаліце некаторыя выявы цi іншыя файлы."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Месца на вашай SD-карце заканчваецца. Змяніце параметры якасці або выдаліце некаторыя выявы цi іншыя файлы."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Дасягнуты максімальны памер."</string>
-    <string name="share_picture_via" msgid="1375127849431890447">"Апублікаваць малюнак з дапам."</string>
-    <string name="share_video_via" msgid="5152302809166549015">"Апублікаваць відэа з дапам."</string>
-    <string name="no_picture_to_share" msgid="5352574090121328815">"Няма выяў для публiкацыi"</string>
-    <string name="no_video_to_share" msgid="7567298642707627096">"Няма відэа для публікацыі."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Занад. хутка"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Падрыхтоўка панарамы"</string>
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Немагчыма захаваць панараму."</string>
@@ -109,7 +98,6 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Заход"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Вашы відэа"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Наладзьце прыладу."\n"На хвіліну выйдзіце з поля зроку."</string>
-    <string name="not_selectable_in_effect" msgid="4568604144269499202">"Немагчыма выбраць, калі ўключаны эфект."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Націсніце, каб зрабiць здымак падчас запісу."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Капiяванне кадра з відэа адключаецца, калі ўключаны спецэфекты."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Выдалiць эфекты"</string>

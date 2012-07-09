@@ -21,23 +21,17 @@
     <string name="camera_disabled" msgid="8923911090533439312">"由於安全性政策規定，相機已遭停用。"</string>
     <string name="camera_label" msgid="6346560772074764302">"相機"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"攝錄影機"</string>
-    <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"相機圖片"</string>
-    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"相機影片"</string>
     <string name="wait" msgid="8600187532323801552">"請稍候…"</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"使用相機前，請先插入 USB 儲存裝置。"</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"使用相機前，請先插入 SD 卡。"</string>
-    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"您的 USB 儲存裝置已滿。"</string>
-    <string name="not_enough_space" product="default" msgid="6655334407957844653">"SD 卡已滿。"</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"正在準備 USB 儲存裝置..."</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"正在準備 SD 卡..."</string>
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"無法存取 USB 儲存裝置。"</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"無法存取 SD 卡。"</string>
     <string name="confirm_restore_message" msgid="4726518572923160939">"您要還原相機預設設定嗎？"</string>
-    <string name="review_play" msgid="6378271587740884696">"播放"</string>
     <string name="review_cancel" msgid="8188009385853399254">"取消"</string>
     <string name="review_ok" msgid="1156261588693116433">"完成"</string>
     <string name="review_retake" msgid="7804864054896088338">"重拍"</string>
-    <string name="camera_gallery_photos_text" msgid="6558048736561932758">"圖庫"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"延時攝影錄製"</string>
     <string name="pref_camera_id_title" msgid="4040791582294635851">"選擇相機"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"後置鏡頭"</string>
@@ -78,17 +72,12 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"黃昏"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"派對模式"</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"在場景模式中無法選取。"</string>
-    <string name="pref_restore_title" msgid="6479274979730178961">"相機設定"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"還原預設值"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"曝光"</string>
     <string name="dialog_ok" msgid="6263301364153382152">"確定"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"您的 USB 儲存裝置的空間即將用盡，請變更圖片的品質設定，或是刪除部分圖片或其他檔案。"</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"您 SD 卡的空間即將不足，請變更圖片的品質設定，或是刪除部分圖片或其他檔案。"</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"已達大小上限。"</string>
-    <string name="share_picture_via" msgid="1375127849431890447">"相片分享方式"</string>
-    <string name="share_video_via" msgid="5152302809166549015">"影片分享方式"</string>
-    <string name="no_picture_to_share" msgid="5352574090121328815">"沒有可供分享的相片。"</string>
-    <string name="no_video_to_share" msgid="7567298642707627096">"沒有可供分享的影片。"</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"速度過快"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"正在準備全景預覽"</string>
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"無法儲存全景。"</string>
@@ -109,7 +98,6 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"黃昏"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"您的影片"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"放下您的裝置"\n"暫時離開畫面。"</string>
-    <string name="not_selectable_in_effect" msgid="4568604144269499202">"效果啟用時無法選取。"</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"輕觸即可在錄製期間拍照。"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"特殊效果啟用時無法使用影片快照。"</string>
     <string name="clear_effects" msgid="5485339175014139481">"清除效果"</string>

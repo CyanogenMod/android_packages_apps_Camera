@@ -23,8 +23,6 @@
     <skip />
     <string name="camera_label" msgid="6346560772074764302">"Camera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Camera da video"</string>
-    <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Fotos da la camera"</string>
-    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Videos da la camera"</string>
     <string name="wait" msgid="8600187532323801552">"Spetgar..."</string>
     <!-- no translation found for no_storage (7335975356349008814) -->
     <skip />
@@ -32,7 +30,6 @@
     <skip />
     <!-- no translation found for not_enough_space (6452370395538050134) -->
     <skip />
-    <string name="not_enough_space" product="default" msgid="6655334407957844653">"Vossa carta SD è plaina."</string>
     <!-- no translation found for preparing_sd (6104019983528341353) -->
     <skip />
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Preparar la carta SD..."</string>
@@ -48,7 +45,6 @@
     <!-- no translation found for review_ok (1156261588693116433) -->
     <skip />
     <string name="review_retake" msgid="7804864054896088338">"AUTRA FOTO"</string>
-    <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Catalog"</string>
     <!-- no translation found for time_lapse_title (4360632427760662691) -->
     <skip />
     <!-- no translation found for pref_camera_id_title (4040791582294635851) -->
@@ -100,7 +96,6 @@
     <skip />
     <!-- no translation found for not_selectable_in_scene_mode (2970291701448555126) -->
     <skip />
-    <string name="pref_restore_title" msgid="6479274979730178961">"Parameters da la camera"</string>
     <!-- no translation found for pref_restore_detail (5732490002291044791) -->
     <skip />
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposiziun"</string>

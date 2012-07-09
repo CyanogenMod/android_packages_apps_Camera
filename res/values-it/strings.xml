@@ -21,23 +21,17 @@
     <string name="camera_disabled" msgid="8923911090533439312">"La fotocamera è stata disattivata in base a norme di sicurezza."</string>
     <string name="camera_label" msgid="6346560772074764302">"Fotocamera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Videocamera"</string>
-    <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Foto"</string>
-    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Video"</string>
     <string name="wait" msgid="8600187532323801552">"Attendere..."</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Monta l\'archivio USB prima di utilizzare la fotocamera."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Per usare la fotocamera devi inserire una scheda SD."</string>
-    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"L\'archivio USB è pieno."</string>
-    <string name="not_enough_space" product="default" msgid="6655334407957844653">"La scheda SD è piena."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Preparazione archivio USB…"</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Preparazione scheda SD…"</string>
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Accesso ad archivio USB non riuscito."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Accesso a scheda SD non riuscito."</string>
     <string name="confirm_restore_message" msgid="4726518572923160939">"Vuoi ripristinare le impostazioni predefinite della fotocamera?"</string>
-    <string name="review_play" msgid="6378271587740884696">"Riproduci"</string>
     <string name="review_cancel" msgid="8188009385853399254">"ANNULLA"</string>
     <string name="review_ok" msgid="1156261588693116433">"FINE"</string>
     <string name="review_retake" msgid="7804864054896088338">"SCATTA DI NUOVO"</string>
-    <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galleria"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Registrazione al rallentatore"</string>
     <string name="pref_camera_id_title" msgid="4040791582294635851">"Scegli fotocamera"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Posteriore"</string>
@@ -78,17 +72,12 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Tramonto"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Festa"</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Non selezionabile in modalità scena."</string>
-    <string name="pref_restore_title" msgid="6479274979730178961">"Impostazioni fotocamera"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Ripristina predefinite"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Esposizione"</string>
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Lo spazio dell\'archivio USB si sta esaurendo. Cambia l\'impostazione di qualità o elimina alcune immagini o altri file."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Lo spazio della scheda SD si sta esaurendo. Cambia l\'impostazione di qualità o elimina alcune immagini o altri file."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Limite di dimensione raggiunto."</string>
-    <string name="share_picture_via" msgid="1375127849431890447">"Condividi foto via"</string>
-    <string name="share_video_via" msgid="5152302809166549015">"Condividi video via"</string>
-    <string name="no_picture_to_share" msgid="5352574090121328815">"Nessuna immagine da condividere."</string>
-    <string name="no_video_to_share" msgid="7567298642707627096">"Nessun video da condividere."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Troppo veloce"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Preparazione panoramica"</string>
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Salvataggio panoramica non riuscito."</string>
@@ -109,7 +98,6 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Tramonto"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Il tuo video"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Posa il tuo dispositivo."\n"Esci dalla visualizzazione per un attimo."</string>
-    <string name="not_selectable_in_effect" msgid="4568604144269499202">"Non selezionabile quando l\'effetto è attivo."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Tocca per scattare foto durante la registrazione."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Istantanea video disabilitata se gli effetti speciali sono attivi."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Cancella effetti"</string>

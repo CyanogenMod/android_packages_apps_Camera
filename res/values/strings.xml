@@ -31,12 +31,6 @@
     <!-- label for the 'video recording application shown in the top level 'all applications' -->
     <string name="video_camera_label">Camcorder</string>
 
-    <!-- label for the folder that contains Camera pictures in the gallery -->
-    <string name="gallery_camera_bucket_name">Camera pictures</string>
-
-    <!-- label for the folder that contains Camera videos in the gallery -->
-    <string name="gallery_camera_videos_bucket_name">Camera videos</string>
-
     <!-- alert to the user to wait for some operation to complete -->
     <string name="wait">Please wait\u2026</string>
 
@@ -44,11 +38,6 @@
     <string name="no_storage" product="nosdcard">Mount USB storage before using the camera.</string>
     <!-- alert to the user that an SD card must be installed before using the camera -->
     <string name="no_storage" product="default">Insert an SD card before using the camera.</string>
-
-    <!-- alert to the user that the USB storage is too full to complete the operation [CHAR LIMIT=NONE] -->
-    <string name="not_enough_space" product="nosdcard">Your USB storage is full.</string>
-    <!-- alert to the user that the SD card is too full to complete the operation -->
-    <string name="not_enough_space" product="default">Your SD card is full.</string>
 
     <!-- alert to the user that the USB storage is being disk-checked [CHAR LIMIT=30] -->
     <string name="preparing_sd" product="nosdcard">Preparing USB storage\u2026</string>
@@ -63,9 +52,6 @@
     <!-- Confirmation dialog when restoring settings -->
     <string name="confirm_restore_message">Do you want to restore camera default settings?</string>
 
-    <!-- button in review mode indicating that the video just taken should be played [CHAR LIMIT=10] -->
-    <string name="review_play">Play</string>
-
     <!-- button in review mode indicating that the photo taking, video recording, and panorama saving session should be canceled [CHAR LIMIT=10] -->
     <string name="review_cancel">CANCEL</string>
 
@@ -74,9 +60,6 @@
 
     <!-- button in review mode indicate the user want to retake another photo/video for attachment [CHAR LIMIT=10] -->
     <string name="review_retake">RETAKE</string>
-
-    <!-- Button indicating to go to the image gallery -->
-    <string name="camera_gallery_photos_text">Gallery</string>
 
     <!-- A label that overlays on top of the preview frame to indicate the camcorder is in time lapse mode [CHAR LIMIT=35] -->
     <string name="time_lapse_title">Time lapse recording</string>
@@ -207,7 +190,6 @@
     <string name="not_selectable_in_scene_mode">Not selectable in scene mode.</string>
 
     <!-- Restore settings item in preference -->
-    <string name="pref_restore_title">Camera settings</string>
     <string name="pref_restore_detail">Restore defaults</string>
 
     <!-- Exposure settings in preference -->
@@ -236,18 +218,6 @@
 
     <string name="setting_increment" translatable="false">&gt;</string>
     <string name="setting_decrement" translatable="false">&lt;</string>
-
-    <!-- Title of the dialog showing a list of applications that can share the captured picture. [CHAR LIMIT=30] -->
-    <string name="share_picture_via">Share picture via</string>
-
-    <!-- Title of the dialog showing a list of applications that can share the captured video. [CHAR LIMIT=30] -->
-    <string name="share_video_via">Share video via</string>
-
-    <!-- Toast saying that there is no picture to share. [CHAR LIMIT=30] -->
-    <string name="no_picture_to_share">No picture to share.</string>
-
-    <!-- Toast saying that there is no video to share. [CHAR LIMIT=30] -->
-    <string name="no_video_to_share">No video to share.</string>
 
     <!-- The text shown when the panorama panning speed is to fast [CHAR LIMIT=12] -->
     <string name="pano_too_fast_prompt">Too fast</string>
@@ -303,8 +273,6 @@
     <!-- Message displayed in overlay during background replacement training [CHAR LIMIT=180]-->
     <string name="bg_replacement_message">Set your device down.\nStep out of view for a moment.</string>
 
-    <!-- Toast after trying to select a setting that is not allowed to change in effect [CHAR LIMIT=50] -->
-    <string name="not_selectable_in_effect">Not selectable when effect is on.</string>
 
     <!-- Toast telling users tapping on the viewfinder will take a picture [CHAR LIMIT=54] -->
     <string name="video_snapshot_hint">Touch to take photo while recording.</string>
