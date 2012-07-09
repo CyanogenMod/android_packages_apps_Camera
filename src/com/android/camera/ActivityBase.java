@@ -40,6 +40,7 @@ abstract public class ActivityBase extends Activity {
     private Intent mResultDataForTesting;
     protected Camera mCameraDevice;
     protected int mCaptureMode;
+    public static int mFocusTime;
 
     @Override
     public void onCreate(Bundle icicle) {
