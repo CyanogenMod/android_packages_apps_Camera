@@ -140,6 +140,19 @@
     <string name="pref_camera_scenemode_entry_fireworks">Фейерверк</string>
     <string name="pref_camera_scenemode_entry_sports">Спорт</string>
     <string name="pref_camera_scenemode_entry_candlelight">Искусст. освещение</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Непрерывн. фокус</string>
+
+    <!-- Settings screen, ISO dialog radio button choices -->
+    <string name="pref_camera_iso_entry_auto">Авто</string>
+    <string name="pref_camera_iso_entry_isodeblur">Авто (HJR)</string>
+    <string name="pref_camera_iso_entry_iso50">50</string>
+    <string name="pref_camera_iso_entry_iso100">100</string>
+    <string name="pref_camera_iso_entry_iso200">200</string>
+    <string name="pref_camera_iso_entry_iso400">400</string>
+    <string name="pref_camera_iso_entry_iso800">800</string>
+    <string name="pref_camera_iso_entry_iso1000">1000</string>
+    <string name="pref_camera_iso_entry_iso1200">1200</string>
+    <string name="pref_camera_iso_entry_iso1600">1600</string>
 
     <!-- Settings screen, Timer mode title -->
     <string name="pref_camera_timer_title">Таймер</string>
