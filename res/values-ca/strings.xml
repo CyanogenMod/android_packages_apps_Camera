@@ -128,4 +128,10 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Canvia a foto"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Canvia a vídeo"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Canvia a panorama"</string>
+    <!-- no translation found for accessibility_review_cancel (9070531914908644686) -->
+    <skip />
+    <!-- no translation found for accessibility_review_ok (7793302834271343168) -->
+    <skip />
+    <!-- no translation found for accessibility_review_retake (830348126446319954) -->
+    <skip />
 </resources>
