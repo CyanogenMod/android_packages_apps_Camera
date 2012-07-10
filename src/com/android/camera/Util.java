@@ -245,14 +245,21 @@ public class Util {
         }
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private static void throwIfCameraDisabled(Activity activity) throws CameraDisabledException {
+        // Check if device policy has disabled the camera.
+        if (ApiHelper.HAS_GET_CAMERA_DISABLED) {
+            DevicePolicyManager dpm = (DevicePolicyManager) activity.getSystemService(
+                    Context.DEVICE_POLICY_SERVICE);
+            if (dpm.getCameraDisabled(null)) {
+                throw new CameraDisabledException();
+            }
+        }
+    }
+
     public static CameraManager.CameraProxy openCamera(Activity activity, int cameraId)
             throws CameraHardwareException, CameraDisabledException {
-        // Check if device policy has disabled the camera.
-        DevicePolicyManager dpm = (DevicePolicyManager) activity.getSystemService(
-                Context.DEVICE_POLICY_SERVICE);
-        if (dpm.getCameraDisabled(null)) {
-            throw new CameraDisabledException();
-        }
+        throwIfCameraDisabled(activity);
 
         try {
             return CameraHolder.instance().open(cameraId);
