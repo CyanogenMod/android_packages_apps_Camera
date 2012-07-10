@@ -128,10 +128,7 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Vaihda kuvatilaan"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Vaihda videotilaan"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Vaihda panoraamatilaan"</string>
-    <!-- no translation found for accessibility_review_cancel (9070531914908644686) -->
-    <skip />
-    <!-- no translation found for accessibility_review_ok (7793302834271343168) -->
-    <skip />
-    <!-- no translation found for accessibility_review_retake (830348126446319954) -->
-    <skip />
+    <string name="accessibility_review_cancel" msgid="9070531914908644686">"Peruuta"</string>
+    <string name="accessibility_review_ok" msgid="7793302834271343168">"Tarkistus valmis"</string>
+    <string name="accessibility_review_retake" msgid="830348126446319954">"Uusi kuva/video"</string>
 </resources>
