@@ -40,8 +40,10 @@ LOCAL_SRC_FILES := \
         feature_stab/src/dbreg/dbstabsmooth.cpp \
         feature_stab/src/dbreg/vp_motionmodel.c
 
-LOCAL_NDK_VERSION := 5
-LOCAL_SDK_VERSION := 9
+ifeq ($(TARGET_ARCH), arm)
+        LOCAL_NDK_VERSION := 5
+        LOCAL_SDK_VERSION := 9
+endif
 
 LOCAL_LDFLAGS := -llog -lGLESv2
 
