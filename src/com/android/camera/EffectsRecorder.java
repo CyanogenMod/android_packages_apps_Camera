@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
@@ -25,6 +26,8 @@ import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+
+import com.android.gallery3d.common.ApiHelper;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -1052,6 +1055,7 @@ public class EffectsRecorder {
     }
 
     // Try to enable/disable 3A locks if supported; otherwise return false
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     synchronized boolean tryEnable3ALocks(boolean toggle) {
         if (mLogVerbose) Log.v(TAG, "tryEnable3ALocks");
         if (mCameraDevice == null) {
@@ -1059,8 +1063,8 @@ public class EffectsRecorder {
             return false;
         }
         Camera.Parameters params = mCameraDevice.getParameters();
-        if (params.isAutoExposureLockSupported() &&
-            params.isAutoWhiteBalanceLockSupported() ) {
+        if (Util.isAutoExposureLockSupported(params) &&
+            Util.isAutoWhiteBalanceLockSupported(params) ) {
             params.setAutoExposureLock(toggle);
             params.setAutoWhiteBalanceLock(toggle);
             mCameraDevice.setParameters(params);
