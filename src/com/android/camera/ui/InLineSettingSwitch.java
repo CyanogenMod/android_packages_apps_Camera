@@ -21,7 +21,7 @@ import android.util.AttributeSet;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.Switch;
+
 
 import com.android.camera.ListPreference;
 import com.android.camera.R;
