@@ -535,8 +535,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mZoomControl.setOnZoomChangeListener(new ZoomChangeListener());
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void startFaceDetection() {
+        if (!ApiHelper.HAS_FACE_DETECTION) return;
         if (mFaceDetectionStarted) return;
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mFaceDetectionStarted = true;
@@ -552,8 +554,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
+
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void stopFaceDetection() {
+        if (!ApiHelper.HAS_FACE_DETECTION) return;
         if (!mFaceDetectionStarted) return;
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mFaceDetectionStarted = false;
@@ -1885,10 +1890,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         return super.onKeyUp(keyCode, event);
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void closeCamera() {
         if (mCameraDevice != null) {
             mCameraDevice.setZoomChangeListener(null);
-            mCameraDevice.setFaceDetectionListener(null);
+            if(ApiHelper.HAS_FACE_DETECTION) {
+                mCameraDevice.setFaceDetectionListener(null);
+            }
             mCameraDevice.setErrorCallback(null);
             CameraHolder.instance().release();
             mFaceDetectionStarted = false;
@@ -1923,7 +1931,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (!mSnapshotOnIdle) {
             // If the focus mode is continuous autofocus, call cancelAutoFocus to
             // resume it because it may have been paused by autoFocus call.
-            if (Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusManager.getFocusMode())) {
+            if (Util.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusManager.getFocusMode())) {
                 mCameraDevice.cancelAutoFocus();
             }
             mFocusManager.setAeAwbLock(false); // Unlock AE and AWB.
@@ -1978,7 +1986,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mParameters.setPreviewFrameRate(max);
         }
 
-        mParameters.setRecordingHint(false);
+        mParameters.set(Util.RECORDING_HINT, Util.FALSE);
 
         // Disable video stabilization. Convenience methods not available in API
         // level <= 14
@@ -1995,14 +2003,25 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private void updateCameraParametersPreference() {
+
+    @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
+    private void setAutoExposureLockIfSupported() {
         if (mAeLockSupported) {
             mParameters.setAutoExposureLock(mFocusManager.getAeAwbLock());
         }
+    }
 
+    @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
+    private void setAutoWhiteBalanceLockIfSupported() {
         if (mAwbLockSupported) {
             mParameters.setAutoWhiteBalanceLock(mFocusManager.getAeAwbLock());
         }
+    }
+
+    private void updateCameraParametersPreference() {
+        setAutoExposureLockIfSupported();
+
+        setAutoWhiteBalanceLockIfSupported();
 
         if (mFocusAreaSupported) {
             mParameters.setFocusAreas(mFocusManager.getFocusAreas());
@@ -2125,7 +2144,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
     private void updateAutoFocusMoveCallback() {
-        if (mParameters.getFocusMode().equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+        if (mParameters.getFocusMode().equals(Util.FOCUS_MODE_CONTINUOUS_PICTURE)) {
             mCameraDevice.setAutoFocusMoveCallback(
                 (AutoFocusMoveCallback) mAutoFocusMoveCallback);
         } else {
@@ -2386,10 +2405,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 && isSupported(Parameters.FOCUS_MODE_AUTO,
                         mInitialParams.getSupportedFocusModes()));
         mMeteringAreaSupported = (mInitialParams.getMaxNumMeteringAreas() > 0);
-        mAeLockSupported = mInitialParams.isAutoExposureLockSupported();
-        mAwbLockSupported = mInitialParams.isAutoWhiteBalanceLockSupported();
+        mAeLockSupported = Util.isAutoExposureLockSupported(mInitialParams);
+        mAwbLockSupported = Util.isAutoWhiteBalanceLockSupported(mInitialParams);
         mContinousFocusSupported = mInitialParams.getSupportedFocusModes().contains(
-                Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                Util.FOCUS_MODE_CONTINUOUS_PICTURE);
     }
 
     // PreviewFrameLayout size has changed.

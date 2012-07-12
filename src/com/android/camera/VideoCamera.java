@@ -1833,7 +1833,7 @@ public class VideoCamera extends ActivityBase
             mParameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
         }
 
-        mParameters.setRecordingHint(true);
+        mParameters.set(Util.RECORDING_HINT, Util.TRUE);
 
         // Enable video stabilization. Convenience methods not available in API
         // level <= 14
@@ -2339,7 +2339,7 @@ public class VideoCamera extends ActivityBase
     }
 
     private void initializeVideoSnapshot() {
-        if (mParameters.isVideoSnapshotSupported() && !mIsVideoCaptureIntent) {
+        if (Util.isVideoSnapshotSupported(mParameters) && !mIsVideoCaptureIntent) {
             setSingleTapUpListener(mPreviewFrameLayout);
             // Show the tap to focus toast if this is the first start.
             if (mPreferences.getBoolean(
@@ -2353,7 +2353,7 @@ public class VideoCamera extends ActivityBase
     }
 
     void showVideoSnapshotUI(boolean enabled) {
-        if (mParameters.isVideoSnapshotSupported() && !mIsVideoCaptureIntent) {
+        if (Util.isVideoSnapshotSupported(mParameters) && !mIsVideoCaptureIntent) {
             mPreviewFrameLayout.showBorder(enabled);
             mIndicatorControlContainer.enableZoom(!enabled);
             mShutterButton.setEnabled(!enabled);

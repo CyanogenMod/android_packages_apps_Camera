@@ -149,8 +149,8 @@ public class FocusManager {
         mFocusAreaSupported = (mParameters.getMaxNumFocusAreas() > 0
                 && isSupported(Parameters.FOCUS_MODE_AUTO,
                         mParameters.getSupportedFocusModes()));
-        mLockAeAwbNeeded = (mParameters.isAutoExposureLockSupported() ||
-                mParameters.isAutoWhiteBalanceLockSupported());
+        mLockAeAwbNeeded = (Util.isAutoExposureLockSupported(mParameters) ||
+                Util.isAutoWhiteBalanceLockSupported(mParameters));
     }
 
     public void setPreviewSize(int previewWidth, int previewHeight) {
@@ -273,8 +273,7 @@ public class FocusManager {
                 // Do not play the sound in continuous autofocus mode. It does
                 // not do a full scan. The focus callback arrives before doSnap
                 // so the state is always STATE_FOCUSING.
-                if (!Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.
-                        equals(mFocusMode)) {
+                if (!Util.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)) {
                     mListener.playSound(MediaActionSound.FOCUS_COMPLETE);
                 }
             } else {
@@ -472,7 +471,7 @@ public class FocusManager {
         } else if (mState == STATE_FOCUSING || mState == STATE_FOCUSING_SNAP_ON_FINISH) {
             focusIndicator.showStart();
         } else {
-            if (Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)) {
+            if (Util.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)) {
                 // TODO: check HAL behavior and decide if this can be removed.
                 focusIndicator.showSuccess(false);
             } else if (mState == STATE_SUCCESS) {

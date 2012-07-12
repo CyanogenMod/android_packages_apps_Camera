@@ -436,7 +436,7 @@ public class PanoramaActivity extends ActivityBase implements
                   " becuase the mode is not supported.");
         }
 
-        parameters.setRecordingHint(false);
+        parameters.set(Util.RECORDING_HINT, Util.FALSE);
 
         mHorizontalViewAngle = parameters.getHorizontalViewAngle();
         mVerticalViewAngle =  parameters.getVerticalViewAngle();
