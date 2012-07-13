@@ -21,16 +21,20 @@ import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.TwoStateImageView;
+import com.android.gallery3d.common.ApiHelper;
 
 /**
  * A widget that includes three mode selections {@code RotateImageView}'s and
@@ -43,7 +47,10 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     public static final int MODE_PANORAMA = 2;
 
     // Total mode number
-    private static final int MODE_NUM = 3;
+    private static final int MODE_NUM = ApiHelper.HAS_PANORAMA ? 3 : 2;
+
+    // Fade in and fade out duration in millisecond.
+    private static final int FADE_DURATION = 200;
 
     /** A callback to be called when the user wants to switch activity. */
     public interface OnModeChangeListener {
@@ -53,9 +60,9 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     private final int DISABLED_COLOR;
 
     private OnModeChangeListener mListener;
-    private View mModeSelectionFrame;
+    private LinearLayout mModeSelectionFrame;
     private RotateImageView mModeSelectionIcon[];
-    private View mCurrentModeFrame;
+    private ViewGroup mCurrentModeFrame;
     private RotateImageView mCurrentModeIcon[];
     private View mCurrentModeBar;
     private boolean mSelectionEnabled;
@@ -68,11 +75,6 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     public ModePicker(Context context, AttributeSet attrs) {
         super(context, attrs);
         DISABLED_COLOR = context.getResources().getColor(R.color.icon_disabled_color);
-        mFadeIn = AnimationUtils.loadAnimation(
-                context, R.anim.mode_selection_fade_in);
-        mFadeOut = AnimationUtils.loadAnimation(
-                context, R.anim.mode_selection_fade_out);
-        mFadeOut.setAnimationListener(mAnimationListener);
         PopupManager.getInstance(context).setOnOtherPopupShowedListener(this);
     }
 
@@ -80,27 +82,63 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mModeSelectionFrame = findViewById(R.id.mode_selection);
+        mModeSelectionFrame = (LinearLayout) findViewById(R.id.mode_selection);
         mModeSelectionIcon = new RotateImageView[MODE_NUM];
-        mModeSelectionIcon[MODE_PANORAMA] =
-                (RotateImageView) findViewById(R.id.mode_panorama);
+
         mModeSelectionIcon[MODE_VIDEO] =
                 (RotateImageView) findViewById(R.id.mode_video);
         mModeSelectionIcon[MODE_CAMERA] =
                 (RotateImageView) findViewById(R.id.mode_camera);
+        if (ApiHelper.HAS_PANORAMA) {
+            mModeSelectionIcon[MODE_PANORAMA] =
+                    (RotateImageView) findViewById(R.id.mode_panorama);
+        }
+        else {
+            // Hide panorama icon if it is not supported
+            mModeSelectionFrame.removeView(findViewById(R.id.mode_panorama));
+            requestLayout();
+        }
 
         // The current mode frame is for Phone UI only.
-        mCurrentModeFrame = findViewById(R.id.current_mode);
+        mCurrentModeFrame = (ViewGroup) findViewById(R.id.current_mode);
+
         if (mCurrentModeFrame != null) {
             mCurrentModeIcon = new RotateImageView[MODE_NUM];
             mCurrentModeIcon[0] = (RotateImageView) findViewById(R.id.mode_0);
             mCurrentModeIcon[1] = (RotateImageView) findViewById(R.id.mode_1);
-            mCurrentModeIcon[2] = (RotateImageView) findViewById(R.id.mode_2);
+            if (ApiHelper.HAS_PANORAMA) {
+                mCurrentModeIcon[2] = (RotateImageView) findViewById(R.id.mode_2);
+            } else {
+                // Hide panorama icon if it is not supported
+                ViewGroup subCurrentModeFrame = (ViewGroup) findViewById(R.id.sub_current_mode);
+                subCurrentModeFrame.removeView(subCurrentModeFrame.findViewById(R.id.mode_2));
+            }
         } else {
             // current_mode_bar is only for tablet.
             mCurrentModeBar = findViewById(R.id.current_mode_bar);
             enableModeSelection(true);
         }
+
+        // Construct animation according to the orientation of the mode selection frame.
+        float ratio = 1.0f - 1.0f / MODE_NUM;
+        if (mModeSelectionFrame.getOrientation() == LinearLayout.HORIZONTAL) {
+            mFadeIn = new TranslateAnimation(Animation.RELATIVE_TO_SELF, -ratio,
+                    Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0);
+            mFadeOut = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.RELATIVE_TO_SELF,
+                    -ratio, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0);
+        } else {
+            mFadeIn = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0,
+                    Animation.RELATIVE_TO_SELF, ratio, Animation.ABSOLUTE, 0);
+            mFadeOut = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0,
+                    Animation.ABSOLUTE, 0, Animation.RELATIVE_TO_SELF, ratio);
+        }
+        DecelerateInterpolator interpolator = new DecelerateInterpolator();
+        mFadeIn.setInterpolator(interpolator);
+        mFadeIn.setDuration(FADE_DURATION);
+        mFadeOut.setInterpolator(interpolator);
+        mFadeOut.setDuration(FADE_DURATION);
+        mFadeOut.setAnimationListener(mAnimationListener);
+
         registerOnClickListener();
     }
 
