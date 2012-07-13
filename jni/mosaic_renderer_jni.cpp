@@ -166,7 +166,11 @@ float g_dIdent3x3[] = {
     0.0, 1.0, 0.0,
     0.0, 0.0, 1.0};
 
+#ifdef MISSING_EGL_EXTERNAL_IMAGE
+const int GL_TEXTURE_EXTERNAL_OES_ENUM = 0x0DE1;
+#else
 const int GL_TEXTURE_EXTERNAL_OES_ENUM = 0x8D65;
+#endif
 
 static void printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
