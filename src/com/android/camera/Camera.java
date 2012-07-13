@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentProviderClient;
@@ -35,7 +36,6 @@ import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 import android.location.Location;
 import android.media.CameraProfile;
-import android.media.MediaActionSound;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ConditionVariable;
@@ -67,6 +67,8 @@ import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomControl;
+
+import com.android.gallery3d.common.ApiHelper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -172,7 +174,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // it into MediaStore while picture taking is still in progress.
     private ImageNamer mImageNamer;
 
-    private MediaActionSound mCameraSound;
+    private SoundClips.Player mSoundPlayer;
 
     private Runnable mDoSnapRunnable = new Runnable() {
         @Override
@@ -228,8 +230,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             new RawPictureCallback();
     private final AutoFocusCallback mAutoFocusCallback =
             new AutoFocusCallback();
-    private final AutoFocusMoveCallback mAutoFocusMoveCallback =
-            new AutoFocusMoveCallback();
+    private final Object mAutoFocusMoveCallback =
+            ApiHelper.HAS_AUTO_FOCUS_MOVE_CALLBACK
+            ? new AutoFocusMoveCallback()
+            : null;
+
     private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
 
     private long mFocusStartTime;
@@ -529,8 +534,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mZoomControl.setOnZoomChangeListener(new ZoomChangeListener());
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void startFaceDetection() {
+        if (!ApiHelper.HAS_FACE_DETECTION) return;
         if (mFaceDetectionStarted) return;
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mFaceDetectionStarted = true;
@@ -546,8 +553,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
+
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void stopFaceDetection() {
+        if (!ApiHelper.HAS_FACE_DETECTION) return;
         if (!mFaceDetectionStarted) return;
         if (mParameters.getMaxNumDetectedFaces() > 0) {
             mFaceDetectionStarted = false;
@@ -858,6 +868,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
     private final class AutoFocusMoveCallback
             implements android.hardware.Camera.AutoFocusMoveCallback {
         @Override
@@ -1195,7 +1206,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void playSound(int soundId) {
-        mCameraSound.play(soundId);
+        mSoundPlayer.play(soundId);
     }
 
     private int getPreferredCameraId(ComboPreferences preferences) {
@@ -1582,11 +1593,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Dismiss open menu if exists.
         PopupManager.getInstance(this).notifyShowPopup(null);
 
-        if (mCameraSound == null) {
-            mCameraSound = new MediaActionSound();
-            // Not required, but reduces latency when playback is requested later.
-            mCameraSound.load(MediaActionSound.FOCUS_COMPLETE);
-        }
+        mSoundPlayer = SoundClips.getPlayer(this);
     }
 
     void waitCameraStartUpThread() {
@@ -1617,9 +1624,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mCameraScreenNail.releaseSurfaceTexture();
             mSurfaceTexture = null;
         }
-        if (mCameraSound != null) {
-            mCameraSound.release();
-            mCameraSound = null;
+        if (mSoundPlayer != null) {
+            mSoundPlayer.release();
+            mSoundPlayer = null;
         }
         resetScreenOn();
 
@@ -1878,10 +1885,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         return super.onKeyUp(keyCode, event);
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void closeCamera() {
         if (mCameraDevice != null) {
             mCameraDevice.setZoomChangeListener(null);
-            mCameraDevice.setFaceDetectionListener(null);
+            if(ApiHelper.HAS_FACE_DETECTION) {
+                mCameraDevice.setFaceDetectionListener(null);
+            }
             mCameraDevice.setErrorCallback(null);
             CameraHolder.instance().release();
             mFaceDetectionStarted = false;
@@ -1916,7 +1926,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (!mSnapshotOnIdle) {
             // If the focus mode is continuous autofocus, call cancelAutoFocus to
             // resume it because it may have been paused by autoFocus call.
-            if (Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusManager.getFocusMode())) {
+            if (Util.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusManager.getFocusMode())) {
                 mCameraDevice.cancelAutoFocus();
             }
             mFocusManager.setAeAwbLock(false); // Unlock AE and AWB.
@@ -1971,7 +1981,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mParameters.setPreviewFrameRate(max);
         }
 
-        mParameters.setRecordingHint(false);
+        mParameters.set(Util.RECORDING_HINT, Util.FALSE);
 
         // Disable video stabilization. Convenience methods not available in API
         // level <= 14
@@ -1988,14 +1998,25 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private void updateCameraParametersPreference() {
+
+    @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
+    private void setAutoExposureLockIfSupported() {
         if (mAeLockSupported) {
             mParameters.setAutoExposureLock(mFocusManager.getAeAwbLock());
         }
+    }
 
+    @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
+    private void setAutoWhiteBalanceLockIfSupported() {
         if (mAwbLockSupported) {
             mParameters.setAutoWhiteBalanceLock(mFocusManager.getAeAwbLock());
         }
+    }
+
+    private void updateCameraParametersPreference() {
+        setAutoExposureLockIfSupported();
+
+        setAutoWhiteBalanceLockIfSupported();
 
         if (mFocusAreaSupported) {
             mParameters.setFocusAreas(mFocusManager.getFocusAreas());
@@ -2111,12 +2132,18 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mFocusManager.overrideFocusMode(mParameters.getFocusMode());
         }
 
-        if (mContinousFocusSupported) {
-            if (mParameters.getFocusMode().equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                mCameraDevice.setAutoFocusMoveCallback(mAutoFocusMoveCallback);
-            } else {
-                mCameraDevice.setAutoFocusMoveCallback(null);
-            }
+        if (mContinousFocusSupported && ApiHelper.HAS_AUTO_FOCUS_MOVE_CALLBACK) {
+            updateAutoFocusMoveCallback();
+        }
+    }
+
+    @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
+    private void updateAutoFocusMoveCallback() {
+        if (mParameters.getFocusMode().equals(Util.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+            mCameraDevice.setAutoFocusMoveCallback(
+                (AutoFocusMoveCallback) mAutoFocusMoveCallback);
+        } else {
+            mCameraDevice.setAutoFocusMoveCallback(null);
         }
     }
 
@@ -2373,10 +2400,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 && isSupported(Parameters.FOCUS_MODE_AUTO,
                         mInitialParams.getSupportedFocusModes()));
         mMeteringAreaSupported = (mInitialParams.getMaxNumMeteringAreas() > 0);
-        mAeLockSupported = mInitialParams.isAutoExposureLockSupported();
-        mAwbLockSupported = mInitialParams.isAutoWhiteBalanceLockSupported();
+        mAeLockSupported = Util.isAutoExposureLockSupported(mInitialParams);
+        mAwbLockSupported = Util.isAutoWhiteBalanceLockSupported(mInitialParams);
         mContinousFocusSupported = mInitialParams.getSupportedFocusModes().contains(
-                Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                Util.FOCUS_MODE_CONTINUOUS_PICTURE);
     }
 
     // PreviewFrameLayout size has changed.

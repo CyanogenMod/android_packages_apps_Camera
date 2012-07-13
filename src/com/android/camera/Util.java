@@ -76,6 +76,28 @@ public class Util {
     // See android.hardware.Camera.ACTION_NEW_VIDEO.
     public static final String ACTION_NEW_VIDEO = "android.hardware.action.NEW_VIDEO";
 
+    // Fields from android.hardware.Camera.Parameters
+    public static final String FOCUS_MODE_CONTINUOUS_PICTURE = "continuous-picture";
+    public static final String RECORDING_HINT = "recording-hint";
+    private static final String AUTO_EXPOSURE_LOCK_SUPPORTED = "auto-exposure-lock-supported";
+    private static final String AUTO_WHITE_BALANCE_LOCK_SUPPORTED = "auto-whitebalance-lock-supported";
+    private static final String VIDEO_SNAPSHOT_SUPPORTED = "video-snapshot-supported";
+    public static final String TRUE = "true";
+    public static final String FALSE = "false";
+
+    public static boolean isAutoExposureLockSupported(Parameters params) {
+        return TRUE.equals(params.get(AUTO_EXPOSURE_LOCK_SUPPORTED));
+    }
+
+    public static boolean isAutoWhiteBalanceLockSupported(Parameters params) {
+        return TRUE.equals(params.get(AUTO_WHITE_BALANCE_LOCK_SUPPORTED));
+    }
+
+    public static boolean isVideoSnapshotSupported(Parameters params) {
+        return TRUE.equals(params.get(VIDEO_SNAPSHOT_SUPPORTED));
+    }
+
+
     // Private intent extras. Test only.
     private static final String EXTRAS_CAMERA_FACING =
             "android.intent.extras.CAMERA_FACING";
@@ -245,14 +267,21 @@ public class Util {
         }
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private static void throwIfCameraDisabled(Activity activity) throws CameraDisabledException {
+        // Check if device policy has disabled the camera.
+        if (ApiHelper.HAS_GET_CAMERA_DISABLED) {
+            DevicePolicyManager dpm = (DevicePolicyManager) activity.getSystemService(
+                    Context.DEVICE_POLICY_SERVICE);
+            if (dpm.getCameraDisabled(null)) {
+                throw new CameraDisabledException();
+            }
+        }
+    }
+
     public static CameraManager.CameraProxy openCamera(Activity activity, int cameraId)
             throws CameraHardwareException, CameraDisabledException {
-        // Check if device policy has disabled the camera.
-        DevicePolicyManager dpm = (DevicePolicyManager) activity.getSystemService(
-                Context.DEVICE_POLICY_SERVICE);
-        if (dpm.getCameraDisabled(null)) {
-            throw new CameraDisabledException();
-        }
+        throwIfCameraDisabled(activity);
 
         try {
             return CameraHolder.instance().open(cameraId);

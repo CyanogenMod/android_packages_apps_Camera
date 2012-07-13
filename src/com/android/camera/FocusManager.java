@@ -21,7 +21,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera.Area;
 import android.hardware.Camera.Parameters;
-import android.media.MediaActionSound;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -149,8 +148,8 @@ public class FocusManager {
         mFocusAreaSupported = (mParameters.getMaxNumFocusAreas() > 0
                 && isSupported(Parameters.FOCUS_MODE_AUTO,
                         mParameters.getSupportedFocusModes()));
-        mLockAeAwbNeeded = (mParameters.isAutoExposureLockSupported() ||
-                mParameters.isAutoWhiteBalanceLockSupported());
+        mLockAeAwbNeeded = (Util.isAutoExposureLockSupported(mParameters) ||
+                Util.isAutoWhiteBalanceLockSupported(mParameters));
     }
 
     public void setPreviewSize(int previewWidth, int previewHeight) {
@@ -273,9 +272,8 @@ public class FocusManager {
                 // Do not play the sound in continuous autofocus mode. It does
                 // not do a full scan. The focus callback arrives before doSnap
                 // so the state is always STATE_FOCUSING.
-                if (!Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.
-                        equals(mFocusMode)) {
-                    mListener.playSound(MediaActionSound.FOCUS_COMPLETE);
+                if (!Util.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)) {
+                    mListener.playSound(SoundClips.FOCUS_COMPLETE);
                 }
             } else {
                 mState = STATE_FAIL;
@@ -472,7 +470,7 @@ public class FocusManager {
         } else if (mState == STATE_FOCUSING || mState == STATE_FOCUSING_SNAP_ON_FINISH) {
             focusIndicator.showStart();
         } else {
-            if (Parameters.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)) {
+            if (Util.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)) {
                 // TODO: check HAL behavior and decide if this can be removed.
                 focusIndicator.showSuccess(false);
             } else if (mState == STATE_SUCCESS) {

@@ -27,6 +27,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -57,10 +59,10 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     private static final int CAMERA_APP_VIEW_TOGGLE_TIME = 100;  // milliseconds
     private static final String ACTION_DELETE_PICTURE =
             "com.android.gallery3d.action.DELETE_PICTURE";
+
     private int mResultCodeForTesting;
     private Intent mResultDataForTesting;
     private OnScreenHint mStorageHint;
-    private HideCameraAppView mHideCameraAppView;
     private View mSingleTapArea;
 
     // The bitmap of the last captured picture thumbnail and the URI of the
@@ -95,6 +97,9 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     // indicator bar, focus indicator and etc.
     protected View mCameraAppView;
     protected boolean mShowCameraAppView = true;
+    private Animation mCameraAppViewFadeIn;
+    private Animation mCameraAppViewFadeOut;
+
     private boolean mUpdateThumbnailDelayed;
     private IntentFilter mDeletePictureFilter =
             new IntentFilter(ACTION_DELETE_PICTURE);
@@ -365,31 +370,45 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         mCameraScreenNail = mAppBridge.getCameraScreenNail();
     }
 
-    private class HideCameraAppView implements Runnable {
+    private class HideCameraAppView implements Animation.AnimationListener {
         @Override
-        public void run() {
+        public void onAnimationEnd(Animation animation) {
             // We cannot set this as GONE because we want to receive the
             // onLayoutChange() callback even when we are invisible.
             mCameraAppView.setVisibility(View.INVISIBLE);
         }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationStart(Animation animation) {
+        }
     }
 
     protected void updateCameraAppView() {
+        // Initialize the animation.
+        if (mCameraAppViewFadeIn == null) {
+            mCameraAppViewFadeIn = new AlphaAnimation(0f, 1f);
+            mCameraAppViewFadeIn.setDuration(CAMERA_APP_VIEW_TOGGLE_TIME);
+            mCameraAppViewFadeIn.setInterpolator(new DecelerateInterpolator());
+
+            mCameraAppViewFadeOut = new AlphaAnimation(1f, 0f);
+            mCameraAppViewFadeOut.setDuration(CAMERA_APP_VIEW_TOGGLE_TIME);
+            mCameraAppViewFadeOut.setInterpolator(new DecelerateInterpolator());
+            mCameraAppViewFadeOut.setAnimationListener(new HideCameraAppView());
+        }
+
         if (mShowCameraAppView) {
             mCameraAppView.setVisibility(View.VISIBLE);
             // The "transparent region" is not recomputed when a sibling of
             // SurfaceView changes visibility (unless it involves GONE). It's
             // been broken since 1.0. Call requestLayout to work around it.
             mCameraAppView.requestLayout();
-            // withEndAction(null) prevents the pending end action
-            // mHideCameraAppView from being executed.
-            mCameraAppView.animate()
-                    .setDuration(CAMERA_APP_VIEW_TOGGLE_TIME)
-                    .withLayer().alpha(1).withEndAction(null);
+            mCameraAppView.startAnimation(mCameraAppViewFadeIn);
         } else {
-            mCameraAppView.animate()
-                    .setDuration(CAMERA_APP_VIEW_TOGGLE_TIME)
-                    .withLayer().alpha(0).withEndAction(mHideCameraAppView);
+            mCameraAppView.startAnimation(mCameraAppViewFadeOut);
         }
     }
 
@@ -397,12 +416,6 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         if (mShowCameraAppView == full) return;
         mShowCameraAppView = full;
         if (mPaused || isFinishing()) return;
-        // Initialize the animation.
-        if (mHideCameraAppView == null) {
-            mHideCameraAppView = new HideCameraAppView();
-            mCameraAppView.animate()
-                .setInterpolator(new DecelerateInterpolator());
-        }
         updateCameraAppView();
 
         // If we received DELETE_PICTURE broadcasts while the Camera UI is

@@ -128,4 +128,7 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"カメラに切り替え"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"動画に切り替え"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"パノラマに切り替え"</string>
+    <string name="accessibility_review_cancel" msgid="9070531914908644686">"レビュー - キャンセル"</string>
+    <string name="accessibility_review_ok" msgid="7793302834271343168">"レビュー - 完了"</string>
+    <string name="accessibility_review_retake" msgid="830348126446319954">"レビュー - 撮り直し"</string>
 </resources>

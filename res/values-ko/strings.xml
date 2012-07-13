@@ -128,4 +128,7 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"사진으로 전환"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"동영상으로 전환"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"파노라마로 전환"</string>
+    <string name="accessibility_review_cancel" msgid="9070531914908644686">"리뷰용 사진/동영상 촬영 취소"</string>
+    <string name="accessibility_review_ok" msgid="7793302834271343168">"리뷰용 사진/동영상 촬영 완료"</string>
+    <string name="accessibility_review_retake" msgid="830348126446319954">"리뷰용 사진/동영상 다시 촬영"</string>
 </resources>

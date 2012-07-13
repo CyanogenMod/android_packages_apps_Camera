@@ -128,4 +128,7 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"切換至相片模式"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"切換至影片模式"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"切換至全景模式"</string>
+    <string name="accessibility_review_cancel" msgid="9070531914908644686">"檢閱取消"</string>
+    <string name="accessibility_review_ok" msgid="7793302834271343168">"檢閱完成"</string>
+    <string name="accessibility_review_retake" msgid="830348126446319954">"檢閱重拍"</string>
 </resources>

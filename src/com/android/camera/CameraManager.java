@@ -18,6 +18,7 @@ package com.android.camera;
 
 import static com.android.camera.Util.Assert;
 
+import android.annotation.TargetApi;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.AutoFocusMoveCallback;
@@ -34,6 +35,8 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+
+import com.android.gallery3d.common.ApiHelper;
 
 import java.io.IOException;
 
@@ -150,8 +153,7 @@ public class CameraManager {
                         break;
 
                     case SET_AUTO_FOCUS_MOVE_CALLBACK:
-                        mCamera.setAutoFocusMoveCallback(
-                            (AutoFocusMoveCallback) msg.obj);
+                        setAutoFocusMoveCallback(mCamera, msg.obj);
                         break;
 
                     case SET_DISPLAY_ORIENTATION:
@@ -210,6 +212,12 @@ public class CameraManager {
             }
             mSig.open();
         }
+    }
+
+    @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
+    private void setAutoFocusMoveCallback(android.hardware.Camera camera,
+            Object cb) {
+        camera.setAutoFocusMoveCallback((AutoFocusMoveCallback) cb);
     }
 
     // Open camera synchronously. This method is invoked in the context of a
@@ -304,6 +312,7 @@ public class CameraManager {
             mSig.block();
         }
 
+        @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
         public void setAutoFocusMoveCallback(AutoFocusMoveCallback cb) {
             mSig.close();
             mCameraHandler.obtainMessage(SET_AUTO_FOCUS_MOVE_CALLBACK, cb).sendToTarget();

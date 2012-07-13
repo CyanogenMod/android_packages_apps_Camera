@@ -495,8 +495,8 @@ public class CameraSettings {
                 EffectsRecorder.isEffectSupported(EffectsRecorder.EFFECT_GOOFY_FACE);
         boolean backdropperSupported =
                 EffectsRecorder.isEffectSupported(EffectsRecorder.EFFECT_BACKDROPPER) &&
-                mParameters.isAutoExposureLockSupported() &&
-                mParameters.isAutoWhiteBalanceLockSupported();
+                Util.isAutoExposureLockSupported(mParameters) &&
+                Util.isAutoWhiteBalanceLockSupported(mParameters);
 
         ArrayList<String> supported = new ArrayList<String>();
         for (CharSequence value : values) {

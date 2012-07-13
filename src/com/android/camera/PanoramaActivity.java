@@ -18,7 +18,6 @@ package com.android.camera;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -32,7 +31,6 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.media.ExifInterface;
-import android.media.MediaActionSound;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -48,7 +46,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.camera.ui.PopupManager;
@@ -159,7 +156,7 @@ public class PanoramaActivity extends ActivityBase implements
 
     private RotateDialogController mRotateDialog;
 
-    private MediaActionSound mCameraSound;
+    private SoundClips.Player mSoundPlayer;
 
     private Runnable mUpdateTexImageRunnable;
     private Runnable mOnFrameAvailableRunnable;
@@ -436,7 +433,7 @@ public class PanoramaActivity extends ActivityBase implements
                   " becuase the mode is not supported.");
         }
 
-        parameters.setRecordingHint(false);
+        parameters.set(Util.RECORDING_HINT, Util.FALSE);
 
         mHorizontalViewAngle = parameters.getHorizontalViewAngle();
         mVerticalViewAngle =  parameters.getVerticalViewAngle();
@@ -741,11 +738,11 @@ public class PanoramaActivity extends ActivityBase implements
         // right now.
         switch (mCaptureState) {
             case CAPTURE_STATE_VIEWFINDER:
-                mCameraSound.play(MediaActionSound.START_VIDEO_RECORDING);
+                mSoundPlayer.play(SoundClips.START_VIDEO_RECORDING);
                 startCapture();
                 break;
             case CAPTURE_STATE_MOSAIC:
-                mCameraSound.play(MediaActionSound.STOP_VIDEO_RECORDING);
+                mSoundPlayer.play(SoundClips.STOP_VIDEO_RECORDING);
                 stopCapture(false);
         }
     }
@@ -990,9 +987,9 @@ public class PanoramaActivity extends ActivityBase implements
             mWaitProcessorTask = null;
         }
         resetScreenOn();
-        if (mCameraSound != null) {
-            mCameraSound.release();
-            mCameraSound = null;
+        if (mSoundPlayer != null) {
+            mSoundPlayer.release();
+            mSoundPlayer = null;
         }
         if (mCameraScreenNail.getSurfaceTexture() != null) {
             mCameraScreenNail.releaseSurfaceTexture();
@@ -1054,9 +1051,7 @@ public class PanoramaActivity extends ActivityBase implements
         }
 
         // Set up sound playback for shutter button
-        mCameraSound = new MediaActionSound();
-        mCameraSound.load(MediaActionSound.START_VIDEO_RECORDING);
-        mCameraSound.load(MediaActionSound.STOP_VIDEO_RECORDING);
+        mSoundPlayer = SoundClips.getPlayer(this);
 
         // Check if another panorama instance is using the mosaic frame processor.
         mRotateDialog.dismissDialog();
