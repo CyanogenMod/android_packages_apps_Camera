@@ -19,7 +19,7 @@
     <string name="camera_error_title" msgid="6484667504938477337">"ข้อผิดพลาดกล้องถ่ายรูป"</string>
     <string name="cannot_connect_camera" msgid="955440687597185163">"ไม่สามารถเชื่อมต่อกับกล้องถ่ายรูป"</string>
     <string name="camera_disabled" msgid="8923911090533439312">"กล้องถ่ายรูปถูกปิดใช้งานเนื่องจากนโยบายด้านความปลอดภัย"</string>
-    <string name="camera_label" msgid="6346560772074764302">"กล้อง\\nถ่ายรูป"</string>
+    <string name="camera_label" msgid="6346560772074764302">"กล้อง"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"กล้องวิดีโอ"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"ภาพจากกล้องถ่ายรูป"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"วิดีโอจากกล้องถ่ายรูป"</string>
@@ -128,10 +128,7 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"เปลี่ยนเป็นภาพถ่าย"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"เปลี่ยนเป็นวิดีโอ"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"เปลี่ยนเป็นภาพพาโนรามา"</string>
-    <!-- no translation found for accessibility_review_cancel (9070531914908644686) -->
-    <skip />
-    <!-- no translation found for accessibility_review_ok (7793302834271343168) -->
-    <skip />
-    <!-- no translation found for accessibility_review_retake (830348126446319954) -->
-    <skip />
+    <string name="accessibility_review_cancel" msgid="9070531914908644686">"ไม่ผ่านการตรวจสอบ"</string>
+    <string name="accessibility_review_ok" msgid="7793302834271343168">"ผ่านการตรวจสอบ"</string>
+    <string name="accessibility_review_retake" msgid="830348126446319954">"ถ่ายใหม่"</string>
 </resources>
