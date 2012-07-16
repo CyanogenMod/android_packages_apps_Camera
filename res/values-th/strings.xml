@@ -19,7 +19,7 @@
     <string name="camera_error_title" msgid="6484667504938477337">"ข้อผิดพลาดกล้องถ่ายรูป"</string>
     <string name="cannot_connect_camera" msgid="955440687597185163">"ไม่สามารถเชื่อมต่อกับกล้องถ่ายรูป"</string>
     <string name="camera_disabled" msgid="8923911090533439312">"กล้องถ่ายรูปถูกปิดใช้งานเนื่องจากนโยบายด้านความปลอดภัย"</string>
-    <string name="camera_label" msgid="6346560772074764302">"กล้อง\\nถ่ายรูป"</string>
+    <string name="camera_label" msgid="6346560772074764302">"กล้อง"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"กล้องวิดีโอ"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"ภาพจากกล้องถ่ายรูป"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"วิดีโอจากกล้องถ่ายรูป"</string>

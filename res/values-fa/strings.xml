@@ -18,10 +18,10 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"خطای دوربین"</string>
     <string name="cannot_connect_camera" msgid="955440687597185163">"اتصال به دوربین امکان‌پذیر نیست."</string>
-    <string name="camera_disabled" msgid="8923911090533439312">"به دلیل خط مشی های امنیتی، دوربین غیرفعال شده است."</string>
+    <string name="camera_disabled" msgid="8923911090533439312">"به دلیل خط مشی‌های امنیتی، دوربین غیرفعال شده است."</string>
     <string name="camera_label" msgid="6346560772074764302">"دوربین"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"دوربین فیلمبرداری"</string>
-    <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"عکس های دوربین"</string>
+    <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"عکس‌های دوربین"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"ویدئوهای دوربین"</string>
     <string name="wait" msgid="8600187532323801552">"لطفاً منتظر بمانید…"</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"قبل از استفاده از دوربین حافظهٔ USB را وصل کنید."</string>
@@ -82,8 +82,8 @@
     <string name="pref_restore_detail" msgid="5732490002291044791">"بازیابی موارد پیش‌فرض"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"نوردهی"</string>
     <string name="dialog_ok" msgid="6263301364153382152">"تأیید"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"حافظهٔ USB پر است. تنظیمات کیفیت را تغییر دهید یا برخی تصاویر یا سایر فایل ها را حذف کنید."</string>
-    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"کارت SD شما پر شده است. تنظیمات کیفیت را تغییر دهید یا برخی تصاویر یا فایل های دیگر را حذف کنید."</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"حافظهٔ USB پر است. تنظیمات کیفیت را تغییر دهید یا برخی تصاویر یا سایر فایل‌ها را حذف کنید."</string>
+    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"کارت SD شما پر شده است. تنظیمات کیفیت را تغییر دهید یا برخی تصاویر یا فایل‌های دیگر را حذف کنید."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"بیش از حداکثر مجاز."</string>
     <string name="share_picture_via" msgid="1375127849431890447">"اشتراک گذاری تصویر از طریق"</string>
     <string name="share_video_via" msgid="5152302809166549015">"اشتراک گذاری ویدئو از طریق"</string>
