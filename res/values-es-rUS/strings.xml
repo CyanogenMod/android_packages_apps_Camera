@@ -118,5 +118,5 @@
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Cambiar al modo Panorama"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Cancelar"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Listo"</string>
-    <string name="accessibility_review_retake" msgid="830348126446319954">"Volver a hacer"</string>
+    <string name="accessibility_review_retake" msgid="830348126446319954">"Volver a tomar"</string>
 </resources>

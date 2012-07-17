@@ -28,8 +28,6 @@
     <skip />
     <!-- no translation found for no_storage (5137703033746873624) -->
     <skip />
-    <!-- no translation found for not_enough_space (6452370395538050134) -->
-    <skip />
     <!-- no translation found for preparing_sd (6104019983528341353) -->
     <skip />
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Preparar la carta SD..."</string>
@@ -38,8 +36,6 @@
     <!-- no translation found for access_sd_fail (1584968646870054352) -->
     <skip />
     <!-- no translation found for confirm_restore_message (4726518572923160939) -->
-    <skip />
-    <!-- no translation found for review_play (6378271587740884696) -->
     <skip />
     <string name="review_cancel" msgid="8188009385853399254">"INTERRUMPER"</string>
     <!-- no translation found for review_ok (1156261588693116433) -->
@@ -106,14 +102,6 @@
     <!-- no translation found for spaceIsLow_content (1732882643101247179) -->
     <skip />
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Cuntanschì la grondezza maximala."</string>
-    <!-- no translation found for share_picture_via (1375127849431890447) -->
-    <skip />
-    <!-- no translation found for share_video_via (5152302809166549015) -->
-    <skip />
-    <!-- no translation found for no_picture_to_share (5352574090121328815) -->
-    <skip />
-    <!-- no translation found for no_video_to_share (7567298642707627096) -->
-    <skip />
     <!-- no translation found for pano_too_fast_prompt (2823839093291374709) -->
     <skip />
     <!-- no translation found for pano_dialog_prepare_preview (4788441554128083543) -->
@@ -153,8 +141,6 @@
     <!-- no translation found for effect_backdropper_gallery (959158844620991906) -->
     <skip />
     <!-- no translation found for bg_replacement_message (9184270738916564608) -->
-    <skip />
-    <!-- no translation found for not_selectable_in_effect (4568604144269499202) -->
     <skip />
     <!-- no translation found for video_snapshot_hint (18833576851372483) -->
     <skip />
