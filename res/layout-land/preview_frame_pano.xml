@@ -45,7 +45,8 @@
             </com.android.camera.ui.RotateLayout>
         </FrameLayout>
 
-        <View android:id="@+id/pano_preview_area"
+        <com.android.camera.ui.PanoramaPreviewView
+                android:id="@+id/pano_preview_area"
                 android:visibility="invisible"
                 android:background="@drawable/ic_pan_border_fast"
                 android:layout_gravity="center"

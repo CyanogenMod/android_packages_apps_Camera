@@ -27,16 +27,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.camera.ui.CameraPicker;
+import com.android.camera.ui.LayoutChangeNotifier;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.RotateImageView;
 import com.android.gallery3d.app.AbstractGalleryActivity;
@@ -51,8 +52,8 @@ import java.io.File;
 /**
  * Superclass of Camera and VideoCamera activities.
  */
-abstract public class ActivityBase extends AbstractGalleryActivity
-        implements View.OnLayoutChangeListener {
+public abstract class ActivityBase extends AbstractGalleryActivity
+        implements LayoutChangeNotifier.Listener {
 
     private static final String TAG = "ActivityBase";
     private static final boolean LOGV = false;
@@ -433,15 +434,8 @@ abstract public class ActivityBase extends AbstractGalleryActivity
 
     // Preview frame layout has changed.
     @Override
-    public void onLayoutChange(View v, int left, int top, int right, int bottom,
-            int oldLeft, int oldTop, int oldRight, int oldBottom) {
+    public void onLayoutChange(View v, int left, int top, int right, int bottom) {
         if (mAppBridge == null) return;
-
-        if (left == oldLeft && top == oldTop && right == oldRight
-                && bottom == oldBottom) {
-            return;
-        }
-
 
         int width = right - left;
         int height = bottom - top;

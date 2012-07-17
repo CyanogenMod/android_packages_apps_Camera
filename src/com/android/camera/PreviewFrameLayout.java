@@ -22,10 +22,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.android.camera.ui.LayoutChangeHelper;
+import com.android.camera.ui.LayoutChangeNotifier;
+
 /**
  * A layout which handles the preview aspect ratio.
  */
-public class PreviewFrameLayout extends RelativeLayout {
+public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNotifier {
     /** A callback to be invoked when the preview frame's size changes. */
     public interface OnSizeChangedListener {
         public void onSizeChanged(int width, int height);
@@ -34,10 +37,12 @@ public class PreviewFrameLayout extends RelativeLayout {
     private double mAspectRatio;
     private View mBorder;
     private OnSizeChangedListener mListener;
+    private LayoutChangeHelper mLayoutChangeHelper;
 
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setAspectRatio(4.0 / 3.0);
+        mLayoutChangeHelper = new LayoutChangeHelper(this);
     }
 
     @Override
@@ -101,5 +106,17 @@ public class PreviewFrameLayout extends RelativeLayout {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (mListener != null) mListener.onSizeChanged(w, h);
+    }
+
+    @Override
+    public void setOnLayoutChangeListener(
+            LayoutChangeNotifier.Listener listener) {
+        mLayoutChangeHelper.setOnLayoutChangeListener(listener);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        mLayoutChangeHelper.onLayout(changed, l, t, r, b);
     }
 }
