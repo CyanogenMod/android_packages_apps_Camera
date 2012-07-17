@@ -144,6 +144,10 @@
     <string name="pref_camera_whitebalance_entry_cloudydaylight">Felhős, nappali fény</string>
     <string name="pref_camera_focusmode_entry_continuouspicture">Folyamatos fókusz</string>
 
+    <!-- Settings screen, ISO dialog radio button choices -->
+    <string name="pref_camera_iso_entry_auto">Automatikus</string>
+    <string name="pref_camera_iso_entry_isodeblur">Automatikus (HJR)</string>
+
     <!-- 20120506 -->
     <!-- Settings screen, Timer mode title -->
     <string name="pref_camera_timer_title">Időzítő</string>
@@ -156,5 +160,8 @@
     <string name="pref_camera_timer_entry_40">40mp</string>
     <string name="pref_camera_timer_entry_50">50mp</string>
     <string name="pref_camera_timer_entry_60">60mp</string>
+
+    <!-- More Settings screen, focus sound title -->
+    <string name="pref_camera_focus_sound_title">Fókusz hang</string>
 
 </resources>
