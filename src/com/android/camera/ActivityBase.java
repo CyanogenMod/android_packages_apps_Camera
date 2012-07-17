@@ -30,7 +30,6 @@ import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -197,8 +196,19 @@ abstract public class ActivityBase extends AbstractGalleryActivity
                 || keyCode == KeyEvent.KEYCODE_MENU) {
             if (event.isLongPress()) return true;
         }
+        if (keyCode == KeyEvent.KEYCODE_MENU && mShowCameraAppView) {
+            return true;
+        }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU && mShowCameraAppView) {
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     protected void setResultEx(int resultCode) {
@@ -224,12 +234,6 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     protected void onDestroy() {
         PopupManager.removeInstance(this);
         super.onDestroy();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        return getStateManager().createOptionsMenu(menu);
     }
 
     protected void updateStorageHint(long storageSpace) {
