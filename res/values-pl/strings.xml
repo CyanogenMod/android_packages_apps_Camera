@@ -127,6 +127,8 @@
     <!-- **** CYANOGENMOD EDITS START **** -->
     <string name="pref_camera_power_shutter_title">Migawka przyciskiem zasilania</string>
     <string name="pref_camera_power_shutter_default">Wyłączona</string>
+    <string name="pref_camera_focus_sound_title">Dźwięk ustawiania ostrości</string>
+    <string name="pref_camera_focus_sound_default">Włączony</string>
 
     <string name="pref_camera_storage_title">Używana pamięć</string>
 
@@ -135,6 +137,7 @@
 
     <string name="pref_camera_focusmode_entry_fixed">Stały</string>
     <string name="pref_camera_focusmode_entry_facedetect">Detekcja twarzy</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Ciągły autofocus</string>
     <string name="pref_camera_scenemode_entry_backlight">Podświetlenie</string>
     <string name="pref_camera_scenemode_entry_duskdawn">Świt/Zmierzch</string>
     <string name="pref_camera_scenemode_entry_fallcolor">Intensywny kolor</string>
@@ -147,5 +150,16 @@
     <string name="pref_camera_scenemode_entry_sports">Sport</string>
     <string name="pref_camera_scenemode_entry_candlelight">Światło świec</string>
     <string name="pref_camera_whitebalance_entry_cloudydaylight">Pochmurny dzień</string>
+
+    <string name="pref_camera_iso_entry_auto">Automatyczne</string>
+    <string name="pref_camera_iso_entry_isodeblur">Automatyczne (HJR)</string>
+
+    <string name="pref_camera_burst_title">Seria</string>
+    <string name="pref_camera_burst_entry_off">Wyłączone</string>
+    <string name="pref_camera_burst_entry_5">5 zdjęć</string>
+    <string name="pref_camera_burst_entry_10">10 zdjęć</string>
+    <string name="pref_camera_burst_entry_15">15 zdjęć</string>
+    <string name="pref_camera_burst_entry_20">20 zdjęć</string>
+
     <!-- **** CYANOGENMOD EDITS END **** -->
 </resources>
