@@ -130,5 +130,5 @@
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"رفتن به پانوراما"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"لغو بازبینی"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"بازبینی انجام شد"</string>
-    <string name="accessibility_review_retake" msgid="830348126446319954">"بازبینی عکس مجدد"</string>
+    <string name="accessibility_review_retake" msgid="830348126446319954">"گرفتن دوباره عکس"</string>
 </resources>
