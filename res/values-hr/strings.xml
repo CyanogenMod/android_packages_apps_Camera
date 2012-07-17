@@ -51,12 +51,26 @@
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Interval vremenskog odmaka"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Postavke fotoaparata"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Postavke kamere"</string>
+	<string name="pref_camera_power_shutter_title">Power Shutter</string>
+	<string name="pref_camera_power_shutter_default">off</string>
+	<string name="pref_camera_focus_sound_title">Zvuk fokusa</string>
+	<string name="pref_camera_focus_sound_default">on</string>
+	<string name="pref_camera_storage_title">Pohrana</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Veličina slike"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Način fokusa"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatski"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Beskonačno"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Način bljeskalice"</string>
+	<string name="pref_camera_timer_title">Timer mod</string>
+    <string name="pref_camera_timer_default" translatable="false">0</string>
+	<string name="pref_camera_timer_entry_0">Isklj</string>
+    <string name="pref_camera_timer_entry_10">10s</string>
+    <string name="pref_camera_timer_entry_20">20s</string>
+    <string name="pref_camera_timer_entry_30">30s</string>
+    <string name="pref_camera_timer_entry_40">40s</string>
+    <string name="pref_camera_timer_entry_50">50s</string>
+    <string name="pref_camera_timer_entry_60">60s</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatski"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Uključeno"</string>
     <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Isključeno"</string>
