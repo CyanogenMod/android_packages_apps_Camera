@@ -24,7 +24,8 @@ import android.widget.ImageView;
  * A @{code ImageView} which change the opacity of the icon if disabled.
  */
 public class TwoStateImageView extends ImageView {
-    private final float DISABLED_ALPHA = 0.4f;
+    private static final int ENABLED_ALPHA = 255;
+    private static final int DISABLED_ALPHA = (int) (255 * 0.4);
     private boolean mFilterEnabled = true;
 
     public TwoStateImageView(Context context, AttributeSet attrs) {
@@ -35,12 +36,13 @@ public class TwoStateImageView extends ImageView {
         this(context, null);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         if (mFilterEnabled) {
             if (enabled) {
-                setAlpha(1.0f);
+                setAlpha(ENABLED_ALPHA);
             } else {
                 setAlpha(DISABLED_ALPHA);
             }
