@@ -851,6 +851,7 @@ public class VideoCamera extends ActivityBase
             stopPreview();
             if (effectsActive() && mEffectsRecorder != null) {
                 mEffectsRecorder.release();
+                mEffectsRecorder = null;
             }
         }
 
@@ -884,13 +885,15 @@ public class VideoCamera extends ActivityBase
     // Closing the effects out. Will shut down the effects graph.
     private void closeEffects() {
         Log.v(TAG, "Closing effects");
+        mEffectType = EffectsRecorder.EFFECT_NONE;
         if (mEffectsRecorder == null) {
             Log.d(TAG, "Effects are already closed. Nothing to do");
+            return;
         }
         // This call can handle the case where the camera is already released
         // after the recording has been stopped.
         mEffectsRecorder.release();
-        mEffectType = EffectsRecorder.EFFECT_NONE;
+        mEffectsRecorder = null;
     }
 
     // By default, we want to close the effects as well with the camera.
@@ -920,10 +923,8 @@ public class VideoCamera extends ActivityBase
             // Disconnect the camera from effects so that camera is ready to
             // be released to the outside world.
             mEffectsRecorder.disconnectCamera();
-            if (closeEffectsAlso) {
-                closeEffects();
-            }
         }
+        if (closeEffectsAlso) closeEffects();
         mCameraDevice.setZoomChangeListener(null);
         mCameraDevice.setErrorCallback(null);
         CameraHolder.instance().release();
@@ -1287,8 +1288,8 @@ public class VideoCamera extends ActivityBase
             cleanupEmptyFile();
             mEffectsRecorder.release();
             mEffectsRecorder = null;
-            mEffectType = EffectsRecorder.EFFECT_NONE;
         }
+        mEffectType = EffectsRecorder.EFFECT_NONE;
         mVideoFilename = null;
     }
 
@@ -2148,6 +2149,7 @@ public class VideoCamera extends ActivityBase
                     stopPreview();
                 } else {
                     mEffectsRecorder.release();
+                    mEffectsRecorder = null;
                 }
                 resizeForPreviewAspectRatio();
                 startPreview(); // Parameters will be set in startPreview().
