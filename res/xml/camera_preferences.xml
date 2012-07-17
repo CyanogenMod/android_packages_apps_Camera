@@ -80,6 +80,12 @@
             camera:entries="@array/pref_camera_timer_duration_entries"
             camera:entryValues="@array/pref_camera_timer_duration_values" />
     <ListPreference
+            camera:key="pref_camera_burst_key"
+            camera:defaultValue="@string/pref_camera_burst_entry_off"
+            camera:title="@string/pref_camera_burst_title"
+            camera:entries="@array/pref_camera_burst_mode_entries"
+            camera:entryValues="@array/pref_camera_burst_mode_values" />
+    <ListPreference
             camera:key="pref_camera_focusmode_key"
             camera:defaultValue="@array/pref_camera_focusmode_default_array"
             camera:title="@string/pref_camera_focusmode_title"
