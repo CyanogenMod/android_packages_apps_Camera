@@ -126,6 +126,7 @@
     <string name="accessibility_switch" msgid="6995966685498958895">"Переключить %1$s"</string>
     <string name="pref_camera_power_shutter_title">Съёмка питанием</string>
     <string name="pref_camera_storage_title">Накопитель</string>
+    <string name="pref_camera_focus_sound_title">Звук фокуса</string>
 
     <string name="pref_camera_focusmode_entry_fixed">Фиксированно</string>
     <string name="pref_camera_focusmode_entry_facedetect">Опред. лица</string>
