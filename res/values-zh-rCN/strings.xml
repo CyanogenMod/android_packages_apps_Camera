@@ -55,6 +55,10 @@
     <string name="pref_camera_power_shutter_title">电源键快门</string>
     <string name="pref_camera_power_shutter_default">关闭</string>
 
+    <!-- More Settings screen, focus sound title -->
+    <string name="pref_camera_focus_sound_title">对焦声音</string>
+    <string name="pref_camera_focus_sound_default">打开</string>
+
     <!-- More Settings screen, storage title -->
     <string name="pref_camera_storage_title">存储</string>
 
@@ -63,9 +67,35 @@
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"自动"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"无限远"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"微距"</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">持续性</string>
+
+    <!-- Settings screen, ISO title -->
+    <string name="pref_camera_iso_title">ISO</string>
+
+    <!-- Settings screen, ISO dialog radio button choices -->
+    <string name="pref_camera_iso_entry_auto">自动</string>
+    <string name="pref_camera_iso_entry_isodeblur">自动（HJR）</string>
+    <string name="pref_camera_iso_entry_iso50">50</string>
+    <string name="pref_camera_iso_entry_iso100">100</string>
+    <string name="pref_camera_iso_entry_iso200">200</string>
+    <string name="pref_camera_iso_entry_iso400">400</string>
+    <string name="pref_camera_iso_entry_iso800">800</string>
+    <string name="pref_camera_iso_entry_iso1000">1000</string>
+    <string name="pref_camera_iso_entry_iso1200">1200</string>
+    <string name="pref_camera_iso_entry_iso1600">1600</string>
+
+    <!-- Settings screen, Burst mode title -->
+    <string name="pref_camera_burst_title">连拍模式</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_off">关闭</string>
+    <string name="pref_camera_burst_entry_5">5 张</string>
+    <string name="pref_camera_burst_entry_10">10 张</string>
+    <string name="pref_camera_burst_entry_15">15 张</string>
+    <string name="pref_camera_burst_entry_20">20 张</string>
 
     <!-- Settings screen, Timer mode title -->
-    <string name="pref_camera_timer_title">定时模式</string>
+    <string name="pref_camera_timer_title">定时拍照</string>
 
     <!-- Settings screen, Timer mode entries -->
     <string name="pref_camera_timer_entry_0">关闭</string>
