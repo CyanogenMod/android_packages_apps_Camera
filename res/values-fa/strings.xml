@@ -85,8 +85,8 @@
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"حافظهٔ USB پر است. تنظیمات کیفیت را تغییر دهید یا برخی تصاویر یا سایر فایل‌ها را حذف کنید."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"کارت SD شما پر شده است. تنظیمات کیفیت را تغییر دهید یا برخی تصاویر یا فایل‌های دیگر را حذف کنید."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"بیش از حداکثر مجاز."</string>
-    <string name="share_picture_via" msgid="1375127849431890447">"اشتراک گذاری تصویر از طریق"</string>
-    <string name="share_video_via" msgid="5152302809166549015">"اشتراک گذاری ویدئو از طریق"</string>
+    <string name="share_picture_via" msgid="1375127849431890447">"اشتراک‌گذاری تصویر از طریق"</string>
+    <string name="share_video_via" msgid="5152302809166549015">"اشتراک‌گذاری ویدئو از طریق"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"عکسی برای اشتراک وجود ندارد."</string>
     <string name="no_video_to_share" msgid="7567298642707627096">"ویدئویی برای اشتراک‌گذاری وجود ندارد."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"بسیار سریع"</string>
