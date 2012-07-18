@@ -123,4 +123,40 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"Formindsk %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Forøg %1$s"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"%1$s-knappen"</string>
+    <!-- CM9 -->
+    <!-- More Settings screen, power button title -->
+    <string name="pref_camera_power_shutter_title">Tænd/sluk udløserknap</string>
+    <string name="pref_camera_power_shutter_default">Fra</string>
+    <!-- More Settings screen, focus sound title -->
+    <string name="pref_camera_focus_sound_title">Fokuslyd</string>
+    <string name="pref_camera_focus_sound_default">Til</string>
+    <!-- More Settings screen, storage title -->
+    <string name="pref_camera_storage_title">Lagring</string>
+    <!-- Settings screen, Focus mode dialog radio button choices -->
+    <string name="pref_camera_focusmode_entry_fixed">Fast</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Ansigtsgenkendelse</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Løbende</string>
+    <string name="pref_camera_timer_title">Selvudløser</string>
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_timer_entry_0">Fra</string>
+    <string name="pref_camera_timer_entry_10">10s</string>
+    <string name="pref_camera_timer_entry_20">20s</string>
+    <string name="pref_camera_timer_entry_30">30s</string>
+    <string name="pref_camera_timer_entry_40">40s</string>
+    <string name="pref_camera_timer_entry_50">50s</string>
+    <string name="pref_camera_timer_entry_60">60s</string>
+    <!-- Settings screen, White balance dialog radio button choices -->
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Overskyet-Dagslys</string>
+    <!-- Scene mode optimized for taking indoor low-lights pictures. [CHAR LIMIT=16] -->
+    <string name="pref_camera_scenemode_entry_backlight">Baggrundslys</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Lav belysning</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Efterår</string>
+    <string name="pref_camera_scenemode_entry_text">Tekst</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portræt</string>
+    <string name="pref_camera_scenemode_entry_landscape">Landskab</string>
+    <string name="pref_camera_scenemode_entry_beach">Strand</string>
+    <string name="pref_camera_scenemode_entry_snow">Sne</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Fyrværkeri</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Stearinlys</string>
 </resources>
