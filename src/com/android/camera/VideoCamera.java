@@ -2031,7 +2031,7 @@ public class VideoCamera extends ActivityBase
 
     private void initializeMiscControls() {
         mPreviewFrameLayout = (PreviewFrameLayout) findViewById(R.id.frame);
-        mPreviewFrameLayout.addOnLayoutChangeListener(this);
+        mPreviewFrameLayout.setOnLayoutChangeListener(this);
         mReviewImage = (ImageView) findViewById(R.id.review_image);
 
         mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);

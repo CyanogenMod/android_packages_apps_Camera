@@ -1720,7 +1720,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
         mOnScreenIndicators = (Rotatable) findViewById(R.id.on_screen_indicators);
         mFaceView = (FaceView) findViewById(R.id.face_view);
-        mPreviewFrameLayout.addOnLayoutChangeListener(this);
+        mPreviewFrameLayout.setOnLayoutChangeListener(this);
         mPreviewFrameLayout.setOnSizeChangedListener(this);
     }
 

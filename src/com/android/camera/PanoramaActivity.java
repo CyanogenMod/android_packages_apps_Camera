@@ -48,6 +48,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.camera.ui.LayoutNotifyView;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
@@ -102,7 +103,7 @@ public class PanoramaActivity extends ActivityBase implements
     private RotateLayout mCaptureIndicator;
     private PanoProgressBar mPanoProgressBar;
     private PanoProgressBar mSavingProgressBar;
-    private View mPreviewArea;
+    private LayoutNotifyView mPreviewArea;
     private View mLeftIndicator;
     private View mRightIndicator;
     private MosaicPreviewRenderer mMosaicPreviewRenderer;
@@ -488,14 +489,8 @@ public class PanoramaActivity extends ActivityBase implements
     // the camera preview screennail to the same size and initialize the mosaic
     // preview renderer.
     @Override
-    public void onLayoutChange(View v, int l, int t, int r, int b,
-            int oldl, int oldt, int oldr, int oldb) {
-        super.onLayoutChange(v, l, t, r, b, oldl, oldt, oldr, oldb);
-        if (l == oldl && t == oldt && r == oldr && b == oldb
-                && mCameraScreenNail.getSurfaceTexture() != null) {
-            // Nothing changed and this has been called already.
-            return;
-        }
+    public void onLayoutChange(View v, int l, int t, int r, int b) {
+        super.onLayoutChange(v, l, t, r, b);
         configMosaicPreview(r - l, b - t);
     }
 
@@ -668,8 +663,8 @@ public class PanoramaActivity extends ActivityBase implements
         mRightIndicator.setEnabled(false);
         mTooFastPrompt = (TextView) findViewById(R.id.pano_capture_too_fast_textview);
         // This mPreviewArea also shows the border for visual "too fast" indication.
-        mPreviewArea = findViewById(R.id.pano_preview_area);
-        mPreviewArea.addOnLayoutChangeListener(this);
+        mPreviewArea = (LayoutNotifyView) findViewById(R.id.pano_preview_area);
+        mPreviewArea.setOnLayoutChangeListener(this);
 
         mSavingProgressBar = (PanoProgressBar) findViewById(R.id.pano_saving_progress_bar);
         mSavingProgressBar.setIndicatorWidth(0);
