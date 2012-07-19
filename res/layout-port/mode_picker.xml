@@ -16,16 +16,20 @@
 <com.android.camera.ModePicker xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/mode_picker"
             android:layout_height="match_parent"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_alignParentLeft="true"
             android:visibility="gone">
+    <!-- The location of mode_selection during animation is relative to the
+         parent. Use match_parent to fix the size of mode_picker. -->
     <!-- minHeight in camera_control.xml is used to avoid overlapping of current_mode. -->
     <RelativeLayout android:id="@+id/current_mode"
             android:layout_height="match_parent"
             android:layout_width="55dp"
+            android:layout_alignParentLeft="true"
             android:contentDescription="@string/accessibility_mode_picker"
             android:background="@drawable/bg_mode_picker">
         <RelativeLayout
+                android:id="@+id/sub_current_mode"
                 android:contentDescription="@string/empty"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent">
@@ -65,7 +69,8 @@
     <LinearLayout android:id="@+id/mode_selection"
             android:orientation="horizontal"
             android:layout_height="match_parent"
-            android:layout_width="163dp"
+            android:layout_width="wrap_content"
+            android:layout_alignParentLeft="true"
             android:background="@android:color/black"
             android:visibility="gone">
         <com.android.camera.ui.RotateImageView android:id="@+id/mode_camera"
