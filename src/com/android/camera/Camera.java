@@ -294,7 +294,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 mHandler.sendEmptyMessage(CAMERA_OPEN_DONE);
                 if (mCancelled) return;
                 startPreview();
-                mHandler.sendEmptyMessage(START_PREVIEW_DONE);
                 mOnResumeTime = SystemClock.uptimeMillis();
                 mHandler.sendEmptyMessage(CHECK_DISPLAY_ROTATION);
             } catch (CameraHardwareException e) {
@@ -1981,6 +1980,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         Log.v(TAG, "startPreview");
         mCameraDevice.startPreviewAsync();
 
+        mHandler.sendEmptyMessage(START_PREVIEW_DONE);
         mFocusManager.onPreviewStarted();
         CameraSettings.setVideoMode(mParameters, false);
         mCameraDevice.setParameters(mParameters);
