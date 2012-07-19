@@ -733,6 +733,7 @@ public class PanoramaActivity extends ActivityBase implements
         // right now.
         switch (mCaptureState) {
             case CAPTURE_STATE_VIEWFINDER:
+                if(getStorageSpace() <= Storage.LOW_STORAGE_THRESHOLD) return;
                 mSoundPlayer.play(SoundClips.START_VIDEO_RECORDING);
                 startCapture();
                 break;

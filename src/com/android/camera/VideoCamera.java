@@ -148,8 +148,6 @@ public class VideoCamera extends ActivityBase
     private boolean mIsVideoCaptureIntent;
     private boolean mQuickCapture;
 
-    private long mStorageSpace;
-
     private MediaRecorder mMediaRecorder;
     private EffectsRecorder mEffectsRecorder;
     private boolean mEffectsDisplayResult;
@@ -290,19 +288,10 @@ public class VideoCamera extends ActivityBase
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(Intent.ACTION_MEDIA_EJECT)) {
-                updateAndShowStorageHint();
                 stopVideoRecording();
-            } else if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
-                updateAndShowStorageHint();
-                getLastThumbnail();
-            } else if (action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-                // SD card unavailable
-                // handled in ACTION_MEDIA_EJECT
             } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_STARTED)) {
                 Toast.makeText(VideoCamera.this,
                         getResources().getString(R.string.wait), Toast.LENGTH_LONG).show();
-            } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-                updateAndShowStorageHint();
             }
         }
     }
@@ -630,11 +619,6 @@ public class VideoCamera extends ActivityBase
         // Do nothing (everything happens in onShutterButtonClick).
     }
 
-    private void updateAndShowStorageHint() {
-        mStorageSpace = Storage.getAvailableSpace();
-        updateStorageHint(mStorageSpace);
-    }
-
     private void readVideoPreferences() {
         // The preference stores values from ListPreference and is thus string type for all values.
         // We need to convert it to int manually.
@@ -745,6 +729,18 @@ public class VideoCamera extends ActivityBase
     }
 
     @Override
+    protected void installIntentFilter() {
+        super.installIntentFilter();
+        // install an intent filter to receive SD card related events.
+        IntentFilter intentFilter =
+                new IntentFilter(Intent.ACTION_MEDIA_EJECT);
+        intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
+        intentFilter.addDataScheme("file");
+        mReceiver = new MyBroadcastReceiver();
+        registerReceiver(mReceiver, intentFilter);
+    }
+
+    @Override
     protected void onResume() {
         mPaused = false;
         super.onResume();
@@ -786,25 +782,6 @@ public class VideoCamera extends ActivityBase
         initializeZoom();
 
         keepScreenOnAwhile();
-
-        // install an intent filter to receive SD card related events.
-        IntentFilter intentFilter =
-                new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
-        intentFilter.addAction(Intent.ACTION_MEDIA_EJECT);
-        intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-        intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
-        intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
-        intentFilter.addDataScheme("file");
-        mReceiver = new MyBroadcastReceiver();
-        registerReceiver(mReceiver, intentFilter);
-        mStorageSpace = Storage.getAvailableSpace();
-
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateStorageHint(mStorageSpace);
-            }
-        }, 200);
 
         // Initialize location service.
         boolean recordLocation = RecordLocationPreference.get(
@@ -1131,7 +1108,7 @@ public class VideoCamera extends ActivityBase
         }
 
         // Set maximum file size.
-        long maxFileSize = mStorageSpace - Storage.LOW_STORAGE_THRESHOLD;
+        long maxFileSize = getStorageSpace() - Storage.LOW_STORAGE_THRESHOLD;
         if (requestedSizeLimit > 0 && requestedSizeLimit < maxFileSize) {
             maxFileSize = requestedSizeLimit;
         }
@@ -1277,7 +1254,7 @@ public class VideoCamera extends ActivityBase
         }
 
         // Set maximum file size.
-        long maxFileSize = mStorageSpace - Storage.LOW_STORAGE_THRESHOLD;
+        long maxFileSize = getStorageSpace() - Storage.LOW_STORAGE_THRESHOLD;
         if (requestedSizeLimit > 0 && requestedSizeLimit < maxFileSize) {
             maxFileSize = requestedSizeLimit;
         }
@@ -1391,7 +1368,7 @@ public class VideoCamera extends ActivityBase
                 mCurrentVideoUri = null;
             }
         }
-        updateAndShowStorageHint();
+        updateStorageSpaceAndHint();
     }
 
     private void deleteVideoFile(String fileName) {
@@ -1424,7 +1401,7 @@ public class VideoCamera extends ActivityBase
         if (what == MediaRecorder.MEDIA_RECORDER_ERROR_UNKNOWN) {
             // We may have run out of space on the sdcard.
             stopVideoRecording();
-            updateAndShowStorageHint();
+            updateStorageSpaceAndHint();
         }
     }
 
@@ -1464,8 +1441,8 @@ public class VideoCamera extends ActivityBase
         Log.v(TAG, "startVideoRecording");
         setSwipingEnabled(false);
 
-        updateAndShowStorageHint();
-        if (mStorageSpace <= Storage.LOW_STORAGE_THRESHOLD) {
+        updateStorageSpaceAndHint();
+        if (getStorageSpace() <= Storage.LOW_STORAGE_THRESHOLD) {
             Log.v(TAG, "Storage issue, ignore the start request");
             return;
         }

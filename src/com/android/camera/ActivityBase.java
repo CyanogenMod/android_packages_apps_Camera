@@ -25,6 +25,8 @@ import android.graphics.Rect;
 import android.hardware.Camera.Parameters;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -100,6 +102,32 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     private Animation mCameraAppViewFadeIn;
     private Animation mCameraAppViewFadeOut;
 
+    private long mStorageSpace = Storage.LOW_STORAGE_THRESHOLD;
+    private static final int UPDATE_STORAGE_HINT = 0;
+    private final Handler mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case UPDATE_STORAGE_HINT:
+                        updateStorageHint();
+                        return;
+                }
+            }
+    };
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_MEDIA_MOUNTED)
+                    || action.equals(Intent.ACTION_MEDIA_UNMOUNTED)
+                    || action.equals(Intent.ACTION_MEDIA_CHECKING)
+                    || action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
+                updateStorageSpaceAndHint();
+            }
+        }
+    };
+
     private boolean mUpdateThumbnailDelayed;
     private IntentFilter mDeletePictureFilter =
             new IntentFilter(ACTION_DELETE_PICTURE);
@@ -155,6 +183,12 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         super.onResume();
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
         manager.registerReceiver(mDeletePictureReceiver, mDeletePictureFilter);
+
+        installIntentFilter();
+        if(updateStorageHintOnResume()) {
+            updateStorageSpace();
+            mHandler.sendEmptyMessageDelayed(UPDATE_STORAGE_HINT, 200);
+        }
     }
 
     @Override
@@ -175,6 +209,8 @@ public abstract class ActivityBase extends AbstractGalleryActivity
             mStorageHint.cancel();
             mStorageHint = null;
         }
+
+        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -237,6 +273,38 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         super.onDestroy();
     }
 
+    protected void installIntentFilter() {
+        // install an intent filter to receive SD card related events.
+        IntentFilter intentFilter =
+                new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
+        intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+        intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
+        intentFilter.addAction(Intent.ACTION_MEDIA_CHECKING);
+        intentFilter.addDataScheme("file");
+        registerReceiver(mReceiver, intentFilter);
+    }
+
+    protected void updateStorageSpace() {
+        mStorageSpace = Storage.getAvailableSpace();
+    }
+
+    protected long getStorageSpace() {
+        return mStorageSpace;
+    }
+
+    protected void updateStorageSpaceAndHint() {
+        updateStorageSpace();
+        updateStorageHint(mStorageSpace);
+    }
+
+    protected void updateStorageHint() {
+        updateStorageHint(mStorageSpace);
+    }
+
+    protected boolean updateStorageHintOnResume() {
+        return true;
+    }
+
     protected void updateStorageHint(long storageSpace) {
         String message = null;
         if (storageSpace == Storage.UNAVAILABLE) {
@@ -245,7 +313,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
             message = getString(R.string.preparing_sd);
         } else if (storageSpace == Storage.UNKNOWN_SIZE) {
             message = getString(R.string.access_sd_fail);
-        } else if (storageSpace < Storage.LOW_STORAGE_THRESHOLD) {
+        } else if (storageSpace <= Storage.LOW_STORAGE_THRESHOLD) {
             message = getString(R.string.spaceIsLow_content);
         }
 

@@ -243,7 +243,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private long mRawPictureCallbackTime;
     private long mJpegPictureCallbackTime;
     private long mOnResumeTime;
-    private long mStorageSpace;
     private byte[] mJpegImageData;
 
     // These latency time are for the CameraLatency test.
@@ -448,7 +447,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mLocationManager.recordLocation(recordLocation);
 
         keepMediaProviderInstance();
-        checkStorage();
 
         // Initialize shutter button.
         mShutterButton = (ShutterButton) findViewById(R.id.shutter_button);
@@ -457,10 +455,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         mImageSaver = new ImageSaver();
         mImageNamer = new ImageNamer();
-        installIntentFilter();
 
         mFirstTimeInitialized = true;
         addIdleHandler();
+
+        updateStorageSpaceAndHint();
     }
 
     private void showTapToFocusToastIfNeeded() {
@@ -495,12 +494,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 mPreferences, mContentResolver);
         mLocationManager.recordLocation(recordLocation);
 
-        installIntentFilter();
         mImageSaver = new ImageSaver();
         mImageNamer = new ImageNamer();
         initializeZoom();
         keepMediaProviderInstance();
-        checkStorage();
         hidePostCaptureAlert();
 
         if (!mIsImageCaptureIntent) {
@@ -604,16 +601,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.d(TAG, "Received intent action=" + action);
-            if (action.equals(Intent.ACTION_MEDIA_MOUNTED)
-                    || action.equals(Intent.ACTION_MEDIA_UNMOUNTED)
-                    || action.equals(Intent.ACTION_MEDIA_CHECKING)) {
-                checkStorage();
-            } else if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-                checkStorage();
-                if (!mIsImageCaptureIntent) {
-                    getLastThumbnail();
-                }
+            if (!mIsImageCaptureIntent && action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
+                getLastThumbnail();
             }
         }
     };
@@ -844,7 +833,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             // latency. It's true that someone else could write to the SD card in
             // the mean time and fill it, but that could have happened between the
             // shutter press and saving the JPEG too.
-            checkStorage();
+            updateStorageSpaceAndHint();
 
             long now = System.currentTimeMillis();
             mJpegCallbackFinishTime = now - mJpegPictureCallbackTime;
@@ -1390,11 +1379,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private void checkStorage() {
-        mStorageSpace = Storage.getAvailableSpace();
-        updateStorageHint(mStorageSpace);
-    }
-
     @OnClickAttr
     public void onThumbnailClicked(View v) {
         if (isCameraIdle() && mThumbnail != null) {
@@ -1530,8 +1514,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 || (mCameraState == PREVIEW_STOPPED)) return;
 
         // Do not take the picture if there is not enough storage.
-        if (mStorageSpace <= Storage.LOW_STORAGE_THRESHOLD) {
-            Log.i(TAG, "Not enough space or storage not ready. remaining=" + mStorageSpace);
+        if (getStorageSpace() <= Storage.LOW_STORAGE_THRESHOLD) {
+            Log.i(TAG, "Not enough space or storage not ready. remaining=" + getStorageSpace());
             return;
         }
         Log.v(TAG, "onShutterButtonClick: mCameraState=" + mCameraState);
@@ -1551,16 +1535,20 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mFocusManager.doSnap();
     }
 
-    private void installIntentFilter() {
+    @Override
+    protected void installIntentFilter() {
+        super.installIntentFilter();
         // install an intent filter to receive SD card related events.
         IntentFilter intentFilter =
-                new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
-        intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-        intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
-        intentFilter.addAction(Intent.ACTION_MEDIA_CHECKING);
+                new IntentFilter(Intent.ACTION_MEDIA_SCANNER_FINISHED);
         intentFilter.addDataScheme("file");
         registerReceiver(mReceiver, intentFilter);
         mDidRegister = true;
+    }
+
+    @Override
+    protected boolean updateStorageHintOnResume() {
+        return mFirstTimeInitialized;
     }
 
     @Override
@@ -1793,7 +1781,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private boolean canTakePicture() {
-        return isCameraIdle() && (mStorageSpace > Storage.LOW_STORAGE_THRESHOLD);
+        return isCameraIdle() && (getStorageSpace() > Storage.LOW_STORAGE_THRESHOLD);
     }
 
     @Override
