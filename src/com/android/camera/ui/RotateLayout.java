@@ -17,6 +17,7 @@
 package com.android.camera.ui;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +42,6 @@ public class RotateLayout extends ViewGroup implements Rotatable {
     @Override
     protected void onFinishInflate() {
         mChild = getChildAt(0);
-        mChild.setPivotX(0);
-        mChild.setPivotY(0);
     }
 
     @Override
@@ -63,6 +62,30 @@ public class RotateLayout extends ViewGroup implements Rotatable {
     }
 
     @Override
+    protected void dispatchDraw(Canvas canvas) {
+        canvas.save();
+        int w = getMeasuredWidth();
+        int h = getMeasuredHeight();
+        switch (mOrientation) {
+            case 0:
+                canvas.translate(0, 0);
+                break;
+            case 90:
+                canvas.translate(0, h);
+                break;
+            case 180:
+                canvas.translate(w, h);
+                break;
+            case 270:
+                canvas.translate(w, 0);
+                break;
+        }
+        canvas.rotate(-mOrientation, 0, 0);
+        super.dispatchDraw(canvas);
+        canvas.restore();
+    }
+
+    @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
         int w = 0, h = 0;
         switch(mOrientation) {
@@ -80,26 +103,6 @@ public class RotateLayout extends ViewGroup implements Rotatable {
                 break;
         }
         setMeasuredDimension(w, h);
-
-        switch (mOrientation) {
-            case 0:
-                mChild.setTranslationX(0);
-                mChild.setTranslationY(0);
-                break;
-            case 90:
-                mChild.setTranslationX(0);
-                mChild.setTranslationY(h);
-                break;
-            case 180:
-                mChild.setTranslationX(w);
-                mChild.setTranslationY(h);
-                break;
-            case 270:
-                mChild.setTranslationX(w);
-                mChild.setTranslationY(0);
-                break;
-        }
-        mChild.setRotation(-mOrientation);
     }
 
     @Override
