@@ -45,10 +45,6 @@ public class FocusIndicatorRotateLayout extends RotateLayout implements FocusInd
         super(context, attrs);
     }
 
-    private void setDrawable(int resid) {
-        mChild.setBackgroundDrawable(getResources().getDrawable(resid));
-    }
-
     @Override
     public void showStart() {
         if (mState == STATE_IDLE) {
