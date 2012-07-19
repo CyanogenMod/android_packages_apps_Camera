@@ -77,8 +77,6 @@ public class FocusIndicatorRotateLayout extends RotateLayout implements FocusInd
         mAnimation.cancel();
         removeCallbacks(mDisappear);
         mDisappear.run();
-        setScaleX(1f);
-        setScaleY(1f);
     }
 
     private void startAnimation(int resid, long duration, boolean timeout,
