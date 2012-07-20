@@ -68,6 +68,8 @@ import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomControl;
 import com.android.gallery3d.common.ApiHelper;
 
+import com.android.gallery3d.common.ApiHelper;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -1494,6 +1496,15 @@ public class VideoCamera extends ActivityBase
                         mTimeBetweenTimeLapseFrameCaptureMs,
                         mRecordingStartTime);
             }
+            // The camera is not allowed to be accessed in older api levels during
+            // recording. It is therefore necessary to hide the zoom UI on older
+            // platforms.
+            // See the documentation of android.media.MediaRecorder.start() for
+            // further explanation.
+            if (ApiHelper.HAS_ZOOM_WHEN_RECORDING
+                    && mParameters.isZoomSupported()) {
+                mZoomControl.setVisibility(View.GONE);
+            }
         } else {
             if (mThumbnailView != null) mThumbnailView.setEnabled(true);
             mShutterButton.setImageResource(R.drawable.btn_shutter_video);
@@ -1501,6 +1512,10 @@ public class VideoCamera extends ActivityBase
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
             if (mCaptureTimeLapse) {
                 mIndicatorControlContainer.stopTimeLapseAnimation();
+            }
+            if (ApiHelper.HAS_ZOOM_WHEN_RECORDING
+                    && mParameters.isZoomSupported()) {
+                mZoomControl.setVisibility(View.VISIBLE);
             }
         }
     }
