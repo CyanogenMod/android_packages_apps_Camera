@@ -70,6 +70,7 @@ import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomControl;
+import com.android.gallery3d.common.ApiHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -692,12 +693,13 @@ public class VideoCamera extends ActivityBase
             }
         }
         // Read time lapse recording interval.
-        String frameIntervalStr = mPreferences.getString(
-                CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
-                getString(R.string.pref_video_time_lapse_frame_interval_default));
-        mTimeBetweenTimeLapseFrameCaptureMs = Integer.parseInt(frameIntervalStr);
-
-        mCaptureTimeLapse = (mTimeBetweenTimeLapseFrameCaptureMs != 0);
+        if (ApiHelper.HAS_TIME_LAPSE_RECORDING) {
+            String frameIntervalStr = mPreferences.getString(
+                    CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
+                    getString(R.string.pref_video_time_lapse_frame_interval_default));
+            mTimeBetweenTimeLapseFrameCaptureMs = Integer.parseInt(frameIntervalStr);
+            mCaptureTimeLapse = (mTimeBetweenTimeLapseFrameCaptureMs != 0);
+        }
         // TODO: This should be checked instead directly +1000.
         if (mCaptureTimeLapse) quality += 1000;
         mProfile = CamcorderProfile.get(mCameraId, quality);
@@ -1111,7 +1113,8 @@ public class VideoCamera extends ActivityBase
         mMediaRecorder.setProfile(mProfile);
         mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
         if (mCaptureTimeLapse) {
-            mMediaRecorder.setCaptureRate((1000 / (double) mTimeBetweenTimeLapseFrameCaptureMs));
+            double fps = 1000 / (double) mTimeBetweenTimeLapseFrameCaptureMs;
+            setCaptureRate(mMediaRecorder, fps);
         }
 
         setRecordLocation();
@@ -1170,7 +1173,12 @@ public class VideoCamera extends ActivityBase
         mMediaRecorder.setOnInfoListener(this);
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
+    private static void setCaptureRate(MediaRecorder recorder, double fps) {
+        recorder.setCaptureRate(fps);
+    }
+
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void setRecordLocation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             Location loc = mLocationManager.getCurrentLocation();

@@ -27,6 +27,8 @@ import android.media.CamcorderProfile;
 import android.util.FloatMath;
 import android.util.Log;
 
+import com.android.gallery3d.common.ApiHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -186,7 +188,13 @@ public class CameraSettings {
         if (exposure != null) buildExposureCompensation(group, exposure);
         if (cameraIdPref != null) buildCameraId(group, cameraIdPref);
 
-        if (timeLapseInterval != null) resetIfInvalid(timeLapseInterval);
+        if (timeLapseInterval != null) {
+            if (ApiHelper.HAS_TIME_LAPSE_RECORDING) {
+                resetIfInvalid(timeLapseInterval);
+            } else {
+                removePreference(group, timeLapseInterval.getKey());
+            }
+        }
         if (videoEffect != null) {
             initVideoEffect(group, videoEffect);
             resetIfInvalid(videoEffect);
