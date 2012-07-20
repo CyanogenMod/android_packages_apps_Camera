@@ -1741,6 +1741,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         // from onCreate()
         initializeControlByIntent();
+        if (mFocusManager != null) mFocusManager.removeMessages();
         initializeFocusManager();
         initializeMiscControls();
         initializeIndicatorControl();
