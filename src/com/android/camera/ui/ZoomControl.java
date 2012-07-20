@@ -132,10 +132,10 @@ public abstract class ZoomControl extends RelativeLayout implements Rotatable {
     }
 
     @Override
-    public void setActivated(boolean activated) {
-        super.setActivated(activated);
-        mZoomIn.setActivated(activated);
-        mZoomOut.setActivated(activated);
+    public void setSelected(boolean selected) {
+        super.setSelected(selected);
+        mZoomIn.setSelected(selected);
+        mZoomOut.setSelected(selected);
     }
 
     public void rotate(double angle) {
