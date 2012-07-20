@@ -123,4 +123,23 @@
     <string name="accessibility_decrement" msgid="1411194318538035666">"%1$s azalt"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"%1$s artır"</string>
     <string name="accessibility_switch" msgid="6995966685498958895">"%1$s anahtarı"</string>
+    <string name="pref_camera_power_shutter_title">Güç düğmesi ile çek</string>
+    <string name="pref_camera_focus_sound_title">Odak sesi</string>
+    <string name="pref_camera_timer_title">Zamanlayıcı</string>
+    <string name="pref_camera_timer_entry_0">Kapalı</string>
+    <string name="pref_camera_timer_entry_10">10s</string>
+    <string name="pref_camera_timer_entry_20">20s</string>
+    <string name="pref_camera_timer_entry_30">30s</string>
+    <string name="pref_camera_timer_entry_40">40s</string>
+    <string name="pref_camera_timer_entry_50">50s</string>
+    <string name="pref_camera_timer_entry_60">60s</string>
+    <string name="pref_camera_burst_title">Seri Çekim</string>
+    <string name="pref_camera_burst_entry_off">Kapalı</string>
+    <string name="pref_camera_burst_entry_5">5 çekim</string>
+    <string name="pref_camera_burst_entry_10">10 çekim</string>
+    <string name="pref_camera_burst_entry_15">15 çekim</string>
+    <string name="pref_camera_burst_entry_20">20 çekim</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Bulutlu-Günışığı</string>
+
+
 </resources>
