@@ -1950,10 +1950,14 @@ public class VideoCamera extends ActivityBase
             mParameters.setZoom(mZoomValue);
         }
 
-        // Set continuous autofocus.
+        // Set focus mode.
         List<String> supportedFocus = mParameters.getSupportedFocusModes();
-        if (isSupported(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO, supportedFocus)) {
-            mParameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+        if (mCaptureTimeLapse) {
+            if (isSupported(Parameters.FOCUS_MODE_AUTO, supportedFocus))
+                mParameters.setFocusMode(Parameters.FOCUS_MODE_AUTO);
+        } else {
+            if (isSupported(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO, supportedFocus))
+                mParameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
         }
 
         mParameters.setRecordingHint(true);
