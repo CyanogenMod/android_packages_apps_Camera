@@ -2183,7 +2183,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mFocusManager.overrideFocusMode(mParameters.getFocusMode());
         }
 
-        if (mContinousFocusSupported) {
+        if (mContinousFocusSupported&&Util.disableContFocus()==false) {
             if (mParameters.getFocusMode().equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
                 mCameraDevice.setAutoFocusMoveCallback(mAutoFocusMoveCallback);
             } else {
