@@ -92,6 +92,25 @@ public class CameraManager {
             super(looper);
         }
 
+        @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+        private void startFaceDetection() {
+            mCamera.startFaceDetection();
+        }
+
+        @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+        private void stopFaceDetection() {
+            mCamera.stopFaceDetection();
+        }
+
+        @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+        private void setFaceDetectionListener(FaceDetectionListener listener) {
+            mCamera.setFaceDetectionListener(listener);
+        }
+
+        /*
+         * This method does not deal with the build version check.  Everyone should
+         * check first before sending message to this handler.
+         */
         @Override
         public void handleMessage(final Message msg) {
             try {
@@ -166,16 +185,15 @@ public class CameraManager {
                         break;
 
                     case SET_FACE_DETECTION_LISTENER:
-                        mCamera.setFaceDetectionListener(
-                            (FaceDetectionListener) msg.obj);
+                        setFaceDetectionListener((FaceDetectionListener) msg.obj);
                         break;
 
                     case START_FACE_DETECTION:
-                        mCamera.startFaceDetection();
+                        startFaceDetection();
                         break;
 
                     case STOP_FACE_DETECTION:
-                        mCamera.stopFaceDetection();
+                        stopFaceDetection();
                         break;
 
                     case SET_ERROR_CALLBACK:
@@ -346,6 +364,7 @@ public class CameraManager {
             mSig.block();
         }
 
+        @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
         public void setFaceDetectionListener(FaceDetectionListener listener) {
             mSig.close();
             mCameraHandler.obtainMessage(SET_FACE_DETECTION_LISTENER, listener).sendToTarget();
