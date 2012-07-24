@@ -1610,6 +1610,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 || (mCameraState == SWITCHING_CAMERA)
                 || (mCameraState == PREVIEW_STOPPED)) return;
 
+        /* ZSL: Longpress shutter to focus
+         * Prevent the focus handler from doing autoFocus() after time, because shutter has clicked. */
+        mFocusManager.zslPreventAutoFocus();
+
         // Do not take the picture if there is not enough storage.
         if (mStorageSpace <= Storage.LOW_STORAGE_THRESHOLD) {
             Log.i(TAG, "Not enough space or storage not ready. remaining=" + mStorageSpace);
@@ -2066,7 +2070,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         if (!size.equals(old_size) && mCameraState != PREVIEW_STOPPED) {
             Log.v(TAG,
-                    "new picture size id different from old picture size , stop preview. Start preview will be called at a later point");
+                    "new picture size is different from old picture size , stop preview. Start preview will be called at a later point");
             stopPreview();
             mAspectRatioChanged = true;
         }
