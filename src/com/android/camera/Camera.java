@@ -294,7 +294,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 mHandler.sendEmptyMessage(CAMERA_OPEN_DONE);
                 if (mCancelled) return;
                 startPreview();
-                mHandler.sendEmptyMessage(START_PREVIEW_DONE);
+                //mHandler.sendEmptyMessage(START_PREVIEW_DONE);
                 mOnResumeTime = SystemClock.uptimeMillis();
                 mHandler.sendEmptyMessage(CHECK_DISPLAY_ROTATION);
             } catch (CameraHardwareException e) {
@@ -1611,6 +1611,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 || (mCameraState == SWITCHING_CAMERA)
                 || (mCameraState == PREVIEW_STOPPED)) return;
 
+        // Prevent the handler from running autoFocus() because shutter has clicked.
+        mFocusManager.zslPreventAutoFocus();
+
         // Do not take the picture if there is not enough storage.
         if (mStorageSpace <= Storage.LOW_STORAGE_THRESHOLD) {
             Log.i(TAG, "Not enough space or storage not ready. remaining=" + mStorageSpace);
@@ -1981,6 +1984,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         Log.v(TAG, "startPreview");
         mCameraDevice.startPreviewAsync();
 
+        mHandler.sendEmptyMessage(START_PREVIEW_DONE);
         mFocusManager.onPreviewStarted();
         CameraSettings.setVideoMode(mParameters, false);
         mCameraDevice.setParameters(mParameters);
@@ -2066,7 +2070,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         if (!size.equals(old_size) && mCameraState != PREVIEW_STOPPED) {
             Log.v(TAG,
-                    "new picture size id different from old picture size , stop preview. Start preview will be called at a later point");
+                    "new picture size is different from old picture size , stop preview. Start preview will be called at a later point");
             stopPreview();
             mAspectRatioChanged = true;
         }

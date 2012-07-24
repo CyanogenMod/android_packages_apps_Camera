@@ -126,6 +126,7 @@ public class FocusManager {
                     break;
                 }
                 case DO_AUTO_FOCUS: {
+                    Log.e(TAG, "handleMessage DO_AUTO_FOCUS");
                     autoFocus();
                     break;
                 }
@@ -214,6 +215,7 @@ public class FocusManager {
         if (needAutoFocusCall()) {
             if (mZslEnabled && mState != STATE_SUCCESS && mState != STATE_FAIL) {
                 if (!mIsFocused) {
+                    Log.e(TAG, "onShutterDown(): ZSL: not focused, calling autoFocus().");
                     autoFocus();
                 } else {
                     mHandler.sendEmptyMessageDelayed(DO_AUTO_FOCUS, ZSL_AUTO_FOCUS_DELAY);
@@ -290,6 +292,10 @@ public class FocusManager {
             // take the picture now.
             if (focused) {
                 mState = STATE_SUCCESS;
+                if (mZslEnabled) {
+                    Log.e(TAG, "onAutoFocus(): ZSL: focused.");
+                    mIsFocused = true;
+                }
                 // Do not play the sound in continuous autofocus mode. It does
                 // not do a full scan. The focus callback arrives before doSnap
                 // so the state is always STATE_FOCUSING.
@@ -329,6 +335,11 @@ public class FocusManager {
 
     public void onSingleTapUp(int x, int y) {
         if (!mInitialized || mState == STATE_FOCUSING_SNAP_ON_FINISH) return;
+
+        if (mZslEnabled) {
+            Log.e(TAG, "onSingleTapUp(): ZSL: dropping focus.");
+            mIsFocused = false;
+        }
 
         // Let users be able to cancel previous touch focus.
         if ((mFocusArea != null) && (mState == STATE_FOCUSING ||
@@ -379,7 +390,6 @@ public class FocusManager {
             // Reset the metering area in 3 seconds.
             mHandler.removeMessages(RESET_TOUCH_FOCUS);
             mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, RESET_TOUCH_FOCUS_DELAY);
-            mIsFocused = false;
         }
     }
 
@@ -389,9 +399,11 @@ public class FocusManager {
 
     public void onPreviewStopped() {
         mState = STATE_IDLE;
-        resetTouchFocus();
-        // If auto focus was in progress, it would have been canceled.
-        updateFocusUI();
+        if(!mZslEnabled) {
+            resetTouchFocus();
+            // If auto focus was in progress, it would have been canceled.
+            updateFocusUI();
+        }
     }
 
     public void onCameraReleased() {
@@ -399,7 +411,7 @@ public class FocusManager {
     }
 
     private void autoFocus() {
-        Log.v(TAG, "Start autofocus.");
+        Log.e(TAG, "Start autofocus.");
         mListener.autoFocus();
         mState = STATE_FOCUSING;
         // Pause the face view because the driver will keep sending face
@@ -410,7 +422,7 @@ public class FocusManager {
     }
 
     private void cancelAutoFocus() {
-        Log.v(TAG, "Cancel autofocus.");
+        Log.e(TAG, "Cancel autofocus.");
 
         // Reset the tap area before calling mListener.cancelAutofocus.
         // Otherwise, focus mode stays at auto and the tap area passed to the
@@ -421,6 +433,10 @@ public class FocusManager {
         mState = STATE_IDLE;
         updateFocusUI();
         mHandler.removeMessages(RESET_TOUCH_FOCUS);
+        if (mZslEnabled) {
+            Log.e(TAG, "cancelAutoFocus(): ZSL: dropping focus.");
+            mIsFocused = false;
+        }
     }
 
     private void capture() {
@@ -506,6 +522,7 @@ public class FocusManager {
 
     public void resetTouchFocus() {
         if (!mInitialized) return;
+        Log.e(TAG, "Reset touchfocus.");
 
         // Put focus indicator to the center.
         RelativeLayout.LayoutParams p =
