@@ -29,7 +29,7 @@ import com.android.gallery3d.ui.RawTexture;
  * Class to handle the capture animation.
  */
 public class CaptureAnimManager {
-
+    @SuppressWarnings("unused")
     private static final String TAG = "CaptureAnimManager";
     private static final float ZOOM_DELTA = 0.2f;  // The amount of change for zooming out.
     private static final float ZOOM_IN_BEGIN = 1f - ZOOM_DELTA;  // Pre-calculated value for

@@ -576,6 +576,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     //////////////////////////////////////////////////////////////////////////
 
     class MyAppBridge extends AppBridge implements CameraScreenNail.Listener {
+        @SuppressWarnings("hiding")
         private CameraScreenNail mCameraScreenNail;
         private Server mServer;
 

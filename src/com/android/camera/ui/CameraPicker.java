@@ -17,7 +17,6 @@
 package com.android.camera.ui;
 
 import android.content.Context;
-import android.hardware.Camera.CameraInfo;
 import android.view.View;
 
 import com.android.camera.CameraPreference.OnPreferenceChangedListener;

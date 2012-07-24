@@ -139,7 +139,6 @@ public class PanoramaActivity extends ActivityBase implements
     private SurfaceTexture mCameraTexture;
     private boolean mThreadRunning;
     private boolean mCancelComputation;
-    private float[] mTransformMatrix;
     private float mHorizontalViewAngle;
     private float mVerticalViewAngle;
 
@@ -159,7 +158,6 @@ public class PanoramaActivity extends ActivityBase implements
 
     private SoundClips.Player mSoundPlayer;
 
-    private Runnable mUpdateTexImageRunnable;
     private Runnable mOnFrameAvailableRunnable;
 
     private class SetupCameraThread extends Thread {
@@ -240,16 +238,6 @@ public class PanoramaActivity extends ActivityBase implements
         mContentResolver = getContentResolver();
         createCameraScreenNail(true);
 
-        mUpdateTexImageRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // Check if the activity is paused here can speed up the onPause() process.
-                if (mPaused) return;
-                mCameraTexture.updateTexImage();
-                mCameraTexture.getTransformMatrix(mTransformMatrix);
-            }
-        };
-
         // This runs in UI thread.
         mOnFrameAvailableRunnable = new Runnable() {
             @Override
@@ -284,7 +272,6 @@ public class PanoramaActivity extends ActivityBase implements
 
         mOrientationEventListener = new PanoOrientationEventListener(this);
 
-        mTransformMatrix = new float[16];
         mMosaicFrameProcessor = MosaicFrameProcessor.getInstance();
 
         Resources appRes = getResources();

@@ -38,9 +38,7 @@ public class MosaicPreviewRenderer {
 
     private int mWidth;
     private int mHeight;
-    private boolean mPaused;
 
-    private int mTextureId;
     private boolean mIsLandscape = true;
     private final float[] mTransformMatrix = new float[16];
 

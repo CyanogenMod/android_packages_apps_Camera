@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
@@ -51,7 +50,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
-import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -59,10 +57,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.camera.ActivityBase.CameraOpenThread;
 import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.IndicatorControlContainer;
-import com.android.camera.ui.IndicatorControlWheelContainer;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
@@ -129,7 +125,6 @@ public class VideoCamera extends ActivityBase
     private int mSurfaceHeight;
     private View mReviewControl;
     private RotateDialogController mRotateDialog;
-    private ImageView mCaptureAnimView;
 
     // An review image having same size as preview. It is displayed when
     // recording is stopped in capture intent.
@@ -801,20 +796,6 @@ public class VideoCamera extends ActivityBase
         PopupManager.getInstance(this).notifyShowPopup(null);
 
         mVideoNamer = new VideoNamer();
-    }
-
-    private void setPreviewTexture() {
-        try {
-            if (effectsActive()) {
-                mEffectsRecorder.setPreviewSurfaceTexture(mSurfaceTexture, mSurfaceWidth,
-                    mSurfaceHeight);
-            } else {
-                mCameraDevice.setPreviewTextureAsync(mSurfaceTexture);
-            }
-        } catch (Throwable ex) {
-            closeCamera();
-            throw new RuntimeException("setPreviewTexture failed", ex);
-        }
     }
 
     private void setDisplayOrientation() {
@@ -2044,7 +2025,6 @@ public class VideoCamera extends ActivityBase
 
         mBgLearningMessageRotater = (RotateLayout) findViewById(R.id.bg_replace_message);
         mBgLearningMessageFrame = findViewById(R.id.bg_replace_message_frame);
-        mCaptureAnimView = (ImageView) findViewById(R.id.capture_anim_view);
     }
 
     @Override

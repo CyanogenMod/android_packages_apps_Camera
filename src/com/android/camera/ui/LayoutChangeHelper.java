@@ -28,6 +28,7 @@ public class LayoutChangeHelper implements LayoutChangeNotifier {
         mFirstTimeLayout = true;
     }
 
+    @Override
     public void setOnLayoutChangeListener(LayoutChangeNotifier.Listener listener) {
         mListener = listener;
     }

@@ -18,7 +18,6 @@ package com.android.camera.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.RelativeLayout;

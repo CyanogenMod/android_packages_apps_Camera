@@ -21,9 +21,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 
 
 /**
