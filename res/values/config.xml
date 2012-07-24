@@ -37,5 +37,7 @@
     <bool name="noFaceDetectOnFrontCamera">false</bool>
     <!-- Use ZSL mode -->
     <bool name="enableZSL">false</bool>
+    <!-- Allows focusing on ZSL mode -->
+    <bool name="enableZSLFocus">false</bool>
 </resources>
 

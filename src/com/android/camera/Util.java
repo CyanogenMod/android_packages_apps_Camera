@@ -90,6 +90,9 @@ public class Util {
     // Samsung ZSL mode
     private static boolean sEnableZSL;
 
+    // ZSL Focus
+    private static boolean sEnableZSLFocus;
+
     // Workaround for QC cameras with broken face detection on front camera
     private static boolean sNoFaceDetectOnFrontCamera;
 
@@ -111,6 +114,7 @@ public class Util {
         sSamsungCamSettings = context.getResources().getBoolean(R.bool.hasSamsungCamSettings);
         sHTCCamMode = context.getResources().getBoolean(R.bool.needsHTCCamMode);
         sEnableZSL = context.getResources().getBoolean(R.bool.enableZSL);
+        sEnableZSLFocus = context.getResources().getBoolean(R.bool.enableZSLFocus);
         sNoFaceDetectOnFrontCamera = context.getResources().getBoolean(
                 R.bool.noFaceDetectOnFrontCamera);
     }
@@ -143,6 +147,10 @@ public class Util {
 
     public static boolean enableZSL() {
         return sEnableZSL;
+    }
+
+    public static boolean enableZSLFocus() {
+        return sEnableZSLFocus;
     }
 
     public static boolean noFaceDetectOnFrontCamera() {
