@@ -57,9 +57,9 @@ public class ZoomControlBar extends ZoomControl {
     }
 
     @Override
-    public void setActivated(boolean activated) {
-        super.setActivated(activated);
-        mBar.setActivated(activated);
+    public void setSelected(boolean selected) {
+        super.setSelected(selected);
+        mBar.setSelected(selected);
     }
 
     private int getSliderPosition(int offset) {
@@ -110,12 +110,12 @@ public class ZoomControlBar extends ZoomControl {
             case MotionEvent.ACTION_OUTSIDE:
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                setActivated(false);
+                setSelected(false);
                 closeZoomControl();
                 break;
 
             case MotionEvent.ACTION_DOWN:
-                setActivated(true);
+                setSelected(true);
                 mStartChanging = false;
             case MotionEvent.ACTION_MOVE:
                 boolean isLandscape = (getResources().getConfiguration().orientation
