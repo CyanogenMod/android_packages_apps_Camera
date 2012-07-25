@@ -193,7 +193,6 @@ public class CameraSettings {
                 group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
         ListPreference videoEffect = group.findPreference(KEY_VIDEO_EFFECT);
         ListPreference iso = group.findPreference(KEY_ISO);
-        ListPreference burstMode = group.findPreference(KEY_BURST_MODE);
         ListPreference jpeg = group.findPreference(KEY_JPEG);
 
         // Since the screen could be loaded from different resources, we need
@@ -238,7 +237,6 @@ public class CameraSettings {
             filterUnsupportedOptions(group,
                     iso, mParameters.getSupportedIsoValues());
         }
-        if (burstMode != null) burstMode.setValueIndex(4);
         qcomInitPreferences(group);
     }
 
