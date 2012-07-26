@@ -1161,13 +1161,15 @@ public class VideoCamera extends ActivityBase
         // what activity.getWindowManager().getDefaultDisplay().getRotation() would return,
         // which is the orientation the graphics need to rotate in order to render correctly.
         int rotation = 0;
+        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
         if (mOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
-            CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
             if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
                 rotation = (info.orientation - mOrientation + 360) % 360;
             } else {  // back-facing camera
                 rotation = (info.orientation + mOrientation) % 360;
             }
+        } else {
+            rotation = info.orientation;
         }
         mMediaRecorder.setOrientationHint(rotation);
         mOrientationCompensationAtRecordStart = mOrientationCompensation;
