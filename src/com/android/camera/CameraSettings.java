@@ -173,7 +173,7 @@ public class CameraSettings {
                     flashMode, mParameters.getSupportedFlashModes());
         }
         if (focusMode != null) {
-            if (mParameters.getMaxNumFocusAreas() == 0) {
+            if (!Util.isFocusAreaSupported(mParameters)) {
                 filterUnsupportedOptions(group,
                         focusMode, mParameters.getSupportedFocusModes());
             } else {

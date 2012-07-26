@@ -1961,10 +1961,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mFocusManager != null) mFocusManager.onPreviewStopped();
     }
 
-    private static boolean isSupported(String value, List<String> supported) {
-        return supported == null ? false : supported.indexOf(value) >= 0;
-    }
-
     @SuppressWarnings("deprecation")
     private void updateCameraParametersInitialize() {
         // Reset preview frame rate to the maximum because it may be lowered by
@@ -2007,19 +2003,26 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    private void updateCameraParametersPreference() {
-        setAutoExposureLockIfSupported();
-
-        setAutoWhiteBalanceLockIfSupported();
-
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private void setFocusAreasIfSupported() {
         if (mFocusAreaSupported) {
             mParameters.setFocusAreas(mFocusManager.getFocusAreas());
         }
+    }
 
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private void setMeteringAreasIfSupported() {
         if (mMeteringAreaSupported) {
             // Use the same area for focus and metering.
             mParameters.setMeteringAreas(mFocusManager.getMeteringAreas());
         }
+    }
+
+    private void updateCameraParametersPreference() {
+        setAutoExposureLockIfSupported();
+        setAutoWhiteBalanceLockIfSupported();
+        setFocusAreasIfSupported();
+        setMeteringAreasIfSupported();
 
         // Set picture size.
         String pictureSize = mPreferences.getString(
@@ -2054,7 +2057,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mSceneMode = mPreferences.getString(
                 CameraSettings.KEY_SCENE_MODE,
                 getString(R.string.pref_camera_scenemode_default));
-        if (isSupported(mSceneMode, mParameters.getSupportedSceneModes())) {
+        if (Util.isSupported(mSceneMode, mParameters.getSupportedSceneModes())) {
             if (!mParameters.getSceneMode().equals(mSceneMode)) {
                 mParameters.setSceneMode(mSceneMode);
 
@@ -2095,7 +2098,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     CameraSettings.KEY_FLASH_MODE,
                     getString(R.string.pref_camera_flashmode_default));
             List<String> supportedFlash = mParameters.getSupportedFlashModes();
-            if (isSupported(flashMode, supportedFlash)) {
+            if (Util.isSupported(flashMode, supportedFlash)) {
                 mParameters.setFlashMode(flashMode);
             } else {
                 flashMode = mParameters.getFlashMode();
@@ -2109,7 +2112,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             String whiteBalance = mPreferences.getString(
                     CameraSettings.KEY_WHITE_BALANCE,
                     getString(R.string.pref_camera_whitebalance_default));
-            if (isSupported(whiteBalance,
+            if (Util.isSupported(whiteBalance,
                     mParameters.getSupportedWhiteBalance())) {
                 mParameters.setWhiteBalance(whiteBalance);
             } else {
@@ -2385,10 +2388,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private void initializeCapabilities() {
         mInitialParams = mCameraDevice.getParameters();
-        mFocusAreaSupported = (mInitialParams.getMaxNumFocusAreas() > 0
-                && isSupported(Parameters.FOCUS_MODE_AUTO,
-                        mInitialParams.getSupportedFocusModes()));
-        mMeteringAreaSupported = (mInitialParams.getMaxNumMeteringAreas() > 0);
+        mFocusAreaSupported = Util.isFocusAreaSupported(mInitialParams);
+        mMeteringAreaSupported = Util.isMeteringAreaSupported(mInitialParams);
         mAeLockSupported = Util.isAutoExposureLockSupported(mInitialParams);
         mAwbLockSupported = Util.isAutoWhiteBalanceLockSupported(mInitialParams);
         mContinousFocusSupported = mInitialParams.getSupportedFocusModes().contains(

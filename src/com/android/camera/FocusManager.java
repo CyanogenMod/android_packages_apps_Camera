@@ -146,28 +146,10 @@ public class FocusManager {
         setMirror(mirror);
     }
 
-    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private boolean isFocusAreaSupported(Parameters p) {
-        if (ApiHelper.HAS_CAMERA_FOCUS_AREA) {
-            return (p.getMaxNumFocusAreas() > 0
-                    && isSupported(Parameters.FOCUS_MODE_AUTO,
-                            p.getSupportedFocusModes()));
-        }
-        return false;
-    }
-
-    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private boolean isMeteringAreaSupported(Parameters p) {
-        if (ApiHelper.HAS_CAMERA_METERING_AREA) {
-            return p.getMaxNumMeteringAreas() > 0;
-        }
-        return false;
-    }
-
     public void setParameters(Parameters parameters) {
         mParameters = parameters;
-        mFocusAreaSupported = isFocusAreaSupported(parameters);
-        mMeteringAreaSupported = isMeteringAreaSupported(parameters);
+        mFocusAreaSupported = Util.isFocusAreaSupported(parameters);
+        mMeteringAreaSupported = Util.isMeteringAreaSupported(parameters);
         mLockAeAwbNeeded = (Util.isAutoExposureLockSupported(mParameters) ||
                 Util.isAutoWhiteBalanceLockSupported(mParameters));
     }
@@ -467,17 +449,17 @@ public class FocusManager {
             if (mFocusMode == null) {
                 for (int i = 0; i < mDefaultFocusModes.length; i++) {
                     String mode = mDefaultFocusModes[i];
-                    if (isSupported(mode, supportedFocusModes)) {
+                    if (Util.isSupported(mode, supportedFocusModes)) {
                         mFocusMode = mode;
                         break;
                     }
                 }
             }
         }
-        if (!isSupported(mFocusMode, supportedFocusModes)) {
+        if (!Util.isSupported(mFocusMode, supportedFocusModes)) {
             // For some reasons, the driver does not support the current
             // focus mode. Fall back to auto.
-            if (isSupported(Parameters.FOCUS_MODE_AUTO,
+            if (Util.isSupported(Parameters.FOCUS_MODE_AUTO,
                     mParameters.getSupportedFocusModes())) {
                 mFocusMode = Parameters.FOCUS_MODE_AUTO;
             } else {
@@ -574,10 +556,6 @@ public class FocusManager {
 
     public boolean getAeAwbLock() {
         return mAeAwbLock;
-    }
-
-    private static boolean isSupported(String value, List<String> supported) {
-        return supported == null ? false : supported.indexOf(value) >= 0;
     }
 
     private boolean needAutoFocusCall() {

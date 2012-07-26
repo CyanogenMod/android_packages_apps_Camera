@@ -85,6 +85,10 @@ public class Util {
     public static final String TRUE = "true";
     public static final String FALSE = "false";
 
+    public static boolean isSupported(String value, List<String> supported) {
+        return supported == null ? false : supported.indexOf(value) >= 0;
+    }
+
     public static boolean isAutoExposureLockSupported(Parameters params) {
         return TRUE.equals(params.get(AUTO_EXPOSURE_LOCK_SUPPORTED));
     }
@@ -97,6 +101,23 @@ public class Util {
         return TRUE.equals(params.get(VIDEO_SNAPSHOT_SUPPORTED));
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public static boolean isMeteringAreaSupported(Parameters params) {
+        if (ApiHelper.HAS_CAMERA_METERING_AREA) {
+            return params.getMaxNumMeteringAreas() > 0;
+        }
+        return false;
+    }
+
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public static boolean isFocusAreaSupported(Parameters params) {
+        if (ApiHelper.HAS_CAMERA_FOCUS_AREA) {
+            return (params.getMaxNumFocusAreas() > 0
+                    && isSupported(Parameters.FOCUS_MODE_AUTO,
+                            params.getSupportedFocusModes()));
+        }
+        return false;
+    }
 
     // Private intent extras. Test only.
     private static final String EXTRAS_CAMERA_FACING =
