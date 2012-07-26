@@ -174,6 +174,33 @@
         <item>continuous-picture</item>
     </string-array>
 
+    <!-- Camera Preferences ISO dialog box entries -->
+    <string-array name="pref_camera_iso_entries" translatable="false">
+        <item>@string/pref_camera_iso_entry_auto</item>
+        <item>@string/pref_camera_iso_entry_isodeblur</item>
+        <item>@string/pref_camera_iso_entry_iso1600</item>
+        <item>@string/pref_camera_iso_entry_iso1200</item>
+        <item>@string/pref_camera_iso_entry_iso1000</item>
+        <item>@string/pref_camera_iso_entry_iso800</item>
+        <item>@string/pref_camera_iso_entry_iso400</item>
+        <item>@string/pref_camera_iso_entry_iso200</item>
+        <item>@string/pref_camera_iso_entry_iso100</item>
+        <item>@string/pref_camera_iso_entry_iso50</item>
+    </string-array>
+
+    <string-array name="pref_camera_iso_entryvalues" translatable="false">
+        <item>auto</item>
+        <item>ISO_HJR</item>
+        <item>ISO1600</item>
+        <item>ISO1200</item>
+        <item>ISO1000</item>
+        <item>ISO800</item>
+        <item>ISO400</item>
+        <item>ISO200</item>
+        <item>ISO100</item>
+        <item>ISO50</item>
+    </string-array>
+
     <!-- Camera Preferences flash mode dialog box entries -->
     <string-array name="pref_camera_flashmode_entries" translatable="false">
         <item>@string/pref_camera_flashmode_entry_auto</item>
