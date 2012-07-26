@@ -1501,7 +1501,7 @@ public class VideoCamera extends ActivityBase
             // platforms.
             // See the documentation of android.media.MediaRecorder.start() for
             // further explanation.
-            if (ApiHelper.HAS_ZOOM_WHEN_RECORDING
+            if (!ApiHelper.HAS_ZOOM_WHEN_RECORDING
                     && mParameters.isZoomSupported()) {
                 mZoomControl.setVisibility(View.GONE);
             }
@@ -1513,7 +1513,7 @@ public class VideoCamera extends ActivityBase
             if (mCaptureTimeLapse) {
                 mIndicatorControlContainer.stopTimeLapseAnimation();
             }
-            if (ApiHelper.HAS_ZOOM_WHEN_RECORDING
+            if (!ApiHelper.HAS_ZOOM_WHEN_RECORDING
                     && mParameters.isZoomSupported()) {
                 mZoomControl.setVisibility(View.VISIBLE);
             }
