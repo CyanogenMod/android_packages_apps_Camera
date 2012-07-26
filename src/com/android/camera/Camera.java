@@ -746,8 +746,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void updateFlashOnScreenIndicator(String value) {
         if (mFlashIndicator == null) {
             return;
-        }
-	
+        }	
         if (value == null) {
             mFlashIndicator.setVisibility(View.GONE);
         } else {
@@ -757,7 +756,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             } else if (Parameters.FLASH_MODE_ON.equals(value)) {
                 mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_on);
             } else if (Parameters.FLASH_MODE_OFF.equals(value)) {
-		mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_off);
+                mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_off);
             } else {
                 // Should not happen.
                 mFlashIndicator.setVisibility(View.GONE);
