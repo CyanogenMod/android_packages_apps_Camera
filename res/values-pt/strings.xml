@@ -121,4 +121,13 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Alternar para foto"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Alternar para vídeo"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Alterar para panorama"</string>
+    <string name="pref_camera_focusmode_entry_fixed">Fixo</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Detectar face</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Foto Contínua</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Nublado-Luz do dia</string>
+    <string name="pref_camera_scenemode_entry_backlight">Luz de fundo</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Anoitecer/Amanhecer</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Tom de Outono</string>
+    <string name="pref_camera_scenemode_entry_text">Texto</string>
+    <string name="pref_camera_power_shutter_title">Tirar c/ botão Liga/Desl.</string>
 </resources>
