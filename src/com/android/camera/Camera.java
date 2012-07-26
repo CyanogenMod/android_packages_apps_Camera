@@ -746,7 +746,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void updateFlashOnScreenIndicator(String value) {
         if (mFlashIndicator == null) {
             return;
-        }	
+        }
         if (value == null) {
             mFlashIndicator.setVisibility(View.GONE);
         } else {
