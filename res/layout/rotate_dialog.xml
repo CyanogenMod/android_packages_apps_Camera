@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content">
 
                 <TextView android:id="@+id/rotate_dialog_title"
-                        style="@android:style/TextAppearance.Holo.DialogWindowTitle"
+                        style="@style/TextAppearance.DialogWindowTitle"
                         android:gravity="center_vertical"
                         android:layout_marginLeft="16dip"
                         android:layout_marginRight="16dip"
@@ -65,7 +65,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 <TextView
-                        style="@android:style/TextAppearance.Holo.Medium"
+                        style="@style/TextAppearance.Medium"
                         android:id="@+id/rotate_dialog_text"
                         android:layout_gravity="center_vertical"
                         android:layout_width="wrap_content"
