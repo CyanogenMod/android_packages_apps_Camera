@@ -124,4 +124,5 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Режим \"Фото\""</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Режим \"Видео\""</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Режим \"Панорама\""</string>
+    <string name="pref_camera_power_shutter_title">Съёмка питанием</string>
 </resources>
