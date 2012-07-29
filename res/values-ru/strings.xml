@@ -57,6 +57,8 @@
     <string name="pref_camera_focusmode_entry_fixed">Фиксированно</string>
     <string name="pref_camera_focusmode_entry_facedetect">Опред. лица</string>
     <string name="pref_camera_focusmode_entry_continuouspicture">Непрерывн. фокус</string>
+    <string name="pref_camera_iso_entry_auto">Авто</string>
+    <string name="pref_camera_iso_entry_isodeblur">Авто (HJR)</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Режим вспышки"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Авто"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Вкл."</string>
@@ -124,4 +126,74 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Режим \"Фото\""</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Режим \"Видео\""</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Режим \"Панорама\""</string>
+    <string name="pref_camera_power_shutter_title">Съёмка кнопкой питания</string>
+
+    <!-- Settings screen, Select auto exposure title -->
+    <string name="pref_camera_autoexposure_title">Режим экспозамера</string>
+
+    <!-- Settings screen, auto exposure dialog radio button choices -->
+    <string name="pref_camera_autoexposure_entry_frameaverage">Средневзвешенный</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">Центровзвешенный</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">Точечный</string>
+    <string name="pref_camera_autoexposure_entry_matrix">Матричный</string>
+
+    <!-- Settings screen, Select Redeye Reduction -->
+    <string name="pref_camera_redeyereduction_title">Уст. эф. красных глаз</string>
+
+    <!-- Settings menu, redeye reduction choices -->
+    <string name="pref_camera_redeyereduction_entry_enable">Вкл.</string>
+    <string name="pref_camera_redeyereduction_entry_disable">Выкл.</string>
+
+    <!-- Settings screen, Anti Banding title -->
+    <string name="pref_camera_antibanding_title">Анти-блики</string>
+
+    <!-- Settings screen, Anti Banding entries -->
+    <string name="pref_camera_antibanding_entry_0">Выкл.</string>
+    <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+    <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+    <string name="pref_camera_antibanding_entry_3">Авто</string>
+
+    <!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">Цветовой эффект</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">Нет</string>
+    <string name="pref_camera_coloreffect_entry_mono">Ч/Б</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Сепия</string>
+    <string name="pref_camera_coloreffect_entry_negative">Негатив</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Соляризация</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Постеризация</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Под водой</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Рельеф</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Рисунок</string>
+    <string name="pref_camera_coloreffect_entry_neon">Неон</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Пастель</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Мозаика</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Красный оттенок</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Синий оттенок</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Зелёный оттенок</string>
+
+    <string name="pref_camera_scenemode_entry_portrait">Портрет</string>
+    <string name="pref_camera_scenemode_entry_landscape">Пейзаж</string>
+    <string name="pref_camera_scenemode_entry_night_portrait">Ночной портрет</string>
+    <string name="pref_camera_scenemode_entry_theatre">На сцене</string>
+    <string name="pref_camera_scenemode_entry_beach">Пляж</string>
+    <string name="pref_camera_scenemode_entry_snow">Снег</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Чёткость</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Фейерверк</string>
+    <string name="pref_camera_scenemode_entry_sports">Спорт</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Слабое освещение</string>
+    <string name="pref_camera_scenemode_entry_flowers">Природа</string>
+
+    <!-- Other settings -->
+    <string name="pref_camera_focus_title">Длительность фокуса при нажатии</string>
+    <string name="pref_camera_focus_summary">Установка длительности блокировки фокуса нажатием на экран</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_focus_entry_10">10 сек.</string>
+    <string name="pref_camera_focus_entry_15">15 сек.</string>
+    <string name="pref_camera_focus_entry_20">20 сек.</string>
+    <string name="pref_camera_focus_entry_30">30 сек.</string>
+    <string name="pref_camera_focus_entry_40">40 сек.</string>
+    <string name="pref_camera_focus_entry_infinit">Бесконечно</string>
 </resources>
