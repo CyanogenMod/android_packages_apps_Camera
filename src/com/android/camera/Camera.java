@@ -1387,6 +1387,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         final String[] OTHER_SETTING_KEYS = {
                 CameraSettings.KEY_RECORD_LOCATION,
                 CameraSettings.KEY_POWER_SHUTTER,
+                CameraSettings.KEY_FOCUS_TIME,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_FOCUS_MODE};
 
@@ -2192,6 +2193,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             // Set focus mode.
             mFocusManager.overrideFocusMode(null);
             mParameters.setFocusMode(mFocusManager.getFocusMode());
+
+            // Set FOCUS time.
+            String defaultFocusTime = getResources().getString(R.string.pref_camera_focus_default);
+            String delayFocusTime = mPreferences.getString(CameraSettings.KEY_FOCUS_TIME, defaultFocusTime);
+            ActivityBase.mFocusTime = Integer.valueOf(delayFocusTime) * 1000;
         } else {
             mFocusManager.overrideFocusMode(mParameters.getFocusMode());
         }

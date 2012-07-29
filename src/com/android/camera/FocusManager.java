@@ -64,7 +64,6 @@ public class FocusManager {
 
     private static final int RESET_TOUCH_FOCUS = 0;
     private static final int DO_AUTO_FOCUS = 1;
-    private static final int RESET_TOUCH_FOCUS_DELAY = 15000;
     private static final int ZSL_AUTO_FOCUS_DELAY = 800;
 
     private int mState = STATE_IDLE;
@@ -272,6 +271,16 @@ public class FocusManager {
         }
     }
 
+    public void onShutter() {
+        /* Reset TF if we're not in ZSL mode */
+        if(!mZslEnabled) {
+            if ( ActivityBase.mFocusTime != 0) {
+                resetTouchFocus();
+                updateFocusUI();
+            }
+        }
+    }
+
     public void onAutoFocus(boolean focused) {
         if (mState == STATE_FOCUSING_SNAP_ON_FINISH) {
             // Take the picture no matter focus succeeds or fails. No need
@@ -303,8 +312,8 @@ public class FocusManager {
             updateFocusUI();
             // If this is triggered by touch focus, cancel focus after a
             // while.
-            if (mFocusArea != null) {
-                mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, RESET_TOUCH_FOCUS_DELAY);
+            if ((mFocusArea != null) && (ActivityBase.mFocusTime != 0)) {
+                mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, ActivityBase.mFocusTime);
             }
         } else if (mState == STATE_IDLE) {
             // User has released the focus key before focus completes.
@@ -376,10 +385,12 @@ public class FocusManager {
             autoFocus();
         } else {  // Just show the indicator in all other cases.
             updateFocusUI();
-            // Reset the metering area in 3 seconds.
             mHandler.removeMessages(RESET_TOUCH_FOCUS);
-            mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, RESET_TOUCH_FOCUS_DELAY);
-            mIsFocused = false;
+            if (ActivityBase.mFocusTime != 0) {
+                // Reset the metering area in 3 seconds.
+                mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, ActivityBase.mFocusTime);
+                mIsFocused = false;
+            }
         }
     }
 
