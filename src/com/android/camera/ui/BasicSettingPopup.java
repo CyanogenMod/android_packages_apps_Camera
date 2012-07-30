@@ -20,7 +20,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.AbsListView;
+import android.widget.ListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
@@ -92,8 +92,8 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
                 R.layout.setting_item,
                 new String[] {"text", "image"},
                 new int[] {R.id.text, R.id.image});
-        ((AbsListView) mSettingList).setAdapter(listItemAdapter);
-        ((AbsListView) mSettingList).setOnItemClickListener(this);
+        ((ListView) mSettingList).setAdapter(listItemAdapter);
+        ((ListView) mSettingList).setOnItemClickListener(this);
         reloadPreference();
     }
 
@@ -102,7 +102,7 @@ public class BasicSettingPopup extends AbstractSettingPopup implements
     public void reloadPreference() {
         int index = mPreference.findIndexOfValue(mPreference.getValue());
         if (index != -1) {
-            ((AbsListView) mSettingList).setItemChecked(index, true);
+            ((ListView) mSettingList).setItemChecked(index, true);
         } else {
             Log.e(TAG, "Invalid preference value.");
             mPreference.print();
