@@ -47,6 +47,8 @@ public class EffectsRecorder {
     private static Class<?> sClassFilter;
     private static Method sFilterIsAvailable;
     private static EffectsRecorder sEffectsRecorder;
+    // The index of the current effects recorder.
+    private static int sEffectsRecorderIndex;
 
     private static boolean sReflectionInited = false;
 
@@ -287,23 +289,23 @@ public class EffectsRecorder {
             sReflectionInited = true;
         }
 
+        sEffectsRecorderIndex++;
+        Log.v(TAG, "Current effects recorder index is " + sEffectsRecorderIndex);
         sEffectsRecorder = this;
+        SerializableInvocationHandler sih = new SerializableInvocationHandler(
+                sEffectsRecorderIndex);
         mLearningDoneListener = Proxy.newProxyInstance(
                 sClsLearningDoneListener.getClassLoader(),
-                new Class[] {sClsLearningDoneListener},
-                new SerializableInvocationHandler());
+                new Class[] {sClsLearningDoneListener}, sih);
         mRunnerDoneCallback = Proxy.newProxyInstance(
                 sClsOnRunnerDoneListener.getClassLoader(),
-                new Class[] {sClsOnRunnerDoneListener},
-                new SerializableInvocationHandler());
+                new Class[] {sClsOnRunnerDoneListener}, sih);
         mSourceReadyCallback = Proxy.newProxyInstance(
                 sClsSurfaceTextureSourceListener.getClassLoader(),
-                new Class[] {sClsSurfaceTextureSourceListener},
-                new SerializableInvocationHandler());
+                new Class[] {sClsSurfaceTextureSourceListener}, sih);
         mRecordingDoneListener =  Proxy.newProxyInstance(
                 sClsOnRecordingDoneListener.getClassLoader(),
-                new Class[] {sClsOnRecordingDoneListener},
-                new SerializableInvocationHandler());
+                new Class[] {sClsOnRecordingDoneListener}, sih);
 
         mContext = context;
         mHandler = new Handler(Looper.getMainLooper());
@@ -1086,10 +1088,19 @@ public class EffectsRecorder {
 
     static class SerializableInvocationHandler
             implements InvocationHandler, Serializable {
+        private final int mEffectsRecorderIndex;
+        public SerializableInvocationHandler(int index) {
+            mEffectsRecorderIndex = index;
+        }
+
         @Override
         public Object invoke(Object proxy, Method method, Object[] args)
                 throws Throwable {
             if (sEffectsRecorder == null) return null;
+            if (mEffectsRecorderIndex != sEffectsRecorderIndex) {
+                Log.v(TAG, "Ignore old callback " + mEffectsRecorderIndex);
+                return null;
+            }
             if (method.equals(sObjectEquals)) {
                 return sEffectsRecorder.invokeObjectEquals(proxy, args);
             } else if (method.equals(sObjectToString)) {
