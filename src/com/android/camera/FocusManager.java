@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import android.annotation.TargetApi;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -32,6 +33,7 @@ import android.widget.RelativeLayout;
 import com.android.camera.ui.FaceView;
 import com.android.camera.ui.FocusIndicator;
 import com.android.camera.ui.FocusIndicatorRotateLayout;
+import com.android.gallery3d.common.ApiHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +76,7 @@ public class FocusManager {
 
     private boolean mInitialized;
     private boolean mFocusAreaSupported;
+    private boolean mMeteringAreaSupported;
     private boolean mLockAeAwbNeeded;
     private boolean mAeAwbLock;
     private Matrix mMatrix;
@@ -87,8 +90,8 @@ public class FocusManager {
     private boolean mMirror; // true if the camera is front-facing.
     private int mDisplayOrientation;
     private FaceView mFaceView;
-    private List<Area> mFocusArea; // focus area in driver format
-    private List<Area> mMeteringArea; // metering area in driver format
+    private List<Object> mFocusArea; // focus area in driver format
+    private List<Object> mMeteringArea; // metering area in driver format
     private String mFocusMode;
     private String[] mDefaultFocusModes;
     private String mOverrideFocusMode;
@@ -143,11 +146,28 @@ public class FocusManager {
         setMirror(mirror);
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private boolean isFocusAreaSupported(Parameters p) {
+        if (ApiHelper.HAS_CAMERA_FOCUS_AREA) {
+            return (p.getMaxNumFocusAreas() > 0
+                    && isSupported(Parameters.FOCUS_MODE_AUTO,
+                            p.getSupportedFocusModes()));
+        }
+        return false;
+    }
+
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private boolean isMeteringAreaSupported(Parameters p) {
+        if (ApiHelper.HAS_CAMERA_METERING_AREA) {
+            return p.getMaxNumMeteringAreas() > 0;
+        }
+        return false;
+    }
+
     public void setParameters(Parameters parameters) {
         mParameters = parameters;
-        mFocusAreaSupported = (mParameters.getMaxNumFocusAreas() > 0
-                && isSupported(Parameters.FOCUS_MODE_AUTO,
-                        mParameters.getSupportedFocusModes()));
+        mFocusAreaSupported = isFocusAreaSupported(parameters);
+        mMeteringAreaSupported = isMeteringAreaSupported(parameters);
         mLockAeAwbNeeded = (Util.isAutoExposureLockSupported(mParameters) ||
                 Util.isAutoWhiteBalanceLockSupported(mParameters));
     }
@@ -305,6 +325,34 @@ public class FocusManager {
         }
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private void initializeFocusAreas(int focusWidth, int focusHeight,
+            int x, int y, int previewWidth, int previewHeight) {
+        if (mFocusArea == null) {
+            mFocusArea = new ArrayList<Object>();
+            mFocusArea.add(new Area(new Rect(), 1));
+        }
+
+        // Convert the coordinates to driver format.
+        calculateTapArea(focusWidth, focusHeight, 1f, x, y, previewWidth, previewHeight,
+                ((Area) mFocusArea.get(0)).rect);
+    }
+
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private void initializeMeteringAreas(int focusWidth, int focusHeight,
+            int x, int y, int previewWidth, int previewHeight) {
+        if (mMeteringArea == null) {
+            mMeteringArea = new ArrayList<Object>();
+            mMeteringArea.add(new Area(new Rect(), 1));
+        }
+
+        // Convert the coordinates to driver format.
+        // AE area is bigger because exposure is sensitive and
+        // easy to over- or underexposure if area is too small.
+        calculateTapArea(focusWidth, focusHeight, 1.5f, x, y, previewWidth, previewHeight,
+                ((Area) mMeteringArea.get(0)).rect);
+    }
+
     public void onSingleTapUp(int x, int y) {
         if (!mInitialized || mState == STATE_FOCUSING_SNAP_ON_FINISH) return;
 
@@ -319,20 +367,16 @@ public class FocusManager {
         int focusHeight = mFocusIndicatorRotateLayout.getHeight();
         int previewWidth = mPreviewWidth;
         int previewHeight = mPreviewHeight;
-        if (mFocusArea == null) {
-            mFocusArea = new ArrayList<Area>();
-            mFocusArea.add(new Area(new Rect(), 1));
-            mMeteringArea = new ArrayList<Area>();
-            mMeteringArea.add(new Area(new Rect(), 1));
+        // Initialize mFocusArea.
+        if (mFocusAreaSupported) {
+            initializeFocusAreas(
+                    focusWidth, focusHeight, x, y, previewWidth, previewHeight);
         }
-
-        // Convert the coordinates to driver format.
-        // AE area is bigger because exposure is sensitive and
-        // easy to over- or underexposure if area is too small.
-        calculateTapArea(focusWidth, focusHeight, 1f, x, y, previewWidth, previewHeight,
-                mFocusArea.get(0).rect);
-        calculateTapArea(focusWidth, focusHeight, 1.5f, x, y, previewWidth, previewHeight,
-                mMeteringArea.get(0).rect);
+        // Initialize mMeteringArea.
+        if (mMeteringAreaSupported) {
+            initializeMeteringAreas(
+                    focusWidth, focusHeight, x, y, previewWidth, previewHeight);
+        }
 
         // Use margin to set the focus indicator to the touched area.
         RelativeLayout.LayoutParams p =
@@ -443,11 +487,11 @@ public class FocusManager {
         return mFocusMode;
     }
 
-    public List<Area> getFocusAreas() {
+    public List getFocusAreas() {
         return mFocusArea;
     }
 
-    public List<Area> getMeteringAreas() {
+    public List getMeteringAreas() {
         return mMeteringArea;
     }
 
@@ -496,7 +540,7 @@ public class FocusManager {
         mMeteringArea = null;
     }
 
-    public void calculateTapArea(int focusWidth, int focusHeight, float areaMultiple,
+    private void calculateTapArea(int focusWidth, int focusHeight, float areaMultiple,
             int x, int y, int previewWidth, int previewHeight, Rect rect) {
         int areaWidth = (int) (focusWidth * areaMultiple);
         int areaHeight = (int) (focusHeight * areaMultiple);
