@@ -20,10 +20,12 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.RelativeLayout;
 
 import com.android.camera.ui.LayoutChangeHelper;
 import com.android.camera.ui.LayoutChangeNotifier;
+import com.android.gallery3d.common.ApiHelper;
 
 /**
  * A layout which handles the preview aspect ratio.
@@ -48,6 +50,10 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
     @Override
     protected void onFinishInflate() {
         mBorder = findViewById(R.id.preview_border);
+        if (ApiHelper.HAS_FACE_DETECTION) {
+            ViewStub faceViewStub = (ViewStub) findViewById(R.id.face_view_stub);
+            faceViewStub.inflate();
+        }
     }
 
     public void setAspectRatio(double ratio) {
