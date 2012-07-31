@@ -82,7 +82,7 @@ import java.util.List;
 
 /** The Camera activity which can preview and take pictures. */
 public class Camera extends ActivityBase implements FocusManager.Listener,
-        ModePicker.OnModeChangeListener, FaceDetectionListener,
+        ModePicker.OnModeChangeListener,
         CameraPreference.OnPreferenceChangedListener, LocationManager.Listener,
         PreviewFrameLayout.OnSizeChangedListener,
         ShutterButton.OnShutterButtonListener {
@@ -545,7 +545,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mFaceView.setMirror(info.facing == CameraInfo.CAMERA_FACING_FRONT);
             mFaceView.resume();
             mFocusManager.setFaceView(mFaceView);
-            mCameraDevice.setFaceDetectionListener(this);
+            mCameraDevice.setFaceDetectionListener(new FaceDetectionListener() {
+                @Override
+                public void onFaceDetection(Face[] faces, android.hardware.Camera camera) {
+                    mFaceView.setFaces(faces);
+                }
+            });
             mCameraDevice.startFaceDetection();
         }
     }
@@ -2368,11 +2373,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mNotSelectableToast = Toast.makeText(Camera.this, str, Toast.LENGTH_SHORT);
         }
         mNotSelectableToast.show();
-    }
-
-    @Override
-    public void onFaceDetection(Face[] faces, android.hardware.Camera camera) {
-        mFaceView.setFaces(faces);
     }
 
     private void showTapToFocusToast() {
