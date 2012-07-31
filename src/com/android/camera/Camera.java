@@ -1775,10 +1775,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mPreviewFrameLayout.setOnSizeChangedListener(this);
 
         if (!ApiHelper.HAS_SURFACE_TEXTURE) {
-            mCameraSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
+            mCameraSurfaceView = (SurfaceView) findViewById(R.id.preview_surface_view);
             mCameraSurfaceView.setVisibility(View.VISIBLE);
             mCameraSurfaceView.getHolder().addCallback(this);
-            mCameraSurfaceView.setZOrderMediaOverlay(true);
         } else {
             mPreviewFrameLayout.setOnLayoutChangeListener(this);
         }

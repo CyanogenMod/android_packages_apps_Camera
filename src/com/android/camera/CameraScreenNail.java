@@ -66,10 +66,16 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     // mAnimState.
     private Object mLock = new Object();
 
+    private OnFrameDrawnListener mOneTimeFrameDrawnListener;
+
     public interface Listener {
         void requestRender();
         // Preview has been copied to a texture.
         void onPreviewTextureCopied();
+    }
+
+    public interface OnFrameDrawnListener {
+        void onFrameDrawn(CameraScreenNail c);
     }
 
     public CameraScreenNail(Listener listener) {
@@ -119,6 +125,13 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         }
     }
 
+    private void callbackIfNeeded() {
+        if (mOneTimeFrameDrawnListener != null) {
+            mOneTimeFrameDrawnListener.onFrameDrawn(this);
+            mOneTimeFrameDrawnListener = null;
+        }
+    }
+
     public void directDraw(GLCanvas canvas, int x, int y, int width, int height) {
         super.draw(canvas, x, y, width, height);
     }
@@ -130,12 +143,10 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
             SurfaceTexture surfaceTexture = getSurfaceTexture();
             if (surfaceTexture == null || !mFirstFrameArrived) return;
 
-            if (mAnimState == ANIM_NONE) {
-                super.draw(canvas, x, y, width, height);
-                return;
-            }
-
             switch (mAnimState) {
+                case ANIM_NONE:
+                    super.draw(canvas, x, y, width, height);
+                    break;
                 case ANIM_SWITCH_COPY_TEXTURE:
                     copyPreviewTexture(canvas);
                     mSwitchAnimManager.setReviewDrawingSize(width, height);
@@ -151,7 +162,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                     surfaceTexture.updateTexImage();
                     mSwitchAnimManager.drawDarkPreview(canvas, x, y, width,
                             height, mAnimTexture);
-                    return;
+                    break;
                 case ANIM_SWITCH_START:
                     mSwitchAnimManager.startAnimation();
                     mAnimState = ANIM_SWITCH_RUNNING;
@@ -180,6 +191,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                     super.draw(canvas, x, y, width, height);
                 }
             }
+            callbackIfNeeded();
         } // mLock
     }
 
@@ -233,6 +245,13 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     public void setPreviewFrameLayoutSize(int width, int height) {
         synchronized (mLock) {
             mSwitchAnimManager.setPreviewFrameLayoutSize(width, height);
+        }
+    }
+
+    public void setOneTimeOnFrameDrawnListener(OnFrameDrawnListener l) {
+        synchronized (mLock) {
+            mFirstFrameArrived = false;
+            mOneTimeFrameDrawnListener = l;
         }
     }
 }

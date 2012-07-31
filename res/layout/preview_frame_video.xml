@@ -22,6 +22,7 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:layout_centerInParent="true">
+        <include layout="@layout/preview_surface_view"/>
         <FrameLayout android:id="@+id/preview_border"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

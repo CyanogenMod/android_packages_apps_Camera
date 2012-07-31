@@ -19,6 +19,7 @@ package com.android.camera;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.util.AttributeSet;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.RelativeLayout;
@@ -50,6 +51,10 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
     @Override
     protected void onFinishInflate() {
         mBorder = findViewById(R.id.preview_border);
+        if (!ApiHelper.HAS_SURFACE_TEXTURE_RECORDING) {
+            SurfaceView v = (SurfaceView) findViewById(R.id.preview_surface_view);
+            v.setZOrderMediaOverlay(true);
+        }
         if (ApiHelper.HAS_FACE_DETECTION) {
             ViewStub faceViewStub = (ViewStub) findViewById(R.id.face_view_stub);
             /* preview_frame_video.xml does not have face view stub, so we need to

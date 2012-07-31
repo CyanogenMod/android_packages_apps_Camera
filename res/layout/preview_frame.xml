@@ -23,10 +23,7 @@
             android:layout_centerInParent="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <SurfaceView android:id="@+id/camera_preview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"/>
+        <include layout="@layout/preview_surface_view"/>
         <ViewStub android:id="@+id/face_view_stub"
                 android:inflatedId="@+id/face_view"
                 android:layout="@layout/face_view"
