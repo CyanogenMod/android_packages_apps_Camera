@@ -175,4 +175,9 @@
         <item name="android:paddingBottom">4dp</item>
         <item name="android:background">@android:drawable/divider_horizontal_dark</item>
     </style>
+    <style name="TextAppearance.DialogWindowTitle" parent="">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/holo_blue_light</item>
+    </style>
+    <style name="TextAppearance.Medium" parent="@android:style/TextAppearance.Medium"/>
 </resources>
