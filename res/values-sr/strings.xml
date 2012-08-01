@@ -119,4 +119,6 @@
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Откажи у режиму прегледа"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Довршено у режиму прегледа"</string>
     <string name="accessibility_review_retake" msgid="830348126446319954">"Сними поново у режиму прегледа"</string>
+    <string name="capital_on" msgid="5491353494964003567">"УКЉУЧИ"</string>
+    <string name="capital_off" msgid="7231052688467970897">"ИСКЉУЧИ"</string>
 </resources>
