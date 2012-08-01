@@ -52,7 +52,12 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
         mBorder = findViewById(R.id.preview_border);
         if (ApiHelper.HAS_FACE_DETECTION) {
             ViewStub faceViewStub = (ViewStub) findViewById(R.id.face_view_stub);
-            faceViewStub.inflate();
+            /* preview_frame_video.xml does not have face view stub, so we need to
+             * check that.
+             */
+            if (faceViewStub!=null) {
+                faceViewStub.inflate();
+            }
         }
     }
 
