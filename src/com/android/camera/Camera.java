@@ -804,6 +804,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
             mFocusManager.updateFocusUI(); // Ensure focus indicator is hidden.
             if (!mIsImageCaptureIntent) {
+                mFocusManager.resetTouchFocus();
                 startPreview();
                 setCameraState(IDLE);
                 startFaceDetection();
@@ -1398,6 +1399,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mPaused) return;
 
         hidePostCaptureAlert();
+        mFocusManager.resetTouchFocus();
         startPreview();
         setCameraState(IDLE);
         startFaceDetection();
@@ -1906,8 +1908,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private void startPreview() {
-        mFocusManager.resetTouchFocus();
-
         mCameraDevice.setErrorCallback(mErrorCallback);
 
         // If we're previewing already, stop the preview first (this will blank
@@ -2295,6 +2295,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
         mFocusManager.setMirror(mirror);
         mFocusManager.setParameters(mInitialParams);
+        mFocusManager.resetTouchFocus();
         startPreview();
         setCameraState(IDLE);
         startFaceDetection();
