@@ -1754,13 +1754,15 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         initializeZoom();
         initOnScreenIndicator();
         updateOnScreenIndicators();
-        mFaceView.clear();
-        mFaceView.setVisibility(View.VISIBLE);
-        mFaceView.setDisplayOrientation(mDisplayOrientation);
-        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-        mFaceView.setMirror(info.facing == CameraInfo.CAMERA_FACING_FRONT);
-        mFaceView.resume();
-        mFocusManager.setFaceView(mFaceView);
+        if (mFaceView != null) {
+            mFaceView.clear();
+            mFaceView.setVisibility(View.VISIBLE);
+            mFaceView.setDisplayOrientation(mDisplayOrientation);
+            CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+            mFaceView.setMirror(info.facing == CameraInfo.CAMERA_FACING_FRONT);
+            mFaceView.resume();
+            mFocusManager.setFaceView(mFaceView);
+        }
     }
 
     @Override

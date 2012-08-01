@@ -55,7 +55,7 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
             /* preview_frame_video.xml does not have face view stub, so we need to
              * check that.
              */
-            if (faceViewStub!=null) {
+            if (faceViewStub != null) {
                 faceViewStub.inflate();
             }
         }
