@@ -76,6 +76,8 @@
   recordingProfile = $recordingProfile;
   recordingDoneListener = $recordingDoneListener;
   recording = false;
+  width = $recordingWidth;
+  height = $recordingHeight;
   // outputFile, orientationHint, inputRegion,
   // audioSource, listeners, captureRate
   // will be set when recording starts
