@@ -119,4 +119,6 @@
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Avbryt"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Klar"</string>
     <string name="accessibility_review_retake" msgid="830348126446319954">"Ta om"</string>
+    <string name="capital_on" msgid="5491353494964003567">"PÅ"</string>
+    <string name="capital_off" msgid="7231052688467970897">"AV"</string>
 </resources>

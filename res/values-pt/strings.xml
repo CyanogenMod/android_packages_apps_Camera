@@ -119,4 +119,8 @@
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Cancelar"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Revisão concluída"</string>
     <string name="accessibility_review_retake" msgid="830348126446319954">"Repetir"</string>
+    <!-- no translation found for capital_on (5491353494964003567) -->
+    <skip />
+    <!-- no translation found for capital_off (7231052688467970897) -->
+    <skip />
 </resources>

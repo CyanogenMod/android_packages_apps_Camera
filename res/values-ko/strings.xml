@@ -119,4 +119,6 @@
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"리뷰 취소"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"리뷰 완료"</string>
     <string name="accessibility_review_retake" msgid="830348126446319954">"리뷰용 사진/동영상 다시 촬영"</string>
+    <string name="capital_on" msgid="5491353494964003567">"사용"</string>
+    <string name="capital_off" msgid="7231052688467970897">"사용 안함"</string>
 </resources>

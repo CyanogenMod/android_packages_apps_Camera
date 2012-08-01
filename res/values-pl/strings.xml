@@ -122,4 +122,6 @@
     <skip />
     <!-- no translation found for accessibility_review_retake (830348126446319954) -->
     <skip />
+    <string name="capital_on" msgid="5491353494964003567">"WŁĄCZONY"</string>
+    <string name="capital_off" msgid="7231052688467970897">"WYŁĄCZONY"</string>
 </resources>
