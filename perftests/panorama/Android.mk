@@ -1,3 +1,5 @@
+local_target_dir := $(TARGET_OUT_DATA)/local/tmp
+
 LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
@@ -16,5 +18,7 @@ LOCAL_SHARED_LIBRARIES := libjni_mosaic
 LOCAL_MODULE_TAGS := tests
 
 LOCAL_MODULE := panorama_bench
+
+LOCAL_MODULE_PATH := $(local_target_dir)
 
 include $(BUILD_EXECUTABLE)
