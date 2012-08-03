@@ -148,6 +148,16 @@
     <string name="pref_camera_iso_entry_auto">Automatikus</string>
     <string name="pref_camera_iso_entry_isodeblur">Automatikus (HJR)</string>
 
+    <!-- Settings screen, Burst mode title -->
+    <string name="pref_camera_burst_title">Burst</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_off">Ki</string>
+    <string name="pref_camera_burst_entry_5">5 kép</string>
+    <string name="pref_camera_burst_entry_10">10 kép</string>
+    <string name="pref_camera_burst_entry_15">15 kép</string>
+    <string name="pref_camera_burst_entry_20">20 kép</string>
+
     <!-- 20120506 -->
     <!-- Settings screen, Timer mode title -->
     <string name="pref_camera_timer_title">Időzítő</string>
