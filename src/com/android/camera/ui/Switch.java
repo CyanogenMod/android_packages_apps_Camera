@@ -16,6 +16,7 @@
 
 package com.android.camera.ui;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -42,6 +43,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.CompoundButton;
 
 import com.android.camera.R;
+import com.android.gallery3d.common.ApiHelper;
 
 import java.util.Arrays;
 
@@ -174,10 +176,11 @@ public class Switch extends CompoundButton {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         final int measuredHeight = getMeasuredHeight();
         if (measuredHeight < switchHeight) {
-            setMeasuredDimension(getMeasuredWidthAndState(), switchHeight);
+            setMeasuredDimension(getMeasuredWidth(), switchHeight);
         }
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
         super.onPopulateAccessibilityEvent(event);
@@ -457,6 +460,7 @@ public class Switch extends CompoundButton {
         return super.verifyDrawable(who) || who == mThumbDrawable || who == mTrackDrawable;
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
     @Override
     public void jumpDrawablesToCurrentState() {
         super.jumpDrawablesToCurrentState();
@@ -464,12 +468,14 @@ public class Switch extends CompoundButton {
         mTrackDrawable.jumpToCurrentState();
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
         event.setClassName(Switch.class.getName());
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
