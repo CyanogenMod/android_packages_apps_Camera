@@ -25,16 +25,16 @@
 	<bool name="softwareGLOnly">false</bool>
 
         <!-- Autofocus parameters -->
-        <string name="touchFocusParameter"></string>
+        <string name="touchFocusParameter" translatable="false"></string>
         <bool name="touchFocusNeedsRect">false</bool>
 
 	<!-- FFC parameter filtering -->
 	<bool name="ffc_canFocus">true</bool>
 	<bool name="ffc_canZoom">true</bool>
-	<string name="ffc_supportedEffects"></string>
+	<string name="ffc_supportedEffects" translatable="false"></string>
 
 	<!-- Resolution filtering -->
-	<string name="filtered_pictureSizes"></string>
+	<string name="filtered_pictureSizes" translatable="false"></string>
 
 	<!-- Wide media profile available -->
 	<bool name="supportsWideProfile">false</bool>
