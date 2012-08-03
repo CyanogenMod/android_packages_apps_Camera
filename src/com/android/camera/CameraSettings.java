@@ -163,7 +163,6 @@ public class CameraSettings {
         ListPreference videoEffect = group.findPreference(KEY_VIDEO_EFFECT);
         ListPreference storage = group.findPreference(KEY_STORAGE);
         ListPreference iso = group.findPreference(KEY_ISO);
-        ListPreference burstMode = group.findPreference(KEY_BURST_MODE);
 
 
         // Since the screen could be loaded from different resources, we need
@@ -216,7 +215,6 @@ public class CameraSettings {
             filterUnsupportedOptions(group,
                     iso, mParameters.getSupportedIsoValues());
         }
-        if (burstMode != null) burstMode.setValueIndex(4);
     }
 
     private void buildExposureCompensation(
