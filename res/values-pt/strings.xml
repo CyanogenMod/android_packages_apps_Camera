@@ -44,6 +44,8 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configurações da câmera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configurações da filmadora"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Tamanho da imagem"</string>
+    <!-- no translation found for pref_camera_picturesize_entry_8mp (259953780932849079) -->
+    <skip />
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 megapixels"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 megapixels"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 megapixels"</string>
@@ -119,8 +121,6 @@
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Cancelar"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Revisão concluída"</string>
     <string name="accessibility_review_retake" msgid="830348126446319954">"Repetir"</string>
-    <!-- no translation found for capital_on (5491353494964003567) -->
-    <skip />
-    <!-- no translation found for capital_off (7231052688467970897) -->
-    <skip />
+    <string name="capital_on" msgid="5491353494964003567">"LIGADO"</string>
+    <string name="capital_off" msgid="7231052688467970897">"DESLIGADO"</string>
 </resources>

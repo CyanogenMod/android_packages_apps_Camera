@@ -44,6 +44,8 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Postavke fotoaparata"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Postavke kamere"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Veličina slike"</string>
+    <!-- no translation found for pref_camera_picturesize_entry_8mp (259953780932849079) -->
+    <skip />
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 megapiksela"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 megapiksela"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 megapiksela"</string>
