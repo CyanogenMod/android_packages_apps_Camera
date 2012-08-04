@@ -42,7 +42,7 @@
     <string name="pref_camera_id_title" msgid="4040791582294635851">"Alegeţi camera foto"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Înapoi"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Frontal"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Stocaţi locaţia"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Salvați locaţia"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Dezactivat"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Activat"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Calitate video"</string>
@@ -54,10 +54,10 @@
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automat"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinit"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
-    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Mod flash"</string>
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Bliț"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automat"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Activat"</string>
-    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Dezactivată"</string>
+    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Dezactivat"</string>
     <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Balanţă de alb"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Automat"</string>
     <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Incandescent"</string>
@@ -66,7 +66,7 @@
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Înnorat"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Mod Scenă"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automat"</string>
-    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Acţiune"</string>
+    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Mișcare"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Noapte"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Apus de soare"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Petrecere"</string>
@@ -77,7 +77,7 @@
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Spaţiul de stocare USB este aproape ocupat. Editaţi setarea de calitate sau ştergeţi câteva imagini ori alte fişiere."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Cardul SD rămâne fără spaţiu de stocare. Editaţi setarea de calitate sau ştergeţi câteva imagini sau alte fişiere."</string>
-    <string name="video_reach_size_limit" msgid="6179877322015552390">"Dimensiune limită depăşită."</string>
+    <string name="video_reach_size_limit" msgid="6179877322015552390">"Limită depăşită."</string>
     <string name="share_picture_via" msgid="1375127849431890447">"Distribuiţi fotografia prin"</string>
     <string name="share_video_via" msgid="5152302809166549015">"Distribuiţi videoclipul prin"</string>
     <string name="no_picture_to_share" msgid="5352574090121328815">"Nicio imagine de distribuit."</string>
