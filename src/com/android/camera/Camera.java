@@ -50,6 +50,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -85,7 +87,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         ModePicker.OnModeChangeListener,
         CameraPreference.OnPreferenceChangedListener, LocationManager.Listener,
         PreviewFrameLayout.OnSizeChangedListener,
-        ShutterButton.OnShutterButtonListener {
+        ShutterButton.OnShutterButtonListener,
+        SurfaceHolder.Callback {
 
     private static final String TAG = "camera";
 
@@ -144,8 +147,14 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private PreviewFrameLayout mPreviewFrameLayout;
     private SurfaceTexture mSurfaceTexture;
-    private RotateDialogController mRotateDialog;
 
+    private SurfaceView mCameraSurfaceView; // for API level 10
+    // For API level 10. True if the preview is full screen and preview should
+    // be started. False if users swipe to the last photo and the preview should
+    // be stopped.
+    private boolean mFullScreenPreview;
+
+    private RotateDialogController mRotateDialog;
     private ModePicker mModePicker;
     private FaceView mFaceView;
     private RotateLayout mFocusAreaIndicator;
@@ -1181,7 +1190,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mImageNamer.prepareUri(mContentResolver, mCaptureStartTime,
                 size.width, size.height, mJpegRotation);
 
-        if (!mIsImageCaptureIntent) {
+        if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent) {
             // Start capture animation.
             mCameraScreenNail.animateCapture(getCameraRotation());
         }
@@ -1255,6 +1264,54 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         initOnScreenIndicator();
         // Make sure all views are disabled before camera is open.
         enableCameraControls(false);
+    }
+
+    @Override
+    protected void onFullScreenChanged(boolean full) {
+        super.onFullScreenChanged(full);
+        if (ApiHelper.HAS_SURFACE_TEXTURE) return;
+
+        if (mFullScreenPreview == full) return;
+        mFullScreenPreview = full;
+        if (mCameraDevice == null || isFinishing()) return;
+        if (full) {
+            mCameraSurfaceView.setVisibility(View.VISIBLE);
+            if (mCameraState == PREVIEW_STOPPED) {
+                mFocusManager.resetTouchFocus();
+                startPreview();
+                setCameraState(IDLE);
+                startFaceDetection();
+            }
+        } else {
+            stopPreview();
+            mCameraSurfaceView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        if (mCameraDevice == null || holder.getSurface() == null) return;
+
+        Log.v(TAG, "surfaceChanged. width=" + width + ". height=" + height);
+        if (holder.isCreating()) {
+            mCameraDevice.setPreviewDisplayAsync(holder);
+        } else {
+            stopPreview();
+            mFocusManager.resetTouchFocus();
+            startPreview();
+            setCameraState(IDLE);
+        }
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        Log.v(TAG, "surfaceCreated");
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.v(TAG, "surfaceCreated");
+        stopPreview();
     }
 
     private void overrideCameraSettings(final String flashMode,
@@ -1717,6 +1774,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mFaceView = (FaceView) findViewById(R.id.face_view);
         mPreviewFrameLayout.setOnLayoutChangeListener(this);
         mPreviewFrameLayout.setOnSizeChangedListener(this);
+
+        if (!ApiHelper.HAS_SURFACE_TEXTURE) {
+            mCameraSurfaceView = (SurfaceView) findViewById(R.id.camera_preview);
+            mCameraSurfaceView.setVisibility(View.VISIBLE);
+            mCameraSurfaceView.getHolder().addCallback(this);
+            mCameraSurfaceView.setZOrderMediaOverlay(true);
+        }
     }
 
     @Override
@@ -1917,7 +1981,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mCameraState != PREVIEW_STOPPED) stopPreview();
 
         setDisplayOrientation();
-        mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
 
         if (!mSnapshotOnIdle) {
             // If the focus mode is continuous autofocus, call cancelAutoFocus to
@@ -1929,19 +1992,25 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
         setCameraParameters(UPDATE_PARAM_ALL);
 
-        if (mSurfaceTexture == null) {
-            Size size = mParameters.getPreviewSize();
-            if (mCameraDisplayOrientation % 180 == 0) {
-                mCameraScreenNail.setSize(size.width, size.height);
-            } else {
-                mCameraScreenNail.setSize(size.height, size.width);
+        if (ApiHelper.HAS_SURFACE_TEXTURE) {
+            if (mSurfaceTexture == null) {
+                Size size = mParameters.getPreviewSize();
+                if (mCameraDisplayOrientation % 180 == 0) {
+                    mCameraScreenNail.setSize(size.width, size.height);
+                } else {
+                    mCameraScreenNail.setSize(size.height, size.width);
+                }
+                notifyScreenNailChanged();
+                mCameraScreenNail.acquireSurfaceTexture();
+                mSurfaceTexture = mCameraScreenNail.getSurfaceTexture();
             }
-            notifyScreenNailChanged();
-            mCameraScreenNail.acquireSurfaceTexture();
-            mSurfaceTexture = mCameraScreenNail.getSurfaceTexture();
+            mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
+            mCameraDevice.setPreviewTextureAsync(mSurfaceTexture);
+        } else {
+            mCameraDevice.setDisplayOrientation(mDisplayOrientation);
+            mCameraDevice.setPreviewDisplayAsync(mCameraSurfaceView.getHolder());
         }
 
-        mCameraDevice.setPreviewTextureAsync(mSurfaceTexture);
         Log.v(TAG, "startPreview");
         mCameraDevice.startPreviewAsync();
 
@@ -2259,13 +2328,17 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     public void onCameraPickerClicked(int cameraId) {
         if (mPaused || mPendingSwitchCameraId != -1) return;
 
-        Log.v(TAG, "Start to copy texture. cameraId=" + cameraId);
-        // We need to keep a preview frame for the animation before
-        // releasing the camera. This will trigger onPreviewTextureCopied.
-        mCameraScreenNail.copyTexture();
         mPendingSwitchCameraId = cameraId;
-        // Disable all camera controls.
-        setCameraState(SWITCHING_CAMERA);
+        if (ApiHelper.HAS_SURFACE_TEXTURE) {
+            Log.v(TAG, "Start to copy texture. cameraId=" + cameraId);
+            // We need to keep a preview frame for the animation before
+            // releasing the camera. This will trigger onPreviewTextureCopied.
+            mCameraScreenNail.copyTexture();
+            // Disable all camera controls.
+            setCameraState(SWITCHING_CAMERA);
+        } else {
+            switchCamera();
+        }
     }
 
     private void switchCamera() {
@@ -2310,9 +2383,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         updateOnScreenIndicators();
         showTapToFocusToastIfNeeded();
 
-        // Start switch camera animation. Post a message because
-        // onFrameAvailable from the old camera may already exist.
-        mHandler.sendEmptyMessage(SWITCH_CAMERA_START_ANIMATION);
+        if (ApiHelper.HAS_SURFACE_TEXTURE) {
+            // Start switch camera animation. Post a message because
+            // onFrameAvailable from the old camera may already exist.
+            mHandler.sendEmptyMessage(SWITCH_CAMERA_START_ANIMATION);
+        }
     }
 
     // Preview texture has been copied. Now camera can be released and the
