@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.camera.ui.CheckedLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         tools:ignore="UseCompoundDrawables"
         style="@style/SettingRow">
@@ -24,4 +24,4 @@
             android:layout_width="@dimen/setting_item_icon_width"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true" />
-</LinearLayout>
+</com.android.camera.ui.CheckedLinearLayout>
