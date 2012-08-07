@@ -18,9 +18,13 @@ package com.android.camera.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.android.gallery3d.util.MotionEventHelper;
 
 // A RotateLayout is designed to display a single item and provides the
 // capabilities to rotate the item.
@@ -28,6 +32,7 @@ public class RotateLayout extends ViewGroup implements Rotatable {
     @SuppressWarnings("unused")
     private static final String TAG = "RotateLayout";
     private int mOrientation;
+    private Matrix mMatrix = new Matrix();
     protected View mChild;
 
     public RotateLayout(Context context, AttributeSet attrs) {
@@ -59,6 +64,29 @@ public class RotateLayout extends ViewGroup implements Rotatable {
                 mChild.layout(0, 0, height, width);
                 break;
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        final int w = getMeasuredWidth();
+        final int h = getMeasuredHeight();
+        switch (mOrientation) {
+            case 0:
+                mMatrix.setTranslate(0, 0);
+                break;
+            case 90:
+                mMatrix.setTranslate(0, -h);
+                break;
+            case 180:
+                mMatrix.setTranslate(-w, -h);
+                break;
+            case 270:
+                mMatrix.setTranslate(-w, 0);
+                break;
+        }
+        mMatrix.postRotate(mOrientation);
+        event = MotionEventHelper.transformEvent(event, mMatrix);
+        return super.dispatchTouchEvent(event);
     }
 
     @Override
