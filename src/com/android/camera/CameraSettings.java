@@ -61,6 +61,8 @@ public class CameraSettings {
     public static final String KEY_VIDEO_FIRST_USE_HINT_SHOWN = "pref_video_first_use_hint_shown_key";
     public static final String KEY_POWER_SHUTTER = "pref_power_shutter";
     public static final String KEY_STORAGE = "pref_camera_storage_key";
+    public static final String KEY_FOCUS_TIME = "pref_camera_focus_key";
+
     public static final String KEY_ZSL = "pref_camera_zsl_key";
     public static final String KEY_ISO = "pref_camera_iso_key";
     public static final String KEY_FOCUS_SOUND = "pref_focus_sound";
