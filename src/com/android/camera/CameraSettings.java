@@ -196,8 +196,12 @@ public class CameraSettings {
             }
         }
         if (videoEffect != null) {
-            initVideoEffect(group, videoEffect);
-            resetIfInvalid(videoEffect);
+            if (ApiHelper.HAS_EFFECTS_RECORDING) {
+                initVideoEffect(group, videoEffect);
+                resetIfInvalid(videoEffect);
+            } else {
+                filterUnsupportedOptions(group, videoEffect, null);
+            }
         }
     }
 
