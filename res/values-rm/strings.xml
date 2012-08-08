@@ -51,6 +51,10 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Deactivà"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Activà"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualitad dal video"</string>
+    <!-- no translation found for pref_video_quality_entry_high (8664038216234805914) -->
+    <skip />
+    <!-- no translation found for pref_video_quality_entry_low (7258507152393173784) -->
+    <skip />
     <!-- no translation found for pref_video_time_lapse_frame_interval_title (5262531404348504642) -->
     <skip />
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Parameters da la camera"</string>
