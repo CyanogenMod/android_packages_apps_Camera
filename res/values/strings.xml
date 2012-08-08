@@ -93,6 +93,10 @@
     <string name="pref_video_quality_entry_720p" translatable="false">HD</string>
     <!-- Video quality setting entry. Videos will be recorded in 480p quality. [CHAR LIMIT=24] -->
     <string name="pref_video_quality_entry_480p" translatable="false">SD</string>
+    <!-- Video quality setting entry. Videos will be recorded in the highest quality available on the device. [CHAR LIMIT=24] -->
+    <string name="pref_video_quality_entry_high">High</string>
+    <!-- Video quality setting entry. Videos will be recorded in the lowest quality available on the device. [CHAR LIMIT=24] -->
+    <string name="pref_video_quality_entry_low">Low</string>
 
     <!-- Describes the preference dialog for choosing interval between frame capture for
     time lapse recording. Appears at top of the dialog. [CHAR LIMIT=30] -->

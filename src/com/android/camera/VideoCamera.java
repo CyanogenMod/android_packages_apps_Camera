@@ -442,10 +442,18 @@ public class VideoCamera extends ActivityBase
         if (effectsActive()) {
             mIndicatorControlContainer.overrideSettings(
                     CameraSettings.KEY_VIDEO_QUALITY,
-                    Integer.toString(CamcorderProfile.QUALITY_480P));
+                    Integer.toString(getLowVideoQuality()));
         }
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
+    private static int getLowVideoQuality() {
+        if (ApiHelper.HAS_FINE_RESOLUTION_QUALITY_LEVELS) {
+            return CamcorderProfile.QUALITY_480P;
+        } else {
+            return CamcorderProfile.QUALITY_LOW;
+        }
+    }
 
     private class MyOrientationEventListener
             extends OrientationEventListener {
@@ -655,7 +663,7 @@ public class VideoCamera extends ActivityBase
             // Set quality to be no higher than 480p.
             CamcorderProfile profile = CamcorderProfile.get(mCameraId, quality);
             if (profile.videoFrameHeight > 480) {
-                quality = CamcorderProfile.QUALITY_480P;
+                quality = getLowVideoQuality();
             }
             // On initial startup, can get here before indicator control is
             // enabled. In that case, UI quality override handled in
@@ -663,7 +671,7 @@ public class VideoCamera extends ActivityBase
             if (mIndicatorControlContainer != null) {
                 mIndicatorControlContainer.overrideSettings(
                         CameraSettings.KEY_VIDEO_QUALITY,
-                        Integer.toString(CamcorderProfile.QUALITY_480P));
+                        Integer.toString(getLowVideoQuality()));
             }
         } else {
             mEffectParameter = null;

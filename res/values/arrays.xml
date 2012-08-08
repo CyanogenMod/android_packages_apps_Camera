@@ -21,7 +21,9 @@
         <item>@string/pref_video_quality_entry_1080p</item>
         <item>@string/pref_video_quality_entry_720p</item>
         <item>@string/pref_video_quality_entry_480p</item>
-    </string-array>
+        <item>@string/pref_video_quality_entry_high</item>
+        <item>@string/pref_video_quality_entry_low</item>
+   </string-array>
 
     <string-array name="pref_video_quality_entryvalues" translatable="false">
         <!-- The integer value of CamcorderProfile.QUALITY_1080P -->
@@ -30,13 +32,19 @@
         <item>@string/pref_video_quality_default</item>
         <!-- The integer value of CamcorderProfile.QUALITY_480P -->
         <item>4</item>
+        <!-- The integer value of CamcorderProfile.QUALITY_HIGH -->
+        <item>1</item>
+         <!-- The integer value of CamcorderProfile.QUALITY_LOW -->
+        <item>0</item>
     </string-array>
 
     <array name="video_quality_largeicons" translatable="false">
         <item>@drawable/ic_quality_1080p</item>
         <item>@drawable/ic_quality_720p</item>
         <item>@drawable/ic_quality_480p</item>
-    </array>
+        <item>@drawable/ic_quality_high</item>
+        <item>@drawable/ic_quality_low</item>
+   </array>
 
     <!-- Video Preferences Time Lapse Frame Interval icons -->
     <array name="video_timelapse_largeicons" translatable="false">

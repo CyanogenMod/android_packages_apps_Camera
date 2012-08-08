@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -86,11 +87,14 @@ public class CameraSettings {
         return group;
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
     public static String getDefaultVideoQuality(int cameraId,
             String defaultQuality) {
-        int quality = Integer.valueOf(defaultQuality);
-        if (CamcorderProfile.hasProfile(cameraId, quality)) {
-            return defaultQuality;
+        if (ApiHelper.HAS_FINE_RESOLUTION_QUALITY_LEVELS) {
+            if (CamcorderProfile.hasProfile(
+                    cameraId, Integer.valueOf(defaultQuality))) {
+                return defaultQuality;
+            }
         }
         return Integer.toString(CamcorderProfile.QUALITY_HIGH);
     }
@@ -487,6 +491,25 @@ public class CameraSettings {
     private ArrayList<String> getSupportedVideoQuality() {
         ArrayList<String> supported = new ArrayList<String>();
         // Check for supported quality
+        if (ApiHelper.HAS_FINE_RESOLUTION_QUALITY_LEVELS) {
+            getFineResolutionQuality(supported);
+        } else {
+            supported.add(Integer.toString(CamcorderProfile.QUALITY_HIGH));
+            CamcorderProfile high = CamcorderProfile.get(
+                    mCameraId, CamcorderProfile.QUALITY_HIGH);
+            CamcorderProfile low = CamcorderProfile.get(
+                    mCameraId, CamcorderProfile.QUALITY_LOW);
+            if (high.videoFrameHeight * high.videoFrameWidth >
+                    low.videoFrameHeight * low.videoFrameWidth) {
+                supported.add(Integer.toString(CamcorderProfile.QUALITY_LOW));
+            }
+        }
+
+        return supported;
+    }
+
+    @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
+    private void getFineResolutionQuality(ArrayList<String> supported) {
         if (CamcorderProfile.hasProfile(mCameraId, CamcorderProfile.QUALITY_1080P)) {
             supported.add(Integer.toString(CamcorderProfile.QUALITY_1080P));
         }
@@ -496,8 +519,6 @@ public class CameraSettings {
         if (CamcorderProfile.hasProfile(mCameraId, CamcorderProfile.QUALITY_480P)) {
             supported.add(Integer.toString(CamcorderProfile.QUALITY_480P));
         }
-
-        return supported;
     }
 
     private void initVideoEffect(PreferenceGroup group, ListPreference videoEffect) {
