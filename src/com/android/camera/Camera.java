@@ -871,6 +871,15 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 return;
             }
 
+            if (getResources().getBoolean(R.bool.restartPreviewOnPictureTaken)) {
+                // If preview is running, restart it
+                if (mCameraState != PREVIEW_STOPPED) {
+                    stopPreview();
+                    startPreview();
+                }
+            }
+
+
             mJpegPictureCallbackTime = System.currentTimeMillis();
             // If postview callback has arrived, the captured image is displayed
             // in postview callback. If not, the captured image is displayed in
@@ -2078,6 +2087,14 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             List<Size> supported = mParameters.getSupportedPictureSizes();
             CameraSettings.setCameraPictureSize(
                     pictureSize, supported, mParameters);
+
+            if (getResources().getBoolean(R.bool.restartPreviewOnPictureSizeChange)) {
+                // If preview is running, restart it
+                if (mCameraState != PREVIEW_STOPPED) {
+                    stopPreview();
+                    startPreview();
+                }
+            }
         }
         Size size = mParameters.getPictureSize();
 

@@ -39,5 +39,9 @@
     <bool name="noFaceDetectOnRearCamera">false</bool>
     <!-- Use ZSL mode -->
     <bool name="enableZSL">false</bool>
+    <!-- Restart the preview on picture taken -->
+    <bool name="restartPreviewOnPictureTaken">false</bool>
+    <!-- Restart the preview if the picture size changes -->
+    <bool name="restartPreviewOnPictureSizeChange">false</bool>
 </resources>
 
