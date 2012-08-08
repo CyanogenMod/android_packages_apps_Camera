@@ -702,27 +702,33 @@ public class VideoCamera extends ActivityBase
         editor.apply();
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
     private void getDesiredPreviewSize() {
         mParameters = mCameraDevice.getParameters();
-        if (mParameters.getSupportedVideoSizes() == null || effectsActive()) {
+        if (ApiHelper.HAS_GET_SUPPORTED_VIDEO_SIZE) {
+            if (mParameters.getSupportedVideoSizes() == null || effectsActive()) {
+                mDesiredPreviewWidth = mProfile.videoFrameWidth;
+                mDesiredPreviewHeight = mProfile.videoFrameHeight;
+            } else {  // Driver supports separates outputs for preview and video.
+                List<Size> sizes = mParameters.getSupportedPreviewSizes();
+                Size preferred = mParameters.getPreferredPreviewSizeForVideo();
+                int product = preferred.width * preferred.height;
+                Iterator<Size> it = sizes.iterator();
+                // Remove the preview sizes that are not preferred.
+                while (it.hasNext()) {
+                    Size size = it.next();
+                    if (size.width * size.height > product) {
+                        it.remove();
+                    }
+                }
+                Size optimalSize = Util.getOptimalPreviewSize(this, sizes,
+                        (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
+                mDesiredPreviewWidth = optimalSize.width;
+                mDesiredPreviewHeight = optimalSize.height;
+            }
+        } else {
             mDesiredPreviewWidth = mProfile.videoFrameWidth;
             mDesiredPreviewHeight = mProfile.videoFrameHeight;
-        } else {  // Driver supports separates outputs for preview and video.
-            List<Size> sizes = mParameters.getSupportedPreviewSizes();
-            Size preferred = mParameters.getPreferredPreviewSizeForVideo();
-            int product = preferred.width * preferred.height;
-            Iterator<Size> it = sizes.iterator();
-            // Remove the preview sizes that are not preferred.
-            while (it.hasNext()) {
-                Size size = it.next();
-                if (size.width * size.height > product) {
-                    it.remove();
-                }
-            }
-            Size optimalSize = Util.getOptimalPreviewSize(this, sizes,
-                    (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
-            mDesiredPreviewWidth = optimalSize.width;
-            mDesiredPreviewHeight = optimalSize.height;
         }
         Log.v(TAG, "mDesiredPreviewWidth=" + mDesiredPreviewWidth +
                 ". mDesiredPreviewHeight=" + mDesiredPreviewHeight);
