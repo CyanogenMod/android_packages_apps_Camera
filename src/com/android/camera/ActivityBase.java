@@ -485,7 +485,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         }
     }
 
-    private void onFullScreenChanged(boolean full) {
+    protected void onFullScreenChanged(boolean full) {
         if (mShowCameraAppView == full) return;
         mShowCameraAppView = full;
         if (mPaused || isFinishing()) return;

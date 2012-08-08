@@ -34,6 +34,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.view.SurfaceHolder;
 import android.util.Log;
 
 import com.android.gallery3d.common.ApiHelper;
@@ -72,6 +73,7 @@ public class CameraManager {
     private static final int GET_PARAMETERS = 20;
     private static final int SET_PARAMETERS_ASYNC = 21;
     private static final int WAIT_FOR_IDLE = 22;
+    private static final int SET_PREVIEW_DISPLAY_ASYNC = 23;
 
     private Handler mCameraHandler;
     private CameraProxy mCameraProxy;
@@ -141,6 +143,14 @@ public class CameraManager {
                     case SET_PREVIEW_TEXTURE_ASYNC:
                         try {
                             mCamera.setPreviewTexture((SurfaceTexture) msg.obj);
+                        } catch(IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        return;  // no need to call mSig.open()
+
+                    case SET_PREVIEW_DISPLAY_ASYNC:
+                        try {
+                            mCamera.setPreviewDisplay((SurfaceHolder) msg.obj);
                         } catch(IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -294,6 +304,10 @@ public class CameraManager {
 
         public void setPreviewTextureAsync(final SurfaceTexture surfaceTexture) {
             mCameraHandler.obtainMessage(SET_PREVIEW_TEXTURE_ASYNC, surfaceTexture).sendToTarget();
+        }
+
+        public void setPreviewDisplayAsync(final SurfaceHolder surfaceHolder) {
+            mCameraHandler.obtainMessage(SET_PREVIEW_DISPLAY_ASYNC, surfaceHolder).sendToTarget();
         }
 
         public void startPreviewAsync() {
