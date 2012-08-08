@@ -193,7 +193,7 @@ public class CameraHolder {
     }
 
     public synchronized void release() {
-        Assert(mCameraDevice != null);
+        if (mCameraDevice == null) return;
 
         long now = System.currentTimeMillis();
         if (now < mKeepBeforeTime) {
