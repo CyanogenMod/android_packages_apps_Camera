@@ -16,9 +16,11 @@
 
 package com.android.camera;
 
+import android.annotation.TargetApi;
 import android.graphics.SurfaceTexture;
 import android.util.Log;
 
+import com.android.gallery3d.common.ApiHelper;
 import com.android.gallery3d.ui.GLCanvas;
 import com.android.gallery3d.ui.RawTexture;
 import com.android.gallery3d.ui.SurfaceTextureScreenNail;
@@ -26,6 +28,7 @@ import com.android.gallery3d.ui.SurfaceTextureScreenNail;
 /*
  * This is a ScreenNail which can displays camera preview.
  */
+@TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
 public class CameraScreenNail extends SurfaceTextureScreenNail {
     private static final String TAG = "CameraScreenNail";
     private static final int ANIM_NONE = 0;

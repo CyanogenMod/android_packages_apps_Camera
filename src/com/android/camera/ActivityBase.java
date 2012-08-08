@@ -21,6 +21,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.hardware.Camera.Parameters;
 import android.os.AsyncTask;
@@ -45,6 +46,8 @@ import com.android.gallery3d.app.AbstractGalleryActivity;
 import com.android.gallery3d.app.AppBridge;
 import com.android.gallery3d.app.GalleryActionBar;
 import com.android.gallery3d.app.PhotoPage;
+import com.android.gallery3d.common.ApiHelper;
+import com.android.gallery3d.ui.BitmapScreenNail;
 import com.android.gallery3d.ui.ScreenNail;
 import com.android.gallery3d.util.MediaSetUtils;
 
@@ -94,7 +97,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     protected int mPendingSwitchCameraId = -1;
 
     protected MyAppBridge mAppBridge;
-    protected CameraScreenNail mCameraScreenNail; // This shows camera preview.
+    protected ScreenNail mCameraScreenNail; // This shows camera preview.
     // The view containing only camera related widgets like control panel,
     // indicator bar, focus indicator and etc.
     protected View mCameraAppView;
@@ -511,12 +514,15 @@ public abstract class ActivityBase extends AbstractGalleryActivity
 
         int width = right - left;
         int height = bottom - top;
-        if (Util.getDisplayRotation(this) % 180 == 0) {
-            mCameraScreenNail.setPreviewFrameLayoutSize(width, height);
-        } else {
-            // Swap the width and height. Camera screen nail draw() is based on
-            // natural orientation, not the view system orientation.
-            mCameraScreenNail.setPreviewFrameLayoutSize(height, width);
+        if (ApiHelper.HAS_SURFACE_TEXTURE) {
+            CameraScreenNail screenNail = (CameraScreenNail) mCameraScreenNail;
+            if (Util.getDisplayRotation(this) % 180 == 0) {
+                screenNail.setPreviewFrameLayoutSize(width, height);
+            } else {
+                // Swap the width and height. Camera screen nail draw() is based on
+                // natural orientation, not the view system orientation.
+                screenNail.setPreviewFrameLayoutSize(height, width);
+            }
         }
 
         // Find out the coordinates of the preview frame relative to GL
@@ -577,13 +583,18 @@ public abstract class ActivityBase extends AbstractGalleryActivity
 
     class MyAppBridge extends AppBridge implements CameraScreenNail.Listener {
         @SuppressWarnings("hiding")
-        private CameraScreenNail mCameraScreenNail;
+        private ScreenNail mCameraScreenNail;
         private Server mServer;
 
         @Override
         public ScreenNail attachScreenNail() {
             if (mCameraScreenNail == null) {
-                mCameraScreenNail = new CameraScreenNail(this);
+                if (ApiHelper.HAS_SURFACE_TEXTURE) {
+                    mCameraScreenNail = new CameraScreenNail(this);
+                } else {
+                    Bitmap b = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+                    mCameraScreenNail = new BitmapScreenNail(b);
+                }
             }
             return mCameraScreenNail;
         }
@@ -593,7 +604,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
             mCameraScreenNail = null;
         }
 
-        public CameraScreenNail getCameraScreenNail() {
+        public ScreenNail getCameraScreenNail() {
             return mCameraScreenNail;
         }
 
