@@ -63,6 +63,7 @@ public class CameraSettings {
     public static final String KEY_COLOR_EFFECT = "pref_camera_coloreffect_key";
     public static final String KEY_AUTOEXPOSURE = "pref_camera_autoexposure_key";
     public static final String KEY_ANTIBANDING = "pref_camera_antibanding_key";
+    public static final String KEY_FOCUS_TIME = "pref_camera_focus_key";
     public static final String KEY_ISO = "pref_camera_iso_key";
     public static final String KEY_REDEYE_REDUCTION = "pref_camera_redeyereduction_key";
 

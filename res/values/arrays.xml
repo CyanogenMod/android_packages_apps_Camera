@@ -413,6 +413,25 @@
         <item>@drawable/ic_video_effects_background_normal_holo_dark</item>
     </array>
 
+    <!-- Camera Preferences for timer duration -->
+    <string-array name="pref_camera_focus_duration_entries" translatable="false">
+        <item>@string/pref_camera_focus_entry_infinit</item>
+        <item>@string/pref_camera_focus_entry_40</item>
+        <item>@string/pref_camera_focus_entry_30</item>
+        <item>@string/pref_camera_focus_entry_20</item>
+        <item>@string/pref_camera_focus_entry_15</item>
+        <item>@string/pref_camera_focus_entry_10</item>
+    </string-array>
+
+    <string-array name="pref_camera_focus_duration_values" translatable="false">
+        <item>0</item>
+        <item>40</item>
+        <item>30</item>
+        <item>20</item>
+        <item>15</item>
+        <item>10</item>
+    </string-array>
+
     <!-- Default focus mode setting.-->
     <string-array name="pref_camera_focusmode_default_array" translatable="false">
         <item>continuous-picture</item>

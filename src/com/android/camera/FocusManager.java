@@ -63,7 +63,6 @@ public class FocusManager {
     private static final String TAG = "FocusManager";
 
     private static final int RESET_TOUCH_FOCUS = 0;
-    private static final int RESET_TOUCH_FOCUS_DELAY = 3000;
 
     private int mState = STATE_IDLE;
     private static final int STATE_IDLE = 0; // Focus is not active.
@@ -283,8 +282,8 @@ public class FocusManager {
             updateFocusUI();
             // If this is triggered by touch focus, cancel focus after a
             // while.
-            if (mFocusArea != null) {
-                mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, RESET_TOUCH_FOCUS_DELAY);
+            if ((mFocusArea != null) && (ActivityBase.mFocusTime != 0)) {
+                mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, ActivityBase.mFocusTime);
             }
         } else if (mState == STATE_IDLE) {
             // User has released the focus key before focus completes.
@@ -356,9 +355,11 @@ public class FocusManager {
             autoFocus();
         } else {  // Just show the indicator in all other cases.
             updateFocusUI();
-            // Reset the metering area in 3 seconds.
             mHandler.removeMessages(RESET_TOUCH_FOCUS);
-            mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, RESET_TOUCH_FOCUS_DELAY);
+            if (ActivityBase.mFocusTime != 0) {
+                // Reset the metering area in 3 seconds.
+                mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, ActivityBase.mFocusTime);
+            }
         }
     }
 
