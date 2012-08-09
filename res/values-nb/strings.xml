@@ -40,6 +40,8 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Av"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"På"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Videokvalitet"</string>
+    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Høy"</string>
+    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Lav"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Tidsforkortelsesintervaller"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kamerainnstillinger"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Videoinnstillinger"</string>

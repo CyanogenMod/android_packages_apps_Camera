@@ -40,12 +40,13 @@
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Off"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"On"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Video quality"</string>
+    <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"High"</string>
+    <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Low"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Time lapse interval"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Camera settings"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Camcorder settings"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Picture size"</string>
-    <!-- no translation found for pref_camera_picturesize_entry_8mp (259953780932849079) -->
-    <skip />
+    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8M pixels"</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5M Pixels"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3M pixels"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2M pixels"</string>
