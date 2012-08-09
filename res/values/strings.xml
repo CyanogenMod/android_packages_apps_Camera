@@ -13,6 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- General strings -->
 
@@ -389,4 +390,77 @@
     <string name="accessibility_switch_to_panorama">Switch to panorama</string>
     <!-- TODO: remove the string as it is a work-around solution to bypass the default speak of the element type. -->
     <string name="empty" translatable="false">" "</string>
-</resources>
+
+    <!-- Default auto exposure setting. Do not translate. -->
+    <string name="pref_camera_autoexposure_default">center</string>
+    <!-- Settings screen, Select auto exposure title -->
+    <string name="pref_camera_autoexposure_title">Auto exposure mode</string>
+
+    <!-- Settings screen, auto exposure dialog radio button choices -->
+    <string name="pref_camera_autoexposure_entry_frameaverage">Frame average</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">Center weighted</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">Spot metering</string>
+    <string name="pref_camera_autoexposure_entry_matrix">Matrix</string>
+
+    <!-- Default redeye reduction setting. -->
+    <string name="pref_camera_redeyereduction_default" translatable="false">disable</string>
+
+    <!-- Settings screen, Select Redeye Reduction -->
+    <string name="pref_camera_redeyereduction_title">Redeye reduction</string>
+
+    <!-- Settings menu, redeye reduction choices -->
+    <string name="pref_camera_redeyereduction_entry_enable">Enable</string>
+    <string name="pref_camera_redeyereduction_entry_disable">Disable</string>
+
+    <!-- Settings screen, Anti Banding title -->
+    <string name="pref_camera_antibanding_title">Anti-banding</string>
+
+    <!-- Default Anti Banding setting. -->
+    <string name="pref_camera_antibanding_default">auto</string>
+
+    <!-- Settings screen, Anti Banding entries -->
+    <string name="pref_camera_antibanding_entry_0">Off</string>
+    <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+    <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+    <string name="pref_camera_antibanding_entry_3">Auto</string>
+
+    <!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">Color effect</string>
+
+    <!-- Default color effect setting. -->
+    <string name="pref_camera_coloreffect_default" translatable="false">none</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">None</string>
+    <string name="pref_camera_coloreffect_entry_mono">Mono</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negative</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Solarize</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Posterize</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Aqua</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Emboss</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Sketch</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mosaic</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Red tint</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Blue tint</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Green tint</string>
+
+    <string name="pref_camera_scenemode_entry_asd">ASD</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portrait</string>
+    <string name="pref_camera_scenemode_entry_landscape">Landscape</string>
+    <string name="pref_camera_scenemode_entry_night_portrait">Night Portrait</string>
+    <string name="pref_camera_scenemode_entry_theatre">Theatre</string>
+    <string name="pref_camera_scenemode_entry_beach">Beach</string>
+    <string name="pref_camera_scenemode_entry_snow">Snow</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Steady Photo</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Fireworks</string>
+    <string name="pref_camera_scenemode_entry_sports">Sports</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Candlelight</string>
+    <string name="pref_camera_scenemode_entry_flowers">Flowers</string>
+    <string name="pref_camera_scenemode_entry_ar">AR</string>
+
+ </resources>
+
+

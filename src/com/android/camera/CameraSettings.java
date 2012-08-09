@@ -57,8 +57,14 @@ public class CameraSettings {
     public static final String KEY_CAMERA_FIRST_USE_HINT_SHOWN = "pref_camera_first_use_hint_shown_key";
     public static final String KEY_VIDEO_FIRST_USE_HINT_SHOWN = "pref_video_first_use_hint_shown_key";
     public static final String KEY_POWER_SHUTTER = "pref_power_shutter";
-    public static final String KEY_ZSL = "pref_camera_zsl_key";
+
+    public static final String KEY_POWER_MODE = "pref_camera_powermode_key";
+    public static final String KEY_PICTURE_FORMAT = "pref_camera_pictureformat_key";
+    public static final String KEY_COLOR_EFFECT = "pref_camera_coloreffect_key";
+    public static final String KEY_AUTOEXPOSURE = "pref_camera_autoexposure_key";
+    public static final String KEY_ANTIBANDING = "pref_camera_antibanding_key";
     public static final String KEY_ISO = "pref_camera_iso_key";
+    public static final String KEY_REDEYE_REDUCTION = "pref_camera_redeyereduction_key";
 
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
 
@@ -141,6 +147,33 @@ public class CameraSettings {
         return false;
     }
 
+    private void qcomInitPreferences(PreferenceGroup group){
+         //Qcom Preference add here
+        ListPreference colorEffect = group.findPreference(KEY_COLOR_EFFECT);
+        ListPreference autoExposure = group.findPreference(KEY_AUTOEXPOSURE);
+        ListPreference antiBanding = group.findPreference(KEY_ANTIBANDING);
+        ListPreference redeyeReduction = group.findPreference(KEY_REDEYE_REDUCTION);
+
+		if (redeyeReduction != null) {
+            filterUnsupportedOptions(group,
+                    redeyeReduction, mParameters.getSupportedRedeyeReductionModes());
+        }
+
+        if (colorEffect != null) {
+            filterUnsupportedOptions(group,
+                    colorEffect, mParameters.getSupportedColorEffects());
+        }
+
+        if (antiBanding != null) {
+            filterUnsupportedOptions(group,
+                     antiBanding, mParameters.getSupportedAntibanding());
+        }
+        if (autoExposure != null) {
+            filterUnsupportedOptions(group,
+                     autoExposure, mParameters.getSupportedAutoexposure());
+        }
+    }
+
     private void initPreference(PreferenceGroup group) {
         ListPreference videoQuality = group.findPreference(KEY_VIDEO_QUALITY);
         ListPreference timeLapseInterval = group.findPreference(KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL);
@@ -180,15 +213,8 @@ public class CameraSettings {
                     flashMode, mParameters.getSupportedFlashModes());
         }
         if (focusMode != null) {
-            boolean wantsFocus = mContext.getResources().getBoolean(R.bool.wantsFocusModes)
-                || Util.useSamsungCamSettings();
-            if (mParameters.getMaxNumFocusAreas() == 0 || wantsFocus) {
-                filterUnsupportedOptions(group,
-                        focusMode, mParameters.getSupportedFocusModes());
-            } else {
-                // Remove the focus mode if we can use tap-to-focus
-                removePreference(group, focusMode.getKey());
-            }
+            filterUnsupportedOptions(group,
+                    focusMode, mParameters.getSupportedFocusModes());
         }
         if (videoFlashMode != null) {
             filterUnsupportedOptions(group,
@@ -206,6 +232,8 @@ public class CameraSettings {
             filterUnsupportedOptions(group,
                     iso, mParameters.getSupportedIsoValues());
         }
+
+        qcomInitPreferences(group);
     }
 
     private void buildExposureCompensation(
@@ -506,7 +534,6 @@ public class CameraSettings {
         if (CamcorderProfile.hasProfile(mCameraId, CamcorderProfile.QUALITY_480P)) {
             supported.add(Integer.toString(CamcorderProfile.QUALITY_480P));
         }
-
         return supported;
     }
 

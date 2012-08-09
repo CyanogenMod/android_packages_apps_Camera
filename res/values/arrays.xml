@@ -102,6 +102,7 @@
         <item>@string/pref_camera_picturesize_entry_2048x1216</item>
         <item>@string/pref_camera_picturesize_entry_2048x1216</item>
         <item>@string/pref_camera_picturesize_entry_1920x1080</item>
+        <item>@string/pref_camera_picturesize_entry_1920x1080</item>
         <item>@string/pref_camera_picturesize_entry_1600x1200</item>
         <item>@string/pref_camera_picturesize_entry_1600x960</item>
         <item>@string/pref_camera_picturesize_entry_1280x960</item>
@@ -140,6 +141,7 @@
         <item>2048x1216</item>
         <item>2048x1232</item>
         <item>1920x1080</item>
+        <item>1920x1088</item>
         <item>1600x1200</item>
         <item>1600x960</item>
         <item>1280x960</item>
@@ -315,6 +317,20 @@
         <item>@string/pref_camera_scenemode_entry_duskdawn</item>
         <item>@string/pref_camera_scenemode_entry_fallcolor</item>
         <item>@string/pref_camera_scenemode_entry_text</item>
+        <item>@string/pref_camera_scenemode_entry_asd</item>
+        <item>@string/pref_camera_scenemode_entry_portrait</item>
+        <item>@string/pref_camera_scenemode_entry_landscape</item>
+        <item>@string/pref_camera_scenemode_entry_night_portrait</item>
+        <item>@string/pref_camera_scenemode_entry_theatre</item>
+        <item>@string/pref_camera_scenemode_entry_beach</item>
+        <item>@string/pref_camera_scenemode_entry_snow</item>
+        <item>@string/pref_camera_scenemode_entry_steadyphoto</item>
+        <item>@string/pref_camera_scenemode_entry_fireworks</item>
+        <item>@string/pref_camera_scenemode_entry_sports</item>
+        <item>@string/pref_camera_scenemode_entry_candlelight</item>
+        <item>@string/pref_camera_scenemode_entry_backlight</item>
+        <item>@string/pref_camera_scenemode_entry_flowers</item>
+        <item>@string/pref_camera_scenemode_entry_ar</item>
     </string-array>
 
     <string-array name="pref_camera_scenemode_entryvalues" translatable="false">
@@ -327,6 +343,20 @@
         <item>duskdawn</item>
         <item>fallcolor</item>
         <item>text</item>
+        <item>asd</item>
+        <item>portrait</item>
+        <item>landscape</item>
+        <item>night-portrait</item>
+        <item>theatre</item>
+        <item>beach</item>
+        <item>snow</item>
+        <item>steadyphoto</item>
+        <item>fireworks</item>
+        <item>sports</item>
+        <item>candlelight</item>
+        <item>backlight</item>
+        <item>flowers</item>
+        <item>AR</item>
     </string-array>
 
     <array name="camera_id_entries" translatable="false">
@@ -388,4 +418,88 @@
         <item>continuous-picture</item>
         <item>auto</item>
     </string-array>
+
+    <!-- Camera Preferences Color effect dialog box entries -->
+    <string-array name="pref_camera_coloreffect_entries" translatable="false">
+        <item>@string/pref_camera_coloreffect_entry_none</item>
+        <item>@string/pref_camera_coloreffect_entry_mono</item>
+        <item>@string/pref_camera_coloreffect_entry_sepia</item>
+        <item>@string/pref_camera_coloreffect_entry_negative</item>
+        <item>@string/pref_camera_coloreffect_entry_solarize</item>
+        <item>@string/pref_camera_coloreffect_entry_posterize</item>
+        <item>@string/pref_camera_coloreffect_entry_aqua</item>
+        <item>@string/pref_camera_coloreffect_entry_emboss</item>
+        <item>@string/pref_camera_coloreffect_entry_sketch</item>
+        <item>@string/pref_camera_coloreffect_entry_neon</item>
+        <item>@string/pref_camera_coloreffect_entry_pastel</item>
+        <item>@string/pref_camera_coloreffect_entry_mosaic</item>
+        <item>@string/pref_camera_coloreffect_entry_redtint</item>
+        <item>@string/pref_camera_coloreffect_entry_bluetint</item>
+        <item>@string/pref_camera_coloreffect_entry_greentint</item>
+    </string-array>
+
+    <string-array name="pref_camera_coloreffect_entryvalues" translatable="false">
+        <item>none</item>
+        <item>mono</item>
+        <item>sepia</item>
+        <item>negative</item>
+        <item>solarize</item>
+        <item>posterize</item>
+        <item>aqua</item>
+        <item>emboss</item>
+        <item>sketch</item>
+        <item>neon</item>
+        <item>pastel</item>
+        <item>mosaic</item>
+        <item>red-tint</item>
+        <item>blue-tint</item>
+        <item>green-tint</item>
+    </string-array>
+
+    <!-- Camera Preferences Anti Banding dialog box entries -->
+     <string-array name="pref_camera_antibanding_entries">
+         <item>@string/pref_camera_antibanding_entry_0</item>
+         <item>@string/pref_camera_antibanding_entry_1</item>
+         <item>@string/pref_camera_antibanding_entry_2</item>
+         <item>@string/pref_camera_antibanding_entry_3</item>
+     </string-array>
+
+     <string-array name="pref_camera_antibanding_entryvalues">
+         <item>off</item>
+         <item>50hz</item>
+         <item>60hz</item>
+         <item>auto</item>
+     </string-array>
+
+    <!-- Camera Preferences Auto Exposure dialog box entries -->
+     <string-array name="pref_camera_autoexposure_entries">
+         <item>@string/pref_camera_autoexposure_entry_frameaverage</item>
+         <item>@string/pref_camera_autoexposure_entry_matrix</item>
+         <item>@string/pref_camera_autoexposure_entry_centerweighted</item>
+         <item>@string/pref_camera_autoexposure_entry_centerweighted</item>
+         <item>@string/pref_camera_autoexposure_entry_spotmetering</item>
+         <item>@string/pref_camera_autoexposure_entry_spotmetering</item>
+     </string-array>
+
+     <!-- Do not localize entryvalues -->
+     <string-array name="pref_camera_autoexposure_entryvalues">
+         <item>frame-average</item>
+         <item>matrix</item>
+         <item>center-weighted</item>
+         <item>center</item>
+         <item>spot-metering</item>
+         <item>spot</item>
+     </string-array>
+
+     <!-- Camera Preferences Redeye Reduction dialog box entries -->
+     <string-array name="pref_camera_redeyereduction_entries" translatable="false">
+         <item>@string/pref_camera_redeyereduction_entry_enable</item>
+         <item>@string/pref_camera_redeyereduction_entry_disable</item>
+     </string-array>
+
+     <string-array name="pref_camera_redeyereduction_entryvalues" translatable="false">
+         <item>enable</item>
+         <item>disable</item>
+     </string-array>
+
 </resources>

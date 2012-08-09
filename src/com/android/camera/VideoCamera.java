@@ -274,7 +274,6 @@ public class VideoCamera extends ActivityBase
                     mSwitchingCamera = false;
                     break;
                 }
-
                 default:
                     Log.v(TAG, "Unhandled message: " + msg.what);
                     break;
@@ -442,9 +441,11 @@ public class VideoCamera extends ActivityBase
                     CameraSettings.KEY_VIDEO_EFFECT,
                     CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
                     CameraSettings.KEY_VIDEO_QUALITY};
+
         final String[] OTHER_SETTING_KEYS = {
                     CameraSettings.KEY_RECORD_LOCATION,
-                    CameraSettings.KEY_POWER_SHUTTER};
+                    CameraSettings.KEY_POWER_SHUTTER,
+                    CameraSettings.KEY_COLOR_EFFECT };
 
         CameraPicker.setImageResourceId(R.drawable.ic_switch_video_facing_holo_light);
         mIndicatorControlContainer.initialize(this, mPreferenceGroup,
@@ -692,6 +693,7 @@ public class VideoCamera extends ActivityBase
                         null);
             }
         }
+
         // Read time lapse recording interval.
         String frameIntervalStr = mPreferences.getString(
                 CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
@@ -1117,6 +1119,7 @@ public class VideoCamera extends ActivityBase
             mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
         }
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+
         mMediaRecorder.setProfile(mProfile);
         mMediaRecorder.setMaxDuration(mMaxVideoDurationInMs);
         if (mCaptureTimeLapse) {
@@ -1788,6 +1791,7 @@ public class VideoCamera extends ActivityBase
         return supported == null ? false : supported.indexOf(value) >= 0;
     }
 
+    @SuppressWarnings("deprecation")
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
 
@@ -1797,8 +1801,12 @@ public class VideoCamera extends ActivityBase
         // Set video size before recording starts
         CameraSettings.setEarlyVideoSize(mParameters, mProfile);
 
+        Log.e(TAG,"Preview dimension in App->"+mDesiredPreviewWidth+"X"+mDesiredPreviewHeight);
         mParameters.setPreviewSize(mDesiredPreviewWidth, mDesiredPreviewHeight);
         mParameters.setPreviewFrameRate(mProfile.videoFrameRate);
+
+        String recordSize = mProfile.videoFrameWidth + "x" + mProfile.videoFrameHeight;
+        mParameters.set("video-size", recordSize);
 
         // Set flash mode.
         String flashMode;
@@ -1873,7 +1881,17 @@ public class VideoCamera extends ActivityBase
                 CameraProfile.QUALITY_HIGH);
         mParameters.setJpegQuality(jpegQuality);
 
+        // Color effect
+        String colorEffect = mPreferences.getString(
+                CameraSettings.KEY_COLOR_EFFECT,
+                getString(R.string.pref_camera_coloreffect_default));
+        Log.e(TAG, "Color effect value =" + colorEffect);
+        if (isSupported(colorEffect, mParameters.getSupportedColorEffects())) {
+            mParameters.setColorEffect(colorEffect);
+        }
+
         CameraSettings.dumpParameters(mParameters);
+
         mCameraDevice.setParameters(mParameters);
         // Keep preview size up to date.
         mParameters = mCameraDevice.getParameters();
@@ -2382,7 +2400,6 @@ public class VideoCamera extends ActivityBase
                 || !mMediaRecorderRecording || effectsActive()) {
             return;
         }
-
         // Set rotation and gps data.
         int rotation = Util.getJpegRotation(mCameraId, mOrientation);
         mParameters.setRotation(rotation);
