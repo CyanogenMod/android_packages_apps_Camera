@@ -16,6 +16,7 @@
 
 package com.android.camera.ui;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -28,7 +29,9 @@ import android.view.View;
 
 import com.android.camera.R;
 import com.android.camera.Util;
+import com.android.gallery3d.common.ApiHelper;
 
+@TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class FaceView extends View implements FocusIndicator, Rotatable {
     private static final String TAG = "FaceView";
     private final boolean LOGV = false;

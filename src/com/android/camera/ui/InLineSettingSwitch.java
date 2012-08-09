@@ -70,13 +70,7 @@ public class InLineSettingSwitch extends InLineSettingItem {
 
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
-        onPopulateAccessibilityEvent(event);
-        return true;
-    }
-
-    @Override
-    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
-        super.onPopulateAccessibilityEvent(event);
         event.getText().add(mPreference.getTitle());
+        return true;
     }
 }
