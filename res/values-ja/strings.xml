@@ -125,6 +125,11 @@
     <string name="accessibility_switch" msgid="6995966685498958895">"%1$sの切り替え"</string>
 
     <!-- CM Extra entries -->
+    <!-- More Settings screen, focus sound title -->
+    <string name="pref_camera_focus_sound_title">Focus sound</string>
+    <string name="pref_camera_focus_sound_default">on</string>
+
+
     <!-- More Settings screen, storage title -->
     <string name="pref_camera_storage_title">ストレージ</string>
 
@@ -133,6 +138,7 @@
 
     <string name="pref_camera_focusmode_entry_fixed">固定</string>
     <string name="pref_camera_focusmode_entry_facedetect">顔認識</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Continuous Picture</string>
 
     <string name="pref_camera_whitebalance_entry_cloudydaylight">日中の曇</string>
     <string name="pref_camera_scenemode_entry_backlight">バックライト</string>
@@ -146,6 +152,19 @@
     <string name="pref_camera_scenemode_entry_fireworks">花火</string>
     <string name="pref_camera_scenemode_entry_sports">スポーツ</string>
     <string name="pref_camera_scenemode_entry_candlelight">キャンドル</string>
+
+    <string name="pref_camera_iso_entry_auto">自動</string>
+    <string name="pref_camera_iso_entry_isodeblur">自動 (HJR)</string>
+
+    <!-- Settings screen, Burst mode title -->
+    <string name="pref_camera_burst_title">連写</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_off">オフ</string>
+    <string name="pref_camera_burst_entry_5">5枚</string>
+    <string name="pref_camera_burst_entry_10">10枚</string>
+    <string name="pref_camera_burst_entry_15">15枚</string>
+    <string name="pref_camera_burst_entry_20">20枚</string>
 
     <string name="pref_camera_timer_title">タイマーモード</string>
     <string name="pref_camera_timer_entry_0">オフ</string>
