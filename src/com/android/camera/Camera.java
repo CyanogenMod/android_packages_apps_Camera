@@ -146,7 +146,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private boolean mFaceDetectionStarted = false;
 
     private PreviewFrameLayout mPreviewFrameLayout;
-    private SurfaceTexture mSurfaceTexture;
+    private Object mSurfaceTexture;
 
     private SurfaceView mCameraSurfaceView; // for API level 10
     // For API level 10. True if the preview is full screen and preview should
@@ -369,7 +369,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 }
 
                 case SWITCH_CAMERA_START_ANIMATION: {
-                    mCameraScreenNail.animateSwitchCamera();
+                    ((CameraScreenNail) mCameraScreenNail).animateSwitchCamera();
                     break;
                 }
 
@@ -1192,7 +1192,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent) {
             // Start capture animation.
-            mCameraScreenNail.animateCapture(getCameraRotation());
+            ((CameraScreenNail) mCameraScreenNail).animateCapture(getCameraRotation());
         }
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
@@ -1673,7 +1673,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Close the camera now because other activities may need to use it.
         closeCamera();
         if (mSurfaceTexture != null) {
-            mCameraScreenNail.releaseSurfaceTexture();
+            ((CameraScreenNail) mCameraScreenNail).releaseSurfaceTexture();
             mSurfaceTexture = null;
         }
         if (mSoundPlayer != null) {
@@ -1772,7 +1772,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mZoomControl = (ZoomControl) findViewById(R.id.zoom_control);
         mOnScreenIndicators = (Rotatable) findViewById(R.id.on_screen_indicators);
         mFaceView = (FaceView) findViewById(R.id.face_view);
-        mPreviewFrameLayout.setOnLayoutChangeListener(this);
         mPreviewFrameLayout.setOnSizeChangedListener(this);
 
         if (!ApiHelper.HAS_SURFACE_TEXTURE) {
@@ -1780,6 +1779,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mCameraSurfaceView.setVisibility(View.VISIBLE);
             mCameraSurfaceView.getHolder().addCallback(this);
             mCameraSurfaceView.setZOrderMediaOverlay(true);
+        } else {
+            mPreviewFrameLayout.setOnLayoutChangeListener(this);
         }
     }
 
@@ -1993,19 +1994,20 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         setCameraParameters(UPDATE_PARAM_ALL);
 
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
+            CameraScreenNail screenNail = (CameraScreenNail) mCameraScreenNail;
             if (mSurfaceTexture == null) {
                 Size size = mParameters.getPreviewSize();
                 if (mCameraDisplayOrientation % 180 == 0) {
-                    mCameraScreenNail.setSize(size.width, size.height);
+                    screenNail.setSize(size.width, size.height);
                 } else {
-                    mCameraScreenNail.setSize(size.height, size.width);
+                    screenNail.setSize(size.height, size.width);
                 }
                 notifyScreenNailChanged();
-                mCameraScreenNail.acquireSurfaceTexture();
-                mSurfaceTexture = mCameraScreenNail.getSurfaceTexture();
+                screenNail.acquireSurfaceTexture();
+                mSurfaceTexture = screenNail.getSurfaceTexture();
             }
             mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
-            mCameraDevice.setPreviewTextureAsync(mSurfaceTexture);
+            mCameraDevice.setPreviewTextureAsync((SurfaceTexture) mSurfaceTexture);
         } else {
             mCameraDevice.setDisplayOrientation(mDisplayOrientation);
             mCameraDevice.setPreviewDisplayAsync(mCameraSurfaceView.getHolder());
@@ -2333,7 +2335,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Log.v(TAG, "Start to copy texture. cameraId=" + cameraId);
             // We need to keep a preview frame for the animation before
             // releasing the camera. This will trigger onPreviewTextureCopied.
-            mCameraScreenNail.copyTexture();
+            ((CameraScreenNail) mCameraScreenNail).copyTexture();
             // Disable all camera controls.
             setCameraState(SWITCHING_CAMERA);
         } else {

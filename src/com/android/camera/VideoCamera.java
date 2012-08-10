@@ -121,7 +121,7 @@ public class VideoCamera extends ActivityBase
     private PreferenceGroup mPreferenceGroup;
 
     private PreviewFrameLayout mPreviewFrameLayout;
-    private SurfaceTexture mSurfaceTexture;
+    private Object mSurfaceTexture;
     private IndicatorControlContainer mIndicatorControlContainer;
     private int mSurfaceWidth;
     private int mSurfaceHeight;
@@ -264,7 +264,7 @@ public class VideoCamera extends ActivityBase
                 }
 
                 case SWITCH_CAMERA_START_ANIMATION: {
-                    mCameraScreenNail.animateSwitchCamera();
+                    ((CameraScreenNail) mCameraScreenNail).animateSwitchCamera();
 
                     // Enable all camera controls.
                     mSwitchingCamera = false;
@@ -584,7 +584,9 @@ public class VideoCamera extends ActivityBase
             }
         } else if (!recordFail){
             // Start capture animation.
-            if (!mPaused) mCameraScreenNail.animateCapture(getCameraRotation());
+            if (!mPaused) {
+                ((CameraScreenNail) mCameraScreenNail).animateCapture(getCameraRotation());
+            }
             if (!effectsActive()) getThumbnail();
         }
     }
@@ -837,7 +839,7 @@ public class VideoCamera extends ActivityBase
 
         try {
             if (!effectsActive()) {
-                mCameraDevice.setPreviewTextureAsync(mSurfaceTexture);
+                mCameraDevice.setPreviewTextureAsync((SurfaceTexture) mSurfaceTexture);
                 mCameraDevice.startPreviewAsync();
             } else {
                 mSurfaceWidth = mCameraScreenNail.getWidth();
@@ -938,7 +940,7 @@ public class VideoCamera extends ActivityBase
             clearVideoNamer();
         }
         if (mSurfaceTexture != null) {
-            mCameraScreenNail.releaseSurfaceTexture();
+            ((CameraScreenNail) mCameraScreenNail).releaseSurfaceTexture();
             mSurfaceTexture = null;
         }
 
@@ -1199,7 +1201,8 @@ public class VideoCamera extends ActivityBase
 
         mOrientationCompensationAtRecordStart = mOrientationCompensation;
 
-        mEffectsRecorder.setPreviewSurfaceTexture(mSurfaceTexture, mSurfaceWidth, mSurfaceHeight);
+        mEffectsRecorder.setPreviewSurfaceTexture(
+                (SurfaceTexture) mSurfaceTexture, mSurfaceWidth, mSurfaceHeight);
 
         if (mEffectType == EffectsRecorder.EFFECT_BACKDROPPER &&
                 ((String) mEffectParameter).equals(EFFECT_BG_FROM_GALLERY)) {
@@ -1865,23 +1868,26 @@ public class VideoCamera extends ActivityBase
     }
 
     private void updateCameraScreenNailSize(int width, int height) {
+        if (!ApiHelper.HAS_SURFACE_TEXTURE) return;
+
         if (mCameraDisplayOrientation % 180 != 0) {
             int tmp = width;
             width = height;
             height = tmp;
         }
 
-        int oldWidth = mCameraScreenNail.getWidth();
-        int oldHeight = mCameraScreenNail.getHeight();
+        CameraScreenNail screenNail = (CameraScreenNail) mCameraScreenNail;
+        int oldWidth = screenNail.getWidth();
+        int oldHeight = screenNail.getHeight();
 
         if (oldWidth != width || oldHeight != height) {
-            mCameraScreenNail.setSize(width, height);
+            screenNail.setSize(width, height);
             notifyScreenNailChanged();
         }
 
         if (mSurfaceTexture == null) {
-            mCameraScreenNail.acquireSurfaceTexture();
-            mSurfaceTexture = mCameraScreenNail.getSurfaceTexture();
+            screenNail.acquireSurfaceTexture();
+            mSurfaceTexture = screenNail.getSurfaceTexture();
         }
     }
 
@@ -2171,7 +2177,7 @@ public class VideoCamera extends ActivityBase
         Log.d(TAG, "Start to copy texture.");
         // We need to keep a preview frame for the animation before
         // releasing the camera. This will trigger onPreviewTextureCopied.
-        mCameraScreenNail.copyTexture();
+        ((CameraScreenNail) mCameraScreenNail).copyTexture();
         mPendingSwitchCameraId = cameraId;
         // Disable all camera controls.
         mSwitchingCamera = true;

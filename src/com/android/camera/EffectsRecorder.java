@@ -41,6 +41,7 @@ import java.lang.reflect.Proxy;
  * Encapsulates the mobile filter framework components needed to record video
  * with effects applied. Modeled after MediaRecorder.
  */
+@TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB) // uses SurfaceTexture
 public class EffectsRecorder {
     private static final String TAG = "EffectsRecorder";
 

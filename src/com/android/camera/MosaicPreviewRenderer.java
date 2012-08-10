@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import android.annotation.TargetApi;
 import android.graphics.SurfaceTexture;
 import android.os.ConditionVariable;
 import android.os.Handler;
@@ -24,6 +25,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
+import com.android.gallery3d.common.ApiHelper;
+
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -31,6 +34,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 import javax.microedition.khronos.opengles.GL10;
 
+@TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB) // uses SurfaceTexture
 public class MosaicPreviewRenderer {
     private static final String TAG = "MosaicPreviewRenderer";
     private static final int EGL_CONTEXT_CLIENT_VERSION = 0x3098;

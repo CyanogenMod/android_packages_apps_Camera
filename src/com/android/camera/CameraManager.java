@@ -109,6 +109,15 @@ public class CameraManager {
             mCamera.setFaceDetectionListener(listener);
         }
 
+        @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
+        private void setPreviewTexture(Object surfaceTexture) {
+            try {
+                mCamera.setPreviewTexture((SurfaceTexture) surfaceTexture);
+            } catch(IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         /*
          * This method does not deal with the build version check.  Everyone should
          * check first before sending message to this handler.
@@ -141,11 +150,7 @@ public class CameraManager {
                         break;
 
                     case SET_PREVIEW_TEXTURE_ASYNC:
-                        try {
-                            mCamera.setPreviewTexture((SurfaceTexture) msg.obj);
-                        } catch(IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        setPreviewTexture(msg.obj);
                         return;  // no need to call mSig.open()
 
                     case SET_PREVIEW_DISPLAY_ASYNC:
@@ -302,6 +307,7 @@ public class CameraManager {
             mSig.block();
         }
 
+        @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
         public void setPreviewTextureAsync(final SurfaceTexture surfaceTexture) {
             mCameraHandler.obtainMessage(SET_PREVIEW_TEXTURE_ASYNC, surfaceTexture).sendToTarget();
         }

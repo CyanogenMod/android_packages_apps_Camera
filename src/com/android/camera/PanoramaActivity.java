@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -53,6 +54,7 @@ import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
+import com.android.gallery3d.common.ApiHelper;
 import com.android.gallery3d.ui.GLRootView;
 
 import java.io.ByteArrayOutputStream;
@@ -65,6 +67,7 @@ import java.util.TimeZone;
 /**
  * Activity to handle panorama capturing.
  */
+@TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB) // uses SurfaceTexture
 public class PanoramaActivity extends ActivityBase implements
         ModePicker.OnModeChangeListener, SurfaceTexture.OnFrameAvailableListener,
         ShutterButton.OnShutterButtonListener {
@@ -452,19 +455,20 @@ public class PanoramaActivity extends ActivityBase implements
 
     private void configMosaicPreview(int w, int h) {
         stopCameraPreview();
-        mCameraScreenNail.setSize(w, h);
-        if (mCameraScreenNail.getSurfaceTexture() == null) {
-            mCameraScreenNail.acquireSurfaceTexture();
+        CameraScreenNail screenNail = (CameraScreenNail) mCameraScreenNail;
+        screenNail.setSize(w, h);
+        if (screenNail.getSurfaceTexture() == null) {
+            screenNail.acquireSurfaceTexture();
         } else {
-            mCameraScreenNail.releaseSurfaceTexture();
-            mCameraScreenNail.acquireSurfaceTexture();
+            screenNail.releaseSurfaceTexture();
+            screenNail.acquireSurfaceTexture();
             notifyScreenNailChanged();
         }
         boolean isLandscape = (getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE);
         if (mMosaicPreviewRenderer != null) mMosaicPreviewRenderer.release();
         mMosaicPreviewRenderer = new MosaicPreviewRenderer(
-                mCameraScreenNail.getSurfaceTexture(), w, h, isLandscape);
+                screenNail.getSurfaceTexture(), w, h, isLandscape);
 
         mCameraTexture = mMosaicPreviewRenderer.getInputSurfaceTexture();
         if (!mPaused && !mThreadRunning && mWaitProcessorTask == null) {
@@ -974,8 +978,9 @@ public class PanoramaActivity extends ActivityBase implements
             mSoundPlayer.release();
             mSoundPlayer = null;
         }
-        if (mCameraScreenNail.getSurfaceTexture() != null) {
-            mCameraScreenNail.releaseSurfaceTexture();
+        CameraScreenNail screenNail = (CameraScreenNail) mCameraScreenNail;
+        if (screenNail.getSurfaceTexture() != null) {
+            screenNail.releaseSurfaceTexture();
         }
         System.gc();
     }
