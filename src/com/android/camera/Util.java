@@ -43,6 +43,7 @@ import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.FloatMath;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.OrientationEventListener;
 import android.view.Surface;
@@ -325,12 +326,14 @@ public class Util {
                 activity.finish();
             }
         };
+        TypedValue out = new TypedValue();
+        activity.getTheme().resolveAttribute(android.R.attr.alertDialogIcon, out, true);
         new AlertDialog.Builder(activity)
                 .setCancelable(false)
-                .setIconAttribute(android.R.attr.alertDialogIcon)
                 .setTitle(R.string.camera_error_title)
                 .setMessage(msgId)
                 .setNeutralButton(R.string.dialog_ok, buttonListener)
+                .setIcon(out.resourceId)
                 .show();
     }
 

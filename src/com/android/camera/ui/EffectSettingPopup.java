@@ -16,6 +16,7 @@
 
 package com.android.camera.ui;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -26,6 +27,8 @@ import android.widget.SimpleAdapter;
 
 import com.android.camera.IconListPreference;
 import com.android.camera.R;
+
+import com.android.gallery3d.common.ApiHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -148,6 +151,7 @@ public class EffectSettingPopup extends AbstractSettingPopup implements
     }
 
     // The value of the preference may have changed. Update the UI.
+    @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
     @Override
     public void reloadPreference() {
         mBackgroundGrid.setItemChecked(mBackgroundGrid.getCheckedItemPosition(), false);
