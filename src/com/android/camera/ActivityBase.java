@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.hardware.Camera.Parameters;
 import android.os.AsyncTask;
@@ -592,8 +593,9 @@ public abstract class ActivityBase extends AbstractGalleryActivity
                 if (ApiHelper.HAS_SURFACE_TEXTURE) {
                     mCameraScreenNail = new CameraScreenNail(this);
                 } else {
-                    Bitmap b = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-                    mCameraScreenNail = new BitmapScreenNail(b);
+                    Bitmap b = BitmapFactory.decodeResource(getResources(),
+                            R.drawable.wallpaper_picker_preview);
+                    mCameraScreenNail = new StaticBitmapScreenNail(b);
                 }
             }
             return mCameraScreenNail;
