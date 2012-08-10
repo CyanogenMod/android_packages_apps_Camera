@@ -165,8 +165,15 @@ public class MosaicPreviewRenderer {
             mEglSurface = null;
             mEglContext = null;
             mEglDisplay = null;
-            mInputSurfaceTexture.release();
+            releaseSurfaceTexture(mInputSurfaceTexture);
             mEglThread.quit();
+        }
+
+        @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
+        private void releaseSurfaceTexture(SurfaceTexture st) {
+            if (ApiHelper.HAS_RELEASE_SURFACE_TEXTURE) {
+                st.release();
+            }
         }
 
         // Should be called from other thread.
