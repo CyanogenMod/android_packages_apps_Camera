@@ -46,7 +46,7 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Nastavenia fotoaparátu"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Nastavenie videokamery"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Veľkosť fotografie"</string>
-    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 megapixlov"</string>
+    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 megapixelov"</string>
     <string name="pref_camera_picturesize_entry_2592x1936" msgid="6980117304679164339">"5 megapixlov"</string>
     <string name="pref_camera_picturesize_entry_2048x1536" msgid="4391030755438075447">"3 megapixle"</string>
     <string name="pref_camera_picturesize_entry_1600x1200" msgid="8081839485457681369">"2 megapixle"</string>
