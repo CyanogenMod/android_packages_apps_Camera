@@ -19,6 +19,7 @@ package com.android.camera;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.util.AttributeSet;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewStub;
@@ -54,6 +55,7 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
         if (!ApiHelper.HAS_SURFACE_TEXTURE_RECORDING) {
             SurfaceView v = (SurfaceView) findViewById(R.id.preview_surface_view);
             v.setZOrderMediaOverlay(true);
+            v.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         }
         if (ApiHelper.HAS_FACE_DETECTION) {
             ViewStub faceViewStub = (ViewStub) findViewById(R.id.face_view_stub);
