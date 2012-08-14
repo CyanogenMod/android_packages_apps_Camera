@@ -911,6 +911,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 setCameraState(IDLE);
                 startFaceDetection();
             } else {
+                mFocusManager.resetTouchFocus();
                 setCameraState(IDLE);
             }
 
