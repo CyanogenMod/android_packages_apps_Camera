@@ -14,15 +14,12 @@
      limitations under the License.
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- When an activity requests a theme with an action bar from its manifest,
-         the activity preview window created by the system process while the
-         real activity is loading will also contain an action bar. Set this to
-         NoActionBar and change the theme in onCreate. -->
-    <style name="ThemeCamera" parent="android:Theme.Holo.NoActionBar.Fullscreen">
+    <style name="Theme.Camera" parent="Theme.CameraBase">
         <item name="android:windowBackground">@android:color/black</item>
         <item name="android:colorBackground">@android:color/black</item>
         <item name="android:colorBackgroundCacheHint">@android:color/black</item>
     </style>
+    <style name="Theme.CameraBase" parent="android:Theme.Black.NoTitleBar.Fullscreen"/>
     <style name="OnScreenHintTextAppearance">
         <item name="android:textColor">@android:color/primary_text_dark</item>
         <item name="android:textColorHighlight">#FFFF9200</item>

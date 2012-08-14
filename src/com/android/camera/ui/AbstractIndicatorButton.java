@@ -33,7 +33,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
         PopupManager.OnOtherPopupShowedListener {
     @SuppressWarnings("unused")
     private static final String TAG = "AbstractIndicatorButton";
-    protected Animation mFadeIn, mFadeOut;
+    //protected Animation mFadeIn, mFadeOut;
     protected final int HIGHLIGHT_COLOR;
     protected AbstractSettingPopup mPopup;
     protected Handler mHandler = new MainHandler();
@@ -46,8 +46,8 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
 
     public AbstractIndicatorButton(Context context) {
         super(context);
-        mFadeIn = AnimationUtils.loadAnimation(context, R.anim.setting_popup_grow_fade_in);
-        mFadeOut = AnimationUtils.loadAnimation(context, R.anim.setting_popup_shrink_fade_out);
+//        mFadeIn = AnimationUtils.loadAnimation(context, R.anim.setting_popup_grow_fade_in);
+//        mFadeOut = AnimationUtils.loadAnimation(context, R.anim.setting_popup_shrink_fade_out);
         HIGHLIGHT_COLOR = context.getResources().getColor(R.color.review_control_pressed_color);
         setScaleType(ImageView.ScaleType.CENTER);
         PopupManager.getInstance(context).setOnOtherPopupShowedListener(this);
@@ -124,7 +124,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
         mPopup.setVisibility(View.VISIBLE);
         mPopup.setOrientation(getDegree(), false);
         mPopup.clearAnimation();
-        mPopup.startAnimation(mFadeIn);
+//        mPopup.startAnimation(mFadeIn);
         if (mListener != null) mListener.onShowIndicator(this, true);
     }
 
@@ -133,7 +133,7 @@ public abstract class AbstractIndicatorButton extends RotateImageView implements
         mHandler.removeMessages(MSG_DISMISS_POPUP);
         if (mPopup != null && mPopup.getVisibility() == View.VISIBLE) {
             mPopup.clearAnimation();
-            mPopup.startAnimation(mFadeOut);
+//            mPopup.startAnimation(mFadeOut);
             mPopup.setVisibility(View.GONE);
             if (mListener != null) mListener.onShowIndicator(this, false);
             invalidate();
