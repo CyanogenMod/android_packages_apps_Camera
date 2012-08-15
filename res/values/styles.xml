@@ -55,6 +55,7 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:listSelector">@drawable/bg_pressed</item>
     </style>
     <style name="SettingItemTitle">
         <item name="android:textSize">@dimen/setting_item_text_size</item>
@@ -177,4 +178,13 @@
         <item name="android:textColor">@color/holo_blue_light</item>
     </style>
     <style name="TextAppearance.Medium" parent="@android:style/TextAppearance.Medium"/>
+    <style name="Widget.Button.Borderless" parent="android:Widget.Button">
+        <item name="android:background">@drawable/bg_pressed</item>
+        <item name="android:textAppearance">@style/TextAppearance.Medium</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:minHeight">48dip</item>
+        <item name="android:minWidth">64dip</item>
+        <item name="android:paddingLeft">4dip</item>
+        <item name="android:paddingRight">4dip</item>
+    </style>
 </resources>

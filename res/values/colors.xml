@@ -30,4 +30,6 @@
     <color name="pano_progress_indication_fast">#FFFF2222</color>
     <color name="mode_selection_border">#33B5E5</color>
     <color name="holo_blue_light">#ff33b5e5</color>
+    <color name="bright_foreground_disabled_holo_dark">#ff4c4c4c</color>
+    <color name="bright_foreground_holo_dark">#fff3f3f3</color>
 </resources>

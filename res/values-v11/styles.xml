@@ -19,5 +19,6 @@
          real activity is loading will also contain an action bar. Set this to
          NoActionBar and change the theme in onCreate. -->
     <style name="Theme.CameraBase" parent="android:Theme.Holo.NoActionBar.Fullscreen"/>
+    <style name="Widget.Button.Borderless" parent="android:Widget.Holo.Button.Borderless"/>
 </resources>
 
