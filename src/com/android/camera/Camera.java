@@ -148,7 +148,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private PreviewFrameLayout mPreviewFrameLayout;
     private Object mSurfaceTexture;
 
-    private SurfaceView mCameraSurfaceView; // for API level 10
+    // for API level 10
+    private SurfaceView mCameraSurfaceView;
+    private volatile SurfaceHolder mCameraSurfaceHolder;
     // For API level 10. True if the preview is full screen and preview should
     // be started. False if users swipe to the last photo and the preview should
     // be stopped.
@@ -381,6 +383,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 case START_PREVIEW_DONE: {
                     mCameraStartUpThread = null;
                     setCameraState(IDLE);
+                    if (!ApiHelper.HAS_SURFACE_TEXTURE) {
+                        // This may happen if surfaceCreated has arrived.
+                        mCameraDevice.setPreviewDisplayAsync(mCameraSurfaceHolder);
+                    }
                     startFaceDetection();
                     break;
                 }
@@ -1290,27 +1296,32 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        if (mCameraDevice == null || holder.getSurface() == null) return;
-
-        Log.v(TAG, "surfaceChanged. width=" + width + ". height=" + height);
-        if (holder.isCreating()) {
-            mCameraDevice.setPreviewDisplayAsync(holder);
-        } else {
-            stopPreview();
-            mFocusManager.resetTouchFocus();
-            startPreview();
-            setCameraState(IDLE);
-        }
+        Log.v(TAG, "surfaceChanged:" + holder + " width=" + width + ". height="
+                + height);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Log.v(TAG, "surfaceCreated");
+        Log.v(TAG, "surfaceCreated: " + holder);
+        mCameraSurfaceHolder = holder;
+        // Do not access the camera if camera start up thread is not finished.
+        if (mCameraDevice == null || mCameraStartUpThread != null) return;
+
+        mCameraDevice.setPreviewDisplayAsync(holder);
+        // This happens when onConfigurationChanged arrives, surface has been
+        // destroyed, and there is no onFullScreenChanged.
+        if (mCameraState == PREVIEW_STOPPED) {
+            mFocusManager.resetTouchFocus();
+            startPreview();
+            setCameraState(IDLE);
+            startFaceDetection();
+        }
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.v(TAG, "surfaceCreated");
+        Log.v(TAG, "surfaceDestroyed: " + holder);
+        mCameraSurfaceHolder = null;
         stopPreview();
     }
 
@@ -1773,19 +1784,18 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mOnScreenIndicators = (Rotatable) findViewById(R.id.on_screen_indicators);
         mFaceView = (FaceView) findViewById(R.id.face_view);
         mPreviewFrameLayout.setOnSizeChangedListener(this);
-
+        mPreviewFrameLayout.setOnLayoutChangeListener(this);
         if (!ApiHelper.HAS_SURFACE_TEXTURE) {
             mCameraSurfaceView = (SurfaceView) findViewById(R.id.preview_surface_view);
             mCameraSurfaceView.setVisibility(View.VISIBLE);
             mCameraSurfaceView.getHolder().addCallback(this);
-        } else {
-            mPreviewFrameLayout.setOnLayoutChangeListener(this);
         }
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        Log.v(TAG, "onConfigurationChanged");
         setDisplayOrientation();
 
         // Change layout in response to configuration change
@@ -2009,7 +2019,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mCameraDevice.setPreviewTextureAsync((SurfaceTexture) mSurfaceTexture);
         } else {
             mCameraDevice.setDisplayOrientation(mDisplayOrientation);
-            mCameraDevice.setPreviewDisplayAsync(mCameraSurfaceView.getHolder());
+            mCameraDevice.setPreviewDisplayAsync(mCameraSurfaceHolder);
         }
 
         Log.v(TAG, "startPreview");

@@ -52,7 +52,8 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
     @Override
     protected void onFinishInflate() {
         mBorder = findViewById(R.id.preview_border);
-        if (!ApiHelper.HAS_SURFACE_TEXTURE_RECORDING) {
+        if (!ApiHelper.HAS_SURFACE_TEXTURE_RECORDING
+                || !ApiHelper.HAS_SURFACE_TEXTURE) {
             SurfaceView v = (SurfaceView) findViewById(R.id.preview_surface_view);
             v.setZOrderMediaOverlay(true);
             v.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
