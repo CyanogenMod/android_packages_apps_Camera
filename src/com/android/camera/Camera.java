@@ -69,7 +69,7 @@ import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomControl;
-
+import com.android.gallery3d.app.StateManager;
 import com.android.gallery3d.common.ApiHelper;
 
 import java.io.File;
@@ -1624,6 +1624,13 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     @Override
     protected boolean updateStorageHintOnResume() {
         return mFirstTimeInitialized;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        StateManager stateManager = getStateManager();
+        stateManager.clearActivityResult();
     }
 
     @Override
