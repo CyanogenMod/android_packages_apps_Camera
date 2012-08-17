@@ -2060,7 +2060,11 @@ public class PhotoModule
         // ICS camera frameworks has a bug. Face detection state is not cleared
         // after taking a picture. Stop the preview to work around it. The bug
         // was fixed in JB.
-        if (mCameraState != PREVIEW_STOPPED) stopPreview();
+        if (mCameraState != PREVIEW_STOPPED &&
+             (!mActivity.getResources().getBoolean(R.bool.previewStopsDuringSnapshot) ||
+               mCameraState != SNAPSHOT_IN_PROGRESS)
+           )
+            stopPreview();
 
         setDisplayOrientation();
 

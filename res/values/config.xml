@@ -19,4 +19,6 @@
 <resources>
     <!-- Maximum recording length in milliseconds. 0 means unlimited. -->
     <integer name="max_video_recording_length">0</integer>
+    <!-- The camera HAL does its own preview state management during snaps -->
+    <bool name="previewStopsDuringSnapshot">false</bool>
 </resources>
