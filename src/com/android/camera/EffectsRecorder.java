@@ -136,7 +136,7 @@ public class EffectsRecorder {
     private Context mContext;
     private Handler mHandler;
 
-    private Camera mCameraDevice;
+    private CameraManager.CameraProxy mCameraDevice;
     private CamcorderProfile mProfile;
     private double mCaptureRate = 0;
     private SurfaceTexture mPreviewSurfaceTexture;
@@ -313,7 +313,7 @@ public class EffectsRecorder {
         mSoundPlayer = SoundClips.getPlayer(context);
     }
 
-    public synchronized void setCamera(Camera cameraDevice) {
+    public synchronized void setCamera(CameraManager.CameraProxy cameraDevice) {
         switch (mState) {
             case STATE_PREVIEW:
                 throw new RuntimeException("setCamera cannot be called while previewing!");
@@ -649,11 +649,7 @@ public class EffectsRecorder {
                 // Switching effects while running. Stop existing runner.
                 // The stop callback will take care of starting new runner.
                 mCameraDevice.stopPreview();
-                try {
-                    mCameraDevice.setPreviewTexture(null);
-                } catch (IOException e) {
-                    throw new RuntimeException("Unable to connect camera to effect input", e);
-                }
+                mCameraDevice.setPreviewTextureAsync(null);
                 invoke(mOldRunner, sGraphRunnerStop);
             }
         }
@@ -860,13 +856,9 @@ public class EffectsRecorder {
 
             mCameraDevice.stopPreview();
             if (mLogVerbose) Log.v(TAG, "Runner active, connecting effects preview");
-            try {
-                mCameraDevice.setPreviewTexture(mTextureSource);
-            } catch (IOException e) {
-                throw new RuntimeException("Unable to connect camera to effect input", e);
-            }
+            mCameraDevice.setPreviewTextureAsync(mTextureSource);
 
-            mCameraDevice.startPreview();
+            mCameraDevice.startPreviewAsync();
 
             // Unlock AE/AWB after preview started
             tryEnable3ALocks(false);
@@ -997,11 +989,7 @@ public class EffectsRecorder {
             return;
         }
         mCameraDevice.stopPreview();
-        try {
-            mCameraDevice.setPreviewTexture(null);
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to disconnect camera");
-        }
+        mCameraDevice.setPreviewTextureAsync(null);
     }
 
     // Stop and release effect resources
