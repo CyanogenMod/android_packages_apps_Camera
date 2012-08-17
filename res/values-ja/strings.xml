@@ -121,4 +121,65 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"カメラに切り替え"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"動画に切り替え"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"パノラマに切り替え"</string>
+
+    <!-- CM Extra entries -->
+    <string name="pref_camera_power_shutter_title">電源ボタンシャッター</string>
+    <string name="pref_camera_power_shutter_default">オフ</string>
+
+    <string name="pref_camera_focusmode_entry_fixed">固定</string>
+    <string name="pref_camera_focusmode_entry_facedetect">顔認識</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">連続</string>
+
+    <string name="pref_camera_autoexposure_title">自動露出モード</string>
+    <string name="pref_camera_autoexposure_entry_frameaverage">平均</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">中央</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">スポット</string>
+    <string name="pref_camera_autoexposure_entry_matrix">マトリックス</string>
+    <string name="pref_camera_redeyereduction_title">赤目軽減</string>
+    <string name="pref_camera_redeyereduction_entry_enable">有効</string>
+    <string name="pref_camera_redeyereduction_entry_disable">無効</string>
+    <string name="pref_camera_antibanding_title">アンチバンディング</string>
+    <string name="pref_camera_antibanding_entry_0">オフ</string>
+    <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+    <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+    <string name="pref_camera_antibanding_entry_3">自動</string>
+    <string name="pref_camera_coloreffect_title">カラーエフェクト</string>
+    <string name="pref_camera_coloreffect_entry_none">なし</string>
+    <string name="pref_camera_coloreffect_entry_mono">モノ</string>
+    <string name="pref_camera_coloreffect_entry_sepia">セピア</string>
+    <string name="pref_camera_coloreffect_entry_negative">ネガティブ</string>
+    <string name="pref_camera_coloreffect_entry_solarize">露出</string>
+    <string name="pref_camera_coloreffect_entry_posterize">ポスタライズ</string>
+    <string name="pref_camera_coloreffect_entry_aqua">アクア</string>
+    <string name="pref_camera_coloreffect_entry_emboss">エンボス</string>
+    <string name="pref_camera_coloreffect_entry_sketch">スケッチ</string>
+    <string name="pref_camera_coloreffect_entry_neon">ネオン</string>
+    <string name="pref_camera_coloreffect_entry_pastel">パステル</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">モザイク</string>
+    <string name="pref_camera_coloreffect_entry_redtint">赤</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">青</string>
+    <string name="pref_camera_coloreffect_entry_greentint">緑</string>
+
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">日中の曇</string>
+    <string name="pref_camera_scenemode_entry_backlight">バックライト</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">夕暮れ</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">秋色</string>
+    <string name="pref_camera_scenemode_entry_text">テキスト</string>
+    <string name="pref_camera_scenemode_entry_portrait">ポートレイト</string>
+    <string name="pref_camera_scenemode_entry_landscape">ランドスケープ</string>
+    <string name="pref_camera_scenemode_entry_beach">ビーチ</string>
+    <string name="pref_camera_scenemode_entry_snow">スノー</string>
+    <string name="pref_camera_scenemode_entry_fireworks">花火</string>
+    <string name="pref_camera_scenemode_entry_sports">スポーツ</string>
+    <string name="pref_camera_scenemode_entry_candlelight">キャンドル</string>
+    <string name="pref_camera_scenemode_entry_asd">ASD</string>
+    <string name="pref_camera_scenemode_entry_night_portrait">ナイトポートレート</string>
+    <string name="pref_camera_scenemode_entry_theatre">テアトル</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">ステディフォト</string>
+    <string name="pref_camera_scenemode_entry_flowers">フラワー</string>
+    <string name="pref_camera_scenemode_entry_ar">AR</string>
+
+    <string name="pref_camera_iso_entry_auto">自動</string>
+    <string name="pref_camera_iso_entry_isodeblur">自動 (HJR)</string>
+
 </resources>
