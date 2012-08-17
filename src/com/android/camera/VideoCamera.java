@@ -1259,7 +1259,7 @@ public class VideoCamera extends ActivityBase
         // TODO: Confirm none of the following need to go to initializeEffectsRecording()
         // and none of these change even when the preview is not refreshed.
         mEffectsRecorder.setCameraDisplayOrientation(mCameraDisplayOrientation);
-        mEffectsRecorder.setCamera(mCameraDevice.getCamera());
+        mEffectsRecorder.setCamera(mCameraDevice);
         mEffectsRecorder.setCameraFacing(info.facing);
         mEffectsRecorder.setProfile(mProfile);
         mEffectsRecorder.setEffectsListener(this);
