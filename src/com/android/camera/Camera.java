@@ -127,7 +127,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private static final int UPDATE_PARAM_PREFERENCE = 4;
     private static final int UPDATE_PARAM_ALL = -1;
 
-    // When setCameraParametersWhenIdle() is called, we accumulate the subsets
+    //  When setCameraParametersWhenIdle() is called, we accumulate the subsets
     // needed to be updated in mUpdateSet.
     private int mUpdateSet;
 
@@ -1327,7 +1327,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
         mCameraId = getPreferredCameraId(mPreferences);
-
         mContentResolver = getContentResolver();
         powerShutter(mPreferences);
         // To reduce startup time, open the camera and start the preview in
@@ -1819,6 +1818,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mFaceView.setMirror(info.facing == CameraInfo.CAMERA_FACING_FRONT);
         mFaceView.resume();
         mFocusManager.setFaceView(mFaceView);
+        mPreviewFrameLayout.setCameraOrientation(info.orientation);
     }
 
     @Override
@@ -1961,6 +1961,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mCameraDevice = null;
             setCameraState(PREVIEW_STOPPED);
             mFocusManager.onCameraReleased();
+            mSurfaceTexture = null;
         }
     }
 
@@ -2080,7 +2081,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             // Use the same area for focus and metering.
             mParameters.setMeteringAreas(mFocusManager.getMeteringAreas());
         }
-
         // Set picture size.
         String pictureSize = mPreferences.getString(
                 CameraSettings.KEY_PICTURE_SIZE, null);
@@ -2111,14 +2111,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         Size original = mParameters.getPreviewSize();
         if (!original.equals(optimalSize)) {
             mParameters.setPreviewSize(optimalSize.width, optimalSize.height);
-
             // Zoom related settings will be changed for different preview
             // sizes, so set and read the parameters to get latest values
             mCameraDevice.setParameters(mParameters);
             mParameters = mCameraDevice.getParameters();
         }
-        Log.v(TAG, "Preview size is " + optimalSize.width + "x" + optimalSize.height);
-
         // Since change scene mode may change supported values,
         // Set scene mode first,
 
@@ -2431,6 +2428,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
         mFocusManager.setMirror(mirror);
         mFocusManager.setParameters(mInitialParams);
+        mPreviewFrameLayout.setCameraOrientation(info.orientation);
+        setPreviewFrameLayoutAspectRatio();
         startPreview();
         setCameraState(IDLE);
         startFaceDetection();
@@ -2549,5 +2548,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // Set the preview frame aspect ratio according to the picture size.
         Size size = mParameters.getPictureSize();
         mPreviewFrameLayout.setAspectRatio((double) size.width / size.height);
+        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+        mPreviewFrameLayout.setCameraOrientation(info.orientation);
     }
 }
+

@@ -21,6 +21,8 @@ import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.hardware.Camera.CameraInfo;
+import android.util.Log;
 
 /**
  * A layout which handles the preview aspect ratio.
@@ -34,10 +36,17 @@ public class PreviewFrameLayout extends RelativeLayout {
     private double mAspectRatio;
     private View mBorder;
     private OnSizeChangedListener mListener;
+    private int mCameraOrientation;
+    private static final String TAG = "PreviewFrameLayout";
 
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setAspectRatio(4.0 / 3.0);
+        mCameraOrientation = 90;
+    }
+
+    public void setCameraOrientation(int orientation){
+        mCameraOrientation = orientation;
     }
 
     @Override
@@ -79,16 +88,23 @@ public class PreviewFrameLayout extends RelativeLayout {
         // Resize the preview frame with correct aspect ratio.
         previewWidth -= hPadding;
         previewHeight -= vPadding;
-        if (previewWidth > previewHeight * mAspectRatio) {
-            previewWidth = (int) (previewHeight * mAspectRatio + .5);
+        if(mCameraOrientation % 180 == 0) {
+            if (previewWidth > previewHeight * mAspectRatio) {
+                previewHeight = (int) (previewWidth / mAspectRatio + .5);
+            } else {
+                previewWidth = (int) (previewHeight * mAspectRatio + .5);
+            }
         } else {
-            previewHeight = (int) (previewWidth / mAspectRatio + .5);
+            if (previewWidth > previewHeight * mAspectRatio) {
+                previewWidth = (int) (previewHeight * mAspectRatio + .5);
+            } else {
+                previewHeight = (int) (previewWidth / mAspectRatio + .5);
+            }
         }
 
         // Add the padding of the border.
         previewWidth += hPadding;
         previewHeight += vPadding;
-
         // Ask children to follow the new preview dimension.
         super.onMeasure(MeasureSpec.makeMeasureSpec(previewWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(previewHeight, MeasureSpec.EXACTLY));
