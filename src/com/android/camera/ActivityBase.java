@@ -643,6 +643,11 @@ public abstract class ActivityBase extends AbstractGalleryActivity
             return ActivityBase.this.isPanoramaActivity();
         }
 
+        @Override
+        public boolean isStaticCamera() {
+            return !ApiHelper.HAS_SURFACE_TEXTURE;
+        }
+
         private void setCameraRelativeFrame(Rect frame) {
             if (mServer != null) mServer.setCameraRelativeFrame(frame);
         }
