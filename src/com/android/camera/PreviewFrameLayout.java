@@ -52,12 +52,6 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
     @Override
     protected void onFinishInflate() {
         mBorder = findViewById(R.id.preview_border);
-        if (!ApiHelper.HAS_SURFACE_TEXTURE_RECORDING
-                || !ApiHelper.HAS_SURFACE_TEXTURE) {
-            SurfaceView v = (SurfaceView) findViewById(R.id.preview_surface_view);
-            v.setZOrderMediaOverlay(true);
-            v.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        }
         if (ApiHelper.HAS_FACE_DETECTION) {
             ViewStub faceViewStub = (ViewStub) findViewById(R.id.face_view_stub);
             /* preview_frame_video.xml does not have face view stub, so we need to

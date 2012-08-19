@@ -62,6 +62,7 @@ import android.widget.Toast;
 import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.IndicatorControlContainer;
 import com.android.camera.ui.PopupManager;
+import com.android.camera.ui.PreviewSurfaceView;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
@@ -125,11 +126,7 @@ public class VideoCamera extends ActivityBase
     private PreviewFrameLayout mPreviewFrameLayout;
     private boolean mSurfaceViewReady;
     private SurfaceHolder.Callback mSurfaceViewCallback;
-    private SurfaceView mSurfaceView;
-    // For API level 10. True if the preview is full screen and preview should
-    // be started. False if users swipe to the last photo and the preview should
-    // be stopped.
-    private boolean mFullScreenPreview;
+    private PreviewSurfaceView mPreviewSurfaceView;
     private CameraScreenNail.OnFrameDrawnListener mFrameDrawnListener;
     private IndicatorControlContainer mIndicatorControlContainer;
     private View mReviewControl;
@@ -279,7 +276,7 @@ public class VideoCamera extends ActivityBase
                 }
 
                 case HIDE_SURFACE_VIEW: {
-                    mSurfaceView.setVisibility(View.GONE);
+                    mPreviewSurfaceView.setVisibility(View.GONE);
                     break;
                 }
 
@@ -325,13 +322,13 @@ public class VideoCamera extends ActivityBase
     }
 
     private void initializeSurfaceView() {
-        mSurfaceView = (SurfaceView) findViewById(R.id.preview_surface_view);
+        mPreviewSurfaceView = (PreviewSurfaceView) findViewById(R.id.preview_surface_view);
         if (!ApiHelper.HAS_SURFACE_TEXTURE) {  // API level < 11
             if (mSurfaceViewCallback == null) {
                 mSurfaceViewCallback = new SurfaceViewCallback();
             }
-            mSurfaceView.getHolder().addCallback(mSurfaceViewCallback);
-            mSurfaceView.setVisibility(View.VISIBLE);
+            mPreviewSurfaceView.getHolder().addCallback(mSurfaceViewCallback);
+            mPreviewSurfaceView.setVisibility(View.VISIBLE);
         } else if (!ApiHelper.HAS_SURFACE_TEXTURE_RECORDING) {  // API level < 16
             if (mSurfaceViewCallback == null) {
                 mSurfaceViewCallback = new SurfaceViewCallback();
@@ -342,7 +339,7 @@ public class VideoCamera extends ActivityBase
                     }
                 };
             }
-            mSurfaceView.getHolder().addCallback(mSurfaceViewCallback);
+            mPreviewSurfaceView.getHolder().addCallback(mSurfaceViewCallback);
         }
     }
 
@@ -889,7 +886,7 @@ public class VideoCamera extends ActivityBase
                     mCameraDevice.setPreviewTextureAsync(
                             ((CameraScreenNail) mCameraScreenNail).getSurfaceTexture());
                 } else {
-                    mCameraDevice.setPreviewDisplayAsync(mSurfaceView.getHolder());
+                    mCameraDevice.setPreviewDisplayAsync(mPreviewSurfaceView.getHolder());
                 }
                 mCameraDevice.startPreviewAsync();
             } else {
@@ -968,7 +965,7 @@ public class VideoCamera extends ActivityBase
             }
             if (!ApiHelper.HAS_SURFACE_TEXTURE_RECORDING) {
                 mHandler.removeMessages(HIDE_SURFACE_VIEW);
-                mSurfaceView.setVisibility(View.GONE);
+                mPreviewSurfaceView.setVisibility(View.GONE);
             }
         }
     }
@@ -1111,12 +1108,12 @@ public class VideoCamera extends ActivityBase
     private void setupMediaRecorderPreviewDisplay() {
         // Nothing to do here if using SurfaceTexture.
         if (!ApiHelper.HAS_SURFACE_TEXTURE) {
-            mMediaRecorder.setPreviewDisplay(mSurfaceView.getHolder().getSurface());
+            mMediaRecorder.setPreviewDisplay(mPreviewSurfaceView.getHolder().getSurface());
         } else if (!ApiHelper.HAS_SURFACE_TEXTURE_RECORDING) {
             // We stop the preview here before unlocking the device because we
             // need to change the SurfaceTexture to SurfaceView for preview.
             stopPreview();
-            mCameraDevice.setPreviewDisplayAsync(mSurfaceView.getHolder());
+            mCameraDevice.setPreviewDisplayAsync(mPreviewSurfaceView.getHolder());
             // The orientation for SurfaceTexture is different from that for
             // SurfaceView. For SurfaceTexture we don't need to consider the
             // display rotation. Just consider the sensor's orientation and we
@@ -1128,7 +1125,7 @@ public class VideoCamera extends ActivityBase
                     Util.getDisplayOrientation(mDisplayRotation, mCameraId));
             mCameraDevice.startPreviewAsync();
             mPreviewing = true;
-            mMediaRecorder.setPreviewDisplay(mSurfaceView.getHolder().getSurface());
+            mMediaRecorder.setPreviewDisplay(mPreviewSurfaceView.getHolder().getSurface());
         }
     }
 
@@ -1143,7 +1140,7 @@ public class VideoCamera extends ActivityBase
             // surfaceCreated() is called immediately when the visibility is
             // changed to visible. Thus, mSurfaceViewReady should become true
             // right after calling setVisibility().
-            mSurfaceView.setVisibility(View.VISIBLE);
+            mPreviewSurfaceView.setVisibility(View.VISIBLE);
             if (!mSurfaceViewReady) return;
         }
 
@@ -2526,17 +2523,10 @@ public class VideoCamera extends ActivityBase
         super.onFullScreenChanged(full);
         if (ApiHelper.HAS_SURFACE_TEXTURE) return;
 
-        if (mFullScreenPreview == full) return;
-        mFullScreenPreview = full;
-        if (mCameraDevice == null || isFinishing()) return;
         if (full) {
-            mSurfaceView.setVisibility(View.VISIBLE);
-            if (!mPreviewing) {
-                startPreview();
-            }
+            mPreviewSurfaceView.expand();
         } else {
-            stopPreview();
-            mSurfaceView.setVisibility(View.GONE);
+            mPreviewSurfaceView.shrink();
         }
     }
 
@@ -2721,7 +2711,7 @@ public class VideoCamera extends ActivityBase
             mSurfaceViewReady = true;
             if (mPaused) return;
             if (!ApiHelper.HAS_SURFACE_TEXTURE) {
-                mCameraDevice.setPreviewDisplayAsync(mSurfaceView.getHolder());
+                mCameraDevice.setPreviewDisplayAsync(mPreviewSurfaceView.getHolder());
                 if (!mPreviewing) {
                     startPreview();
                 }

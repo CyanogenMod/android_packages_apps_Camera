@@ -63,6 +63,7 @@ import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.FaceView;
 import com.android.camera.ui.IndicatorControlContainer;
 import com.android.camera.ui.PopupManager;
+import com.android.camera.ui.PreviewSurfaceView;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
@@ -149,12 +150,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private Object mSurfaceTexture;
 
     // for API level 10
-    private SurfaceView mCameraSurfaceView;
+    private PreviewSurfaceView mPreviewSurfaceView;
     private volatile SurfaceHolder mCameraSurfaceHolder;
-    // For API level 10. True if the preview is full screen and preview should
-    // be started. False if users swipe to the last photo and the preview should
-    // be stopped.
-    private boolean mFullScreenPreview;
 
     private RotateDialogController mRotateDialog;
     private ModePicker mModePicker;
@@ -1277,20 +1274,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         super.onFullScreenChanged(full);
         if (ApiHelper.HAS_SURFACE_TEXTURE) return;
 
-        if (mFullScreenPreview == full) return;
-        mFullScreenPreview = full;
-        if (mCameraDevice == null || isFinishing()) return;
         if (full) {
-            mCameraSurfaceView.setVisibility(View.VISIBLE);
-            if (mCameraState == PREVIEW_STOPPED) {
-                mFocusManager.resetTouchFocus();
-                startPreview();
-                setCameraState(IDLE);
-                startFaceDetection();
-            }
+            mPreviewSurfaceView.expand();
         } else {
-            stopPreview();
-            mCameraSurfaceView.setVisibility(View.GONE);
+            mPreviewSurfaceView.shrink();
         }
     }
 
@@ -1793,9 +1780,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mPreviewFrameLayout.setOnSizeChangedListener(this);
         mPreviewFrameLayout.setOnLayoutChangeListener(this);
         if (!ApiHelper.HAS_SURFACE_TEXTURE) {
-            mCameraSurfaceView = (SurfaceView) findViewById(R.id.preview_surface_view);
-            mCameraSurfaceView.setVisibility(View.VISIBLE);
-            mCameraSurfaceView.getHolder().addCallback(this);
+            mPreviewSurfaceView = (PreviewSurfaceView) findViewById(R.id.preview_surface_view);
+            mPreviewSurfaceView.setVisibility(View.VISIBLE);
+            mPreviewSurfaceView.getHolder().addCallback(this);
         }
     }
 
