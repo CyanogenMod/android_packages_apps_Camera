@@ -416,7 +416,7 @@ public class Util {
     public static Size getOptimalPreviewSize(Activity currentActivity,
             List<Size> sizes, double targetRatio) {
         // Use a very small tolerance because we want an exact match.
-        final double ASPECT_TOLERANCE = 0.00001;
+        final double ASPECT_TOLERANCE = 0.001;
         if (sizes == null) return null;
         Size optimalSize = null;
         double minDiff = Double.MAX_VALUE;
@@ -432,33 +432,16 @@ public class Util {
         int targetHeight = Math.min(point.x, point.y);
 
         // Try to find an size match aspect ratio and size
-        for (Size size : sizes) {
-            double ratio = (double) size.width / size.height;
-            if(size.height <= targetHeight && Math.abs(ratio - targetRatio) < minAspectRatioDiff) {
-                minAspectRatioDiff = Math.abs(ratio - targetRatio);
-            }
-        }
 
-       /* for (Size size : sizes) {
+        for (Size size : sizes) {
             double ratio = (double) size.width / size.height;
             if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
             if (Math.abs(size.height - targetHeight) < minDiff) {
                 optimalSize = size;
                 minDiff = Math.abs(size.height - targetHeight);
            }
-       } */
+       }
 
-        for(Size size : sizes) {
-            double ratio = (double) size.width / size.height;
-            double aspectRatioDiff = Math.abs(ratio - targetRatio);
-            if(size.height <= targetHeight) {
-                if(aspectRatioDiff - minAspectRatioDiff > ASPECT_TOLERANCE)
-                    continue;
-                if(optimalSize == null || optimalSize.height < size.height) {
-                    optimalSize = size;
-                }
-            }
-        }
 
         // Cannot find the one match the aspect ratio. This should not happen.
         // Ignore the requirement.
