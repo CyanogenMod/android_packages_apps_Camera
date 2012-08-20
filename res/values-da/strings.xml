@@ -121,4 +121,68 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Skift til foto"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Skift til video"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Skift til panorama"</string>
+
+    <!-- CM10 additions -->
+    <string name="pref_video_time_lapse_frame_interval_title">Tidsforskydningsinterval</string>
+    <string name="pref_camera_power_shutter_title">Strømudløser</string>
+    <string name="pref_camera_focusmode_entry_fixed">Fast</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Ansigtsgenkendelse</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Kontinuerligt billede</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">Skyet-Dagslys</string>
+    <string name="pref_camera_scenemode_entry_backlight">Baggrundslys</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Tusmørkedaggry</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Efterårsfarve</string>
+    <string name="pref_camera_scenemode_entry_text">Tekst</string>
+    <string name="pref_camera_autoexposure_title">Autoeksponeringstilstand</string>
+    <string name="pref_camera_autoexposure_entry_frameaverage">Frame-gennemsnit</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">Centervægtet</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">Spotmåling</string>
+    <string name="pref_camera_autoexposure_entry_matrix">Matrice</string>
+    <string name="pref_camera_redeyereduction_title">Rødøje-reduktion</string>
+    <string name="pref_camera_redeyereduction_entry_enable">Slå til</string>
+    <string name="pref_camera_redeyereduction_entry_disable">Slå fra</string>
+    <string name="pref_camera_antibanding_title">Anti-banding</string>
+    <string name="pref_camera_antibanding_entry_0">Fra</string>
+    <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+    <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+    <string name="pref_camera_antibanding_entry_3">Auto</string>
+    <string name="pref_camera_coloreffect_title">Farveeffekt</string>
+    <string name="pref_camera_coloreffect_entry_none">Ingen</string>
+    <string name="pref_camera_coloreffect_entry_mono">Mono</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negativ</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Solarisering</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Posterisering</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Vand</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Relief</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Sketch</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mosaik</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Rød toning</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Blå toning</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Grøn toning</string>
+    <string name="pref_camera_scenemode_entry_asd">ASD</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portræt</string>
+    <string name="pref_camera_scenemode_entry_landscape">Landskab</string>
+    <string name="pref_camera_scenemode_entry_night_portrait">Portræt nat</string>
+    <string name="pref_camera_scenemode_entry_theatre">Teater</string>
+    <string name="pref_camera_scenemode_entry_beach">Strand</string>
+    <string name="pref_camera_scenemode_entry_snow">Sne</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Stabilt foto</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Fyrværkeri</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Stearinlys</string>
+    <string name="pref_camera_scenemode_entry_flowers">Blomster</string>
+    <string name="pref_camera_scenemode_entry_ar">AR</string>
+    <string name="pref_camera_focus_title">Touch-fokus-varighed</string>
+    <string name="pref_camera_focus_summary">Vælg varighed for touch-fokus</string>
+    <string name="pref_camera_focus_entry_10">10s</string>
+    <string name="pref_camera_focus_entry_15">15s</string>
+    <string name="pref_camera_focus_entry_20">20s</string>
+    <string name="pref_camera_focus_entry_30">30s</string>
+    <string name="pref_camera_focus_entry_40">40s</string>
+    <string name="pref_camera_focus_entry_infinit">uendelig</string>
+    <!-- CM10 additions end -->
+
 </resources>
