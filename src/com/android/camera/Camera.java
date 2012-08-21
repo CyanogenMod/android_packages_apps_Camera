@@ -96,6 +96,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     // We number the request code from 1000 to avoid collision with Gallery.
     private static final int REQUEST_CROP = 1000;
 
+    private static final int SETUP_PREVIEW = 1;
     private static final int FIRST_TIME_INIT = 2;
     private static final int CLEAR_SCREEN_DELAY = 3;
     private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 4;
@@ -321,6 +322,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                case SETUP_PREVIEW: {
+                    setupPreview();
+                    break;
+                }
+
                 case CLEAR_SCREEN_DELAY: {
                     getWindow().clearFlags(
                             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -816,10 +822,14 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
             mFocusManager.updateFocusUI(); // Ensure focus indicator is hidden.
             if (!mIsImageCaptureIntent) {
-                mFocusManager.resetTouchFocus();
-                startPreview();
-                setCameraState(IDLE);
-                startFaceDetection();
+                if (ApiHelper.CAN_START_PREVIEW_IN_JPEG_CALLBACK) {
+                    setupPreview();
+                } else {
+                    // Camera HAL of some devices have a bug. Starting preview
+                    // immediately after taking a picture will fail. Wait some
+                    // time before starting the preview.
+                    mHandler.sendEmptyMessageDelayed(SETUP_PREVIEW, 300);
+                }
             }
 
             if (!mIsImageCaptureIntent) {
@@ -1298,10 +1308,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         // This happens when onConfigurationChanged arrives, surface has been
         // destroyed, and there is no onFullScreenChanged.
         if (mCameraState == PREVIEW_STOPPED) {
-            mFocusManager.resetTouchFocus();
-            startPreview();
-            setCameraState(IDLE);
-            startFaceDetection();
+            setupPreview();
         }
     }
 
@@ -1454,10 +1461,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (mPaused) return;
 
         hidePostCaptureAlert();
-        mFocusManager.resetTouchFocus();
-        startPreview();
-        setCameraState(IDLE);
-        startFaceDetection();
+        setupPreview();
     }
 
     // onClick handler for R.id.btn_done
@@ -1713,6 +1717,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mJpegImageData = null;
 
         // Remove the messages in the event queue.
+        mHandler.removeMessages(SETUP_PREVIEW);
         mHandler.removeMessages(FIRST_TIME_INIT);
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
         mHandler.removeMessages(SWITCH_CAMERA);
@@ -1977,6 +1982,16 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         mFocusManager.setDisplayOrientation(mDisplayOrientation);
     }
 
+    // Only called by UI thread.
+    private void setupPreview() {
+        mFocusManager.resetTouchFocus();
+        startPreview();
+        setCameraState(IDLE);
+        startFaceDetection();
+    }
+
+    // This can be called by UI Thread or CameraStartUpThread. So this should
+    // not modify the views.
     private void startPreview() {
         mCameraDevice.setErrorCallback(mErrorCallback);
 
@@ -2375,10 +2390,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
         mFocusManager.setMirror(mirror);
         mFocusManager.setParameters(mInitialParams);
-        mFocusManager.resetTouchFocus();
-        startPreview();
-        setCameraState(IDLE);
-        startFaceDetection();
+        setupPreview();
         initializeIndicatorControl();
 
         // from onResume
