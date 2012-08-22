@@ -62,19 +62,19 @@
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Grondezza dal maletg"</string>
     <!-- no translation found for pref_camera_picturesize_entry_8mp (259953780932849079) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_2592x1936 (6980117304679164339) -->
+    <!-- no translation found for pref_camera_picturesize_entry_5mp (6980117304679164339) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_2048x1536 (4391030755438075447) -->
+    <!-- no translation found for pref_camera_picturesize_entry_3mp (4391030755438075447) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1600x1200 (8081839485457681369) -->
+    <!-- no translation found for pref_camera_picturesize_entry_2mp (8081839485457681369) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1280x960 (7820672028447972964) -->
+    <!-- no translation found for pref_camera_picturesize_entry_1_3mp (7820672028447972964) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1024x768 (3705686683403524018) -->
+    <!-- no translation found for pref_camera_picturesize_entry_1mp (3705686683403524018) -->
     <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_640x480 (5557572917973022995) -->
+    <!-- no translation found for pref_camera_picturesize_entry_vga (5557572917973022995) -->
     <skip />
-    <string name="pref_camera_picturesize_entry_320x240" msgid="5729711026478753025">"QVGA"</string>
+    <string name="pref_camera_picturesize_entry_qvga" msgid="5729711026478753025">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Modus da focussar"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatic"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinit"</string>
