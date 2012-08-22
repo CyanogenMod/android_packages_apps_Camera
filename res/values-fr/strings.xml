@@ -121,4 +121,36 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Mode Appareil photo"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Mode vidéo"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Mode panoramique"</string>
+
+    <!-- More Settings screen, power button title -->
+    <string name="pref_camera_power_shutter_title">Bouton marche</string>
+
+    <!-- More Focus Mode -->
+    <string name="pref_camera_focusmode_entry_fixed">Fixe</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Détecteur de visage</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Continu</string>
+
+    <!-- Other settings -->
+    <string name="pref_camera_focus_title">Durée Focus</string>
+    <string name="pref_camera_focus_summary">Sélectionner la durée du focus</string>
+    <string name="pref_camera_focus_entry_infinit">Infinie</string>
+
+    <!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">Effet de couleur</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">Aucun</string>
+    <string name="pref_camera_coloreffect_entry_mono">Monochrome</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Sépia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Négatif</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Solarisation</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Postérisation</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Eau</string>
+
+    <!-- Settings screen, Anti Banding title -->
+    <string name="pref_camera_antibanding_title">Anti bandes</string>
+
+    <!-- Settings screen, Anti Banding entries -->
+    <string name="pref_camera_antibanding_entry_0">Arrêt</string>
+    <string name="pref_camera_antibanding_entry_3">Automatique</string>
 </resources>
