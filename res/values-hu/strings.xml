@@ -47,13 +47,20 @@
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Videokamera beállításai"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Képméret"</string>
     <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 megapixel"</string>
-    <string name="pref_camera_picturesize_entry_5mp" msgid="6980117304679164339">"5 megapixel"</string>
-    <string name="pref_camera_picturesize_entry_3mp" msgid="4391030755438075447">"3 megapixel"</string>
-    <string name="pref_camera_picturesize_entry_2mp" msgid="8081839485457681369">"2 megapixel"</string>
-    <string name="pref_camera_picturesize_entry_1_3mp" msgid="7820672028447972964">"1,3 megapixel"</string>
-    <string name="pref_camera_picturesize_entry_1mp" msgid="3705686683403524018">"1 megapixel"</string>
-    <string name="pref_camera_picturesize_entry_vga" msgid="5557572917973022995">"VGA"</string>
-    <string name="pref_camera_picturesize_entry_qvga" msgid="5729711026478753025">"QVGA"</string>
+    <!-- no translation found for pref_camera_picturesize_entry_5mp (2882928212030661159) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_3mp (741415860337400696) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_2mp (1753709802245460393) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_1_3mp (829109608140747258) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_1mp (1669725616780375066) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_vga (806934254162981919) -->
+    <skip />
+    <!-- no translation found for pref_camera_picturesize_entry_qvga (8576186463069770133) -->
+    <skip />
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Fókuszálás módja"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatikus"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Végtelen"</string>
