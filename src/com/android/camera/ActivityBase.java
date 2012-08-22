@@ -173,7 +173,11 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         // background is removed.
         setTheme(R.style.Theme_Gallery);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        if (ApiHelper.HAS_ACTION_BAR) {
+            requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        } else {
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
 
         super.onCreate(icicle);
     }
