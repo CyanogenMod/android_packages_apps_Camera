@@ -16,14 +16,18 @@
 
 package com.android.camera.ui;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 
+import com.android.gallery3d.common.ApiHelper;
 import com.android.gallery3d.util.MotionEventHelper;
 
 // A RotateLayout is designed to display a single item and provides the
@@ -44,9 +48,14 @@ public class RotateLayout extends ViewGroup implements Rotatable {
         setBackgroundResource(android.R.color.transparent);
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onFinishInflate() {
         mChild = getChildAt(0);
+        if (ApiHelper.HAS_VIEW_TRANSFORM_PROPERTIES) {
+            mChild.setPivotX(0);
+            mChild.setPivotY(0);
+        }
     }
 
     @Override
@@ -68,51 +77,58 @@ public class RotateLayout extends ViewGroup implements Rotatable {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        final int w = getMeasuredWidth();
-        final int h = getMeasuredHeight();
-        switch (mOrientation) {
-            case 0:
-                mMatrix.setTranslate(0, 0);
-                break;
-            case 90:
-                mMatrix.setTranslate(0, -h);
-                break;
-            case 180:
-                mMatrix.setTranslate(-w, -h);
-                break;
-            case 270:
-                mMatrix.setTranslate(-w, 0);
-                break;
+        if (!ApiHelper.HAS_VIEW_TRANSFORM_PROPERTIES) {
+            final int w = getMeasuredWidth();
+            final int h = getMeasuredHeight();
+            switch (mOrientation) {
+                case 0:
+                    mMatrix.setTranslate(0, 0);
+                    break;
+                case 90:
+                    mMatrix.setTranslate(0, -h);
+                    break;
+                case 180:
+                    mMatrix.setTranslate(-w, -h);
+                    break;
+                case 270:
+                    mMatrix.setTranslate(-w, 0);
+                    break;
+            }
+            mMatrix.postRotate(mOrientation);
+            event = MotionEventHelper.transformEvent(event, mMatrix);
         }
-        mMatrix.postRotate(mOrientation);
-        event = MotionEventHelper.transformEvent(event, mMatrix);
         return super.dispatchTouchEvent(event);
     }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        canvas.save();
-        int w = getMeasuredWidth();
-        int h = getMeasuredHeight();
-        switch (mOrientation) {
-            case 0:
-                canvas.translate(0, 0);
-                break;
-            case 90:
-                canvas.translate(0, h);
-                break;
-            case 180:
-                canvas.translate(w, h);
-                break;
-            case 270:
-                canvas.translate(w, 0);
-                break;
+        if (ApiHelper.HAS_VIEW_TRANSFORM_PROPERTIES) {
+            super.dispatchDraw(canvas);
+        } else {
+            canvas.save();
+            int w = getMeasuredWidth();
+            int h = getMeasuredHeight();
+            switch (mOrientation) {
+                case 0:
+                    canvas.translate(0, 0);
+                    break;
+                case 90:
+                    canvas.translate(0, h);
+                    break;
+                case 180:
+                    canvas.translate(w, h);
+                    break;
+                case 270:
+                    canvas.translate(w, 0);
+                    break;
+            }
+            canvas.rotate(-mOrientation, 0, 0);
+            super.dispatchDraw(canvas);
+            canvas.restore();
         }
-        canvas.rotate(-mOrientation, 0, 0);
-        super.dispatchDraw(canvas);
-        canvas.restore();
     }
 
+    @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
         int w = 0, h = 0;
@@ -131,6 +147,28 @@ public class RotateLayout extends ViewGroup implements Rotatable {
                 break;
         }
         setMeasuredDimension(w, h);
+
+        if (ApiHelper.HAS_VIEW_TRANSFORM_PROPERTIES) {
+            switch (mOrientation) {
+                case 0:
+                    mChild.setTranslationX(0);
+                    mChild.setTranslationY(0);
+                    break;
+                case 90:
+                    mChild.setTranslationX(0);
+                    mChild.setTranslationY(h);
+                    break;
+                case 180:
+                    mChild.setTranslationX(w);
+                    mChild.setTranslationY(h);
+                    break;
+                case 270:
+                    mChild.setTranslationX(w);
+                    mChild.setTranslationY(0);
+                    break;
+            }
+            mChild.setRotation(-mOrientation);
+        }
     }
 
     @Override
@@ -145,5 +183,17 @@ public class RotateLayout extends ViewGroup implements Rotatable {
         if (mOrientation == orientation) return;
         mOrientation = orientation;
         requestLayout();
+    }
+
+    @Override
+    public ViewParent invalidateChildInParent(int[] location, Rect r) {
+        if (!ApiHelper.HAS_VIEW_TRANSFORM_PROPERTIES && mOrientation != 0) {
+            // The workaround invalidates the entire rotate layout. After
+            // rotation, the correct area to invalidate may be larger than the
+            // size of the child. Ex: ListView. There is no way to invalidate
+            // only the necessary area.
+            r.set(0, 0, getWidth(), getHeight());
+        }
+        return super.invalidateChildInParent(location, r);
     }
 }
