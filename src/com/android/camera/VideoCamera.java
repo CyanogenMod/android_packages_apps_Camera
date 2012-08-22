@@ -1415,6 +1415,7 @@ public class VideoCamera extends ActivityBase
             }
             try {
                 mCurrentVideoUri = mVideoNamer.getUri();
+                addSecureAlbumItemIfNeeded(true, mCurrentVideoUri);
 
                 // Rename the video file to the final name. This avoids other
                 // apps reading incomplete data.  We need to do it after the
@@ -1996,7 +1997,7 @@ public class VideoCamera extends ActivityBase
     private void switchToOtherMode(int mode) {
         if (isFinishing()) return;
         if (mThumbnail != null) ThumbnailHolder.keep(mThumbnail);
-        MenuHelper.gotoMode(mode, this);
+        MenuHelper.gotoMode(mode, this, mSecureCamera);
         finish();
     }
 

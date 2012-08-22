@@ -845,6 +845,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     height = s.width;
                 }
                 Uri uri = mImageNamer.getUri();
+                addSecureAlbumItemIfNeeded(false, uri);
                 String title = mImageNamer.getTitle();
                 mImageSaver.addImage(jpegData, uri, title, mLocation,
                         width, height, mThumbnailViewWidth, orientation);
@@ -2320,7 +2321,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         if (isFinishing()) return;
         if (mImageSaver != null) mImageSaver.waitDone();
         if (mThumbnail != null) ThumbnailHolder.keep(mThumbnail);
-        MenuHelper.gotoMode(mode, Camera.this);
+        MenuHelper.gotoMode(mode, Camera.this, mSecureCamera);
         mHandler.removeMessages(FIRST_TIME_INIT);
         finish();
     }

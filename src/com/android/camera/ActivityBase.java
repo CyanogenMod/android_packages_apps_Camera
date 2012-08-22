@@ -25,6 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.hardware.Camera.Parameters;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,7 +49,6 @@ import com.android.gallery3d.app.AppBridge;
 import com.android.gallery3d.app.GalleryActionBar;
 import com.android.gallery3d.app.PhotoPage;
 import com.android.gallery3d.common.ApiHelper;
-import com.android.gallery3d.ui.BitmapScreenNail;
 import com.android.gallery3d.ui.ScreenNail;
 import com.android.gallery3d.util.MediaSetUtils;
 
@@ -65,6 +65,13 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     private static final int CAMERA_APP_VIEW_TOGGLE_TIME = 100;  // milliseconds
     private static final String ACTION_DELETE_PICTURE =
             "com.android.gallery3d.action.DELETE_PICTURE";
+    private static final String INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE =
+            "android.media.action.STILL_IMAGE_CAMERA_SECURE";
+    // The intent extra for camera from secure lock screen. True if the gallery
+    // should only show newly captured pictures. sSecureAlbumId does not
+    // increment. This is used when switching between camera, camcorder, and
+    // panorama. If the extra is not set, it is in the normal camera mode.
+    public static final String SECURE_CAMERA_EXTRA = "secure_camera";
 
     private int mResultCodeForTesting;
     private Intent mResultDataForTesting;
@@ -105,6 +112,13 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     protected boolean mShowCameraAppView = true;
     private Animation mCameraAppViewFadeIn;
     private Animation mCameraAppViewFadeOut;
+    // Secure album id. This should be incremented every time the camera is
+    // launched from the secure lock screen. The id should be the same when
+    // switching between camera, camcorder, and panorama.
+    protected static int sSecureAlbumId;
+    // True if the gallery should only show newly captured pictures or recorded
+    // videos.
+    protected boolean mSecureCamera;
 
     private long mStorageSpace = Storage.LOW_STORAGE_THRESHOLD;
     private static final int UPDATE_STORAGE_HINT = 0;
@@ -179,6 +193,19 @@ public abstract class ActivityBase extends AbstractGalleryActivity
             requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
 
+        // Check if this is in the secure camera mode.
+        Intent intent = getIntent();
+        if (INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE.equals(intent.getAction())) {
+            mSecureCamera = true;
+            // Use a new album when this is started from the lock screen.
+            sSecureAlbumId++;
+        } else {
+            mSecureCamera = intent.getBooleanExtra(SECURE_CAMERA_EXTRA, false);
+        }
+        if (mSecureCamera) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        }
+
         super.onCreate(icicle);
     }
 
@@ -219,6 +246,10 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         }
 
         unregisterReceiver(mReceiver);
+
+        // Finish the activity if in secure camera mode. Make sure a new secure
+        // album is used every time.
+        if (mSecureCamera && !isFinishing()) finish();
     }
 
     @Override
@@ -436,11 +467,16 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     protected void createCameraScreenNail(boolean getPictures) {
         mCameraAppView = findViewById(R.id.camera_app_root);
         Bundle data = new Bundle();
-        String path = "/local/all/";
-        // Intent mode does not show camera roll. Use 0 as a work around for
-        // invalid bucket id.
-        // TODO: add support of empty media set in gallery.
-        path += (getPictures ? MediaSetUtils.CAMERA_BUCKET_ID : "0");
+        String path;
+        if (mSecureCamera) {
+            path = "/secure/all/" + sSecureAlbumId;
+        } else {
+            path = "/local/all/";
+            // Intent mode does not show camera roll. Use 0 as a work around for
+            // invalid bucket id.
+            // TODO: add support of empty media set in gallery.
+            path += (getPictures ? MediaSetUtils.CAMERA_BUCKET_ID : "0");
+        }
         data.putString(PhotoPage.KEY_MEDIA_SET_PATH, path);
         data.putString(PhotoPage.KEY_MEDIA_ITEM_PATH, path);
 
@@ -581,6 +617,13 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     protected void onPreviewTextureCopied() {
     }
 
+    protected void addSecureAlbumItemIfNeeded(boolean isVideo, Uri uri) {
+        if (mSecureCamera) {
+            int id = Integer.parseInt(uri.getLastPathSegment());
+            mAppBridge.addSecureAlbumItem(isVideo, id);
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////
     //  The is the communication interface between the Camera Application and
     //  the Gallery PhotoPage.
@@ -650,6 +693,10 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         @Override
         public boolean isStaticCamera() {
             return !ApiHelper.HAS_SURFACE_TEXTURE;
+        }
+
+        public void addSecureAlbumItem(boolean isVideo, int id) {
+            if (mServer != null) mServer.addSecureAlbumItem(isVideo, id);
         }
 
         private void setCameraRelativeFrame(Rect frame) {

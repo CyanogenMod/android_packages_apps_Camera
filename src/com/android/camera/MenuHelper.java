@@ -17,7 +17,6 @@
 package com.android.camera;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -30,43 +29,30 @@ import com.android.gallery3d.common.LightCycleHelper;
  */
 public class MenuHelper {
     private static final String TAG = "MenuHelper";
-
-    // TODO: These should be public and added to frameworks.
-    private static final int INCLUDE_IMAGES = (1 << 0);
-    private static final int INCLUDE_VIDEOS = (1 << 2);
-
     private static final String CAMERA_CLASS = "com.android.camera.Camera";
     private static final String PANORAMA_CLASS = "com.android.camera.PanoramaActivity";
     private static final String VIDEO_CAMERA_CLASS = "com.android.camera.VideoCamera";
 
     private static void startCameraActivity(Activity activity, Intent intent,
-            String packageName, String className, boolean keepCamera,
-            Bundle extras) {
+            String packageName, String className, boolean keepCamera) {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         intent.setClassName(packageName, className);
-        if (extras != null) {
-            intent.putExtras(extras);
-        }
 
         // Keep the camera instance for a while.
         // This avoids re-opening the camera and saves time.
         if (keepCamera) CameraHolder.instance().keep();
 
-        try {
-            activity.startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            intent.setComponent(null);
-            activity.startActivity(intent);
-        }
+        activity.startActivity(intent);
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    public static void gotoMode(int mode, Activity activity) {
+    public static void gotoMode(int mode, Activity activity, boolean secure) {
         String action, className;
         String packageName = activity.getPackageName();
         boolean keepCamera = true;
         Bundle extras = null;
+        Intent it = new Intent();
         switch (mode) {
             case ModePicker.MODE_PANORAMA:
                 action = Intent.ACTION_MAIN;
@@ -75,9 +61,7 @@ public class MenuHelper {
                     className = LightCycleHelper.LIGHTCYCLE_CAPTURE_CLASS;
                     packageName = LightCycleHelper.LIGHTCYCLE_PACKAGE;
                     keepCamera = false;
-                    extras = new Bundle();
-                    extras.putString(
-                            LightCycleHelper.EXTRA_OUTPUT_DIR,
+                    it.putExtra(LightCycleHelper.EXTRA_OUTPUT_DIR,
                             Storage.DIRECTORY);
                 } else {
                     className = PANORAMA_CLASS;
@@ -95,8 +79,10 @@ public class MenuHelper {
                 Log.e(TAG, "unknown camera mode:" + mode);
                 return;
         }
-        Intent it = new Intent(action);
-        startCameraActivity(
-                activity, it, packageName, className, keepCamera, extras);
+        it.setAction(action);
+        if (secure) {
+            it.putExtra(ActivityBase.SECURE_CAMERA_EXTRA, secure);
+        }
+        startCameraActivity(activity, it, packageName, className, keepCamera);
     }
 }

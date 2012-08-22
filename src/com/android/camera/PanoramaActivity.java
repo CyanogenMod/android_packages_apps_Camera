@@ -444,7 +444,7 @@ public class PanoramaActivity extends ActivityBase implements
     private void switchToOtherMode(int mode) {
         if (isFinishing()) return;
         if (mThumbnail != null) ThumbnailHolder.keep(mThumbnail);
-        MenuHelper.gotoMode(mode, this);
+        MenuHelper.gotoMode(mode, this, mSecureCamera);
         finish();
     }
 
@@ -801,6 +801,7 @@ public class PanoramaActivity extends ActivityBase implements
                     }
                     Uri uri = savePanorama(jpeg.data, jpeg.width, jpeg.height, orientation);
                     if (uri != null) {
+                        addSecureAlbumItemIfNeeded(false, uri);
                         // Create a thumbnail whose width and height is equal or bigger
                         // than the thumbnail view's width.
                         int ratio = (int) Math.ceil(
