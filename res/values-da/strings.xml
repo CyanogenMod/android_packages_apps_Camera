@@ -123,7 +123,6 @@
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Skift til panorama"</string>
 
     <!-- CM10 additions -->
-    <string name="pref_video_time_lapse_frame_interval_title">Tidsforskydningsinterval</string>
     <string name="pref_camera_power_shutter_title">Strømudløser</string>
     <string name="pref_camera_focusmode_entry_fixed">Fast</string>
     <string name="pref_camera_focusmode_entry_facedetect">Ansigtsgenkendelse</string>
