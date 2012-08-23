@@ -132,4 +132,76 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Fényképező mód"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Videó mód"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Panoráma mód"</string>
+
+    <!-- Settings screen, Select auto exposure title -->
+    <string name="pref_camera_autoexposure_title">Automatikus expozíció-vezérlési üzemmód</string>
+
+    <!-- Settings screen, auto exposure dialog radio button choices -->
+    <string name="pref_camera_autoexposure_entry_frameaverage">Kiértékelő</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">Középre súlyozott</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">Szpot mérés</string>
+    <string name="pref_camera_autoexposure_entry_matrix">Mátrix</string>
+
+    <!-- Settings screen, Select Redeye Reduction -->
+    <string name="pref_camera_redeyereduction_title">Vörösszem csökkentés</string>
+
+    <!-- Settings menu, redeye reduction choices -->
+    <string name="pref_camera_redeyereduction_entry_enable">Engedélyezés</string>
+    <string name="pref_camera_redeyereduction_entry_disable">Tiltás</string>
+
+    <!-- Settings screen, Anti Banding title -->
+    <string name="pref_camera_antibanding_title">Csíkozódás csökkentése</string>
+
+    <!-- Settings screen, Anti Banding entries -->
+    <string name="pref_camera_antibanding_entry_0">Kikapcsolva</string>
+    <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+    <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+    <string name="pref_camera_antibanding_entry_3">Automatikus</string>
+
+    <!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">Szín effektek</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">Nincs</string>
+    <string name="pref_camera_coloreffect_entry_mono">Fekete-fehér</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Szépia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negatív</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Szolarizált</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Poszterizált</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Víz</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Dombormű</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Vázlat</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pasztel</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mozaik</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Vörös árnyalat</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Kék árnyalat</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Zöld árnyalat</string>
+
+    <string name="pref_camera_scenemode_entry_asd">ASD</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portré</string>
+    <string name="pref_camera_scenemode_entry_landscape">Tájkép</string>
+    <string name="pref_camera_scenemode_entry_night_portrait">Éjszakai portré</string>
+    <string name="pref_camera_scenemode_entry_theatre">Színház</string>
+    <string name="pref_camera_scenemode_entry_beach">Strand</string>
+    <string name="pref_camera_scenemode_entry_snow">Hó</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Álló kép</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Tüzijáték</string>
+    <string name="pref_camera_scenemode_entry_sports">Sportesemény</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Gyertyafény</string>
+    <string name="pref_camera_scenemode_entry_flowers">Virágok</string>
+    <string name="pref_camera_scenemode_entry_ar">AR</string>
+
+    <!-- Other settings -->
+    <string name="pref_camera_focus_title">Fókusz tartás</string>
+    <string name="pref_camera_focus_summary">Válassza ki a fókusz tartás idejét</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_focus_entry_10">10 mp</string>
+    <string name="pref_camera_focus_entry_15">15 mp</string>
+    <string name="pref_camera_focus_entry_20">20 mp</string>
+    <string name="pref_camera_focus_entry_30">30 mp</string>
+    <string name="pref_camera_focus_entry_40">40 mp</string>
+    <string name="pref_camera_focus_entry_infinit">végtelen</string>
+
 </resources>
