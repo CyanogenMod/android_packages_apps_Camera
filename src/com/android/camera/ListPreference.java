@@ -158,6 +158,20 @@ public class ListPreference extends CameraPreference {
         mEntryValues = entryValues.toArray(new CharSequence[size]);
     }
 
+    public void filterDuplicated() {
+        ArrayList<CharSequence> entries = new ArrayList<CharSequence>();
+        ArrayList<CharSequence> entryValues = new ArrayList<CharSequence>();
+        for (int i = 0, len = mEntryValues.length; i < len; i++) {
+            if (!entries.contains(mEntries[i])) {
+                entries.add(mEntries[i]);
+                entryValues.add(mEntryValues[i]);
+            }
+        }
+        int size = entries.size();
+        mEntries = entries.toArray(new CharSequence[size]);
+        mEntryValues = entryValues.toArray(new CharSequence[size]);
+    }
+
     public void print() {
         Log.v(TAG, "Preference key=" + getKey() + ". value=" + getValue());
         for (int i = 0; i < mEntryValues.length; i++) {
