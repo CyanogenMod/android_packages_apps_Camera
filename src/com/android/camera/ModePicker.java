@@ -69,7 +69,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     private boolean mModeChanged;
 
 
-    private int mCurrentMode = 0;
+    private int mCurrentMode = MODE_CAMERA;
     private Animation mFadeIn, mFadeOut;
 
     public ModePicker(Context context, AttributeSet attrs) {
@@ -92,8 +92,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         if (ApiHelper.HAS_PANORAMA) {
             mModeSelectionIcon[MODE_PANORAMA] =
                     (RotateImageView) findViewById(R.id.mode_panorama);
-        }
-        else {
+        } else {
             // Hide panorama icon if it is not supported
             mModeSelectionFrame.removeView(findViewById(R.id.mode_panorama));
             requestLayout();
@@ -236,9 +235,9 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         boolean enbaled = true;
         if (mCurrentMode == MODE_CAMERA) enbaled = false;
         if (mCurrentModeFrame != null) {
-            for (TwoStateImageView v: mCurrentModeIcon) v.enableFilter(enbaled);
+            for (TwoStateImageView v : mCurrentModeIcon) v.enableFilter(enbaled);
         }
-        for (TwoStateImageView v: mModeSelectionIcon) v.enableFilter(enbaled);
+        for (TwoStateImageView v : mModeSelectionIcon) v.enableFilter(enbaled);
 
         updateModeState();
     }

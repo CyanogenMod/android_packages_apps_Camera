@@ -19,6 +19,7 @@ package com.android.camera;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -36,16 +37,22 @@ public class MenuHelper {
     private static final String CAMERA_CLASS = "com.android.camera.Camera";
     private static final String PANORAMA_CLASS = "com.android.camera.PanoramaActivity";
     private static final String VIDEO_CAMERA_CLASS = "com.android.camera.VideoCamera";
+    private static final String LIGHTCYCLE_PACKAGE =
+            "com.google.android.apps.lightcycle";
+    private static final String LIGHTCYCLE_CLASS =
+            "com.google.android.apps.lightcycle.PanoramaCaptureActivity";
 
     private static void startCameraActivity(Activity activity, Intent intent,
-            String className) {
+            String packageName, String className, boolean keepCamera) {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        intent.setClassName(activity.getPackageName(), className);
+        intent.setClassName(packageName, className);
 
         // Keep the camera instance for a while.
         // This avoids re-opening the camera and saves time.
-        CameraHolder.instance().keep();
+        if (keepCamera) {
+            CameraHolder.instance().keep();
+        }
 
         try {
             activity.startActivity(intent);
@@ -56,12 +63,26 @@ public class MenuHelper {
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
+    private static boolean hasLightCycle(PackageManager pm) {
+        Intent it = new Intent();
+        it.setClassName(LIGHTCYCLE_PACKAGE, LIGHTCYCLE_CLASS);
+        return pm.resolveActivity(it, 0) != null;
+    }
+
     public static void gotoMode(int mode, Activity activity) {
         String action, className;
+        String packageName = activity.getPackageName();
+        boolean keepCamera = true;
         switch (mode) {
             case ModePicker.MODE_PANORAMA:
-                action = PANORAMA_CLASS;
-                className = PANORAMA_CLASS;
+                action = Intent.ACTION_MAIN;
+                if (hasLightCycle(activity.getPackageManager())) {
+                    className = LIGHTCYCLE_CLASS;
+                    packageName = LIGHTCYCLE_PACKAGE;
+                    keepCamera = false;
+                } else {
+                    className = PANORAMA_CLASS;
+                }
                 break;
             case ModePicker.MODE_VIDEO:
                 action = MediaStore.INTENT_ACTION_VIDEO_CAMERA;
@@ -76,6 +97,6 @@ public class MenuHelper {
                 return;
         }
         Intent it = new Intent(action);
-        startCameraActivity(activity, it, className);
+        startCameraActivity(activity, it, packageName, className, keepCamera);
     }
 }
