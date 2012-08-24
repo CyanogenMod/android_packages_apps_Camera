@@ -1,136 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--  Copyright (C) 2007 The Android Open Source Project
-
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-
-          http://www.apache.org/licenses/LICENSE-2.0
-
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
- -->
-
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="camera_error_title" msgid="6484667504938477337">"Errore fotocamera"</string>
-    <string name="cannot_connect_camera" msgid="955440687597185163">"Impossibile collegarsi alla fotocamera."</string>
-    <string name="camera_disabled" msgid="8923911090533439312">"La fotocamera è stata disattivata in base a norme di sicurezza."</string>
-    <string name="camera_label" msgid="6346560772074764302">"Fotocamera"</string>
-    <string name="video_camera_label" msgid="2899292505526427293">"Videocamera"</string>
-    <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Foto"</string>
-    <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Video"</string>
-    <string name="wait" msgid="8600187532323801552">"Attendere..."</string>
-    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Monta l\'archivio USB prima di utilizzare la fotocamera."</string>
-    <string name="no_storage" product="default" msgid="5137703033746873624">"Per usare la fotocamera devi inserire una scheda SD."</string>
-    <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"L\'archivio USB è pieno."</string>
-    <string name="not_enough_space" product="default" msgid="6655334407957844653">"La scheda SD è piena."</string>
-    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Preparazione archivio USB…"</string>
-    <string name="preparing_sd" product="default" msgid="2914969119574812666">"Preparazione scheda SD…"</string>
-    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Accesso ad archivio USB non riuscito."</string>
-    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Accesso a scheda SD non riuscito."</string>
-    <string name="confirm_restore_message" msgid="4726518572923160939">"Vuoi ripristinare le impostazioni predefinite della fotocamera?"</string>
-    <string name="review_play" msgid="6378271587740884696">"Riproduci"</string>
-    <string name="review_cancel" msgid="8188009385853399254">"ANNULLA"</string>
-    <string name="review_ok" msgid="1156261588693116433">"FINE"</string>
-    <string name="review_retake" msgid="7804864054896088338">"SCATTA DI NUOVO"</string>
-    <string name="camera_gallery_photos_text" msgid="6558048736561932758">"Galleria"</string>
-    <string name="time_lapse_title" msgid="4360632427760662691">"Registrazione al rallentatore"</string>
-    <string name="pref_camera_id_title" msgid="4040791582294635851">"Scegli fotocamera"</string>
-    <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Posteriore"</string>
-    <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Frontale"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Registra località"</string>
-    <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Non attiva"</string>
-    <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Attiva"</string>
-    <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualità video"</string>
-    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervallo rallentatore"</string>
-    <string name="pref_camera_settings_category" msgid="2576236450859613120">"Impostazioni fotocamera"</string>
-    <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Impostazioni videocamera"</string>
+    <string name="camera_error_title">"Errore fotocamera"</string>
+    <string name="cannot_connect_camera">"Impossibile collegarsi alla fotocamera."</string>
+    <string name="camera_disabled">"La fotocamera è stata disattivata in base a norme di sicurezza."</string>
+    <string name="camera_label">"Fotocamera"</string>
+    <string name="video_camera_label">"Videocamera"</string>
+    <string name="gallery_camera_bucket_name">"Foto"</string>
+    <string name="gallery_camera_videos_bucket_name">"Video"</string>
+    <string name="wait">"Attendere..."</string>
+    <string name="no_storage" product="nosdcard">"Monta l\'archivio USB prima di utilizzare la fotocamera."</string>
+    <string name="no_storage" product="default">"Per usare la fotocamera devi inserire una scheda SD."</string>
+    <string name="not_enough_space" product="nosdcard">"L\'archivio USB è pieno."</string>
+    <string name="not_enough_space" product="default">"La scheda SD è piena."</string>
+    <string name="preparing_sd" product="nosdcard">"Preparazione archivio USB…"</string>
+    <string name="preparing_sd" product="default">"Preparazione scheda SD…"</string>
+    <string name="access_sd_fail" product="nosdcard">"Accesso ad archivio USB non riuscito."</string>
+    <string name="access_sd_fail" product="default">"Accesso a scheda SD non riuscito."</string>
+    <string name="confirm_restore_message">"Vuoi ripristinare le impostazioni predefinite della fotocamera?"</string>
+    <string name="review_play">"Riproduci"</string>
+    <string name="review_cancel">"ANNULLA"</string>
+    <string name="review_ok">"FINE"</string>
+    <string name="review_retake">"SCATTA DI NUOVO"</string>
+    <string name="camera_gallery_photos_text">"Galleria"</string>
+    <string name="time_lapse_title">"Registrazione al rallentatore"</string>
+    <string name="pref_camera_id_title">"Scegli fotocamera"</string>
+    <string name="pref_camera_id_entry_back">"Posteriore"</string>
+    <string name="pref_camera_id_entry_front">"Frontale"</string>
+    <string name="pref_camera_recordlocation_title">"Registra località"</string>
+    <string name="pref_camera_recordlocation_entry_off">"Non attiva"</string>
+    <string name="pref_camera_recordlocation_entry_on">"Attiva"</string>
+    <string name="pref_video_quality_title">"Qualità video"</string>
+    <string name="pref_video_time_lapse_frame_interval_title">"Intervallo rallentatore"</string>
+    <string name="pref_camera_settings_category">"Impostazioni fotocamera"</string>
+    <string name="pref_camcorder_settings_category">"Impostazioni videocamera"</string>
     <string name="pref_camera_power_shutter_title">Scatta tasto On/Off</string>
-    <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Dimensioni foto"</string>
-    <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Messa a fuoco"</string>
-    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatica"</string>
-    <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
-    <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
+    <string name="pref_camera_picturesize_title">"Dimensioni foto"</string>
+    <string name="pref_camera_focusmode_title">"Messa a fuoco"</string>
+    <string name="pref_camera_focusmode_entry_auto">"Automatica"</string>
+    <string name="pref_camera_focusmode_entry_infinity">"Infinito"</string>
+    <string name="pref_camera_focusmode_entry_macro">"Macro"</string>
     <string name="pref_camera_focusmode_entry_fixed">Fisso</string>
     <string name="pref_camera_focusmode_entry_facedetect">Rilevamento viso</string>
     <string name="pref_camera_focusmode_entry_continuouspicture">Continuo</string>
     <string name="pref_camera_iso_title">ISO</string>
-    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Modalità flash"</string>
-    <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatica"</string>
-    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Attiva"</string>
-    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Non attiva"</string>
-    <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Bilanciamento bianco"</string>
-    <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Automatico"</string>
-    <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Luce incandescenza"</string>
-    <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Luce diurna"</string>
-    <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Luce neon"</string>
-    <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Nuvoloso"</string>
+    <string name="pref_camera_flashmode_title">"Modalità flash"</string>
+    <string name="pref_camera_flashmode_entry_auto">"Automatica"</string>
+    <string name="pref_camera_flashmode_entry_on">"Attiva"</string>
+    <string name="pref_camera_flashmode_entry_off">"Non attiva"</string>
+    <string name="pref_camera_whitebalance_title">"Bilanciamento bianco"</string>
+    <string name="pref_camera_whitebalance_entry_auto">"Automatico"</string>
+    <string name="pref_camera_whitebalance_entry_incandescent">"Luce incandescenza"</string>
+    <string name="pref_camera_whitebalance_entry_daylight">"Luce diurna"</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent">"Luce neon"</string>
+    <string name="pref_camera_whitebalance_entry_cloudy">"Nuvoloso"</string>
     <string name="pref_camera_whitebalance_entry_cloudydaylight">Nuvoloso-Luce diurna</string>
-    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Modalità scena"</string>
-    <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatica"</string>
-    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Movimento"</string>
-    <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Notturna"</string>
-    <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Tramonto"</string>
-    <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Festa"</string>
+    <string name="pref_camera_scenemode_title">"Modalità scena"</string>
+    <string name="pref_camera_scenemode_entry_auto">"Automatica"</string>
+    <string name="pref_camera_scenemode_entry_action">"Movimento"</string>
+    <string name="pref_camera_scenemode_entry_night">"Notturna"</string>
+    <string name="pref_camera_scenemode_entry_sunset">"Tramonto"</string>
+    <string name="pref_camera_scenemode_entry_party">"Festa"</string>
     <string name="pref_camera_scenemode_entry_backlight">Controluce</string>
     <string name="pref_camera_scenemode_entry_duskdawn">Tramonto/Alba</string>
     <string name="pref_camera_scenemode_entry_fallcolor">Colori autunnali</string>
     <string name="pref_camera_scenemode_entry_text">Testo</string>
-    <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Non selezionabile in modalità scena."</string>
-    <string name="pref_restore_title" msgid="6479274979730178961">"Impostazioni fotocamera"</string>
-    <string name="pref_restore_detail" msgid="5732490002291044791">"Ripristina predefinite"</string>
-    <string name="pref_exposure_title" msgid="1229093066434614811">"Esposizione"</string>
-    <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Lo spazio dell\'archivio USB si sta esaurendo. Cambia l\'impostazione di qualità o elimina alcune immagini o altri file."</string>
-    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Lo spazio della scheda SD si sta esaurendo. Cambia l\'impostazione di qualità o elimina alcune immagini o altri file."</string>
-    <string name="video_reach_size_limit" msgid="6179877322015552390">"Limite di dimensione raggiunto."</string>
-    <string name="share_picture_via" msgid="1375127849431890447">"Condividi foto via"</string>
-    <string name="share_video_via" msgid="5152302809166549015">"Condividi video via"</string>
-    <string name="no_picture_to_share" msgid="5352574090121328815">"Nessuna immagine da condividere."</string>
-    <string name="no_video_to_share" msgid="7567298642707627096">"Nessun video da condividere."</string>
-    <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Troppo veloce"</string>
-    <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Preparazione panoramica"</string>
-    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Salvataggio panoramica non riuscito."</string>
-    <string name="pano_dialog_title" msgid="5755531234434437697">"Panoramica"</string>
-    <string name="pano_capture_indication" msgid="8248825828264374507">"Acquisizione panoramica"</string>
-    <string name="pano_dialog_waiting_previous" msgid="7800325815031423516">"In attesa di panoramica precedente"</string>
-    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Salvataggio..."</string>
-    <string name="tap_to_focus" msgid="8863427645591903760">"Tocca per mettere a fuoco."</string>
-    <string name="pref_video_effect_title" msgid="8243182968457289488">"Effetti"</string>
-    <string name="effect_none" msgid="3601545724573307541">"Nessuno"</string>
-    <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Schiaccia"</string>
-    <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"Occhi grandi"</string>
-    <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"Bocca grande"</string>
-    <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"Bocca piccola"</string>
-    <string name="effect_goofy_face_big_nose" msgid="5180533098740577137">"Naso grande"</string>
-    <string name="effect_goofy_face_small_eyes" msgid="1070355596290331271">"Occhi piccoli"</string>
-    <string name="effect_backdropper_space" msgid="7935661090723068402">"Nello spazio"</string>
-    <string name="effect_backdropper_sunset" msgid="45198943771777870">"Tramonto"</string>
-    <string name="effect_backdropper_gallery" msgid="959158844620991906">"Il tuo video"</string>
-    <string name="bg_replacement_message" msgid="9184270738916564608">"Posa il tuo dispositivo."\n"Esci dalla visualizzazione per un attimo."</string>
-    <string name="not_selectable_in_effect" msgid="4568604144269499202">"Non selezionabile quando l\'effetto è attivo."</string>
-    <string name="video_snapshot_hint" msgid="18833576851372483">"Tocca per scattare foto durante la registrazione."</string>
-    <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Istantanea video disabilitata se gli effetti speciali sono attivi."</string>
-    <string name="clear_effects" msgid="5485339175014139481">"Cancella effetti"</string>
-    <string name="effect_silly_faces" msgid="8107732405347155777">"FACCINE"</string>
-    <string name="effect_background" msgid="6579360207378171022">"SFONDO"</string>
-    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Pulsante di scatto"</string>
-    <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Foto più recente"</string>
-    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Interruttore fotocamera anteriore e posteriore"</string>
-    <string name="accessibility_mode_picker" msgid="3278002189966833100">"Selettore fotocamera, video o panoramica"</string>
-    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Altri controlli"</string>
-    <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Chiudi controlli"</string>
-    <string name="accessibility_zoom_control" msgid="1339909363226825709">"Controllo zoom"</string>
-    <string name="accessibility_decrement" msgid="1411194318538035666">"Riduci %1$s"</string>
-    <string name="accessibility_increment" msgid="8447850530444401135">"Aumenta %1$s"</string>
-    <string name="accessibility_switch" msgid="6995966685498958895">"Interruttore %1$s"</string>
-    <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Passa a foto"</string>
-    <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Passa a video"</string>
-    <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Passa a panorama"</string>
+    <string name="not_selectable_in_scene_mode">"Non selezionabile in modalità scena."</string>
+    <string name="pref_restore_title">"Impostazioni fotocamera"</string>
+    <string name="pref_restore_detail">"Ripristina predefinite"</string>
+    <string name="pref_exposure_title">"Esposizione"</string>
+    <string name="dialog_ok">"OK"</string>
+    <string name="spaceIsLow_content" product="nosdcard">"Lo spazio dell\'archivio USB si sta esaurendo. Cambia l\'impostazione di qualità o elimina alcune immagini o altri file."</string>
+    <string name="spaceIsLow_content" product="default">"Lo spazio della scheda SD si sta esaurendo. Cambia l\'impostazione di qualità o elimina alcune immagini o altri file."</string>
+    <string name="video_reach_size_limit">"Limite di dimensione raggiunto."</string>
+    <string name="share_picture_via">"Condividi foto via"</string>
+    <string name="share_video_via">"Condividi video via"</string>
+    <string name="no_picture_to_share">"Nessuna immagine da condividere."</string>
+    <string name="no_video_to_share">"Nessun video da condividere."</string>
+    <string name="pano_too_fast_prompt">"Troppo veloce"</string>
+    <string name="pano_dialog_prepare_preview">"Preparazione panoramica"</string>
+    <string name="pano_dialog_panorama_failed">"Salvataggio panoramica non riuscito."</string>
+    <string name="pano_dialog_title">"Panoramica"</string>
+    <string name="pano_capture_indication">"Acquisizione panoramica"</string>
+    <string name="pano_dialog_waiting_previous">"In attesa di panoramica precedente"</string>
+    <string name="pano_review_saving_indication_str">"Salvataggio..."</string>
+    <string name="tap_to_focus">"Tocca per mettere a fuoco."</string>
+    <string name="pref_video_effect_title">"Effetti"</string>
+    <string name="effect_none">"Nessuno"</string>
+    <string name="effect_goofy_face_squeeze">"Schiaccia"</string>
+    <string name="effect_goofy_face_big_eyes">"Occhi grandi"</string>
+    <string name="effect_goofy_face_big_mouth">"Bocca grande"</string>
+    <string name="effect_goofy_face_small_mouth">"Bocca piccola"</string>
+    <string name="effect_goofy_face_big_nose">"Naso grande"</string>
+    <string name="effect_goofy_face_small_eyes">"Occhi piccoli"</string>
+    <string name="effect_backdropper_space">"Nello spazio"</string>
+    <string name="effect_backdropper_sunset">"Tramonto"</string>
+    <string name="effect_backdropper_gallery">"Il tuo video"</string>
+    <string name="bg_replacement_message">"Posa il tuo dispositivo."\n"Esci dalla visualizzazione per un attimo."</string>
+    <string name="not_selectable_in_effect">"Non selezionabile quando l\'effetto è attivo."</string>
+    <string name="video_snapshot_hint">"Tocca per scattare foto durante la registrazione."</string>
+    <string name="disable_video_snapshot_hint">"Istantanea video disabilitata se gli effetti speciali sono attivi."</string>
+    <string name="clear_effects">"Cancella effetti"</string>
+    <string name="effect_silly_faces">"FACCINE"</string>
+    <string name="effect_background">"SFONDO"</string>
+    <string name="accessibility_shutter_button">"Pulsante di scatto"</string>
+    <string name="accessibility_review_thumbnail">"Foto più recente"</string>
+    <string name="accessibility_camera_picker">"Interruttore fotocamera anteriore e posteriore"</string>
+    <string name="accessibility_mode_picker">"Selettore fotocamera, video o panoramica"</string>
+    <string name="accessibility_second_level_indicators">"Altri controlli"</string>
+    <string name="accessibility_back_to_first_level">"Chiudi controlli"</string>
+    <string name="accessibility_zoom_control">"Controllo zoom"</string>
+    <string name="accessibility_decrement">"Riduci %1$s"</string>
+    <string name="accessibility_increment">"Aumenta %1$s"</string>
+    <string name="accessibility_switch">"Interruttore %1$s"</string>
+    <string name="accessibility_switch_to_camera">"Passa a foto"</string>
+    <string name="accessibility_switch_to_video">"Passa a video"</string>
+    <string name="accessibility_switch_to_panorama">"Passa a panorama"</string>
     <string name="pref_camera_autoexposure_title">Modalità esposizione automatica</string>
     <string name="pref_camera_autoexposure_entry_frameaverage">Media frame</string>
     <string name="pref_camera_autoexposure_entry_centerweighted">Misurazione media-ponderata</string>
@@ -173,4 +158,12 @@
     <string name="pref_camera_scenemode_entry_candlelight">Lume di candela</string>
     <string name="pref_camera_scenemode_entry_flowers">Fiori</string>
     <string name="pref_camera_scenemode_entry_ar">AR</string>
-</resources>
+    <string name="pref_camera_focus_title">Tocco messa a fuoco</string>
+    <string name="pref_camera_focus_summary">Seleziona la durata del tocco per la messa a fuoco</string>
+    <string name="pref_camera_focus_entry_10">10s</string>
+    <string name="pref_camera_focus_entry_15">15s</string>
+    <string name="pref_camera_focus_entry_20">20s</string>
+    <string name="pref_camera_focus_entry_30">30s</string>
+    <string name="pref_camera_focus_entry_40">40s</string>
+    <string name="pref_camera_focus_entry_infinit">infinita</string>
+</resources>	
