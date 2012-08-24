@@ -42,5 +42,7 @@
     <bool name="noFaceDetectOnRearCamera">false</bool>
     <!-- Use ZSL mode -->
     <bool name="enableZSL">false</bool>
+    <!-- Reset rotation parameter in video camera -->
+    <bool name="resetVideoRotationParameter">false</bool>
 </resources>
 
