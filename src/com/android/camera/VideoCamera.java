@@ -1803,6 +1803,10 @@ public class VideoCamera extends ActivityBase
     private void setCameraParameters() {
         mParameters = mCameraDevice.getParameters();
 
+        // Reset rotation. It's only meant to be used for snapshots, and it causes problems with
+        // some camera drivers if it's left over from a snap or video snap.
+        mParameters.setRotation(0);
+
         // Set video mode
         CameraSettings.setVideoMode(mParameters, true);
 
