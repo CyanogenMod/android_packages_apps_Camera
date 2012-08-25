@@ -60,7 +60,7 @@
 
     <!-- Camera Preferences Time Lapse Frame Interval entries -->
     <string-array name="pref_video_time_lapse_frame_interval_entries" translatable="false">
-        <item>@string/pref_camera_recordlocation_entry_off</item>
+        <item>@string/setting_off</item>
         <item>@string/pref_video_time_lapse_frame_interval_entry_1000</item>
         <item>@string/pref_video_time_lapse_frame_interval_entry_1500</item>
         <item>@string/pref_video_time_lapse_frame_interval_entry_2000</item>
@@ -178,8 +178,8 @@
     </string-array>
 
     <array name="pref_camera_recordlocation_entries" translatable="false">
-        <item>@string/pref_camera_recordlocation_entry_off</item>
-        <item>@string/pref_camera_recordlocation_entry_on</item>
+        <item>@string/setting_off</item>
+        <item>@string/setting_on</item>
     </array>
 
     <array name="camera_recordlocation_icons" translatable="false">
