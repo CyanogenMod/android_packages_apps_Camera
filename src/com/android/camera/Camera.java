@@ -1961,7 +1961,6 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             mCameraDevice = null;
             setCameraState(PREVIEW_STOPPED);
             mFocusManager.onCameraReleased();
-            mSurfaceTexture = null;
         }
     }
 
