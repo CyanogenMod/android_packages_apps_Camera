@@ -71,4 +71,10 @@
             camera:icons="@array/camera_id_icons"
             camera:entries="@array/camera_id_entries"
             camera:largeIcons="@array/camera_id_largeicons" />
+    <ListPreference
+            camera:key="pref_camera_hdr_key"
+            camera:defaultValue="@string/pref_camera_hdr_default"
+            camera:title="@string/pref_camera_hdr_title"
+            camera:entries="@array/pref_camera_hdr_entries"
+            camera:entryValues="@array/pref_camera_hdr_entryvalues" />
 </PreferenceGroup>

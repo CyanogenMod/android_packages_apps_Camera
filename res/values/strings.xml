@@ -79,8 +79,9 @@
 
     <string name="pref_camera_recordlocation_default" translatable="false">none</string>
 
-    <!-- Settings screen, Record location dialog choices -->
+    <!-- Entry of a on/off setting. The setting is turned off. [CHAR LIMIT=15] -->
     <string name="setting_off">Off</string>
+    <!-- Entry of a on/off setting. The setting is turned on. [CHAR LIMIT=15] -->
     <string name="setting_on">On</string>
 
     <!-- The Video quality settings in preference [CHAR LIMIT=21] -->
@@ -201,6 +202,11 @@
     <!-- Exposure settings in preference -->
     <string name="pref_exposure_title">Exposure</string>
     <string name="pref_exposure_default" translatable="false">0</string>
+
+    <!-- The title of camera HDR (high dynamic range) settings [CHAR LIMIT=20] -->
+    <string name="pref_camera_hdr_title">HDR</string>
+
+    <string name="pref_camera_hdr_default" translatable="false">off</string>
 
     <!-- Dialog "OK" button. Dismisses dialog. -->
     <string name="dialog_ok">OK</string>
