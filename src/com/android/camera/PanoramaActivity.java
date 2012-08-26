@@ -883,7 +883,11 @@ public class PanoramaActivity extends ActivityBase implements
 
     private void resetToPreview() {
         reset();
-        if (!mPaused) startCameraPreview();
+        if (!mPaused) {
+            super.onPause();
+            super.onResume();
+            startCameraPreview();
+        }
     }
 
     private void showFinalMosaic(Bitmap bitmap) {

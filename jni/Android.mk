@@ -10,6 +10,9 @@ LOCAL_C_INCLUDES := \
         $(LOCAL_PATH)/feature_mos/src/mosaic
 
 LOCAL_CFLAGS := -O3 -DNDEBUG -fstrict-aliasing
+ifeq ($(BOARD_CPU_COLOR_CONVERT), true)
+LOCAL_CFLAGS += -DCPU_COLOR_CONVERT
+endif
 
 LOCAL_SRC_FILES := \
         feature_mos_jni.cpp \
