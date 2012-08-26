@@ -148,10 +148,16 @@ bool WarpRenderer::DrawTexture(GLfloat *affine)
         glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, g_iIndices);
 
         checkGlError("glDrawElements");
-
+        
+#ifdef QCOM_HARDWARE && ARCH_ARM_V6
+        glFlush();
+#endif
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         succeeded = true;
     } while (false);
+#ifdef QCOM_HARDWARE && ARCH_ARM_V6
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#endif
     return succeeded;
 }
 
