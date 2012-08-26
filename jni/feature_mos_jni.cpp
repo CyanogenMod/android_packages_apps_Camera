@@ -354,10 +354,32 @@ void ConvertYVUAiToPlanarYVU(unsigned char *planar, unsigned char *in, int width
 
     for (int i = 0; i < planeSize; i++)
     {
+#ifndef CPU_COLOR_CONVERT
         *Yptr++ = *in++;
         *Vptr++ = *in++;
         *Uptr++ = *in++;
         in++;   // Alpha
+#else // CPU_COLOR_CONVERT
+        int y, v, u;
+
+        y = (  66 * in[0] + 152 * in[1] +  25 * in[2] + 16);
+        v = ( 112 * in[0] -  94 * in[1] -  18 * in[2] + 128);
+        u = (- 38 * in[0] -  75 * in[1] + 112 * in[2] + 128);
+
+        y >>= 8;
+        v >>= 8;
+        u >>= 8;
+
+        y += 16;
+        v += 128;
+        u += 128;
+
+        *Yptr++ = (unsigned char) (y);
+        *Vptr++ = (unsigned char) (v);
+        *Uptr++ = (unsigned char) (u);
+        in += 4;   // Alpha
+
+#endif // CPU_COLOR_CONVERT
     }
 }
 
