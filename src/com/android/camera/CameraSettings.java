@@ -163,6 +163,7 @@ public class CameraSettings {
         if (pictureSize != null) {
             filterUnsupportedOptions(group, pictureSize, sizeListToStringList(
                     mParameters.getSupportedPictureSizes()));
+            filterSimilarPictureSize(group, pictureSize);
         }
         if (whiteBalance != null) {
             filterUnsupportedOptions(group,
@@ -282,6 +283,16 @@ public class CameraSettings {
             return;
         }
 
+        resetIfInvalid(pref);
+    }
+
+    private void filterSimilarPictureSize(PreferenceGroup group,
+            ListPreference pref) {
+        pref.filterDuplicated();
+        if (pref.getEntries().length <= 1) {
+            removePreference(group, pref.getKey());
+            return;
+        }
         resetIfInvalid(pref);
     }
 
