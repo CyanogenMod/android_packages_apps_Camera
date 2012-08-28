@@ -37,8 +37,10 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Rückseite"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Vorderseite"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Ort speichern"</string>
-    <string name="setting_off" msgid="8888142742988946038">"Aus"</string>
-    <string name="setting_on" msgid="7954533529969575594">"An"</string>
+    <!-- no translation found for setting_off (4480039384202951946) -->
+    <skip />
+    <!-- no translation found for setting_on (8602246224465348901) -->
+    <skip />
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Videoqualität"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Hoch"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Niedrig"</string>
@@ -77,6 +79,8 @@
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Diese Einstellung kann im Szenenmodus nicht ausgewählt werden."</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Standard wiederherstellen"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Belichtung"</string>
+    <!-- no translation found for pref_camera_hdr_title (4117412393545376604) -->
+    <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Ihr USB-Speicher bietet nicht mehr genug Speicherplatz. Ändern Sie die Qualitätseinstellung oder löschen Sie Bilder oder andere Dateien."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Auf Ihrer SD-Karte ist nicht mehr genügend Speicherplatz vorhanden. Ändern Sie die Qualitätseinstellung oder löschen Sie Bilder oder andere Dateien."</string>

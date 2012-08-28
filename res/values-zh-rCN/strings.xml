@@ -37,8 +37,10 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"背面相机"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"正面相机"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"保存所在位置"</string>
-    <string name="setting_off" msgid="8888142742988946038">"关闭"</string>
-    <string name="setting_on" msgid="7954533529969575594">"开"</string>
+    <!-- no translation found for setting_off (4480039384202951946) -->
+    <skip />
+    <!-- no translation found for setting_on (8602246224465348901) -->
+    <skip />
     <string name="pref_video_quality_title" msgid="8245379279801096922">"视频画质"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"高画质"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"低画质"</string>
@@ -47,20 +49,13 @@
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"摄像机设置"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"照片大小"</string>
     <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"800 万像素"</string>
-    <!-- no translation found for pref_camera_picturesize_entry_5mp (2882928212030661159) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_3mp (741415860337400696) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_2mp (1753709802245460393) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1_3mp (829109608140747258) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_1mp (1669725616780375066) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_vga (806934254162981919) -->
-    <skip />
-    <!-- no translation found for pref_camera_picturesize_entry_qvga (8576186463069770133) -->
-    <skip />
+    <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"500 万像素"</string>
+    <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"300 万像素"</string>
+    <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"200 万像素"</string>
+    <string name="pref_camera_picturesize_entry_1_3mp" msgid="829109608140747258">"130 万像素"</string>
+    <string name="pref_camera_picturesize_entry_1mp" msgid="1669725616780375066">"100 万像素"</string>
+    <string name="pref_camera_picturesize_entry_vga" msgid="806934254162981919">"VGA"</string>
+    <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"对焦方式"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"自动"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"无限远"</string>
@@ -84,6 +79,8 @@
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"无法在取景模式下选择。"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"还原默认设置"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"曝光"</string>
+    <!-- no translation found for pref_camera_hdr_title (4117412393545376604) -->
+    <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"确定"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"USB 存储设备空间不足，请更改照片品质设置，或删除某些照片或者其他文件。"</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"SD 卡空间不足，请更改照片品质设置，或删除某些照片或者其他文件。"</string>
