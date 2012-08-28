@@ -71,4 +71,36 @@
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginRight">8dp</item>
     </style>
+    <style name="ReviewControlIcon_xlarge">
+        <item name="android:layout_height">32dp</item>
+        <item name="android:layout_width">32dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+    <style name="ReviewThumbnail_xlarge">
+        <!-- Thumbnail size calculation relies on the layout width. If this is
+             changed to wrap_content or match_parent, the code should be changed
+             as well. -->
+        <item name="android:layout_width">130dp</item>
+        <item name="android:layout_height">130dp</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginBottom">20dp</item>
+    </style>
+    <style name="SettingPopupWindow_xlarge">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_marginBottom">@dimen/setting_popup_right_margin</item>
+        <item name="android:visibility">gone</item>
+    </style>
+    <style name="PanoViewHorizontalBar_xlarge">
+        <item name="android:background">#000000</item>
+        <item name="android:alpha">1.0</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">0.5</item>
+    </style>
 </resources>
