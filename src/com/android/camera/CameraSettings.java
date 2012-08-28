@@ -210,8 +210,8 @@ public class CameraSettings {
                 filterUnsupportedOptions(group, videoEffect, null);
             }
         }
-        if (cameraHdr == null || !ApiHelper.HAS_CAMERA_HDR
-                    || !Util.isCameraHdrSupported(mParameters)) {
+        if (cameraHdr != null && (!ApiHelper.HAS_CAMERA_HDR
+                    || !Util.isCameraHdrSupported(mParameters))) {
             removePreference(group, cameraHdr.getKey());
         }
     }
