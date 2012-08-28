@@ -49,10 +49,15 @@ public class OtherSettingsPopup extends AbstractSettingPopup
 
     private class OtherSettingsAdapter extends ArrayAdapter<ListPreference> {
         LayoutInflater mInflater;
+        String mOnString;
+        String mOffString;
 
         OtherSettingsAdapter() {
             super(OtherSettingsPopup.this.getContext(), 0, mListItem);
-            mInflater = LayoutInflater.from(getContext());
+            Context context = getContext();
+            mInflater = LayoutInflater.from(context);
+            mOnString = context.getString(R.string.setting_on);
+            mOffString = context.getString(R.string.setting_off);
         }
 
         private int getSettingLayoutId(ListPreference pref) {
@@ -60,12 +65,19 @@ public class OtherSettingsPopup extends AbstractSettingPopup
             // 'Restore setting' in the popup window.
             if (pref == null) return R.layout.in_line_setting_restore;
 
-            // Currently, the RecordLocationPreference is the only setting
-            // which applies the on/off switch.
-            if (CameraSettings.KEY_RECORD_LOCATION.equals(pref.getKey())) {
+            if (isOnOffPreference(pref)) {
                 return R.layout.in_line_setting_switch;
             }
             return R.layout.in_line_setting_knob;
+        }
+
+        private boolean isOnOffPreference(ListPreference pref) {
+            CharSequence[] entries = pref.getEntries();
+            if (entries.length != 2) return false;
+            String str1 = entries[0].toString();
+            String str2 = entries[1].toString();
+            return ((str1.equals(mOnString) && str2.equals(mOffString)) ||
+                    (str1.equals(mOffString) && str2.equals(mOnString)));
         }
 
         @Override

@@ -80,8 +80,8 @@
     <string name="pref_camera_recordlocation_default" translatable="false">none</string>
 
     <!-- Settings screen, Record location dialog choices -->
-    <string name="pref_camera_recordlocation_entry_off">Off</string>
-    <string name="pref_camera_recordlocation_entry_on">On</string>
+    <string name="setting_off">Off</string>
+    <string name="setting_on">On</string>
 
     <!-- The Video quality settings in preference [CHAR LIMIT=21] -->
     <string name="pref_video_quality_title">Video quality</string>
