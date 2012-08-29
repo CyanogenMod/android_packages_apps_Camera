@@ -54,7 +54,6 @@ public class CameraSettings {
     public static final String KEY_EXPOSURE = "pref_camera_exposure_key";
     public static final String KEY_VIDEO_EFFECT = "pref_video_effect_key";
     public static final String KEY_CAMERA_ID = "pref_camera_id_key";
-    public static final String KEY_CAMERA_HDR = "pref_camera_hdr_key";
     public static final String KEY_CAMERA_FIRST_USE_HINT_SHOWN = "pref_camera_first_use_hint_shown_key";
     public static final String KEY_VIDEO_FIRST_USE_HINT_SHOWN = "pref_video_first_use_hint_shown_key";
 
@@ -154,7 +153,6 @@ public class CameraSettings {
         ListPreference videoFlashMode =
                 group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
         ListPreference videoEffect = group.findPreference(KEY_VIDEO_EFFECT);
-        ListPreference cameraHdr = group.findPreference(KEY_CAMERA_HDR);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -209,10 +207,6 @@ public class CameraSettings {
             } else {
                 filterUnsupportedOptions(group, videoEffect, null);
             }
-        }
-        if (cameraHdr != null && (!ApiHelper.HAS_CAMERA_HDR
-                    || !Util.isCameraHdrSupported(mParameters))) {
-            removePreference(group, cameraHdr.getKey());
         }
     }
 
