@@ -35,6 +35,7 @@ import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.TwoStateImageView;
 import com.android.gallery3d.common.ApiHelper;
+import com.android.gallery3d.common.LightCycleHelper;
 
 /**
  * A widget that includes three mode selections {@code RotateImageView}'s and
@@ -47,7 +48,8 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     public static final int MODE_PANORAMA = 2;
 
     // Total mode number
-    private static final int MODE_NUM = ApiHelper.HAS_PANORAMA ? 3 : 2;
+    private final int mModeNum;
+    private final boolean mHasPanorama;
 
     // Fade in and fade out duration in millisecond.
     private static final int FADE_DURATION = 200;
@@ -68,7 +70,6 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     private boolean mSelectionEnabled;
     private boolean mModeChanged;
 
-
     private int mCurrentMode = MODE_CAMERA;
     private Animation mFadeIn, mFadeOut;
 
@@ -76,6 +77,12 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         super(context, attrs);
         DISABLED_COLOR = context.getResources().getColor(R.color.icon_disabled_color);
         PopupManager.getInstance(context).setOnOtherPopupShowedListener(this);
+        if (LightCycleHelper.hasLightCycleCapture(context.getPackageManager())) {
+            mHasPanorama = true;
+        } else {
+            mHasPanorama = ApiHelper.HAS_OLD_PANORAMA;
+        }
+        mModeNum = mHasPanorama ? 3 : 2;
     }
 
     @Override
@@ -83,13 +90,13 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         super.onFinishInflate();
 
         mModeSelectionFrame = (LinearLayout) findViewById(R.id.mode_selection);
-        mModeSelectionIcon = new RotateImageView[MODE_NUM];
+        mModeSelectionIcon = new RotateImageView[mModeNum];
 
         mModeSelectionIcon[MODE_VIDEO] =
                 (RotateImageView) findViewById(R.id.mode_video);
         mModeSelectionIcon[MODE_CAMERA] =
                 (RotateImageView) findViewById(R.id.mode_camera);
-        if (ApiHelper.HAS_PANORAMA) {
+        if (mHasPanorama) {
             mModeSelectionIcon[MODE_PANORAMA] =
                     (RotateImageView) findViewById(R.id.mode_panorama);
         } else {
@@ -102,10 +109,10 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         mCurrentModeFrame = (ViewGroup) findViewById(R.id.current_mode);
 
         if (mCurrentModeFrame != null) {
-            mCurrentModeIcon = new RotateImageView[MODE_NUM];
+            mCurrentModeIcon = new RotateImageView[mModeNum];
             mCurrentModeIcon[0] = (RotateImageView) findViewById(R.id.mode_0);
             mCurrentModeIcon[1] = (RotateImageView) findViewById(R.id.mode_1);
-            if (ApiHelper.HAS_PANORAMA) {
+            if (mHasPanorama) {
                 mCurrentModeIcon[2] = (RotateImageView) findViewById(R.id.mode_2);
             } else {
                 // Hide panorama icon if it is not supported
@@ -119,7 +126,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         }
 
         // Construct animation according to the orientation of the mode selection frame.
-        float ratio = 1.0f - 1.0f / MODE_NUM;
+        float ratio = 1.0f - 1.0f / mModeNum;
         if (mModeSelectionFrame.getOrientation() == LinearLayout.HORIZONTAL) {
             mFadeIn = new TranslateAnimation(Animation.RELATIVE_TO_SELF, -ratio,
                     Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0);
@@ -145,7 +152,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         if (mCurrentModeFrame != null) {
             mCurrentModeFrame.setOnClickListener(this);
         }
-        for (int i = 0; i < MODE_NUM; ++i) {
+        for (int i = 0; i < mModeNum; ++i) {
             mModeSelectionIcon[i].setOnClickListener(this);
         }
     }
@@ -209,7 +216,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
             enableModeSelection(true);
         } else {
             // Set the selected mode as the current one and switch to it.
-            for (int i = 0; i < MODE_NUM; ++i) {
+            for (int i = 0; i < mModeNum; ++i) {
                 if (view == mModeSelectionIcon[i] && (mCurrentMode != i)) {
                     setCurrentMode(i);
                     mModeChanged = true;
@@ -249,7 +256,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
 
     @Override
     public void setOrientation(int orientation, boolean animation) {
-        for (int i = 0; i < MODE_NUM; ++i) {
+        for (int i = 0; i < mModeNum; ++i) {
             mModeSelectionIcon[i].setOrientation(orientation, animation);
             if (mCurrentModeFrame != null) {
                 mCurrentModeIcon[i].setOrientation(orientation, animation);
@@ -266,7 +273,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         mModeSelectionFrame.setEnabled(enabled);
 
         // Enable or disable the icons.
-        for (int i = 0; i < MODE_NUM; ++i) {
+        for (int i = 0; i < mModeNum; ++i) {
             mModeSelectionIcon[i].setEnabled(enabled);
             if (mCurrentModeFrame != null) mCurrentModeIcon[i].setEnabled(enabled);
         }
@@ -284,7 +291,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
     private void updateModeState() {
         // Grey-out the unselected icons for Phone UI.
         if (mCurrentModeFrame != null) {
-            for (int i = 0; i < MODE_NUM; ++i) {
+            for (int i = 0; i < mModeNum; ++i) {
                 highlightView(mModeSelectionIcon[i], (i == mCurrentMode));
             }
         }
@@ -292,7 +299,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         // Update the current mode icons on the Phone UI. The selected mode
         // should be in the center of the current mode icon bar.
         if (mCurrentModeFrame != null) {
-            for (int i = 0, j = 0; i < MODE_NUM; ++i) {
+            for (int i = 0, j = 0; i < mModeNum; ++i) {
                 int target;
                 if (i == 1) {
                     // The second icon is always the selected mode.
