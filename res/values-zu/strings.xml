@@ -37,10 +37,8 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Emuva"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Phambili"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Gcina indawo"</string>
-    <!-- no translation found for setting_off (4480039384202951946) -->
-    <skip />
-    <!-- no translation found for setting_on (8602246224465348901) -->
-    <skip />
+    <string name="setting_off" msgid="4480039384202951946">"Kucishile"</string>
+    <string name="setting_on" msgid="8602246224465348901">"Kuyakhanya"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Ikhwalithi yevidiyo"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Phezulu"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Phansi"</string>
@@ -79,8 +77,7 @@
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Akukhetheki esimweni sokubuka"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Buyisela esimeni okumisiwe"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Isibonelelo"</string>
-    <!-- no translation found for pref_camera_hdr_title (4117412393545376604) -->
-    <skip />
+    <string name="pref_camera_hdr_title" msgid="4117412393545376604">"HDR"</string>
     <string name="dialog_ok" msgid="6263301364153382152">"KULUNGILE"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Isitoreji se-USB yakho siphelelwa yisikhala. Shintsha ilungiselelo lekhwalithi noma susa ezinye izithombe noma amanye amafayela."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Ikhadi lakho le-SD liphelelwa isikhathi. Shintsha ilungiselelo lekhwalithi noma susa eminye imifanekiso noma amanye amafayela."</string>

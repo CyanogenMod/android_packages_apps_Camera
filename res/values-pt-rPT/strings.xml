@@ -37,10 +37,8 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Traseira"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Frontal"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Armazenar localização"</string>
-    <!-- no translation found for setting_off (4480039384202951946) -->
-    <skip />
-    <!-- no translation found for setting_on (8602246224465348901) -->
-    <skip />
+    <string name="setting_off" msgid="4480039384202951946">"Desativado"</string>
+    <string name="setting_on" msgid="8602246224465348901">"Ativado"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualidade de vídeo"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Alta"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Baixa"</string>
@@ -79,8 +77,7 @@
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Não selecionável no modo de cena."</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar predefinições"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposição"</string>
-    <!-- no translation found for pref_camera_hdr_title (4117412393545376604) -->
-    <skip />
+    <string name="pref_camera_hdr_title" msgid="4117412393545376604">"HDR"</string>
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Está a ficar sem espaço no armazenamento USB. Altere as definições de qualidade ou elimine algumas imagens ou outros ficheiros."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Está a ficar sem espaço no cartão SD. Altere as definições de qualidade ou elimine algumas imagens ou outros ficheiros."</string>
