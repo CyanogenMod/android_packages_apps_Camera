@@ -202,10 +202,6 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         } else {
             mSecureCamera = intent.getBooleanExtra(SECURE_CAMERA_EXTRA, false);
         }
-        if (mSecureCamera) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-        }
-
         super.onCreate(icicle);
     }
 
@@ -246,10 +242,6 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         }
 
         unregisterReceiver(mReceiver);
-
-        // Finish the activity if in secure camera mode. Make sure a new secure
-        // album is used every time.
-        if (mSecureCamera && !isFinishing()) finish();
     }
 
     @Override
