@@ -46,41 +46,73 @@
         <item>@drawable/ic_quality_low</item>
    </array>
 
-    <!-- Video Preferences Time Lapse Frame Interval icons -->
-    <array name="video_timelapse_largeicons" translatable="false">
-        <item>@drawable/ic_timelapse_none</item>
-        <item>@drawable/ic_timelapse_1</item>
-        <item>@drawable/ic_timelapse_1_5</item>
-        <item>@drawable/ic_timelapse_2</item>
-        <item>@drawable/ic_timelapse_2_5</item>
-        <item>@drawable/ic_timelapse_3</item>
-        <item>@drawable/ic_timelapse_5</item>
-        <item>@drawable/ic_timelapse_10</item>
-    </array>
-
-    <!-- Camera Preferences Time Lapse Frame Interval entries -->
-    <string-array name="pref_video_time_lapse_frame_interval_entries" translatable="false">
-        <item>@string/setting_off</item>
-        <item>@string/pref_video_time_lapse_frame_interval_entry_1000</item>
-        <item>@string/pref_video_time_lapse_frame_interval_entry_1500</item>
-        <item>@string/pref_video_time_lapse_frame_interval_entry_2000</item>
-        <item>@string/pref_video_time_lapse_frame_interval_entry_2500</item>
-        <item>@string/pref_video_time_lapse_frame_interval_entry_3000</item>
-        <item>@string/pref_video_time_lapse_frame_interval_entry_5000</item>
-        <item>@string/pref_video_time_lapse_frame_interval_entry_10000</item>
-    </string-array>
-
     <!-- These values correspond to the time interval between frame capture in millseconds
     for time lapse recording -->
     <string-array name="pref_video_time_lapse_frame_interval_entryvalues" translatable="false">
         <item>0</item>
+        <item>500</item>
         <item>1000</item>
         <item>1500</item>
         <item>2000</item>
         <item>2500</item>
         <item>3000</item>
+        <item>4000</item>
         <item>5000</item>
+        <item>6000</item>
         <item>10000</item>
+        <item>12000</item>
+        <item>15000</item>
+        <item>24000</item>
+        <item>30000</item>
+        <item>60000</item>
+        <item>90000</item>
+        <item>120000</item>
+        <item>150000</item>
+        <item>180000</item>
+        <item>240000</item>
+        <item>300000</item>
+        <item>360000</item>
+        <item>600000</item>
+        <item>720000</item>
+        <item>900000</item>
+        <item>1440000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+        <item>5400000</item>
+        <item>7200000</item>
+        <item>9000000</item>
+        <item>10800000</item>
+        <item>14400000</item>
+        <item>18000000</item>
+        <item>21600000</item>
+        <item>36000000</item>
+        <item>43200000</item>
+        <item>54000000</item>
+        <item>86400000</item>
+    </string-array>
+
+    <!-- These values correspond to the time interval between frame capture
+    for time lapse recording -->
+    <string-array name="pref_video_time_lapse_frame_interval_duration_values" translatable="false">
+        <item>0.5</item>
+        <item>1</item>
+        <item>1.5</item>
+        <item>2</item>
+        <item>2.5</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>10</item>
+        <item>12</item>
+        <item>15</item>
+        <item>24</item>
+    </string-array>
+
+    <string-array name="pref_video_time_lapse_frame_interval_units">
+        <item>@string/time_lapse_seconds</item>
+        <item>@string/time_lapse_minutes</item>
+        <item>@string/time_lapse_hours</item>
     </string-array>
 
     <!-- Camera Preferences Picture size dialog box entries -->

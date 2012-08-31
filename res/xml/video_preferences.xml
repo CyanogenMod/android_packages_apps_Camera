@@ -28,8 +28,8 @@
             camera:key="pref_video_time_lapse_frame_interval_key"
             camera:defaultValue="@string/pref_video_time_lapse_frame_interval_default"
             camera:title="@string/pref_video_time_lapse_frame_interval_title"
-            camera:largeIcons="@array/video_timelapse_largeicons"
-            camera:entries="@array/pref_video_time_lapse_frame_interval_entries"
+            camera:singleIcon="@drawable/ic_timelapse_none"
+            camera:entries="@array/pref_video_time_lapse_frame_interval_entryvalues"
             camera:entryValues="@array/pref_video_time_lapse_frame_interval_entryvalues"/>
     <IconListPreference
             camera:key="pref_camera_video_flashmode_key"

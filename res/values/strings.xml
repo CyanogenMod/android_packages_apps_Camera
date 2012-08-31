@@ -101,16 +101,8 @@
 
     <!-- Describes the preference dialog for choosing interval between frame capture for
     time lapse recording. Appears at top of the dialog. [CHAR LIMIT=30] -->
-    <string name="pref_video_time_lapse_frame_interval_title">Time lapse interval</string>
+    <string name="pref_video_time_lapse_frame_interval_title">Time lapse</string>
     <string name="pref_video_time_lapse_frame_interval_default" translatable="false">0</string>
-    <!-- The time interval between frame capture for time lapse recording -->
-    <string name="pref_video_time_lapse_frame_interval_entry_1000" translatable="false">1s</string>
-    <string name="pref_video_time_lapse_frame_interval_entry_1500" translatable="false">1.5s</string>
-    <string name="pref_video_time_lapse_frame_interval_entry_2000" translatable="false">2s</string>
-    <string name="pref_video_time_lapse_frame_interval_entry_2500" translatable="false">2.5s</string>
-    <string name="pref_video_time_lapse_frame_interval_entry_3000" translatable="false">3s</string>
-    <string name="pref_video_time_lapse_frame_interval_entry_5000" translatable="false">5s</string>
-    <string name="pref_video_time_lapse_frame_interval_entry_10000" translatable="false">10s</string>
 
     <!-- Settings screen, Camera setting category title -->
     <string name="pref_camera_settings_category">Camera settings</string>
@@ -337,4 +329,19 @@
     <string name="capital_on">ON</string>
     <!-- Default text for a button that can be toggled on and off. -->
     <string name="capital_off">OFF</string>
+
+    <!-- Seconds: a unit of time for time lapse intervals. [CHAR LIMIT = 20] -->
+    <string name="time_lapse_seconds">seconds</string>
+    <!-- Minutes: a unit of time for time lapse intervals. [CHAR LIMIT = 20] -->
+    <string name="time_lapse_minutes">minutes</string>
+    <!-- Hours: a unit of time for time lapse intervals. [CHAR LIMIT = 20] -->
+    <string name="time_lapse_hours">hours</string>
+
+    <!-- The button to confirm time-lapse setting changes. [CHAR LIMIT = 20] -->
+    <string name="time_lapse_interval_set">Done</string>
+    <!-- Title in time interval picker for setting time interval. [CHAR LIMIT = 30]-->
+    <string name="set_time_interval">Set Time Interval</string>
+    <!-- Help text that is shown when the time lapse feature is turned off. [CHAR LIMIT = 180]-->
+    <string name="set_time_interval_help">Time lapse feature is off. Turn it on to set time interval."</string>
+
 </resources>
