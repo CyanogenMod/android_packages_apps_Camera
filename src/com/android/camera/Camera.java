@@ -619,16 +619,21 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
+    private void processZoomValueChanged(int index) {
+        if (mPaused)
+            return;
+        mZoomValue = index;
+
+        // Set zoom parameters asynchronously
+        mParameters.setZoom(mZoomValue);
+        mCameraDevice.setParametersAsync(mParameters);
+    }
+
     private class ZoomChangeListener implements ZoomControl.OnZoomChangedListener {
         @Override
         public void onZoomValueChanged(int index) {
             // Not useful to change zoom value when the activity is paused.
-            if (mPaused) return;
-            mZoomValue = index;
-
-            // Set zoom parameters asynchronously
-            mParameters.setZoom(mZoomValue);
-            mCameraDevice.setParametersAsync(mParameters);
+            processZoomValueChanged(index);
         }
     }
 
@@ -2016,6 +2021,27 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     onShutterButtonFocus(true);
                 }
                 return true;
+
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (event.getRepeatCount() == 0 && mParameters.isZoomSupported()
+                        && mZoomControl != null && mZoomControl.isEnabled()) {
+                    int index = mZoomValue + 1;
+                    if (index <= mZoomMax) {
+                        mZoomControl.setZoomIndex(index);
+                        processZoomValueChanged(index);
+                    }
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (event.getRepeatCount() == 0 && mParameters.isZoomSupported()
+                        && mZoomControl != null && mZoomControl.isEnabled()) {
+                    int index = mZoomValue - 1;
+                    if (index >= 0) {
+                        mZoomControl.setZoomIndex(index);
+                        processZoomValueChanged(index);
+                    }
+                }
+                return true;
         }
 
         return super.onKeyDown(keyCode, event);
@@ -2034,6 +2060,18 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                     onShutterButtonClick();
                 }
                 return true;
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (mParameters.isZoomSupported()
+                        && mZoomControl != null && mZoomControl.isEnabled()) {
+                    return true;
+                }
+                break;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (mParameters.isZoomSupported()
+                        && mZoomControl != null && mZoomControl.isEnabled()) {
+                    return true;
+                }
+                break;
         }
         return super.onKeyUp(keyCode, event);
     }

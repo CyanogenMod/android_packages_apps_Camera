@@ -1037,6 +1037,28 @@ public class VideoCamera extends ActivityBase
             case KeyEvent.KEYCODE_MENU:
                 if (mMediaRecorderRecording) return true;
                 break;
+
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (event.getRepeatCount() == 0 && mParameters.isZoomSupported()
+                        && mZoomControl != null && mZoomControl.isEnabled()) {
+                    int index = mZoomValue + 1;
+                    if (index <= mZoomMax) {
+                        mZoomControl.setZoomIndex(index);
+                        processZoomValueChanged(index);
+                    }
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (event.getRepeatCount() == 0 && mParameters.isZoomSupported()
+                        && mZoomControl != null && mZoomControl.isEnabled()) {
+                    int index = mZoomValue - 1;
+                    if (index >= 0) {
+                        mZoomControl.setZoomIndex(index);
+                        processZoomValueChanged(index);
+                    }
+
+                }
+                return true;
         }
 
         return super.onKeyDown(keyCode, event);
@@ -1053,6 +1075,18 @@ public class VideoCamera extends ActivityBase
                     onShutterButtonClick();
                 }
                 return true;
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (mParameters.isZoomSupported()
+                        && mZoomControl != null && mZoomControl.isEnabled()) {
+                    return true;
+                }
+                break;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (mParameters.isZoomSupported()
+                        && mZoomControl != null && mZoomControl.isEnabled()) {
+                    return true;
+                }
+                break;
         }
         return super.onKeyUp(keyCode, event);
     }
@@ -2357,17 +2391,20 @@ public class VideoCamera extends ActivityBase
         return super.dispatchTouchEvent(m);
     }
 
+    private void processZoomValueChanged(int index) {
+        if (mPaused)
+            return;
+        mZoomValue = index;
+
+        // Set zoom parameters asynchronously
+        mParameters.setZoom(mZoomValue);
+        mCameraDevice.setParametersAsync(mParameters);
+    }
+
     private class ZoomChangeListener implements ZoomControl.OnZoomChangedListener {
         @Override
         public void onZoomValueChanged(int index) {
-            // Not useful to change zoom value when the activity is paused.
-            if (mPaused) return;
-
-            mZoomValue = index;
-
-            // Set zoom parameters asynchronously
-            mParameters.setZoom(mZoomValue);
-            mCameraDevice.setParametersAsync(mParameters);
+            processZoomValueChanged(index);
         }
     }
 
