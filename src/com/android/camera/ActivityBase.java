@@ -177,7 +177,11 @@ public abstract class ActivityBase extends AbstractGalleryActivity
 
     @Override
     public void onCreate(Bundle icicle) {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        // Setting the flag FLAG_SECURE causes white screen and flickering on Gingerbread,
+        // so we do not set the flag.
+        if (ApiHelper.CAN_USE_FLAG_SECURE) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
         super.disableToggleStatusBar();
         // Set a theme with action bar. It is not specified in manifest because
         // we want to hide it by default. setTheme must happen before
