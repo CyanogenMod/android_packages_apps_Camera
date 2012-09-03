@@ -1038,7 +1038,7 @@ public class VideoCamera extends ActivityBase
                 if (mMediaRecorderRecording) return true;
                 break;
 
-            case KeyEvent.KEYCODE_VOLUME_UP: 
+            case KeyEvent.KEYCODE_VOLUME_UP:
                 if (event.getRepeatCount() == 0 && mParameters.isZoomSupported()
                         && mZoomControl != null && mZoomControl.isEnabled()) {
                     int index = mZoomValue + 1;
@@ -1079,7 +1079,7 @@ public class VideoCamera extends ActivityBase
                 if (mParameters.isZoomSupported()
                         && mZoomControl != null && mZoomControl.isEnabled()) {
                     return true;
-                }                
+                }
                 break;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 if (mParameters.isZoomSupported()

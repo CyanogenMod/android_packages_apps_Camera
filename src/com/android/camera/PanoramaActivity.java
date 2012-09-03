@@ -354,7 +354,7 @@ public class PanoramaActivity extends ActivityBase implements
     public boolean isPanoramaActivity() {
         return true;
     }
-    
+
     private void setupCamera() throws CameraHardwareException, CameraDisabledException {
         openCamera();
         mParameters = mCameraDevice.getParameters();
@@ -1228,7 +1228,7 @@ public class PanoramaActivity extends ActivityBase implements
             resetToPreview();
         }
     }
-    
+
     private void processZoomValueChanged(int index) {
         if (mPaused)
             return;
@@ -1237,7 +1237,6 @@ public class PanoramaActivity extends ActivityBase implements
         mParameters.setZoom(index);
         mCameraDevice.setParametersAsync(mParameters);
     }
-    
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -1289,5 +1288,4 @@ public class PanoramaActivity extends ActivityBase implements
         }
         return super.onKeyUp(keyCode, event);
     }
-
 }
