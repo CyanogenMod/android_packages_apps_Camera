@@ -835,8 +835,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     }
 
     private void updateOnScreenIndicators() {
-        boolean isAutoScene = !(Parameters.SCENE_MODE_AUTO.equals(mParameters.getSceneMode()));
-        updateSceneOnScreenIndicator(isAutoScene);
+        boolean isAutoScene = (Parameters.SCENE_MODE_AUTO.equals(mParameters.getSceneMode()) || Parameters.SCENE_MODE_OFF.equals(mParameters.getSceneMode()));
+        updateSceneOnScreenIndicator(!isAutoScene);
         updateExposureOnScreenIndicator(CameraSettings.readExposure(mPreferences));
         updateFlashOnScreenIndicator(mParameters.getFlashMode());
         updateTimerOnScreenIndicator();
@@ -1382,11 +1382,11 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private void updateSceneModeUI() {
         // If scene mode is set, we cannot set flash mode, white balance, and
         // focus mode, instead, we read it from driver
-        if (!Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
+        if (Parameters.SCENE_MODE_AUTO.equals(mSceneMode) || Parameters.SCENE_MODE_OFF.equals(mSceneMode)) {
+            overrideCameraSettings(null, null, null);
+        } else {
             overrideCameraSettings(mParameters.getFlashMode(),
                     mParameters.getWhiteBalance(), mParameters.getFocusMode());
-        } else {
-            overrideCameraSettings(null, null, null);
         }
     }
 
@@ -2299,7 +2299,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Log.w(TAG, "invalid exposure range: " + value);
         }
 
-        if (Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
+        if (Parameters.SCENE_MODE_AUTO.equals(mSceneMode) || Parameters.SCENE_MODE_OFF.equals(mSceneMode)) {
             // Set flash mode.
             String flashMode = mPreferences.getString(
                     CameraSettings.KEY_FLASH_MODE,
