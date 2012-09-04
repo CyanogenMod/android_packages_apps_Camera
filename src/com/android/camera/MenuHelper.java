@@ -22,7 +22,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.android.gallery3d.common.LightCycleHelper;
+import com.android.gallery3d.util.LightCycleHelper;
 
 /**
  * A utility class to handle various kinds of menu operations.
@@ -34,10 +34,9 @@ public class MenuHelper {
     private static final String VIDEO_CAMERA_CLASS = "com.android.camera.VideoCamera";
 
     private static void startCameraActivity(Activity activity, Intent intent,
-            String packageName, String className, boolean keepCamera) {
+                boolean keepCamera) {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        intent.setClassName(packageName, className);
 
         // Keep the camera instance for a while.
         // This avoids re-opening the camera and saves time.
@@ -48,41 +47,34 @@ public class MenuHelper {
     }
 
     public static void gotoMode(int mode, Activity activity, boolean secure) {
-        String action, className;
         String packageName = activity.getPackageName();
         boolean keepCamera = true;
-        Bundle extras = null;
         Intent it = new Intent();
         switch (mode) {
             case ModePicker.MODE_PANORAMA:
-                action = Intent.ACTION_MAIN;
-                if (LightCycleHelper.hasLightCycleCapture(
-                        activity.getPackageManager())) {
-                    className = LightCycleHelper.LIGHTCYCLE_CAPTURE_CLASS;
-                    packageName = LightCycleHelper.LIGHTCYCLE_PACKAGE;
+                it.setAction(Intent.ACTION_MAIN);
+                if (LightCycleHelper.hasLightCycleCapture(activity)) {
                     keepCamera = false;
-                    it.putExtra(LightCycleHelper.EXTRA_OUTPUT_DIR,
-                            Storage.DIRECTORY);
+                    LightCycleHelper.setupCaptureIntent(it, Storage.DIRECTORY);
                 } else {
-                    className = PANORAMA_CLASS;
+                    it.setClassName(packageName, PANORAMA_CLASS);
                 }
                 break;
             case ModePicker.MODE_VIDEO:
-                action = MediaStore.INTENT_ACTION_VIDEO_CAMERA;
-                className = VIDEO_CAMERA_CLASS;
+                it.setAction(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
+                it.setClassName(packageName, VIDEO_CAMERA_CLASS);
                 break;
             case ModePicker.MODE_CAMERA:
-                action = MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA;
-                className = CAMERA_CLASS;
+                it.setAction(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+                it.setClassName(packageName, CAMERA_CLASS);
                 break;
             default:
                 Log.e(TAG, "unknown camera mode:" + mode);
                 return;
         }
-        it.setAction(action);
         if (secure) {
             it.putExtra(ActivityBase.SECURE_CAMERA_EXTRA, secure);
         }
-        startCameraActivity(activity, it, packageName, className, keepCamera);
+        startCameraActivity(activity, it, keepCamera);
     }
 }

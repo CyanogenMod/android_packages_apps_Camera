@@ -35,7 +35,7 @@ import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.TwoStateImageView;
 import com.android.gallery3d.common.ApiHelper;
-import com.android.gallery3d.common.LightCycleHelper;
+import com.android.gallery3d.util.LightCycleHelper;
 
 /**
  * A widget that includes three mode selections {@code RotateImageView}'s and
@@ -77,7 +77,7 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
         super(context, attrs);
         DISABLED_COLOR = context.getResources().getColor(R.color.icon_disabled_color);
         PopupManager.getInstance(context).setOnOtherPopupShowedListener(this);
-        if (LightCycleHelper.hasLightCycleCapture(context.getPackageManager())) {
+        if (LightCycleHelper.hasLightCycleCapture(context)) {
             mHasPanorama = true;
         } else {
             mHasPanorama = ApiHelper.HAS_OLD_PANORAMA;
