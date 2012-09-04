@@ -23,13 +23,13 @@
     <string name="video_camera_label" msgid="2899292505526427293">"Videocámara"</string>
     <string name="gallery_camera_bucket_name" msgid="2924618424339240831">"Imágenes de cámara"</string>
     <string name="gallery_camera_videos_bucket_name" msgid="3369151581398551623">"Vídeos de cámara"</string>
-    <string name="wait" msgid="8600187532323801552">"Por favor, espera..."</string>
+    <string name="wait" msgid="8600187532323801552">"Por favor, espera\u2026"</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Para poder usar la cámara, activa el almacenamiento USB."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Para poder usar la cámara, inserta una tarjeta SD."</string>
     <string name="not_enough_space" product="nosdcard" msgid="6452370395538050134">"El almacenamiento USB está lleno."</string>
     <string name="not_enough_space" product="default" msgid="6655334407957844653">"La tarjeta SD está llena."</string>
-    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Preparando almacenamiento USB…"</string>
-    <string name="preparing_sd" product="default" msgid="2914969119574812666">"Preparando tarjeta SD…"</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Preparando almacenamiento USB\u2026"</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"Preparando tarjeta SD\u2026"</string>
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"No se ha podido acceder al almacenamiento USB."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"No se ha podido acceder a la tarjeta SD."</string>
     <string name="confirm_restore_message" msgid="4726518572923160939">"¿Quieres restaurar los ajustes predeterminados de la cámara?"</string>
@@ -49,11 +49,51 @@
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervalo de tiempo"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configuración de cámara"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configuración de videocámara"</string>
+    <string name="pref_camera_power_shutter_title">"Obturador alternativo"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Tamaño imagen"</string>
+    <string name="pref_camera_picturesize_entry_4000x3000">"12MP"</string>
+    <string name="pref_camera_picturesize_entry_4000x2250">"9MP"</string>
+    <string name="pref_camera_picturesize_entry_3264x2448">"8MP"</string>
+    <string name="pref_camera_picturesize_entry_3264x1968">"6,5MP(W)"</string>
+    <string name="pref_camera_picturesize_entry_3264x1952">"6MP(W)"</string>
+    <string name="pref_camera_picturesize_entry_2592x1936">"5MP"</string>
+    <string name="pref_camera_picturesize_entry_2592x1552">"4MP(W)"</string>
+    <string name="pref_camera_picturesize_entry_2560x1712">"4MP"</string>
+    <string name="pref_camera_picturesize_entry_2304x1728">"4MP"</string>
+    <string name="pref_camera_picturesize_entry_2048x1536">"3MP"</string>
+    <string name="pref_camera_picturesize_entry_2048x1216">"2,5MP(W)"</string>
+    <string name="pref_camera_picturesize_entry_1920x1080">"HD1080"</string>
+    <string name="pref_camera_picturesize_entry_1600x1200">"UXGA"</string>
+    <string name="pref_camera_picturesize_entry_1600x960">"1,5MP(W)"</string>
+    <string name="pref_camera_picturesize_entry_1280x1024">"SXGA"</string>
+    <string name="pref_camera_picturesize_entry_1280x960">"SXGA(4:3)"</string>
+    <string name="pref_camera_picturesize_entry_1280x768">"WXGA"</string>
+    <string name="pref_camera_picturesize_entry_1280x720">"HD720"</string>
+    <string name="pref_camera_picturesize_entry_1024x768">"XGA"</string>
+    <string name="pref_camera_picturesize_entry_800x600">"SVGA"</string>
+    <string name="pref_camera_picturesize_entry_800x480">"WVGA"</string>
+    <string name="pref_camera_picturesize_entry_640x480">"VGA"</string>
+    <string name="pref_camera_picturesize_entry_352x288">"CIF"</string>
+    <string name="pref_camera_picturesize_entry_320x240">"QVGA"</string>
+    <string name="pref_camera_picturesize_entry_176x144">"QCIF"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Modo de enfoque"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Auto"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
+    <string name="pref_camera_focusmode_entry_fixed">"Fijo"</string>
+    <string name="pref_camera_focusmode_entry_facedetect">"Detección de rostro"</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">"Imagen continua"</string>
+    <string name="pref_camera_iso_title">"ISO"</string>
+    <string name="pref_camera_iso_entry_auto">"Auto"</string>
+    <string name="pref_camera_iso_entry_isodeblur">"Auto (HJR)"</string>
+    <string name="pref_camera_iso_entry_iso1600">"1600"</string>
+    <string name="pref_camera_iso_entry_iso1200">"1200"</string>
+    <string name="pref_camera_iso_entry_iso1000">"1000"</string>
+    <string name="pref_camera_iso_entry_iso800">"800"</string>
+    <string name="pref_camera_iso_entry_iso400">"400"</string>
+    <string name="pref_camera_iso_entry_iso200">"200"</string>
+    <string name="pref_camera_iso_entry_iso100">"100"</string>
+    <string name="pref_camera_iso_entry_iso50">"50"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automático"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Activado"</string>
@@ -64,12 +104,17 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Luz natural"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescente"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Nublado"</string>
+    <string name="pref_camera_whitebalance_entry_cloudydaylight">"Nublado"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Modo de escena"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automático"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Acción"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Nocturno"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Atardecer"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Fiesta"</string>
+    <string name="pref_camera_scenemode_entry_backlight">"Luz de fondo"</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">"Amanecer/Anochecer"</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">"Otoñal"</string>
+    <string name="pref_camera_scenemode_entry_text">"Texto"</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"No se puede seleccionar en el modo de escena."</string>
     <string name="pref_restore_title" msgid="6479274979730178961">"Configuración de cámara"</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Restaurar valores predeterminados"</string>
@@ -87,8 +132,8 @@
     <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Error al guardar imagen panorámica"</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorámico"</string>
     <string name="pano_capture_indication" msgid="8248825828264374507">"Capturando panorámica"</string>
-    <string name="pano_dialog_waiting_previous" msgid="7800325815031423516">"Esperando foto panorámica anterior..."</string>
-    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Guardando..."</string>
+    <string name="pano_dialog_waiting_previous" msgid="7800325815031423516">"Esperando foto panorámica anterior\u2026"</string>
+    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Guardando\u2026"</string>
     <string name="tap_to_focus" msgid="8863427645591903760">"Toca para enfocar"</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efectos"</string>
     <string name="effect_none" msgid="3601545724573307541">"Ninguno"</string>
@@ -121,4 +166,54 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Cambiar a la cámara"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Cambiar a vídeo"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Cambiar a modo panorámico"</string>
+    <string name="pref_camera_autoexposure_title">"Modo de exposición automática"</string>
+    <string name="pref_camera_autoexposure_entry_frameaverage">"Media de fotogramas"</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">"Media ponderada"</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">"Medición puntual"</string>
+    <string name="pref_camera_autoexposure_entry_matrix">"Matriz"</string>
+    <string name="pref_camera_redeyereduction_title">"Reducción Ojos Rojos"</string>
+    <string name="pref_camera_redeyereduction_entry_enable">"Activada"</string>
+    <string name="pref_camera_redeyereduction_entry_disable">"Desactivada"</string>
+    <string name="pref_camera_antibanding_title">"Anti-Bandas"</string>
+    <string name="pref_camera_antibanding_entry_0">"Apagado"</string>
+    <string name="pref_camera_antibanding_entry_1">"50 Hz"</string>
+    <string name="pref_camera_antibanding_entry_2">"60 Hz"</string>
+    <string name="pref_camera_antibanding_entry_3">"Automática"</string>
+    <string name="pref_camera_coloreffect_title">"Efecto color"</string>
+    <string name="pref_camera_coloreffect_entry_none">"Ninguno"</string>
+    <string name="pref_camera_coloreffect_entry_mono">"Mono"</string>
+    <string name="pref_camera_coloreffect_entry_sepia">"Sepia"</string>
+    <string name="pref_camera_coloreffect_entry_negative">"Negativo"</string>
+    <string name="pref_camera_coloreffect_entry_solarize">"Solarizar"</string>
+    <string name="pref_camera_coloreffect_entry_posterize">"Posterizar"</string>
+    <string name="pref_camera_coloreffect_entry_aqua">"Agua"</string>
+    <string name="pref_camera_coloreffect_entry_emboss">"Realzar"</string>
+    <string name="pref_camera_coloreffect_entry_sketch">"Dibujo"</string>
+    <string name="pref_camera_coloreffect_entry_neon">"Neón"</string>
+    <string name="pref_camera_coloreffect_entry_pastel">"Pastel"</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">"Mosaico"</string>
+    <string name="pref_camera_coloreffect_entry_redtint">"Tintado en rojo"</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">"Tintado en azul"</string>
+    <string name="pref_camera_coloreffect_entry_greentint">"Tintado en verde"</string>
+    <string name="pref_camera_scenemode_entry_asd">"ASD"</string>
+    <string name="pref_camera_scenemode_entry_portrait">"Retrato"</string>
+    <string name="pref_camera_scenemode_entry_landscape">"Apaisado"</string>
+    <string name="pref_camera_scenemode_entry_night_portrait">"Retrato nocturno"</string>
+    <string name="pref_camera_scenemode_entry_theatre">"Teatro"</string>
+    <string name="pref_camera_scenemode_entry_beach">"Playa"</string>
+    <string name="pref_camera_scenemode_entry_snow">"Nieve"</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">"Foto rápida"</string>
+    <string name="pref_camera_scenemode_entry_fireworks">"Fuegos artificiales"</string>
+    <string name="pref_camera_scenemode_entry_sports">"Deportes"</string>
+    <string name="pref_camera_scenemode_entry_candlelight">"Luz de vela"</string>
+    <string name="pref_camera_scenemode_entry_flowers">"Flores"</string>
+    <string name="pref_camera_scenemode_entry_ar">"AR"</string>
+    <string name="pref_camera_focus_title">"Duración enfocado por pulsación"</string>
+    <string name="pref_camera_focus_summary">"Seleccione la duración de enfocado por pulsación"</string>
+    <string name="pref_camera_focus_entry_10">"10 seg."</string>
+    <string name="pref_camera_focus_entry_15">"15 seg."</string>
+    <string name="pref_camera_focus_entry_20">"20 seg."</string>
+    <string name="pref_camera_focus_entry_30">"30 seg."</string>
+    <string name="pref_camera_focus_entry_40">"40 seg."</string>
+    <string name="pref_camera_focus_entry_infinit">"Infinito"</string>
 </resources>
