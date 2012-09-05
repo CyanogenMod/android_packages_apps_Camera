@@ -135,6 +135,9 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
             mMatrix.postRotate(mOrientation); // postRotate is clockwise
             canvas.rotate(-mOrientation); // rotate is counter-clockwise (for canvas)
             for (int i = 0; i < mFaces.length; i++) {
+                // Filter out false positives.
+                if (mFaces[i].score < 50) continue;
+
                 // Transform the coordinates.
                 mRect.set(mFaces[i].rect);
                 if (LOGV) Util.dumpRect(mRect, "Original rect");
