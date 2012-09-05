@@ -378,10 +378,10 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     }
 
     protected void updateThumbnailView() {
-        if (mThumbnail != null) {
+        if (mThumbnail != null && mThumbnailView != null) {
             mThumbnailView.setBitmap(mThumbnail.getBitmap());
             mThumbnailView.setVisibility(View.VISIBLE);
-        } else {
+        } else if (mThumbnailView != null) {
             mThumbnailView.setBitmap(null);
             mThumbnailView.setVisibility(View.GONE);
         }
@@ -501,6 +501,34 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         mAppBridge = new MyAppBridge();
         data.putParcelable(PhotoPage.KEY_APP_BRIDGE, mAppBridge);
         getStateManager().startState(PhotoPage.class, data);
+        mCameraScreenNail = mAppBridge.getCameraScreenNail();
+    }
+
+    // Call this after setContentView.
+    protected void reuseCameraScreenNail(boolean getPictures) {
+        mCameraAppView = findViewById(R.id.camera_app_root);
+        Bundle data = new Bundle();
+        String path;
+        if (mSecureCamera) {
+            path = "/secure/all/" + sSecureAlbumId;
+        } else {
+            path = "/local/all/";
+            // Intent mode does not show camera roll. Use 0 as a work around for
+            // invalid bucket id.
+            // TODO: add support of empty media set in gallery.
+            path += (getPictures ? MediaSetUtils.CAMERA_BUCKET_ID : "0");
+        }
+        data.putString(PhotoPage.KEY_MEDIA_SET_PATH, path);
+        data.putString(PhotoPage.KEY_MEDIA_ITEM_PATH, path);
+
+        // Send an AppBridge to gallery to enable the camera preview.
+        if (mAppBridge == null) {
+            mAppBridge = new MyAppBridge();
+        }
+        data.putParcelable(PhotoPage.KEY_APP_BRIDGE, mAppBridge);
+        if (getStateManager().getStateCount() == 0) {
+            getStateManager().startState(PhotoPage.class, data);
+        }
         mCameraScreenNail = mAppBridge.getCameraScreenNail();
     }
 
