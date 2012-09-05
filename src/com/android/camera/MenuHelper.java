@@ -55,7 +55,7 @@ public class MenuHelper {
                 it.setAction(Intent.ACTION_MAIN);
                 if (LightCycleHelper.hasLightCycleCapture(activity)) {
                     keepCamera = false;
-                    LightCycleHelper.setupCaptureIntent(it, Storage.DIRECTORY);
+                    LightCycleHelper.setupCaptureIntent(activity, it, Storage.DIRECTORY);
                 } else {
                     it.setClassName(packageName, PANORAMA_CLASS);
                 }
