@@ -424,7 +424,9 @@ public class CameraManager {
             mSig.close();
             mCameraHandler.sendEmptyMessage(GET_PARAMETERS);
             mSig.block();
-            return mParameters;
+            Parameters parameters = mParameters;
+            mParameters = null;
+            return parameters;
         }
 
         public void waitForIdle() {
