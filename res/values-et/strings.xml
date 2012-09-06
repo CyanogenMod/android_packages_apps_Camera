@@ -37,23 +37,22 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Tagasi"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Eestvaade"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Talletuse asukoht"</string>
-    <!-- no translation found for setting_off (4480039384202951946) -->
-    <skip />
-    <!-- no translation found for setting_on (8602246224465348901) -->
-    <skip />
+    <string name="setting_off" msgid="4480039384202951946">"Väljas"</string>
+    <string name="setting_on" msgid="8602246224465348901">"Sees"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Video kvaliteet"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Kõrge"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Madal"</string>
-    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Aeglase filmimise ajavahemik"</string>
+    <!-- no translation found for pref_video_time_lapse_frame_interval_title (6245716906744079302) -->
+    <skip />
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kaamera seaded"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Videokaamera seaded"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Pildi suurus"</string>
     <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 megapikslit"</string>
-    <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5 miln pikslit"</string>
-    <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3 miln pikslit"</string>
-    <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2 miln pikslit"</string>
-    <string name="pref_camera_picturesize_entry_1_3mp" msgid="829109608140747258">"1,3 miln piksl."</string>
-    <string name="pref_camera_picturesize_entry_1mp" msgid="1669725616780375066">"1 miln pikslit"</string>
+    <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5M pikslit"</string>
+    <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3M pikslit"</string>
+    <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2M pikslit"</string>
+    <string name="pref_camera_picturesize_entry_1_3mp" msgid="829109608140747258">"1,3M pikslit"</string>
+    <string name="pref_camera_picturesize_entry_1mp" msgid="1669725616780375066">"1M pikslit"</string>
     <string name="pref_camera_picturesize_entry_vga" msgid="806934254162981919">"VGA"</string>
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Teravustamisrežiim"</string>
@@ -72,6 +71,7 @@
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Pilves"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Stseenirežiim"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automaatne"</string>
+    <string name="pref_camera_scenemode_entry_hdr" msgid="2923388802899511784">"HDR"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Toiming"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Öö"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Päikeseloojang"</string>
@@ -79,8 +79,6 @@
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Seda ei saa stseenirežiimis valida."</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Taasta vaikeseaded"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Säriaeg"</string>
-    <!-- no translation found for pref_camera_hdr_title (4117412393545376604) -->
-    <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Teie USB-mäluseadme ruum on otsa saamas. Muutke kvaliteediseadeid või kustutage kujutisi või teisi faile."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Teie SD-kaardi ruum on otsa saamas. Muutke kvaliteedi seadeid või kustutage kujutisi või teisi faile."</string>
@@ -128,4 +126,16 @@
     <string name="accessibility_review_retake" msgid="830348126446319954">"Arvustus uuesti"</string>
     <string name="capital_on" msgid="5491353494964003567">"SEES"</string>
     <string name="capital_off" msgid="7231052688467970897">"VÄLJAS"</string>
+    <!-- no translation found for time_lapse_seconds (2105521458391118041) -->
+    <skip />
+    <!-- no translation found for time_lapse_minutes (7738520349259013762) -->
+    <skip />
+    <!-- no translation found for time_lapse_hours (1776453661704997476) -->
+    <skip />
+    <!-- no translation found for time_lapse_interval_set (2486386210951700943) -->
+    <skip />
+    <!-- no translation found for set_time_interval (2970567717633813771) -->
+    <skip />
+    <!-- no translation found for set_time_interval_help (6665849510484821483) -->
+    <skip />
 </resources>

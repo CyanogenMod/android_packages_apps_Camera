@@ -37,14 +37,13 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Terug"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Voorkant"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Stoor ligging"</string>
-    <!-- no translation found for setting_off (4480039384202951946) -->
-    <skip />
-    <!-- no translation found for setting_on (8602246224465348901) -->
-    <skip />
+    <string name="setting_off" msgid="4480039384202951946">"Af"</string>
+    <string name="setting_on" msgid="8602246224465348901">"Aan"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Videogehalte"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Hoog"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Laag"</string>
-    <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Tydsverloop-interval"</string>
+    <!-- no translation found for pref_video_time_lapse_frame_interval_title (6245716906744079302) -->
+    <skip />
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kamera-instellings"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Videokamera-instellings"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Prentgrootte"</string>
@@ -72,6 +71,7 @@
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Bewolk"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Toneel-modus"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Outo"</string>
+    <string name="pref_camera_scenemode_entry_hdr" msgid="2923388802899511784">"HDR"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Handeling"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Nag"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Sonsondergang"</string>
@@ -79,8 +79,6 @@
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Kan nie in toneelmodus gekies word nie."</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Laai verstek instellings terug"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Beligting"</string>
-    <!-- no translation found for pref_camera_hdr_title (4117412393545376604) -->
-    <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Jou USB-berging se stoorspasie raak min. Verander die gehalte-instelling of vee \'n paar prente of ander lêers uit."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Jou SD-kaart raak vol. Verander die gehalte-instelling of vee \'n paar prente of ander lêers uit."</string>
@@ -128,4 +126,16 @@
     <string name="accessibility_review_retake" msgid="830348126446319954">"Neem weer hersiening"</string>
     <string name="capital_on" msgid="5491353494964003567">"AAN"</string>
     <string name="capital_off" msgid="7231052688467970897">"AF"</string>
+    <!-- no translation found for time_lapse_seconds (2105521458391118041) -->
+    <skip />
+    <!-- no translation found for time_lapse_minutes (7738520349259013762) -->
+    <skip />
+    <!-- no translation found for time_lapse_hours (1776453661704997476) -->
+    <skip />
+    <!-- no translation found for time_lapse_interval_set (2486386210951700943) -->
+    <skip />
+    <!-- no translation found for set_time_interval (2970567717633813771) -->
+    <skip />
+    <!-- no translation found for set_time_interval_help (6665849510484821483) -->
+    <skip />
 </resources>
