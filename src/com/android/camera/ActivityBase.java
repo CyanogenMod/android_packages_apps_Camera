@@ -61,7 +61,6 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         implements LayoutChangeNotifier.Listener {
 
     private static final String TAG = "ActivityBase";
-    private static final boolean LOGV = false;
     private static final int CAMERA_APP_VIEW_TOGGLE_TIME = 100;  // milliseconds
     private static final String ACTION_DELETE_PICTURE =
             "com.android.gallery3d.action.DELETE_PICTURE";
@@ -161,6 +160,14 @@ public abstract class ActivityBase extends AbstractGalleryActivity
                 }
             };
 
+    // close activity when screen turns off
+    private BroadcastReceiver mScreenOffReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
+
     protected class CameraOpenThread extends Thread {
         @Override
         public void run() {
@@ -206,6 +213,11 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         } else {
             mSecureCamera = intent.getBooleanExtra(SECURE_CAMERA_EXTRA, false);
         }
+        if (mSecureCamera) {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+            registerReceiver(mScreenOffReceiver, intentFilter);
+        }
         super.onCreate(icicle);
     }
 
@@ -232,7 +244,6 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
         manager.unregisterReceiver(mDeletePictureReceiver);
 
-        if (LOGV) Log.v(TAG, "onPause");
         saveThumbnailToFile();
 
         if (mLoadThumbnailTask != null) {
@@ -305,6 +316,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     @Override
     protected void onDestroy() {
         PopupManager.removeInstance(this);
+        if (mSecureCamera) unregisterReceiver(mScreenOffReceiver);
         super.onDestroy();
     }
 
