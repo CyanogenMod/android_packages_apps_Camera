@@ -39,6 +39,5 @@
     <FrameLayout
         android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/camera_switcher" />
+        android:layout_height="match_parent" />
 </RelativeLayout>

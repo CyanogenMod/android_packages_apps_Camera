@@ -18,6 +18,6 @@
     android:id="@+id/camera_app_root"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
-    <include layout="@layout/preview_frame_video"/>
+    <include layout="@layout/preview_module_frame_video"/>
     <include layout="@layout/bg_replacement_training_message"/>
 </RelativeLayout>

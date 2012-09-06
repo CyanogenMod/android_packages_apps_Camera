@@ -60,11 +60,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.camera.CameraManager.CameraProxy;
-import com.android.camera.ui.CameraPicker;
 import com.android.camera.ui.FaceView;
-import com.android.camera.ui.IndicatorControlContainer;
+import com.android.camera.ui.FocusRenderer;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.PreviewSurfaceView;
+import com.android.camera.ui.RenderOverlay;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
@@ -72,7 +72,6 @@ import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomControl;
 import com.android.gallery3d.common.ApiHelper;
-import com.android.gallery3d.ui.ScreenNail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -86,8 +85,7 @@ import java.util.List;
 
 public class PhotoModule
     implements CameraModule,
-    FocusManager.Listener,
-    ModePicker.OnModeChangeListener,
+    FocusOverlayManager.Listener,
     CameraPreference.OnPreferenceChangedListener,
     LocationManager.Listener,
     PreviewFrameLayout.OnSizeChangedListener,
@@ -135,8 +133,6 @@ public class PhotoModule
     protected int mPendingSwitchCameraId = -1;
     private boolean mOpenCameraFail;
     private boolean mCameraDisabled;
-    protected CameraPicker mCameraPicker;
-
 
     // When setCameraParametersWhenIdle() is called, we accumulate the subsets
     // needed to be updated in mUpdateSet.
@@ -146,7 +142,6 @@ public class PhotoModule
 
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
-    private ZoomControl mZoomControl;
 
     private Parameters mInitialParams;
     private boolean mFocusAreaSupported;
@@ -179,7 +174,7 @@ public class PhotoModule
     private RotateDialogController mRotateDialog;
     private ModePicker mModePicker;
     private FaceView mFaceView;
-    private RotateLayout mFocusAreaIndicator;
+    private RenderOverlay mRenderOverlay;
     private Rotatable mReviewCancelButton;
     private Rotatable mReviewDoneButton;
     private View mReviewRetakeButton;
@@ -285,12 +280,13 @@ public class PhotoModule
     public long mCaptureStartTime;
 
     // This handles everything about focus.
-    private FocusManager mFocusManager;
+    private FocusOverlayManager mFocusManager;
+    private FocusRenderer mFocusRenderer;
+
     private String mSceneMode;
     private Toast mNotSelectableToast;
 
     private final Handler mHandler = new MainHandler();
-    private IndicatorControlContainer mIndicatorControlContainer;
     private PreferenceGroup mPreferenceGroup;
 
     private boolean mQuickCapture;
@@ -410,7 +406,7 @@ public class PhotoModule
                 }
 
                 case SWITCH_CAMERA_START_ANIMATION: {
-                    ((CameraScreenNail) PhotoModule.this.getScreenNail()).animateSwitchCamera();
+                    ((CameraScreenNail) mActivity.mCameraScreenNail).animateSwitchCamera();
                     break;
                 }
 
@@ -473,8 +469,6 @@ public class PhotoModule
 
         mPreferences.setLocalId(mActivity, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
-        mFocusAreaIndicator = (RotateLayout) mRootView.findViewById(
-                R.id.focus_indicator_rotate_layout);
         // we need to reset exposure for the preview
         resetExposureCompensation();
         // Starting the preview needs preferences, camera screen nail, and
@@ -488,20 +482,20 @@ public class PhotoModule
         mLocationManager = new LocationManager(mActivity, this);
         initOnScreenIndicator();
         // Make sure all views are disabled before camera is open.
-        enableCameraControls(false);
+//        enableCameraControls(false);
     }
 
-
     private void initializeAfterCameraOpen() {
+        mFocusRenderer = new FocusRenderer();
+        mRenderOverlay.addRenderer(mFocusRenderer);
+        mFocusManager.setFocusRenderer(mFocusRenderer);
+        mRenderOverlay.requestLayout();
+
         // These depend on camera parameters.
         setPreviewFrameLayoutAspectRatio();
         mFocusManager.setPreviewSize(mPreviewFrameLayout.getWidth(),
                 mPreviewFrameLayout.getHeight());
-        if (mIndicatorControlContainer == null) {
-            initializeIndicatorControl();
-        }
-        // This should be enabled after preview is started.
-        mIndicatorControlContainer.setEnabled(false);
+        loadCameraPreferences();
         initializeZoom();
         updateOnScreenIndicators();
         showTapToFocusToastIfNeeded();
@@ -603,9 +597,6 @@ public class PhotoModule
                 mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
             }
         }
-        if (mIndicatorControlContainer != null) {
-            mIndicatorControlContainer.reloadPreferences();
-        }
     }
 
     private class ZoomChangeListener implements ZoomControl.OnZoomChangedListener {
@@ -624,11 +615,6 @@ public class PhotoModule
     private void initializeZoom() {
         if (!mParameters.isZoomSupported()) return;
         mZoomMax = mParameters.getMaxZoom();
-        // Currently we use immediate zoom for fast zooming to get better UX and
-        // there is no plan to take advantage of the smooth zoom.
-        mZoomControl.setZoomMax(mZoomMax);
-        mZoomControl.setZoomIndex(mParameters.getZoom());
-        mZoomControl.setOnZoomChangeListener(new ZoomChangeListener());
     }
 
     @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -672,32 +658,6 @@ public class PhotoModule
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         if (mCameraState == SWITCHING_CAMERA) return true;
-
-        // Check if the popup window should be dismissed first.
-        if (m.getAction() == MotionEvent.ACTION_DOWN) {
-            float x = m.getX();
-            float y = m.getY();
-            // Dismiss the mode selection window if the ACTION_DOWN event is out
-            // of its view area.
-            if ((mModePicker != null) && !Util.pointInView(x, y, mModePicker)) {
-                mModePicker.dismissModeSelection();
-            }
-            // Check if the popup window is visible. Indicator control can be
-            // null if camera is not opened yet.
-            if (mIndicatorControlContainer != null) {
-                View popup = mIndicatorControlContainer.getActiveSettingPopup();
-                if (popup != null) {
-                    // Let popup window, indicator control or preview frame
-                    // handle the event by themselves. Dismiss the popup window
-                    // if users touch on other areas.
-                    if (!Util.pointInView(x, y, popup)
-                            && !Util.pointInView(x, y, mIndicatorControlContainer)
-                            && !Util.pointInView(x, y, mPreviewFrameLayout)) {
-                        mIndicatorControlContainer.dismissSettingPopup();
-                    }
-                }
-            }
-        }
         return false;
     }
 
@@ -1254,10 +1214,10 @@ public class PhotoModule
             case SNAPSHOT_IN_PROGRESS:
             case FOCUSING:
             case SWITCHING_CAMERA:
-                enableCameraControls(false);
+//                enableCameraControls(false);
                 break;
             case IDLE:
-                enableCameraControls(true);
+//                enableCameraControls(true);
                 break;
         }
     }
@@ -1289,7 +1249,7 @@ public class PhotoModule
 
         if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent) {
             // Start capture animation.
-            ((CameraScreenNail) getScreenNail()).animateCapture(getCameraRotation());
+            ((CameraScreenNail) mActivity.mCameraScreenNail).animateCapture(getCameraRotation());
         }
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
@@ -1361,26 +1321,14 @@ public class PhotoModule
         stopPreview();
     }
 
-    private void overrideCameraSettings(final String flashMode,
-            final String whiteBalance, final String focusMode) {
-        if (mIndicatorControlContainer != null) {
-            mIndicatorControlContainer.enableFilter(true);
-            mIndicatorControlContainer.overrideSettings(
-                    CameraSettings.KEY_FLASH_MODE, flashMode,
-                    CameraSettings.KEY_WHITE_BALANCE, whiteBalance,
-                    CameraSettings.KEY_FOCUS_MODE, focusMode);
-            mIndicatorControlContainer.enableFilter(false);
-        }
-    }
-
     private void updateSceneModeUI() {
         // If scene mode is set, we cannot set flash mode, white balance, and
         // focus mode, instead, we read it from driver
         if (!Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {
-            overrideCameraSettings(mParameters.getFlashMode(),
-                    mParameters.getWhiteBalance(), mParameters.getFocusMode());
+//            overrideCameraSettings(mParameters.getFlashMode(),
+//                    mParameters.getWhiteBalance(), mParameters.getFocusMode());
         } else {
-            overrideCameraSettings(null, null, null);
+//            overrideCameraSettings(null, null, null);
         }
     }
 
@@ -1390,48 +1338,9 @@ public class PhotoModule
         mPreferenceGroup = settings.getPreferenceGroup(R.xml.camera_preferences);
     }
 
-    private void initializeIndicatorControl() {
-        // setting the indicator buttons.
-        mIndicatorControlContainer =
-                (IndicatorControlContainer) mRootView.findViewById(R.id.indicator_control);
-        loadCameraPreferences();
-        final String[] SETTING_KEYS = {
-                CameraSettings.KEY_FLASH_MODE,
-                CameraSettings.KEY_WHITE_BALANCE,
-                CameraSettings.KEY_EXPOSURE,
-                CameraSettings.KEY_SCENE_MODE};
-        final String[] OTHER_SETTING_KEYS = {
-                CameraSettings.KEY_RECORD_LOCATION,
-                CameraSettings.KEY_PICTURE_SIZE,
-                CameraSettings.KEY_FOCUS_MODE};
-
-        CameraPicker.setImageResourceId(R.drawable.ic_switch_photo_facing_holo_light);
-        mIndicatorControlContainer.initialize(mActivity, mPreferenceGroup,
-                mParameters.isZoomSupported(),
-                SETTING_KEYS, OTHER_SETTING_KEYS);
-        mCameraPicker = (CameraPicker) mIndicatorControlContainer.findViewById(
-                R.id.camera_picker);
-        updateSceneModeUI();
-        mIndicatorControlContainer.setListener(this);
-    }
-
     @Override
     public boolean collapseCameraControls() {
-        if ((mIndicatorControlContainer != null)
-                && mIndicatorControlContainer.dismissSettingPopup()) {
-            return true;
-        }
-        if (mModePicker != null && mModePicker.dismissModeSelection()) return true;
         return false;
-    }
-
-    private void enableCameraControls(boolean enable) {
-        if (mIndicatorControlContainer != null) {
-            mIndicatorControlContainer.setEnabled(enable);
-        }
-        if (mModePicker != null) mModePicker.setEnabled(enable);
-        if (mZoomControl != null) mZoomControl.setEnabled(enable);
-        if (mActivity.mThumbnailView != null) mActivity.mThumbnailView.setEnabled(enable);
     }
 
     private class MyOrientationEventListener
@@ -1466,7 +1375,7 @@ public class PhotoModule
 
     private void setOrientationIndicator(int orientation, boolean animation) {
         Rotatable[] indicators = {
-                mIndicatorControlContainer, mZoomControl, mFocusAreaIndicator, mFaceView,
+                mRenderOverlay, mFaceView,
                 mReviewDoneButton, mRotateDialog, mOnScreenIndicators};
         for (Rotatable indicator : indicators) {
             if (indicator != null) indicator.setOrientation(orientation, animation);
@@ -1726,7 +1635,7 @@ public class PhotoModule
         // Close the camera now because other activities may need to use it.
         closeCamera();
         if (mSurfaceTexture != null) {
-            ((CameraScreenNail) getScreenNail()).releaseSurfaceTexture();
+            ((CameraScreenNail) mActivity.mCameraScreenNail).releaseSurfaceTexture();
             mSurfaceTexture = null;
         }
         if (mSoundPlayer != null) {
@@ -1802,20 +1711,25 @@ public class PhotoModule
 
                 mModePicker = (ModePicker) mRootView.findViewById(R.id.mode_picker);
                 mModePicker.setVisibility(View.VISIBLE);
-                mModePicker.setOnModeChangeListener(this);
+//                mModePicker.setOnModeChangeListener(this);
                 mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
             }
         }
     }
 
+    /**
+     * The focus manager is the first UI related element to get initialized,
+     * and it requires the RenderOverlay, so initialize it here
+     */
     private void initializeFocusManager() {
         // Create FocusManager object. startPreview needs it.
+        mRenderOverlay = (RenderOverlay) mRootView.findViewById(R.id.render_overlay);
         CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
         boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
         String[] defaultFocusModes = mActivity.getResources().getStringArray(
                 R.array.pref_camera_focusmode_default_array);
-        mFocusManager = new FocusManager(mPreferences, defaultFocusModes,
-                mFocusAreaIndicator, mInitialParams, this, mirror,
+        mFocusManager = new FocusOverlayManager(mPreferences, defaultFocusModes,
+                mInitialParams, this, mirror,
                 mActivity.getMainLooper());
     }
 
@@ -1825,7 +1739,6 @@ public class PhotoModule
         // Set touch focus listener.
         mActivity.setSingleTapUpListener(mPreviewFrameLayout);
 
-        mZoomControl = (ZoomControl) mRootView.findViewById(R.id.zoom_control);
         mOnScreenIndicators = (Rotatable) mRootView.findViewById(R.id.on_screen_indicators);
         mFaceView = (FaceView) mRootView.findViewById(R.id.face_view);
         mPreviewFrameLayout.setOnSizeChangedListener(this);
@@ -1852,10 +1765,8 @@ public class PhotoModule
         if (mFocusManager != null) mFocusManager.removeMessages();
         initializeFocusManager();
         initializeMiscControls();
-        initializeIndicatorControl();
-        mFocusAreaIndicator = (RotateLayout) mRootView.findViewById(
-                R.id.focus_indicator_rotate_layout);
-        mFocusManager.setFocusAreaIndicator(mFocusAreaIndicator);
+        loadCameraPreferences();
+//        initializeIndicatorControl();
 
         // from onResume()
         if (!mIsImageCaptureIntent) mActivity.updateThumbnailView();
@@ -2050,7 +1961,7 @@ public class PhotoModule
         setCameraParameters(UPDATE_PARAM_ALL);
 
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
-            CameraScreenNail screenNail = (CameraScreenNail) getScreenNail();
+            CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
             if (mSurfaceTexture == null) {
                 Size size = mParameters.getPreviewSize();
                 if (mCameraDisplayOrientation % 180 == 0) {
@@ -2334,7 +2245,6 @@ public class PhotoModule
 
     private void showPostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            Util.fadeOut(mIndicatorControlContainer);
             Util.fadeOut(mShutterButton);
 
             Util.fadeIn(mReviewRetakeButton);
@@ -2348,24 +2258,7 @@ public class PhotoModule
             Util.fadeOut((View) mReviewDoneButton);
 
             Util.fadeIn(mShutterButton);
-            if (mIndicatorControlContainer != null) {
-                Util.fadeIn(mIndicatorControlContainer);
-            }
         }
-    }
-
-    private void switchToOtherMode(int mode) {
-        if (mActivity.isFinishing()) return;
-        if (mImageSaver != null) mImageSaver.waitDone();
-        if (mActivity.mThumbnail != null) ThumbnailHolder.keep(mActivity.mThumbnail);
-        MenuHelper.gotoMode(mode, mActivity, false);
-        mHandler.removeMessages(FIRST_TIME_INIT);
-        mActivity.finish();
-    }
-
-    @Override
-    public void onModeChanged(int mode) {
-        if (mode != ModePicker.MODE_CAMERA) switchToOtherMode(mode);
     }
 
     @Override
@@ -2391,7 +2284,7 @@ public class PhotoModule
             Log.v(TAG, "Start to copy texture. cameraId=" + cameraId);
             // We need to keep a preview frame for the animation before
             // releasing the camera. This will trigger onPreviewTextureCopied.
-            ((CameraScreenNail) getScreenNail()).copyTexture();
+            ((CameraScreenNail) mActivity.mCameraScreenNail).copyTexture();
             // Disable all camera controls.
             setCameraState(SWITCHING_CAMERA);
         } else {
@@ -2405,7 +2298,7 @@ public class PhotoModule
         Log.v(TAG, "Start to switch camera. id=" + mPendingSwitchCameraId);
         mCameraId = mPendingSwitchCameraId;
         mPendingSwitchCameraId = -1;
-        mCameraPicker.setCameraId(mCameraId);
+//        mCameraPicker.setCameraId(mCameraId);
 
         // from onPause
         closeCamera();
@@ -2429,7 +2322,8 @@ public class PhotoModule
         mFocusManager.setMirror(mirror);
         mFocusManager.setParameters(mInitialParams);
         setupPreview();
-        initializeIndicatorControl();
+        loadCameraPreferences();
+//        initializeIndicatorControl();
 
         // from onResume
         setOrientationIndicator(mOrientationCompensation, false);
@@ -2489,15 +2383,11 @@ public class PhotoModule
         if (mParameters.isZoomSupported()) {
             mZoomValue = 0;
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
-            mZoomControl.setZoomIndex(0);
+            // TODO: reset zoom
         }
-        if (mIndicatorControlContainer != null) {
-            mIndicatorControlContainer.dismissSettingPopup();
-            CameraSettings.restorePreferences(mActivity, mPreferences,
-                    mParameters);
-            mIndicatorControlContainer.reloadPreferences();
-            onSharedPreferenceChanged();
-        }
+        CameraSettings.restorePreferences(mActivity, mPreferences,
+                mParameters);
+        onSharedPreferenceChanged();
     }
 
     @Override
@@ -2538,11 +2428,6 @@ public class PhotoModule
         // Set the preview frame aspect ratio according to the picture size.
         Size size = mParameters.getPictureSize();
         mPreviewFrameLayout.setAspectRatio((double) size.width / size.height);
-    }
-
-    // state access methods
-    ScreenNail getScreenNail() {
-        return mActivity.mCameraScreenNail;
     }
 
 }

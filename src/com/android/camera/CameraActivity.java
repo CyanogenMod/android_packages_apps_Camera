@@ -115,6 +115,16 @@ public class CameraActivity extends ActivityBase
         return mShutter;
     }
 
+    public void hideUI() {
+        mSwitcher.setVisibility(View.INVISIBLE);
+        mShutter.setVisibility(View.INVISIBLE);
+    }
+
+    public void showUI() {
+        mSwitcher.setVisibility(View.VISIBLE);
+        mShutter.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onConfigurationChanged(Configuration config) {
         super.onConfigurationChanged(config);
