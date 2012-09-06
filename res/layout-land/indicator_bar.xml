@@ -64,8 +64,7 @@
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/accessibility_back_to_first_level"
                     android:background="@drawable/bg_pressed"
-                    android:src="@drawable/btn_close_settings"
-                    android:rotation="270" />
+                    android:src="@drawable/btn_close_settings" />
         </com.android.camera.ui.SecondLevelIndicatorControlBar>
     </RelativeLayout>
 </com.android.camera.ui.IndicatorControlBarContainer>
