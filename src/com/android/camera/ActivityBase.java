@@ -394,14 +394,23 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         // Since the new thumbnail will be loaded in another thread later, the
         // view should be set to gone to prevent from opening the invalid image.
         updateThumbnailView();
-        if (mThumbnail == null) {
+        if (mThumbnail == null && !mSecureCamera) {
             mLoadThumbnailTask = new LoadThumbnailTask(true).execute();
         }
     }
 
     protected void getLastThumbnailUncached() {
-        if (mLoadThumbnailTask != null) mLoadThumbnailTask.cancel(true);
-        mLoadThumbnailTask = new LoadThumbnailTask(false).execute();
+        if (mSecureCamera) {
+            // Check if the thumbnail is valid.
+            if (mThumbnail != null && !Util.isUriValid(
+                    mThumbnail.getUri(), getContentResolver())) {
+                mThumbnail = null;
+                updateThumbnailView();
+            }
+        } else {
+            if (mLoadThumbnailTask != null) mLoadThumbnailTask.cancel(true);
+            mLoadThumbnailTask = new LoadThumbnailTask(false).execute();
+        }
     }
 
     private class LoadThumbnailTask extends AsyncTask<Void, Void, Thumbnail> {
