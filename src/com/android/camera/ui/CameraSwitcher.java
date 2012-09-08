@@ -17,18 +17,17 @@
 package com.android.camera.ui;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 
-public class CameraSwitcher extends HorizontalScrollView {
+public class CameraSwitcher extends ScrollerView {
 
     private static final String TAG = "CAM_Switcher";
 
@@ -45,12 +44,11 @@ public class CameraSwitcher extends HorizontalScrollView {
     }
 
     private LinearLayout mContent;
-    private GestureDetector mDetector;
-    private Gestures mGestures;
     private CameraSwitchListener mListener;
     private int mCurrentIndex;
-    private int mChildWidth;
+    private int mChildSize;
     private int mOffset;
+    private boolean mHorizontal = true;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -87,19 +85,44 @@ public class CameraSwitcher extends HorizontalScrollView {
         setOverScrollMode(OVER_SCROLL_IF_CONTENT_SCROLLS);
         setFillViewport(true);
         setHorizontalScrollBarEnabled(false);
-        mContent = new Content(context);
+        setVerticalScrollBarEnabled(false);
+        mContent = new LinearLayout(context);
         addView(mContent, new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT));
-        mGestures = new Gestures();
-        mDetector = new GestureDetector(context, mGestures);
-        mDetector.setSlopScale(context, 1.5f);
+        updateOrientation();
         // initialize to non-zero
-        mChildWidth = 100;
+        mChildSize = 100;
         mOffset = 100;
     }
 
+    private void updateOrientation() {
+        Configuration config = getContext().getResources().getConfiguration();
+        switch(config.orientation) {
+        case Configuration.ORIENTATION_LANDSCAPE:
+        case Configuration.ORIENTATION_UNDEFINED:
+            setOrientation(LinearLayout.VERTICAL);
+            break;
+        case Configuration.ORIENTATION_PORTRAIT:
+            setOrientation(LinearLayout.HORIZONTAL);
+            break;
+        }
+    }
+    public void setOrientation(int orientation) {
+        mContent.setOrientation(orientation);
+        if (orientation == LinearLayout.HORIZONTAL) {
+            mHorizontal = true;
+            mContent.setLayoutParams(
+                    new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
+        } else {
+            mHorizontal = false;
+            mContent.setLayoutParams(
+                    new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        }
+        super.setOrientation(orientation);
+    }
+
+
     public void setCurrentModule(int i) {
-        Log.i(TAG, "set current camera "+i);
         mCurrentIndex = i;
         reposition();
 
@@ -109,16 +132,19 @@ public class CameraSwitcher extends HorizontalScrollView {
         mListener = l;
     }
 
-    public boolean onTouchEvent(MotionEvent evt) {
-        return mDetector.onTouchEvent(evt, getScrollX(), 0);
+    @Override
+    public void fling(int velocity) {
+        super.fling(velocity);
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SNAP), FLING_DURATION);
     }
 
     @Override
-    public void scrollBy(int dx, int dy) {
-        if (mListener != null) {
-            mListener.onScroll();
+    public void onScrollChanged(int sx, int sy, int oldx, int oldy) {
+        if (!ignoreScroll()) {
+            if (mListener != null) {
+                mListener.onScroll();
+            }
         }
-        super.scrollBy(dx,  dy);
     }
 
     public void add(View view, ViewGroup.LayoutParams lp) {
@@ -128,83 +154,65 @@ public class CameraSwitcher extends HorizontalScrollView {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         // child width
-        int w = r - l;
-        mChildWidth = w * 2 / 5;
-        mOffset = (w - mChildWidth) / 2;
         int n = mContent.getChildCount();
-        mContent.layout(0, 0, mChildWidth * n + 2 * mOffset, (b - t));
-        int cl = mOffset;
-        int h = b - t;
-        for (int i = 0; i < n; i++) {
-            View c = mContent.getChildAt(i);
-            c.layout(cl, 0, cl + mChildWidth, h);
-            cl += mChildWidth;
+        if (mHorizontal) {
+            // layout left to right
+            int w = r - l;
+            mChildSize = w * 2 / 5;
+            mOffset = (w - mChildSize) / 2;
+            mContent.layout(0, 0, mChildSize * n + 2 * mOffset, (b - t));
+            int cl = mOffset;
+            int h = b - t;
+            for (int i = 0; i < n; i++) {
+                View c = mContent.getChildAt(i);
+                c.layout(cl, 0, cl + mChildSize, h);
+                cl += mChildSize;
+            }
+        } else {
+            // layout bottom to top
+            int h = b - t;
+            mChildSize = h * 2 / 5;
+            mOffset = (h - mChildSize) / 2;
+            mContent.layout(0, 0, (r - l), mChildSize * n + 2 * mOffset);
+            int cl = mOffset;
+            int w = r - l;
+            for (int i = n - 1; i >= 0; i--) {
+                View c = mContent.getChildAt(i);
+                c.layout(0, cl, w, cl + mChildSize);
+                cl += mChildSize;
+            }
         }
         reposition();
     }
 
+    @Override
+    protected void onScrollUp() {
+        snap();
+    }
+
     private void reposition() {
-        scrollTo(mCurrentIndex * mChildWidth, 0);
+        if (mHorizontal) {
+            scrollTo(mCurrentIndex * mChildSize, 0);
+        } else {
+            scrollTo(0, (mContent.getChildCount() - 1 - mCurrentIndex) * mChildSize);
+        }
     }
 
     private void snap() {
-        int cx = getScrollX() + getWidth() / 2 - mOffset;
-        if (mChildWidth != 0) {
-            int pos = cx / mChildWidth;
-            int scrollpos = pos * mChildWidth;
-            smoothScrollTo(scrollpos, 0);
-            mCurrentIndex = pos;
+        int cx = mHorizontal ? getScrollX() + getWidth() / 2 - mOffset :
+            getScrollY() + getHeight() / 2 - mOffset ;
+        if (mChildSize != 0) {
+            final int centerpos = cx / mChildSize;
+            if (mHorizontal) {
+                smoothScrollTo(centerpos * mChildSize, 0);
+                mCurrentIndex = centerpos;
+            } else {
+                smoothScrollTo(0, centerpos * mChildSize);
+                // top to bottom
+                mCurrentIndex = mContent.getChildCount() - 1 - centerpos;
+            }
             mHandler.sendEmptyMessageDelayed(MSG_SET_CAM, 100);
         }
-    }
-
-    private class Content extends LinearLayout {
-
-        public Content(Context context) {
-            super(context);
-            setOrientation(LinearLayout.HORIZONTAL);
-        }
-
-    }
-
-    class Gestures extends GestureDetector.SimpleOnGestureListener {
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return true;
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                float velocityY) {
-            fling(- (int) velocityX);
-            mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SNAP), FLING_DURATION);
-            return true;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2,
-                float distanceX, float distanceY) {
-            scrollBy((int) distanceX, 0);
-            return true;
-        }
-
-        @Override
-        public boolean onScrollUp(MotionEvent e) {
-            snap();
-            return true;
-        }
-
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            return super.onSingleTapConfirmed(e);
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            return super.onSingleTapUp(e);
-        }
-
     }
 
 }
