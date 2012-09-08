@@ -24,7 +24,7 @@ import android.view.View;
 
 public interface CameraModule {
 
-    public void init(CameraActivity activity, View frame);
+    public void init(CameraActivity activity, View frame, boolean reuseScreenNail);
 
     public void onFullScreenChanged(boolean full);
 

@@ -19,6 +19,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <include layout="@layout/gl_root_group"/>
+    <FrameLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <com.android.camera.ui.CameraSwitcher
         android:id="@+id/camera_switcher"
         android:layout_width="wrap_content"
@@ -36,8 +40,4 @@
         android:focusable="true"
         android:scaleType="center"
         android:src="@drawable/btn_shutter" />
-    <FrameLayout
-        android:id="@+id/main_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 </RelativeLayout>

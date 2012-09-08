@@ -446,7 +446,7 @@ public class PhotoModule
     }
 
     @Override
-    public void init(CameraActivity activity, View parent) {
+    public void init(CameraActivity activity, View parent, boolean reuseNail) {
         mActivity = activity;
         mRootView = parent;
         mPreferences = new ComboPreferences(mActivity);
@@ -465,7 +465,11 @@ public class PhotoModule
         // Surface texture is from camera screen nail and startPreview needs it.
         // This must be done before startPreview.
         mIsImageCaptureIntent = isImageCaptureIntent();
-        mActivity.reuseCameraScreenNail(!mIsImageCaptureIntent);
+        if (reuseNail) {
+            mActivity.reuseCameraScreenNail(!mIsImageCaptureIntent);
+        } else {
+            mActivity.createCameraScreenNail(!mIsImageCaptureIntent);
+        }
 
         mPreferences.setLocalId(mActivity, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());

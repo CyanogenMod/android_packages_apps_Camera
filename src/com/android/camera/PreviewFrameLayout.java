@@ -19,8 +19,6 @@ package com.android.camera;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.util.AttributeSet;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.RelativeLayout;

@@ -123,7 +123,9 @@ public class CameraSwitcher extends ScrollerView {
 
 
     public void setCurrentModule(int i) {
+        mContent.getChildAt(mCurrentIndex).setEnabled(true);
         mCurrentIndex = i;
+        mContent.getChildAt(mCurrentIndex).setEnabled(false);
         reposition();
 
     }

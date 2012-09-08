@@ -110,6 +110,7 @@ public class VideoModule implements CameraModule,
     private static final String EXTRA_QUICK_CAPTURE =
             "android.intent.extra.quickCapture";
 
+    private static final int MIN_THUMB_SIZE = 64;
     // module fields
     private CameraActivity mActivity;
     private View mRootView;
@@ -361,7 +362,7 @@ public class VideoModule implements CameraModule,
     }
 
     @Override
-    public void init(CameraActivity activity, View root) {
+    public void init(CameraActivity activity, View root, boolean reuseScreenNail) {
         mActivity = activity;
         mRootView = root;
         mPreferences = new ComboPreferences(mActivity);
@@ -389,7 +390,11 @@ public class VideoModule implements CameraModule,
         // Surface texture is from camera screen nail and startPreview needs it.
         // This must be done before startPreview.
         mIsVideoCaptureIntent = isVideoCaptureIntent();
-        mActivity.reuseCameraScreenNail(!mIsVideoCaptureIntent);
+        if (reuseScreenNail) {
+            mActivity.reuseCameraScreenNail(!mIsVideoCaptureIntent);
+        } else {
+            mActivity.createCameraScreenNail(!mIsVideoCaptureIntent);
+        }
         initializeSurfaceView();
 
         // Make sure camera device is opened.
@@ -1560,6 +1565,7 @@ public class VideoModule implements CameraModule,
     private void startVideoRecording() {
         Log.v(TAG, "startVideoRecording");
         mActivity.setSwipingEnabled(false);
+        mActivity.hideSwitcher();
 
         mActivity.updateStorageSpaceAndHint();
         if (mActivity.getStorageSpace() <= Storage.LOW_STORAGE_THRESHOLD) {
@@ -1662,7 +1668,7 @@ public class VideoModule implements CameraModule,
     private void getThumbnail() {
         if (mCurrentVideoUri != null) {
             Bitmap videoFrame = Thumbnail.createVideoThumbnailBitmap(mCurrentVideoFilename,
-                    mActivity.mThumbnailViewWidth);
+                    Math.max(mActivity.mThumbnailViewWidth, MIN_THUMB_SIZE));
             if (videoFrame != null) {
                 mActivity.mThumbnail = Thumbnail.createThumbnail(mCurrentVideoUri, videoFrame, 0);
                 if (mActivity.mThumbnailView != null) {
@@ -1722,6 +1728,7 @@ public class VideoModule implements CameraModule,
     private boolean stopVideoRecording() {
         Log.v(TAG, "stopVideoRecording");
         mActivity.setSwipingEnabled(true);
+        mActivity.showSwitcher();
 
         boolean fail = false;
         if (mMediaRecorderRecording) {

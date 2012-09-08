@@ -20,10 +20,10 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -64,11 +64,19 @@ public class CameraActivity extends ActivityBase
             iv.setImageDrawable(mDrawables[i]);
             mSwitcher.add(iv, new LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
+            final int index = i;
+            iv.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    mSwitcher.setCurrentModule(index);
+                    onCameraSelected(index);
+                }
+            });
         }
 
         mSwitcher.setSwitchListener(this);
         mCurrentModule = new PhotoModule();
-        mCurrentModule.init(this, mFrame);
+        mCurrentModule.init(this, mFrame, true);
         mSelectedModule = 1;
         mSwitcher.setCurrentModule(mSelectedModule);
     }
@@ -81,6 +89,7 @@ public class CameraActivity extends ActivityBase
     public void onCameraSelected(int i) {
         if (i != mSelectedModule) {
             mPaused = true;
+            boolean wasPanorama = isPanoramaActivity();
             closeModule(mCurrentModule);
             mSelectedModule = i;
             switch (i) {
@@ -91,15 +100,15 @@ public class CameraActivity extends ActivityBase
                 mCurrentModule = new PhotoModule();
                 break;
             case 2:
-                mCurrentModule = new VideoModule();
+                mCurrentModule = new PanoramaModule();
                 break;
             }
-            openModule(mCurrentModule);
+            openModule(mCurrentModule, wasPanorama);
         }
     }
 
-    private void openModule(CameraModule module) {
-        module.init(this, mFrame);
+    private void openModule(CameraModule module, boolean wasPanorama) {
+        module.init(this, mFrame, !(wasPanorama || isPanoramaActivity()));
         mPaused = false;
         module.onResumeBeforeSuper();
         module.onResumeAfterSuper();
@@ -116,13 +125,21 @@ public class CameraActivity extends ActivityBase
     }
 
     public void hideUI() {
-        mSwitcher.setVisibility(View.INVISIBLE);
-        mShutter.setVisibility(View.INVISIBLE);
+        mSwitcher.setVisibility(View.GONE);
+        mShutter.setVisibility(View.GONE);
     }
 
     public void showUI() {
         mSwitcher.setVisibility(View.VISIBLE);
         mShutter.setVisibility(View.VISIBLE);
+    }
+
+    public void hideSwitcher() {
+        mSwitcher.setVisibility(View.GONE);
+    }
+
+    public void showSwitcher() {
+        mSwitcher.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -231,6 +248,11 @@ public class CameraActivity extends ActivityBase
     public void updateCameraAppView() {
         super.updateCameraAppView();
         mCurrentModule.updateCameraAppView();
+    }
+
+    @Override
+    public boolean isPanoramaActivity() {
+        return (mCurrentModule instanceof PanoramaModule);
     }
 
 }
