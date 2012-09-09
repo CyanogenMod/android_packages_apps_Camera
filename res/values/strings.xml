@@ -472,6 +472,6 @@
     <string name="pref_camera_focus_entry_20">20s</string>
     <string name="pref_camera_focus_entry_30">30s</string>
     <string name="pref_camera_focus_entry_40">40s</string>
-    <string name="pref_camera_focus_entry_infinit">infinite</string>
+    <string name="pref_camera_focus_entry_infinit">Infinite</string>
 
 </resources>
