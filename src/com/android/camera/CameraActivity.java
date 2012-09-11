@@ -20,7 +20,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,7 +47,7 @@ public class CameraActivity extends ActivityBase
             R.drawable.ic_switch_video_holo_light,
             R.drawable.ic_switch_camera_holo_light,
             R.drawable.ic_switch_pan_holo_light,
-            R.drawable.ic_switch_pan_holo_light
+            R.drawable.ic_switch_photo_pan_holo_light
     };
 
     @Override
