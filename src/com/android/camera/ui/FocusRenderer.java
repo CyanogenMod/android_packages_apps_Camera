@@ -16,12 +16,12 @@
 
 package com.android.camera.ui;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
@@ -63,19 +63,24 @@ public class FocusRenderer extends OverlayRenderer
     private Point mPoint2;
     private int mStartAnimationAngle;
     private boolean mFocused;
+    private int mInnerOffset;
+    private int mOuterStroke;
+    private int mInnerStroke;
 
-    public FocusRenderer() {
+    public FocusRenderer(Context ctx) {
         mFocusPaint = new Paint();
         mFocusPaint.setAntiAlias(true);
         mFocusPaint.setColor(Color.WHITE);
         mFocusPaint.setStyle(Paint.Style.STROKE);
-        mFocusPaint.setStrokeWidth(2);
         mSuccessPaint = new Paint(mFocusPaint);
         mSuccessPaint.setColor(Color.GREEN);
         mCircle = new RectF();
         mDial = new RectF();
         mPoint1 = new Point();
         mPoint2 = new Point();
+        mInnerOffset = ctx.getResources().getDimensionPixelSize(R.dimen.focus_inner_offset);
+        mOuterStroke = ctx.getResources().getDimensionPixelSize(R.dimen.focus_outer_stroke);
+        mInnerStroke = ctx.getResources().getDimensionPixelSize(R.dimen.focus_inner_stroke);
     }
 
     public void setFocus(int x, int y) {
@@ -98,6 +103,17 @@ public class FocusRenderer extends OverlayRenderer
             break;
         }
         setCircle(mFocusX, mFocusY);
+    }
+
+    public void showFocus(int x, int y) {
+        mOverlay.removeCallbacks(mDisappear);
+        mAnimation.cancel();
+        mAnimation.reset();
+        mFocusX = x;
+        mFocusY = y;
+        setCircle(x, y);
+        setVisible(true);
+        mFocused = false;
     }
 
     public int getSize() {
@@ -126,14 +142,16 @@ public class FocusRenderer extends OverlayRenderer
     private void setCircle(int cx, int cy) {
         mCircle.set(cx - mCircleSize, cy - mCircleSize,
                 cx + mCircleSize, cy + mCircleSize);
-        mDial.set(cx - mCircleSize + 30, cy - mCircleSize + 30,
-                cx + mCircleSize - 30, cy + mCircleSize - 30);
+        mDial.set(cx - mCircleSize + mInnerOffset, cy - mCircleSize + mInnerOffset,
+                cx + mCircleSize - mInnerOffset, cy + mCircleSize - mInnerOffset);
     }
 
     @Override
     public void onDraw(Canvas canvas) {
+        mFocusPaint.setStrokeWidth(mOuterStroke);
         canvas.drawCircle((float) mFocusX, (float) mFocusY, (float) mCircleSize, mFocusPaint);
         Paint inner = (mFocused ? mSuccessPaint : mFocusPaint);
+        inner.setStrokeWidth(mInnerStroke);
         canvas.drawArc(mDial, mDialAngle, 45, false, inner);
         canvas.drawArc(mDial, mDialAngle + 180, 45, false, inner);
         drawLine(canvas, mDialAngle, inner);
@@ -143,16 +161,16 @@ public class FocusRenderer extends OverlayRenderer
     }
 
     private void drawLine(Canvas canvas, int angle, Paint p) {
-        convertCart(angle, mCircleSize - 31, mPoint1);
-        convertCart(angle, mCircleSize - 5, mPoint2);
+        convertCart(angle, mCircleSize - mInnerOffset, mPoint1);
+        convertCart(angle, mCircleSize - mInnerOffset + mInnerOffset / 3, mPoint2);
         canvas.drawLine(mPoint1.x + mFocusX, mPoint1.y + mFocusY,
                 mPoint2.x + mFocusX, mPoint2.y + mFocusY, p);
     }
 
     private static void convertCart(int angle, int radius, Point out) {
-        float a = (float) (2 * Math.PI * (angle % 360) / 360);
-        out.x = (int) (radius * Math.cos(a));
-        out.y = (int) (radius * Math.sin(a));
+        double a = 2 * Math.PI * (angle % 360) / 360;
+        out.x = (int) (radius * Math.cos(a) + 0.5);
+        out.y = (int) (radius * Math.sin(a) + 0.5);
     }
 
     @Override

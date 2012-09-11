@@ -80,4 +80,12 @@
     <dimen name="onscreen_exposure_indicator_text_size_xlarge">18dp</dimen>
     <dimen name="mode_picker_margin_xlarge">32dp</dimen>
     <dimen name="control_panel_min_length_xlarge">260dp</dimen>
+    <dimen name="pie_radius_start">80dp</dimen>
+    <dimen name="pie_radius_increment">48dp</dimen>
+    <dimen name="pie_touch_slop">12dp</dimen>
+    <dimen name="pie_touch_offset">20dp</dimen>
+    <dimen name="pie_view_size">48dp</dimen>
+    <dimen name="focus_inner_offset">24dp</dimen>
+    <dimen name="focus_outer_stroke">3dp</dimen>
+    <dimen name="focus_inner_stroke">2dp</dimen>
 </resources>
