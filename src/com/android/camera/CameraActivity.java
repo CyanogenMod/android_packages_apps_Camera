@@ -30,10 +30,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.android.camera.ui.CameraSwitcher;
+import com.android.gallery3d.util.LightCycleHelper;
 
 public class CameraActivity extends ActivityBase
         implements CameraSwitcher.CameraSwitchListener {
-
+    private static final int PHOTO_PANORAMA_INDEX = 3; // LightCycle enabled?
     CameraModule mCurrentModule;
     private FrameLayout mFrame;
     private ShutterButton mShutter;
@@ -46,9 +47,11 @@ public class CameraActivity extends ActivityBase
     private static final int[] DRAW_IDS = {
             R.drawable.ic_switch_video_holo_light,
             R.drawable.ic_switch_camera_holo_light,
+            R.drawable.ic_switch_pan_holo_light,
             R.drawable.ic_switch_pan_holo_light
     };
 
+    @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
         setContentView(R.layout.camera_main);
@@ -61,6 +64,9 @@ public class CameraActivity extends ActivityBase
             mDrawables[i] = d;
         }
         for (int i = 0; i < mDrawables.length; i++) {
+            if (i == PHOTO_PANORAMA_INDEX && !LightCycleHelper.hasLightCycleCapture(this)) {
+                continue; // not enabled, so don't add to UI
+            }
             ImageView iv = new ImageView(this);
             iv.setImageDrawable(mDrawables[i]);
             mSwitcher.add(iv, new LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -102,6 +108,9 @@ public class CameraActivity extends ActivityBase
                 break;
             case 2:
                 mCurrentModule = new PanoramaModule();
+                break;
+            case 3:
+                mCurrentModule = LightCycleHelper.createPanoramaModule();
                 break;
             }
             openModule(mCurrentModule, wasPanorama);
