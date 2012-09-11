@@ -515,7 +515,7 @@ public class PanoramaModule implements CameraModule,
         mActivity.setSwipingEnabled(false);
         mActivity.hideSwitcher();
         mCaptureState = CAPTURE_STATE_MOSAIC;
-        mShutterButton.setImageResource(R.drawable.btn_shutter_pan_recording);
+        mShutterButton.setActivated(true);
         mCaptureIndicator.setVisibility(View.VISIBLE);
         showDirectionIndicators(PanoProgressBar.DIRECTION_NONE);
 
@@ -665,7 +665,7 @@ public class PanoramaModule implements CameraModule,
         });
 
         mShutterButton = mActivity.getShutterButton();
-        mShutterButton.setImageResource(R.drawable.btn_shutter_pan);
+        mShutterButton.setImageResource(R.drawable.btn_new_shutter);
         mShutterButton.setOnShutterButtonListener(this);
 
         if (mActivity.getResources().getConfiguration().orientation
@@ -841,7 +841,7 @@ public class PanoramaModule implements CameraModule,
         mActivity.setSwipingEnabled(true);
         mActivity.showSwitcher();
         mReviewLayout.setVisibility(View.GONE);
-        mShutterButton.setImageResource(R.drawable.btn_shutter_pan);
+        mShutterButton.setActivated(false);
         mPanoProgressBar.setVisibility(View.GONE);
         mCaptureLayout.setVisibility(View.VISIBLE);
         mMosaicFrameProcessor.reset();
