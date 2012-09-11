@@ -2418,7 +2418,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
-        keepScreenOnAwhile();
+        if (!isFinishing()) keepScreenOnAwhile();
     }
 
     private void resetScreenOn() {
