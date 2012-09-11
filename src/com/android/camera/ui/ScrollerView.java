@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.FocusFinder;
 import android.view.InputDevice;
@@ -586,10 +587,11 @@ public class ScrollerView extends FrameLayout {
             mIsOrthoDragged = false;
             mActivePointerId = INVALID_POINTER;
             recycleVelocityTracker();
-            if (mScroller.springBack(getScrollX(), getScrollY(), 0, 0, 0,
-                    getScrollRange())) {
-                invalidate();
-            }
+            // TODO: this upset the single tap; need to fix later
+            //if (mScroller.springBack(getScrollX(), getScrollY(), 0, 0, 0,
+            //        getScrollRange())) {
+            //    invalidate();
+            //}
             break;
         case MotionEvent.ACTION_POINTER_UP:
             onSecondaryPointerUp(ev);
@@ -678,6 +680,8 @@ public class ScrollerView extends FrameLayout {
                             onPull(0);
                         }
                     }
+                } else {
+                    return false;
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -723,6 +727,8 @@ public class ScrollerView extends FrameLayout {
 
                     mActivePointerId = INVALID_POINTER;
                     endDrag();
+                } else {
+                    return false;
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -742,6 +748,8 @@ public class ScrollerView extends FrameLayout {
                     }
                     mActivePointerId = INVALID_POINTER;
                     endDrag();
+                } else {
+                    return false;
                 }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN: {

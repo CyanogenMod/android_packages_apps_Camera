@@ -545,7 +545,7 @@ public class PhotoModule
 
         // Initialize shutter button.
         mShutterButton = mActivity.getShutterButton();
-        mShutterButton.setImageResource(R.drawable.btn_shutter);
+        mShutterButton.setImageResource(R.drawable.btn_new_shutter);
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.setVisibility(View.VISIBLE);
 

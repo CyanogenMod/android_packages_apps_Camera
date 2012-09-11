@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -222,8 +223,18 @@ public class CameraActivity extends ActivityBase
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
-        return mCurrentModule.dispatchTouchEvent(m)
-                || super.dispatchTouchEvent(m);
+        // some custom logic to feed both switcher and shutter
+        boolean res = mCurrentModule.dispatchTouchEvent(m);
+        if (!res) {
+            res |= (isInside(m, mShutter) && mShutter.dispatchTouchEvent(m));
+            res |= super.dispatchTouchEvent(m);
+        }
+        return res;
+    }
+
+    private boolean isInside(MotionEvent evt, View v) {
+        return (evt.getX() >= v.getLeft() && evt.getX() < v.getRight()
+                && evt.getY() >= v.getTop() && evt.getY() < v.getBottom());
     }
 
     // Preview texture has been copied. Now camera can be released and the
