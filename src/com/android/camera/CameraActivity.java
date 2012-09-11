@@ -235,7 +235,8 @@ public class CameraActivity extends ActivityBase
         // some custom logic to feed both switcher and shutter
         boolean res = mCurrentModule.dispatchTouchEvent(m);
         if (!res) {
-            res |= (isInside(m, mShutter) && mShutter.dispatchTouchEvent(m));
+            res |= ((mSwitcher.getVisibility() == View.VISIBLE)
+                    && isInside(m, mShutter) && mShutter.dispatchTouchEvent(m));
             res |= super.dispatchTouchEvent(m);
         }
         return res;

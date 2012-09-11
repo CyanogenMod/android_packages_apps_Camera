@@ -52,8 +52,5 @@
             android:layerType="hardware"
             android:visibility="gone"/>
 
-    <!-- Indicator control and popup window frame.
-         Listed last for highest Z-order -->
-    <include layout="@layout/indicator_bar" />
 </RelativeLayout>
 

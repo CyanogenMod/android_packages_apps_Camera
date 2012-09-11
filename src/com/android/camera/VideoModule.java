@@ -80,8 +80,9 @@ import java.util.List;
 
 public class VideoModule implements CameraModule,
     CameraPreference.OnPreferenceChangedListener,
-    ShutterButton.OnShutterButtonListener, MediaRecorder.OnErrorListener,
-    MediaRecorder.OnInfoListener, ModePicker.OnModeChangeListener,
+    ShutterButton.OnShutterButtonListener,
+    MediaRecorder.OnErrorListener,
+    MediaRecorder.OnInfoListener,
     EffectsRecorder.EffectsListener {
 
     private static final String TAG = "CAM_VideoModule";
@@ -132,7 +133,6 @@ public class VideoModule implements CameraModule,
     private SurfaceHolder.Callback mSurfaceViewCallback;
     private PreviewSurfaceView mPreviewSurfaceView;
     private CameraScreenNail.OnFrameDrawnListener mFrameDrawnListener;
-    private IndicatorControlContainer mIndicatorControlContainer;
     private View mReviewControl;
     private RotateDialogController mRotateDialog;
 
@@ -143,7 +143,6 @@ public class VideoModule implements CameraModule,
     private Rotatable mReviewDoneButton;
     private RotateImageView mReviewPlayButton;
     private View mReviewRetakeButton;
-    private ModePicker mModePicker;
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
     private RotateLayout mBgLearningMessageRotater;
@@ -219,7 +218,6 @@ public class VideoModule implements CameraModule,
 
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
-    private ZoomControl mZoomControl;
     private boolean mRestoreFlash;  // This is used to check if we need to restore the flash
                                     // status when going back from gallery.
 
@@ -462,25 +460,13 @@ public class VideoModule implements CameraModule,
 
     @Override
     public boolean collapseCameraControls() {
-        if ((mIndicatorControlContainer != null)
-                && mIndicatorControlContainer.dismissSettingPopup()) {
-            return true;
-        }
-        if (mModePicker != null && mModePicker.dismissModeSelection()) return true;
         return false;
     }
 
     private void enableCameraControls(boolean enable) {
-        if (mIndicatorControlContainer != null) {
-            mIndicatorControlContainer.setEnabled(enable);
-        }
-        if (mModePicker != null) mModePicker.setEnabled(enable);
     }
 
     private void initializeIndicatorControl() {
-        mIndicatorControlContainer =
-                (IndicatorControlContainer) mRootView.findViewById(R.id.indicator_control);
-        if (mIndicatorControlContainer == null) return;
         loadCameraPreferences();
 
         final String[] SETTING_KEYS = {
@@ -492,17 +478,11 @@ public class VideoModule implements CameraModule,
         final String[] OTHER_SETTING_KEYS = {
                     CameraSettings.KEY_RECORD_LOCATION};
 
-        CameraPicker.setImageResourceId(R.drawable.ic_switch_video_facing_holo_light);
-        mIndicatorControlContainer.initialize(mActivity, mPreferenceGroup,
-                mParameters.isZoomSupported(), SETTING_KEYS, OTHER_SETTING_KEYS);
-        mIndicatorControlContainer.setListener(this);
-        mActivity.mCameraPicker = (CameraPicker) mIndicatorControlContainer.findViewById(
-                R.id.camera_picker);
 
         if (effectsActive()) {
-            mIndicatorControlContainer.overrideSettings(
-                    CameraSettings.KEY_VIDEO_QUALITY,
-                    Integer.toString(getLowVideoQuality()));
+//            mIndicatorControlContainer.overrideSettings(
+//                    CameraSettings.KEY_VIDEO_QUALITY,
+//                    Integer.toString(getLowVideoQuality()));
         }
     }
 
@@ -566,7 +546,7 @@ public class VideoModule implements CameraModule,
     private void setOrientationIndicator(int orientation, boolean animation) {
         Rotatable[] indicators = {
                 //mActivity.mThumbnailView, mModePicker,
-                mBgLearningMessageRotater, mIndicatorControlContainer,
+                mBgLearningMessageRotater,
                 mReviewDoneButton, mReviewPlayButton, mRotateDialog};
         for (Rotatable indicator : indicators) {
             if (indicator != null) indicator.setOrientation(orientation, animation);
@@ -736,18 +716,18 @@ public class VideoModule implements CameraModule,
             // On initial startup, can get here before indicator control is
             // enabled. In that case, UI quality override handled in
             // initializeIndicatorControl.
-            if (mIndicatorControlContainer != null) {
-                mIndicatorControlContainer.overrideSettings(
-                        CameraSettings.KEY_VIDEO_QUALITY,
-                        Integer.toString(getLowVideoQuality()));
-            }
+//            if (mIndicatorControlContainer != null) {
+//                mIndicatorControlContainer.overrideSettings(
+//                        CameraSettings.KEY_VIDEO_QUALITY,
+//                        Integer.toString(getLowVideoQuality()));
+//            }
         } else {
             mEffectParameter = null;
-            if (mIndicatorControlContainer != null) {
-                mIndicatorControlContainer.overrideSettings(
-                        CameraSettings.KEY_VIDEO_QUALITY,
-                        null);
-            }
+//            if (mIndicatorControlContainer != null) {
+//                mIndicatorControlContainer.overrideSettings(
+//                        CameraSettings.KEY_VIDEO_QUALITY,
+//                        null);
+//            }
         }
         // Read time lapse recording interval.
         if (ApiHelper.HAS_TIME_LAPSE_RECORDING) {
@@ -838,7 +818,7 @@ public class VideoModule implements CameraModule,
         if (!mPreviewing) {
             if (resetEffect()) {
                 mBgLearningMessageFrame.setVisibility(View.GONE);
-                mIndicatorControlContainer.reloadPreferences();
+//                mIndicatorControlContainer.reloadPreferences();
             }
             CameraOpenThread cameraOpenThread = new CameraOpenThread();
             cameraOpenThread.start();
@@ -873,9 +853,6 @@ public class VideoModule implements CameraModule,
 
         if (!mIsVideoCaptureIntent) {
             mActivity.getLastThumbnail();
-            if (mModePicker != null) {
-                mModePicker.setCurrentMode(ModePicker.MODE_VIDEO);
-            }
         }
 
         if (mPreviewing) {
@@ -1041,9 +1018,6 @@ public class VideoModule implements CameraModule,
             mReceiver = null;
         }
         resetScreenOn();
-        if (mIndicatorControlContainer != null) {
-            mIndicatorControlContainer.dismissSettingPopup();
-        }
 
         if (mOrientationListener != null) mOrientationListener.disable();
         if (mLocationManager != null) mLocationManager.recordLocation(false);
@@ -1630,16 +1604,15 @@ public class VideoModule implements CameraModule,
 
     private void showRecordingUI(boolean recording) {
         if (recording) {
-            mIndicatorControlContainer.dismissSecondLevelIndicator();
             if (mActivity.mThumbnailView != null) mActivity.mThumbnailView.setEnabled(false);
-            mShutterButton.setImageResource(R.drawable.btn_shutter_video_recording);
+//            mShutterButton.setImageResource(R.drawable.btn_shutter_video_recording);
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.GONE);
             if (mCaptureTimeLapse) {
-                mIndicatorControlContainer.startTimeLapseAnimation(
-                        mTimeBetweenTimeLapseFrameCaptureMs,
-                        mRecordingStartTime);
+//                mIndicatorControlContainer.startTimeLapseAnimation(
+//                        mTimeBetweenTimeLapseFrameCaptureMs,
+//                        mRecordingStartTime);
             }
             // The camera is not allowed to be accessed in older api levels during
             // recording. It is therefore necessary to hide the zoom UI on older
@@ -1648,21 +1621,22 @@ public class VideoModule implements CameraModule,
             // further explanation.
             if (!ApiHelper.HAS_ZOOM_WHEN_RECORDING
                     && mParameters.isZoomSupported()) {
-                mZoomControl.setVisibility(View.GONE);
+//                mZoomControl.setVisibility(View.GONE);
             }
         } else {
             if (mActivity.mThumbnailView != null) mActivity.mThumbnailView.setEnabled(true);
-            mShutterButton.setImageResource(R.drawable.btn_shutter_video);
+//            mShutterButton.setImageResource(R.drawable.btn_shutter_video);
             mRecordingTimeView.setVisibility(View.GONE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
             if (mCaptureTimeLapse) {
-                mIndicatorControlContainer.stopTimeLapseAnimation();
+//                mIndicatorControlContainer.stopTimeLapseAnimation();
             }
             if (!ApiHelper.HAS_ZOOM_WHEN_RECORDING
                     && mParameters.isZoomSupported()) {
-                mZoomControl.setVisibility(View.VISIBLE);
+//                mZoomControl.setVisibility(View.VISIBLE);
             }
         }
+        mShutterButton.setActivated(recording);
     }
 
     private void getThumbnail() {
@@ -1699,7 +1673,6 @@ public class VideoModule implements CameraModule,
         }
 
         Util.fadeOut(mShutterButton);
-        Util.fadeOut(mIndicatorControlContainer);
 
         Util.fadeIn(mReviewRetakeButton);
         Util.fadeIn((View) mReviewDoneButton);
@@ -1718,7 +1691,6 @@ public class VideoModule implements CameraModule,
         Util.fadeOut(mReviewPlayButton);
 
         Util.fadeIn(mShutterButton);
-        Util.fadeIn(mIndicatorControlContainer);
 
         if (mCaptureTimeLapse) {
             showTimeLapseUI(true);
@@ -2035,18 +2007,6 @@ public class VideoModule implements CameraModule,
         }
     }
 
-    private void switchToOtherMode(int mode) {
-        if (mActivity.isFinishing()) return;
-        if (mActivity.mThumbnail != null) ThumbnailHolder.keep(mActivity.mThumbnail);
-        MenuHelper.gotoMode(mode, mActivity, false);
-        mActivity.finish();
-    }
-
-    @Override
-    public void onModeChanged(int mode) {
-        if (mode != ModePicker.MODE_VIDEO) switchToOtherMode(mode);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -2122,7 +2082,7 @@ public class VideoModule implements CameraModule,
         // Write default effect out to shared prefs
         writeDefaultEffectToPrefs();
         // Tell the indicator controller to redraw based on new shared pref values
-        mIndicatorControlContainer.reloadPreferences();
+//        mIndicatorControlContainer.reloadPreferences();
         // Tell VideoCamer to re-init based on new shared pref values.
         onSharedPreferenceChanged();
     }
@@ -2169,9 +2129,6 @@ public class VideoModule implements CameraModule,
                 mActivity.mThumbnailView.enableFilter(false);
                 mActivity.mThumbnailView.setVisibility(View.VISIBLE);
                 mActivity.mThumbnailViewWidth = mActivity.mThumbnailView.getLayoutParams().width;
-                mModePicker = (ModePicker) mRootView.findViewById(R.id.mode_picker);
-                mModePicker.setVisibility(View.VISIBLE);
-                mModePicker.setOnModeChangeListener(this);
             }
         }
     }
@@ -2182,7 +2139,7 @@ public class VideoModule implements CameraModule,
         mReviewImage = (ImageView) mRootView.findViewById(R.id.review_image);
 
         mShutterButton = mActivity.getShutterButton();
-        mShutterButton.setImageResource(R.drawable.btn_shutter_video);
+        mShutterButton.setImageResource(R.drawable.btn_new_shutter);
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
 
@@ -2235,9 +2192,6 @@ public class VideoModule implements CameraModule,
         initializeZoom();
         if (!mIsVideoCaptureIntent) {
             mActivity.updateThumbnailView();
-            if (mModePicker != null) {
-                mModePicker.setCurrentMode(ModePicker.MODE_VIDEO);
-            }
         }
     }
 
@@ -2265,16 +2219,16 @@ public class VideoModule implements CameraModule,
         if (mParameters.isZoomSupported()) {
             mZoomValue = 0;
             setCameraParameters();
-            mZoomControl.setZoomIndex(0);
+//            mZoomControl.setZoomIndex(0);
         }
 
-        if (mIndicatorControlContainer != null) {
-            mIndicatorControlContainer.dismissSettingPopup();
+//        if (mIndicatorControlContainer != null) {
+//            mIndicatorControlContainer.dismissSettingPopup();
             CameraSettings.restorePreferences(mActivity, mPreferences,
                     mParameters);
-            mIndicatorControlContainer.reloadPreferences();
+//            mIndicatorControlContainer.reloadPreferences();
             onSharedPreferenceChanged();
-        }
+//        }
     }
 
     private boolean effectsActive() {
@@ -2314,23 +2268,6 @@ public class VideoModule implements CameraModule,
             } else {
                 setCameraParameters();
             }
-        }
-    }
-
-    @Override
-    public void onCameraPickerClicked(int cameraId) {
-        if (mPaused || mActivity.mPendingSwitchCameraId != -1) return;
-
-        mActivity.mPendingSwitchCameraId = cameraId;
-        if (ApiHelper.HAS_SURFACE_TEXTURE) {
-            Log.d(TAG, "Start to copy texture.");
-            // We need to keep a preview frame for the animation before
-            // releasing the camera. This will trigger onPreviewTextureCopied.
-            ((CameraScreenNail) mActivity.mCameraScreenNail).copyTexture();
-            // Disable all camera controls.
-            mSwitchingCamera = true;
-        } else {
-            switchCamera();
         }
     }
 
@@ -2441,28 +2378,6 @@ public class VideoModule implements CameraModule,
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         if (mSwitchingCamera) return true;
-
-        // Check if the popup window should be dismissed first.
-        if (m.getAction() == MotionEvent.ACTION_DOWN) {
-            float x = m.getX();
-            float y = m.getY();
-            // Dismiss the mode selection window if the ACTION_DOWN event is out
-            // of its view area.
-            if ((mModePicker != null) && !Util.pointInView(x, y, mModePicker)) {
-                mModePicker.dismissModeSelection();
-            }
-            // Check if the popup window is visible.
-            View popup = mIndicatorControlContainer.getActiveSettingPopup();
-            if (popup != null) {
-                // Let popup window, indicator control or preview frame handle the
-                // event by themselves. Dismiss the popup window if users touch on
-                // other areas.
-                if (!Util.pointInView(x, y, popup)
-                        && !Util.pointInView(x, y, mIndicatorControlContainer)) {
-                    mIndicatorControlContainer.dismissSettingPopup();
-                }
-            }
-        }
         return false;
     }
 
@@ -2481,15 +2396,11 @@ public class VideoModule implements CameraModule,
     }
 
     private void initializeZoom() {
-        mZoomControl = (ZoomControl) mRootView.findViewById(R.id.zoom_control);
         if (!mParameters.isZoomSupported()) return;
 
         mZoomMax = mParameters.getMaxZoom();
         // Currently we use immediate zoom for fast zooming to get better UX and
         // there is no plan to take advantage of the smooth zoom.
-        mZoomControl.setZoomMax(mZoomMax);
-        mZoomControl.setZoomIndex(mParameters.getZoom());
-        mZoomControl.setOnZoomChangeListener(new ZoomChangeListener());
     }
 
     private void initializeVideoSnapshot() {
@@ -2509,7 +2420,7 @@ public class VideoModule implements CameraModule,
     void showVideoSnapshotUI(boolean enabled) {
         if (Util.isVideoSnapshotSupported(mParameters) && !mIsVideoCaptureIntent) {
             mPreviewFrameLayout.showBorder(enabled);
-            mIndicatorControlContainer.enableZoom(!enabled);
+//            mIndicatorControlContainer.enableZoom(!enabled);
             mShutterButton.setEnabled(!enabled);
         }
     }
@@ -2773,6 +2684,11 @@ public class VideoModule implements CameraModule,
     @Override
     public boolean updateStorageHintOnResume() {
         return true;
+    }
+
+    // required by OnPreferenceChangedListener
+    @Override
+    public void onCameraPickerClicked(int cameraId) {
     }
 
 }

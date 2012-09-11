@@ -16,6 +16,7 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true" android:drawable="@drawable/btn_shutter_pressed" />
+    <item android:state_activated="true" android:drawable="@drawable/btn_shutter_activated" />
     <item android:drawable="@drawable/btn_shutter_default" />
 </selector>
 
