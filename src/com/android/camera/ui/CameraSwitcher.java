@@ -31,7 +31,7 @@ public class CameraSwitcher extends ScrollerView {
 
     private static final String TAG = "CAM_Switcher";
 
-    private static final long FLING_DURATION = 250;
+    private static final long FLING_DURATION = 300;
 
     private static final int MSG_SNAP = 1;
     private static final int MSG_SET_CAM = 2;
@@ -45,7 +45,7 @@ public class CameraSwitcher extends ScrollerView {
 
     private LinearLayout mContent;
     private CameraSwitchListener mListener;
-    private int mCurrentIndex;
+    private int mCurrentModule;
     private int mChildSize;
     private int mOffset;
     private boolean mHorizontal = true;
@@ -59,7 +59,7 @@ public class CameraSwitcher extends ScrollerView {
                 break;
             case MSG_SET_CAM:
                 if (mListener != null) {
-                    mListener.onCameraSelected(mCurrentIndex);
+                    mListener.onCameraSelected(mCurrentModule);
                 }
                 break;
             }
@@ -123,11 +123,10 @@ public class CameraSwitcher extends ScrollerView {
 
 
     public void setCurrentModule(int i) {
-        mContent.getChildAt(mCurrentIndex).setEnabled(true);
-        mCurrentIndex = i;
-        mContent.getChildAt(mCurrentIndex).setEnabled(false);
+        int oldModule = mCurrentModule;
+        mCurrentModule = i;
+        enable(oldModule, mCurrentModule);
         reposition();
-
     }
 
     public void setSwitchListener(CameraSwitchListener l) {
@@ -155,6 +154,7 @@ public class CameraSwitcher extends ScrollerView {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        if (!changed) return;
         // child width
         int n = mContent.getChildCount();
         if (mHorizontal) {
@@ -194,9 +194,9 @@ public class CameraSwitcher extends ScrollerView {
 
     private void reposition() {
         if (mHorizontal) {
-            scrollTo(mCurrentIndex * mChildSize, 0);
+            smoothScrollTo(convertModuleView(mCurrentModule) * mChildSize, 0);
         } else {
-            scrollTo(0, (mContent.getChildCount() - 1 - mCurrentIndex) * mChildSize);
+            smoothScrollTo(0, convertModuleView(mCurrentModule) * mChildSize);
         }
     }
 
@@ -207,14 +207,27 @@ public class CameraSwitcher extends ScrollerView {
             final int centerpos = cx / mChildSize;
             if (mHorizontal) {
                 smoothScrollTo(centerpos * mChildSize, 0);
-                mCurrentIndex = centerpos;
             } else {
                 smoothScrollTo(0, centerpos * mChildSize);
-                // top to bottom
-                mCurrentIndex = mContent.getChildCount() - 1 - centerpos;
             }
-            mHandler.sendEmptyMessageDelayed(MSG_SET_CAM, 100);
+            int oldModule = mCurrentModule;
+            mCurrentModule = convertModuleView(centerpos);
+            if (oldModule != mCurrentModule) {
+                enable(oldModule, mCurrentModule);
+                mHandler.sendEmptyMessageDelayed(MSG_SET_CAM, 100);
+            }
         }
     }
 
+    private void enable(int oldModule, int newModule) {
+        mContent.getChildAt(convertModuleView(oldModule)).setEnabled(true);
+        mContent.getChildAt(convertModuleView(newModule)).setEnabled(false);
+    }
+
+    /**
+     * converts to/from module index from/to child index
+     */
+    private int convertModuleView(int moduleIndex) {
+        return (mHorizontal ? moduleIndex : (mContent.getChildCount() - moduleIndex - 1));
+    }
 }
