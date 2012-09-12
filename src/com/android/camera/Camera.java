@@ -98,6 +98,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 CameraSettings.KEY_ISO,
                 CameraSettings.KEY_TIMER_MODE,
                 CameraSettings.KEY_BURST_MODE,
+                CameraSettings.KEY_JPEG,
                 CameraSettings.KEY_ANTIBANDING,
                 CameraSettings.KEY_REDEYE_REDUCTION,
                 CameraSettings.KEY_AUTOEXPOSURE
@@ -2274,8 +2275,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
 
         // Set JPEG quality.
-        int jpegQuality = CameraProfile.getJpegEncodingQualityParameter(mCameraId,
-                CameraProfile.QUALITY_HIGH);
+        int jpegQuality = Integer.parseInt(mPreferences.getString(CameraSettings.KEY_JPEG, getString(R.string.pref_camera_jpeg_default)));
+
         mParameters.setJpegQuality(jpegQuality);
 
         // For the following settings, we need to check if the settings are
