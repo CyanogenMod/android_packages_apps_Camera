@@ -64,6 +64,7 @@ public class CameraSettings {
     public static final String KEY_AUTOEXPOSURE = "pref_camera_autoexposure_key";
     public static final String KEY_ANTIBANDING = "pref_camera_antibanding_key";
     public static final String KEY_FOCUS_TIME = "pref_camera_focus_key";
+    public static final String KEY_BURST_MODE = "pref_camera_burst_key";
     public static final String KEY_ISO = "pref_camera_iso_key";
     public static final String KEY_REDEYE_REDUCTION = "pref_camera_redeyereduction_key";
 
@@ -189,6 +190,7 @@ public class CameraSettings {
         ListPreference videoFlashMode =
                 group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
         ListPreference videoEffect = group.findPreference(KEY_VIDEO_EFFECT);
+        ListPreference burstMode = group.findPreference(KEY_BURST_MODE);
         ListPreference iso = group.findPreference(KEY_ISO);
 
         // Since the screen could be loaded from different resources, we need
@@ -233,6 +235,8 @@ public class CameraSettings {
             filterUnsupportedOptions(group,
                     iso, mParameters.getSupportedIsoValues());
         }
+
+        if (burstMode != null) burstMode.setValueIndex(4);
 
         qcomInitPreferences(group);
     }

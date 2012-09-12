@@ -259,6 +259,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
     private long mStorageSpace;
     private byte[] mJpegImageData;
 
+    // Burst mode
+    private int mBurstShotsDone = 0;
+    private boolean mBurstShotInProgress = false;
+
     // These latency time are for the CameraLatency test.
     public long mAutoFocusTime;
     public long mShutterLag;
@@ -953,6 +957,10 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Log.v(TAG, "mJpegCallbackFinishTime = "
                     + mJpegCallbackFinishTime + "ms");
             mJpegPictureCallbackTime = 0;
+
+            if (mSnapshotOnIdle && mBurstShotsDone > 0) {	
+                mHandler.post(mDoSnapRunnable);
+            }
         }
     }
 
@@ -1408,6 +1416,19 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 CameraSettings.KEY_EXPOSURE,
                 CameraSettings.KEY_SCENE_MODE};
 
+        final String[] OTHER_SETTING_KEYS = {
+                CameraSettings.KEY_RECORD_LOCATION,
+                CameraSettings.KEY_POWER_SHUTTER,
+                CameraSettings.KEY_PICTURE_SIZE,
+                CameraSettings.KEY_FOCUS_MODE,
+                CameraSettings.KEY_BURST_MODE,
+                CameraSettings.KEY_FOCUS_TIME,
+                CameraSettings.KEY_COLOR_EFFECT,
+                CameraSettings.KEY_ISO,
+                CameraSettings.KEY_REDEYE_REDUCTION,
+                CameraSettings.KEY_AUTOEXPOSURE,
+                CameraSettings.KEY_ANTIBANDING};
+
         CameraPicker.setImageResourceId(R.drawable.ic_switch_photo_facing_holo_light);
         mIndicatorControlContainer.initialize(this, mPreferenceGroup,
                 mParameters.isZoomSupported(),
@@ -1627,6 +1648,8 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void onShutterButtonClick() {
+        int nbBurstShots = Integer.valueOf(mPreferences.getString(CameraSettings.KEY_BURST_MODE, "1"));
+
         if (mPaused || collapseCameraControls()
                 || (mCameraState == SWITCHING_CAMERA)
                 || (mCameraState == PREVIEW_STOPPED)) return;
@@ -1651,6 +1674,14 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
         mSnapshotOnIdle = false;
         mFocusManager.doSnap();
+        mBurstShotsDone++;
+        if (mBurstShotsDone == nbBurstShots) {
+            mBurstShotsDone = 0;	
+            mSnapshotOnIdle = false;
+        } else if (mSnapshotOnIdle == false) {
+            // queue a new shot until we done all our shots
+            mSnapshotOnIdle = true;
+        }
     }
 
     private void installIntentFilter() {
@@ -2016,7 +2047,7 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         CameraSettings.setVideoMode(mParameters, false);
         mCameraDevice.setParameters(mParameters);
 
-        if (mSnapshotOnIdle) {
+        if (mSnapshotOnIdle && mBurstShotsDone > 0) {
             mHandler.post(mDoSnapRunnable);
         }
     }
