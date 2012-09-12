@@ -175,6 +175,11 @@ public class CameraActivity extends ActivityBase
 
     @Override
     protected void onFullScreenChanged(boolean full) {
+        if (full) {
+            showUI();
+        } else {
+            hideUI();
+        }
         super.onFullScreenChanged(full);
         mCurrentModule.onFullScreenChanged(full);
     }
