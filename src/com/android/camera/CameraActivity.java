@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +32,8 @@ import android.widget.ImageView;
 import com.android.camera.ui.CameraSwitcher;
 import com.android.gallery3d.util.LightCycleHelper;
 
+import java.util.HashSet;
+
 public class CameraActivity extends ActivityBase
         implements CameraSwitcher.CameraSwitchListener {
     private static final int PHOTO_PANORAMA_INDEX = 3; // LightCycle enabled?
@@ -40,6 +43,8 @@ public class CameraActivity extends ActivityBase
     private CameraSwitcher mSwitcher;
     private Drawable[] mDrawables;
     private int mSelectedModule;
+    private View mEventGroup;
+    private HashSet<View> mDispatched;
 
     private static final String TAG = "CAM_activity";
 
@@ -53,10 +58,12 @@ public class CameraActivity extends ActivityBase
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
+        mDispatched = new HashSet<View>();
         setContentView(R.layout.camera_main);
         mFrame =(FrameLayout) findViewById(R.id.main_content);
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
         mSwitcher = (CameraSwitcher) findViewById(R.id.camera_switcher);
+        mEventGroup = findViewById(R.id.event_group);
         mDrawables = new Drawable[DRAW_IDS.length];
         for (int i = 0; i < DRAW_IDS.length; i++) {
             Drawable d = getResources().getDrawable(DRAW_IDS[i]);
@@ -239,17 +246,43 @@ public class CameraActivity extends ActivityBase
         // some custom logic to feed both switcher and shutter
         boolean res = mCurrentModule.dispatchTouchEvent(m);
         if (!res) {
-            res |= ((mSwitcher.getVisibility() == View.VISIBLE)
-                    && isInside(m, mShutter) && mShutter.dispatchTouchEvent(m));
-            res |= super.dispatchTouchEvent(m);
+            // try switcher and shutter first
+            boolean front = tryDispatch(m, mShutter);
+            front |= tryDispatch(m, mSwitcher);
+            return front || mEventGroup.dispatchTouchEvent(m);
         }
         return res;
+    }
+
+    private boolean tryDispatch(MotionEvent m, View v) {
+        if ((m.getActionMasked() == MotionEvent.ACTION_DOWN)
+                && isInside(m, v)) {
+            mDispatched.add(v);
+            return v.dispatchTouchEvent(transformEvent(m, v));
+        } else {
+            if (mDispatched.contains(v)) {
+                boolean res = v.dispatchTouchEvent(transformEvent(m, v));
+                if (MotionEvent.ACTION_UP == m.getActionMasked()
+                        || MotionEvent.ACTION_CANCEL == m.getActionMasked()) {
+                    mDispatched.remove(v);
+                }
+                return res;
+            }
+            return false;
+        }
     }
 
     private boolean isInside(MotionEvent evt, View v) {
         return (evt.getX() >= v.getLeft() && evt.getX() < v.getRight()
                 && evt.getY() >= v.getTop() && evt.getY() < v.getBottom());
     }
+
+    private MotionEvent transformEvent(MotionEvent m, View v) {
+        MotionEvent r = MotionEvent.obtain(m);
+        r.offsetLocation(- v.getLeft(), - v.getTop());
+        return r;
+    }
+
 
     // Preview texture has been copied. Now camera can be released and the
     // animation can be started.

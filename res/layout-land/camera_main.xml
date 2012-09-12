@@ -13,16 +13,24 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <include layout="@layout/gl_root_group"/>
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
     <FrameLayout
-        android:id="@+id/main_content"
+        android:id="@+id/event_group"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+
+        <include layout="@layout/gl_root_group" />
+
+        <FrameLayout
+            android:id="@+id/main_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
     <com.android.camera.ShutterButton
         android:id="@+id/shutter_button"
         android:layout_width="wrap_content"
@@ -34,10 +42,12 @@
         android:focusable="true"
         android:scaleType="center"
         android:src="@drawable/btn_new_shutter" />
+
     <com.android.camera.ui.CameraSwitcher
         android:id="@+id/camera_switcher"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_marginRight="6dip" />
+
 </RelativeLayout>
