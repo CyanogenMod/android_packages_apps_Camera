@@ -113,4 +113,10 @@
             camera:title="@string/pref_camera_redeyereduction_title"
             camera:entries="@array/pref_camera_redeyereduction_entries"
             camera:entryValues="@array/pref_camera_redeyereduction_entryvalues" />
+     <ListPreference
+            camera:key="pref_camera_burst_key"
+            camera:defaultValue="@string/pref_camera_burst_entry_off"
+            camera:title="@string/pref_camera_burst_title"
+            camera:entries="@array/pref_camera_burst_mode_entries"
+            camera:entryValues="@array/pref_camera_burst_mode_values" />
 </PreferenceGroup>
