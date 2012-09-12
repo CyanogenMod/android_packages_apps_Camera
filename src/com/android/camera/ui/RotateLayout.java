@@ -185,6 +185,10 @@ public class RotateLayout extends ViewGroup implements Rotatable {
         requestLayout();
     }
 
+    public int getOrientation() {
+        return mOrientation;
+    }
+
     @Override
     public ViewParent invalidateChildInParent(int[] location, Rect r) {
         if (!ApiHelper.HAS_VIEW_TRANSFORM_PROPERTIES && mOrientation != 0) {

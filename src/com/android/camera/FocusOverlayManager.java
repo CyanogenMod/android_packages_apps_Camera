@@ -137,6 +137,7 @@ public class FocusOverlayManager {
 
     public void setFocusRenderer(FocusRenderer renderer) {
         mFocusRenderer = renderer;
+        mInitialized = (mMatrix != null);
     }
 
     public void setParameters(Parameters parameters) {
@@ -178,7 +179,7 @@ public class FocusOverlayManager {
             // coordinates. In tap focus, the inverted matrix converts the UI
             // coordinates to driver coordinates.
             matrix.invert(mMatrix);
-            mInitialized = true;
+            mInitialized = (mFocusRenderer != null);
         }
     }
 

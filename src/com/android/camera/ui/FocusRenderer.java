@@ -79,9 +79,25 @@ public class FocusRenderer extends OverlayRenderer
     }
 
     public void setFocus(int x, int y) {
-        mFocusX = x;
-        mFocusY = y;
-        setCircle();
+        switch(mOverlay.getOrientation()) {
+        case 0:
+            mFocusX = x;
+            mFocusY = y;
+            break;
+        case 180:
+            mFocusX = getWidth() - x;
+            mFocusY = getHeight() - y;
+            break;
+        case 90:
+            mFocusX = getWidth() - y;
+            mFocusY = x;
+            break;
+        case 270:
+            mFocusX = y ;
+            mFocusY = getHeight() - x;
+            break;
+        }
+        setCircle(mFocusX, mFocusY);
     }
 
     public int getSize() {
@@ -104,14 +120,14 @@ public class FocusRenderer extends OverlayRenderer
         mCenterY = (b - t) / 2;
         mFocusX = mCenterX;
         mFocusY = mCenterY;
-        setCircle();
+        setCircle(mFocusX, mFocusY);
     }
 
-    private void setCircle() {
-        mCircle.set(mFocusX - mCircleSize, mFocusY - mCircleSize,
-                mFocusX + mCircleSize, mFocusY + mCircleSize);
-        mDial.set(mFocusX - mCircleSize + 30, mFocusY - mCircleSize + 30,
-                mFocusX + mCircleSize - 30, mFocusY + mCircleSize - 30);
+    private void setCircle(int cx, int cy) {
+        mCircle.set(cx - mCircleSize, cy - mCircleSize,
+                cx + mCircleSize, cy + mCircleSize);
+        mDial.set(cx - mCircleSize + 30, cy - mCircleSize + 30,
+                cx + mCircleSize - 30, cy + mCircleSize - 30);
     }
 
     @Override
@@ -219,7 +235,7 @@ public class FocusRenderer extends OverlayRenderer
             mFocusX = mCenterX;
             mFocusY = mCenterY;
             mState = STATE_IDLE;
-            setCircle();
+            setCircle(mFocusX, mFocusY);
             mFocused = false;
         }
     }
