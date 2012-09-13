@@ -493,54 +493,54 @@
 
     <!-- Camera Preferences Color effect dialog box entries -->
     <string-array name="pref_camera_coloreffect_entries" translatable="false">
-        <item>@string/pref_camera_coloreffect_entry_none</item>
-        <item>@string/pref_camera_coloreffect_entry_mono</item>
-        <item>@string/pref_camera_coloreffect_entry_sepia</item>
-        <item>@string/pref_camera_coloreffect_entry_negative</item>
-        <item>@string/pref_camera_coloreffect_entry_solarize</item>
-        <item>@string/pref_camera_coloreffect_entry_posterize</item>
-        <item>@string/pref_camera_coloreffect_entry_aqua</item>
-        <item>@string/pref_camera_coloreffect_entry_emboss</item>
-        <item>@string/pref_camera_coloreffect_entry_sketch</item>
-        <item>@string/pref_camera_coloreffect_entry_neon</item>
-        <item>@string/pref_camera_coloreffect_entry_pastel</item>
-        <item>@string/pref_camera_coloreffect_entry_mosaic</item>
-        <item>@string/pref_camera_coloreffect_entry_redtint</item>
-        <item>@string/pref_camera_coloreffect_entry_bluetint</item>
         <item>@string/pref_camera_coloreffect_entry_greentint</item>
+        <item>@string/pref_camera_coloreffect_entry_bluetint</item>
+        <item>@string/pref_camera_coloreffect_entry_redtint</item>
+        <item>@string/pref_camera_coloreffect_entry_mosaic</item>
+        <item>@string/pref_camera_coloreffect_entry_pastel</item>
+        <item>@string/pref_camera_coloreffect_entry_neon</item>
+        <item>@string/pref_camera_coloreffect_entry_sketch</item>
+        <item>@string/pref_camera_coloreffect_entry_emboss</item>
+        <item>@string/pref_camera_coloreffect_entry_aqua</item>
+        <item>@string/pref_camera_coloreffect_entry_posterize</item>
+        <item>@string/pref_camera_coloreffect_entry_solarize</item>
+        <item>@string/pref_camera_coloreffect_entry_negative</item>
+        <item>@string/pref_camera_coloreffect_entry_sepia</item>
+        <item>@string/pref_camera_coloreffect_entry_mono</item>
+        <item>@string/pref_camera_coloreffect_entry_none</item>
     </string-array>
 
     <string-array name="pref_camera_coloreffect_entryvalues" translatable="false">
-        <item>none</item>
-        <item>mono</item>
-        <item>sepia</item>
-        <item>negative</item>
-        <item>solarize</item>
-        <item>posterize</item>
-        <item>aqua</item>
-        <item>emboss</item>
-        <item>sketch</item>
-        <item>neon</item>
-        <item>pastel</item>
-        <item>mosaic</item>
-        <item>red-tint</item>
-        <item>blue-tint</item>
         <item>green-tint</item>
+        <item>blue-tint</item>
+        <item>red-tint</item>
+        <item>mosaic</item>
+        <item>pastel</item>
+        <item>neon</item>
+        <item>sketch</item>
+        <item>emboss</item>
+        <item>aqua</item>
+        <item>posterize</item>
+        <item>solarize</item>
+        <item>negative</item>
+        <item>sepia</item>
+        <item>mono</item>
+        <item>none</item>
     </string-array>
 
     <!-- Camera Preferences Anti Banding dialog box entries -->
      <string-array name="pref_camera_antibanding_entries">
-         <item>@string/pref_camera_antibanding_entry_0</item>
-         <item>@string/pref_camera_antibanding_entry_1</item>
-         <item>@string/pref_camera_antibanding_entry_2</item>
          <item>@string/pref_camera_antibanding_entry_3</item>
+         <item>@string/pref_camera_antibanding_entry_2</item>
+         <item>@string/pref_camera_antibanding_entry_1</item>
+         <item>@string/pref_camera_antibanding_entry_0</item>
      </string-array>
 
      <string-array name="pref_camera_antibanding_entryvalues">
-         <item>off</item>
-         <item>50hz</item>
-         <item>60hz</item>
          <item>auto</item>
+         <item>60hz</item>
+         <item>50hz</item>
+         <item>off</item>
      </string-array>
 
     <!-- Camera Preferences Auto Exposure dialog box entries -->
