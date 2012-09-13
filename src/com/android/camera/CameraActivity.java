@@ -21,7 +21,6 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,10 +36,10 @@ import java.util.HashSet;
 
 public class CameraActivity extends ActivityBase
         implements CameraSwitcher.CameraSwitchListener {
-    private static final int VIDEO_MODULE_INDEX      = 0;
-    private static final int PHOTO_MODULE_INDEX      = 1;
-    private static final int PANORAMA_MODULE_INDEX   = 2;
-    private static final int LIGHTCYCLE_MODULE_INDEX = 3;
+    public static final int VIDEO_MODULE_INDEX = 0;
+    public static final int PHOTO_MODULE_INDEX = 1;
+    public static final int PANORAMA_MODULE_INDEX = 2;
+    public static final int LIGHTCYCLE_MODULE_INDEX = 3;
 
     CameraModule mCurrentModule;
     private FrameLayout mFrame;
@@ -116,18 +115,18 @@ public class CameraActivity extends ActivityBase
             closeModule(mCurrentModule);
             mSelectedModule = i;
             switch (i) {
-            case 0:
-                mCurrentModule = new VideoModule();
-                break;
-            case 1:
-                mCurrentModule = new PhotoModule();
-                break;
-            case 2:
-                mCurrentModule = new PanoramaModule();
-                break;
-            case 3:
-                mCurrentModule = LightCycleHelper.createPanoramaModule();
-                break;
+                case VIDEO_MODULE_INDEX:
+                    mCurrentModule = new VideoModule();
+                    break;
+                case PHOTO_MODULE_INDEX:
+                    mCurrentModule = new PhotoModule();
+                    break;
+                case PANORAMA_MODULE_INDEX:
+                    mCurrentModule = new PanoramaModule();
+                    break;
+                case LIGHTCYCLE_MODULE_INDEX:
+                    mCurrentModule = LightCycleHelper.createPanoramaModule();
+                    break;
             }
             openModule(mCurrentModule, wasPanorama);
         }
@@ -166,6 +165,11 @@ public class CameraActivity extends ActivityBase
 
     public void showSwitcher() {
         mSwitcher.setVisibility(View.VISIBLE);
+    }
+
+    public void switchToModule(int moduleIndex) {
+        mSwitcher.setCurrentModule(moduleIndex);
+        onCameraSelected(moduleIndex);
     }
 
     @Override

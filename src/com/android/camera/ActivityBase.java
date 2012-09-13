@@ -651,7 +651,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     protected void onSingleTapUp(View view, int x, int y) {
     }
 
-    protected void setSwipingEnabled(boolean enabled) {
+    public void setSwipingEnabled(boolean enabled) {
         mAppBridge.setSwipingEnabled(enabled);
     }
 
