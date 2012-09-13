@@ -1037,7 +1037,9 @@ public class VideoModule implements CameraModule,
 
     @Override
     public void onUserInteraction() {
-        if (!mMediaRecorderRecording) keepScreenOnAwhile();
+        if (!mMediaRecorderRecording && !mActivity.isFinishing()) {
+            keepScreenOnAwhile();
+        }
     }
 
     @Override

@@ -1026,7 +1026,7 @@ public class VideoCamera extends ActivityBase
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
-        if (!mMediaRecorderRecording) keepScreenOnAwhile();
+        if (!mMediaRecorderRecording && !isFinishing()) keepScreenOnAwhile();
     }
 
     @Override

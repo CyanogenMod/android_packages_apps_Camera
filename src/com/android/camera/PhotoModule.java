@@ -2352,7 +2352,7 @@ public class PhotoModule
 
     @Override
     public void onUserInteraction() {
-        keepScreenOnAwhile();
+        if (!mActivity.isFinishing()) keepScreenOnAwhile();
     }
 
     private void resetScreenOn() {
