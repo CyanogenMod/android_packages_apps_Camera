@@ -18,7 +18,7 @@ package com.android.camera.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.util.Log;
+import android.view.MotionEvent;
 
 public abstract class OverlayRenderer implements RenderOverlay.Renderer {
 
@@ -32,6 +32,17 @@ public abstract class OverlayRenderer implements RenderOverlay.Renderer {
     public void setVisible(boolean vis) {
         mVisible = vis;
         update();
+    }
+
+    // default does not handle touch
+    @Override
+    public boolean handlesTouch() {
+        return false;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent evt) {
+        return false;
     }
 
     public abstract void onDraw(Canvas canvas);

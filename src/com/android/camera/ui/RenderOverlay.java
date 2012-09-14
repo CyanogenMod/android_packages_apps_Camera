@@ -19,6 +19,8 @@ package com.android.camera.ui;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -30,6 +32,8 @@ public class RenderOverlay extends RotateLayout {
 
     interface Renderer {
 
+        public boolean handlesTouch();
+        public boolean onTouchEvent(MotionEvent evt);
         public void setOverlay(RenderOverlay overlay);
         public void layout(int left, int top, int right, int bottom);
         public void draw(Canvas canvas);
@@ -39,17 +43,25 @@ public class RenderOverlay extends RotateLayout {
     private RenderView mRenderView;
     private List<Renderer> mClients;
 
+    // reverse list of touch clients
+    private List<Renderer> mTouchClients;
+    private int[] mPosition = new int[2];
+
     public RenderOverlay(Context context, AttributeSet attrs) {
         super(context, attrs);
         mRenderView = new RenderView(context);
         addView(mRenderView, new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT));
         mClients = new ArrayList<Renderer>(10);
+        mTouchClients = new ArrayList<Renderer>(10);
     }
 
     public void addRenderer(Renderer renderer) {
         mClients.add(renderer);
         renderer.setOverlay(this);
+        if (renderer.handlesTouch()) {
+            mTouchClients.add(0, renderer);
+        }
     }
 
     public void addRenderer(int pos, Renderer renderer) {
@@ -66,6 +78,29 @@ public class RenderOverlay extends RotateLayout {
         return mClients.size();
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent m) {
+        return false;
+    }
+
+    public boolean directDispatchTouch(MotionEvent m) {
+        MotionEvent m1 = MotionEvent.obtain(m);
+        m1.setLocation(m.getX() - mPosition[0], m.getY() - mPosition[1]);
+        return super.dispatchTouchEvent(m1);
+    }
+
+    private void adjustPosition() {
+        getLocationInWindow(mPosition);
+    }
+
+    public int getWindowPositionX() {
+        return mPosition[0];
+    }
+
+    public int getWindowPositionY() {
+        return mPosition[1];
+    }
+
     private class RenderView extends View {
 
         public RenderView(Context context) {
@@ -74,7 +109,20 @@ public class RenderOverlay extends RotateLayout {
         }
 
         @Override
+        public boolean onTouchEvent(MotionEvent evt) {
+            if (mTouchClients != null) {
+                boolean res = false;
+                for (Renderer client : mTouchClients) {
+                    res |= client.onTouchEvent(evt);
+                }
+                return res;
+            }
+            return false;
+        }
+
+        @Override
         public void layout(int left, int top, int right, int bottom) {
+            adjustPosition();
             super.layout(left,  top, right, bottom);
             if (mClients == null) return;
             for (Renderer renderer : mClients) {
