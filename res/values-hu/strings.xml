@@ -204,4 +204,32 @@
     <string name="pref_camera_focus_entry_40">40 mp</string>
     <string name="pref_camera_focus_entry_infinit">végtelen</string>
 
+    <!-- Settings screen, Timer mode title -->
+    <string name="pref_camera_timer_title">Időzítő</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_timer_entry_0">Ki</string>
+    <string name="pref_camera_timer_entry_10">10mp</string>
+    <string name="pref_camera_timer_entry_20">20mp</string>
+    <string name="pref_camera_timer_entry_30">30mp</string>
+    <string name="pref_camera_timer_entry_40">40mp</string>
+    <string name="pref_camera_timer_entry_50">50mp</string>
+    <string name="pref_camera_timer_entry_60">60mp</string>
+
+    <!-- Settings screen, Burst mode title -->
+    <string name="pref_camera_burst_title">Sorozatfelvétel</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_off">Ki</string>
+    <string name="pref_camera_burst_entry_5">5 kép</string>
+    <string name="pref_camera_burst_entry_10">10 kép</string>
+    <string name="pref_camera_burst_entry_15">15 kép</string>
+    <string name="pref_camera_burst_entry_20">20 kép</string>
+
+    <!-- Settings screen, JPEG dialog radio button choices -->
+    <string name="pref_camera_jpeg_entry_super">Kiváló</string>
+    <string name="pref_camera_jpeg_entry_high">Jó</string>
+    <string name="pref_camera_jpeg_entry_medium">Normál</string>
+    <string name="pref_camera_jpeg_entry_low">Gyenge</string>
+
 </resources>
