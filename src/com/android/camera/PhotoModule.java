@@ -52,10 +52,10 @@ import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -177,7 +177,7 @@ public class PhotoModule
     private RenderOverlay mRenderOverlay;
     private Rotatable mReviewCancelButton;
     private Rotatable mReviewDoneButton;
-    private View mReviewRetakeButton;
+//    private View mReviewRetakeButton;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -1690,13 +1690,27 @@ public class PhotoModule
 
     private void initializeControlByIntent() {
         if (mIsImageCaptureIntent) {
+            mActivity.hideSwitcher();
             // Cannot use RotateImageView for "done" and "cancel" button because
             // the tablet layout uses RotateLayout, which cannot be cast to
             // RotateImageView.
             mReviewDoneButton = (Rotatable) mRootView.findViewById(R.id.btn_done);
             mReviewCancelButton = (Rotatable) mRootView.findViewById(R.id.btn_cancel);
-            mReviewRetakeButton = mRootView.findViewById(R.id.btn_retake);
-            mRootView.findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
+            
+            ((View) mReviewCancelButton).setVisibility(View.VISIBLE);
+
+            ((View) mReviewDoneButton).setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onReviewDoneClicked(v);
+                }
+            });
+            ((View) mReviewCancelButton).setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onReviewCancelClicked(v);
+                }
+            });
 
             // Not grayed out upon disabled, to make the follow-up fade-out
             // effect look smooth. Note that the review done button in tablet
@@ -2251,14 +2265,14 @@ public class PhotoModule
         if (mIsImageCaptureIntent) {
             Util.fadeOut(mShutterButton);
 
-            Util.fadeIn(mReviewRetakeButton);
+//            Util.fadeIn(mReviewRetakeButton);
             Util.fadeIn((View) mReviewDoneButton);
         }
     }
 
     private void hidePostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            Util.fadeOut(mReviewRetakeButton);
+//            Util.fadeOut(mReviewRetakeButton);
             Util.fadeOut((View) mReviewDoneButton);
 
             Util.fadeIn(mShutterButton);
@@ -2432,6 +2446,11 @@ public class PhotoModule
         // Set the preview frame aspect ratio according to the picture size.
         Size size = mParameters.getPictureSize();
         mPreviewFrameLayout.setAspectRatio((double) size.width / size.height);
+    }
+
+    @Override
+    public boolean needsSwitcher() {
+        return !mIsImageCaptureIntent;
     }
 
 }

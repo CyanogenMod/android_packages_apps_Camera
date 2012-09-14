@@ -19,4 +19,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <include layout="@layout/preview_module_frame"/>
+    <include layout="@layout/review_module_control"/>
 </FrameLayout>

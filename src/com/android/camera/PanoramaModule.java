@@ -1244,4 +1244,9 @@ public class PanoramaModule implements CameraModule,
     public boolean collapseCameraControls() {
         return false;
     }
+
+    @Override
+    public boolean needsSwitcher() {
+        return true;
+    }
 }

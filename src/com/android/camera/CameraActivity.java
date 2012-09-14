@@ -151,12 +151,12 @@ public class CameraActivity extends ActivityBase
     }
 
     public void hideUI() {
-        mSwitcher.setVisibility(View.GONE);
+        hideSwitcher();
         mShutter.setVisibility(View.GONE);
     }
 
     public void showUI() {
-        mSwitcher.setVisibility(View.VISIBLE);
+        showSwitcher();
         mShutter.setVisibility(View.VISIBLE);
     }
 
@@ -165,7 +165,9 @@ public class CameraActivity extends ActivityBase
     }
 
     public void showSwitcher() {
-        mSwitcher.setVisibility(View.VISIBLE);
+        if (mCurrentModule.needsSwitcher()) {
+            mSwitcher.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

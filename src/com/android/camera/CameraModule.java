@@ -64,4 +64,6 @@ public interface CameraModule {
 
     public boolean collapseCameraControls();
 
+    public boolean needsSwitcher();
+
 }

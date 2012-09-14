@@ -2693,4 +2693,9 @@ public class VideoModule implements CameraModule,
     public void onCameraPickerClicked(int cameraId) {
     }
 
+    @Override
+    public boolean needsSwitcher() {
+        return true;
+    }
+
 }
