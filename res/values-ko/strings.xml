@@ -42,8 +42,7 @@
     <string name="pref_video_quality_title" msgid="8245379279801096922">"동영상 화질"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"고화질"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"저화질"</string>
-    <!-- no translation found for pref_video_time_lapse_frame_interval_title (6245716906744079302) -->
-    <skip />
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"시간 경과"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"카메라 설정"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"캠코더 설정"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"사진 크기"</string>
@@ -126,16 +125,10 @@
     <string name="accessibility_review_retake" msgid="830348126446319954">"리뷰용 사진/동영상 다시 촬영"</string>
     <string name="capital_on" msgid="5491353494964003567">"사용"</string>
     <string name="capital_off" msgid="7231052688467970897">"사용 안함"</string>
-    <!-- no translation found for time_lapse_seconds (2105521458391118041) -->
-    <skip />
-    <!-- no translation found for time_lapse_minutes (7738520349259013762) -->
-    <skip />
-    <!-- no translation found for time_lapse_hours (1776453661704997476) -->
-    <skip />
-    <!-- no translation found for time_lapse_interval_set (2486386210951700943) -->
-    <skip />
-    <!-- no translation found for set_time_interval (2970567717633813771) -->
-    <skip />
-    <!-- no translation found for set_time_interval_help (6665849510484821483) -->
-    <skip />
+    <string name="time_lapse_seconds" msgid="2105521458391118041">"초"</string>
+    <string name="time_lapse_minutes" msgid="7738520349259013762">"분"</string>
+    <string name="time_lapse_hours" msgid="1776453661704997476">"시간"</string>
+    <string name="time_lapse_interval_set" msgid="2486386210951700943">"완료"</string>
+    <string name="set_time_interval" msgid="2970567717633813771">"시간 간격 설정"</string>
+    <string name="set_time_interval_help" msgid="6665849510484821483">"시간 경과 기능을 사용하지 않고 있습니다. 시간 간격을 설정하려면 \'사용\'으로 변경해 주세요."</string>
 </resources>
