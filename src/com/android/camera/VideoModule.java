@@ -54,6 +54,7 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -1676,7 +1677,6 @@ public class VideoModule implements CameraModule,
 
         Util.fadeOut(mShutterButton);
 
-        Util.fadeIn(mReviewRetakeButton);
         Util.fadeIn((View) mReviewDoneButton);
         Util.fadeIn(mReviewPlayButton);
 
@@ -1689,7 +1689,6 @@ public class VideoModule implements CameraModule,
         enableCameraControls(true);
 
         Util.fadeOut((View) mReviewDoneButton);
-        Util.fadeOut(mReviewRetakeButton);
         Util.fadeOut(mReviewPlayButton);
 
         Util.fadeIn(mShutterButton);
@@ -2110,14 +2109,36 @@ public class VideoModule implements CameraModule,
 
     private void initializeControlByIntent() {
         if (mIsVideoCaptureIntent) {
+            mActivity.hideSwitcher();
             // Cannot use RotateImageView for "done" and "cancel" button because
             // the tablet layout uses RotateLayout, which cannot be cast to
             // RotateImageView.
             mReviewDoneButton = (Rotatable) mRootView.findViewById(R.id.btn_done);
             mReviewCancelButton = (Rotatable) mRootView.findViewById(R.id.btn_cancel);
             mReviewPlayButton = (RotateImageView) mRootView.findViewById(R.id.btn_play);
-            mReviewRetakeButton = mRootView.findViewById(R.id.btn_retake);
-            mRootView.findViewById(R.id.btn_cancel).setVisibility(View.VISIBLE);
+
+            ((View) mReviewCancelButton).setVisibility(View.VISIBLE);
+
+            ((View) mReviewDoneButton).setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onReviewDoneClicked(v);
+                }
+            });
+            ((View) mReviewCancelButton).setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onReviewCancelClicked(v);
+                }
+            });
+
+            ((View) mReviewPlayButton).setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onReviewPlayClicked(v);
+                }
+            });
+
 
             // Not grayed out upon disabled, to make the follow-up fade-out
             // effect look smooth. Note that the review done button in tablet
@@ -2695,7 +2716,7 @@ public class VideoModule implements CameraModule,
 
     @Override
     public boolean needsSwitcher() {
-        return true;
+        return !mIsVideoCaptureIntent;
     }
 
 }

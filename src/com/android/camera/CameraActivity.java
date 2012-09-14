@@ -92,7 +92,8 @@ public class CameraActivity extends ActivityBase
         }
 
         mSwitcher.setSwitchListener(this);
-        if (MediaStore.INTENT_ACTION_VIDEO_CAMERA.equals(getIntent().getAction())) {
+        if (MediaStore.INTENT_ACTION_VIDEO_CAMERA.equals(getIntent().getAction())
+                || MediaStore.ACTION_VIDEO_CAPTURE.equals(getIntent().getAction())) {
             mCurrentModule = new VideoModule();
             mSelectedModule = VIDEO_MODULE_INDEX;
         } else {

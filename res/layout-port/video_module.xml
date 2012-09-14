@@ -20,4 +20,5 @@
     android:layout_width="match_parent">
     <include layout="@layout/preview_module_frame_video"/>
     <include layout="@layout/bg_replacement_training_message"/>
+    <include layout="@layout/review_module_control"/>
 </RelativeLayout>
