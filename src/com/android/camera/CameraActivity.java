@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -36,7 +37,11 @@ import java.util.HashSet;
 
 public class CameraActivity extends ActivityBase
         implements CameraSwitcher.CameraSwitchListener {
-    private static final int PHOTO_PANORAMA_INDEX = 3; // LightCycle enabled?
+    private static final int VIDEO_MODULE_INDEX      = 0;
+    private static final int PHOTO_MODULE_INDEX      = 1;
+    private static final int PANORAMA_MODULE_INDEX   = 2;
+    private static final int LIGHTCYCLE_MODULE_INDEX = 3;
+
     CameraModule mCurrentModule;
     private FrameLayout mFrame;
     private ShutterButton mShutter;
@@ -70,7 +75,7 @@ public class CameraActivity extends ActivityBase
             mDrawables[i] = d;
         }
         for (int i = 0; i < mDrawables.length; i++) {
-            if (i == PHOTO_PANORAMA_INDEX && !LightCycleHelper.hasLightCycleCapture(this)) {
+            if (i == LIGHTCYCLE_MODULE_INDEX && !LightCycleHelper.hasLightCycleCapture(this)) {
                 continue; // not enabled, so don't add to UI
             }
             ImageView iv = new ImageView(this);
@@ -88,9 +93,14 @@ public class CameraActivity extends ActivityBase
         }
 
         mSwitcher.setSwitchListener(this);
-        mCurrentModule = new PhotoModule();
+        if (MediaStore.INTENT_ACTION_VIDEO_CAMERA.equals(getIntent().getAction())) {
+            mCurrentModule = new VideoModule();
+            mSelectedModule = VIDEO_MODULE_INDEX;
+        } else {
+            mCurrentModule = new PhotoModule();
+            mSelectedModule = PHOTO_MODULE_INDEX;
+        }
         mCurrentModule.init(this, mFrame, true);
-        mSelectedModule = 1;
         mSwitcher.setCurrentModule(mSelectedModule);
     }
 
