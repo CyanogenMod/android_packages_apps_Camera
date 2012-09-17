@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -49,6 +50,7 @@ public class CameraSwitcher extends ScrollerView {
     private int mChildSize;
     private int mOffset;
     private boolean mHorizontal = true;
+    private boolean mTouchEnabled;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -94,6 +96,20 @@ public class CameraSwitcher extends ScrollerView {
         mChildSize = 100;
         mOffset = 100;
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent m) {
+        if (mTouchEnabled) {
+            return super.dispatchTouchEvent(m);
+        } else {
+            return false;
+        }
+    }
+
+    public void enableTouch(boolean enable) {
+        mTouchEnabled = enable;
+    }
+
 
     private void updateOrientation() {
         Configuration config = getContext().getResources().getConfiguration();

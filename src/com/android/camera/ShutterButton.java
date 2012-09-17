@@ -18,6 +18,7 @@ package com.android.camera;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.widget.ImageView;
 
 /**
@@ -26,6 +27,9 @@ import android.widget.ImageView;
  * pressed state changes.
  */
 public class ShutterButton extends ImageView {
+
+    private boolean mTouchEnabled = true;
+
     /**
      * A callback to be invoked when a ShutterButton's pressed state changes.
      */
@@ -48,6 +52,19 @@ public class ShutterButton extends ImageView {
 
     public void setOnShutterButtonListener(OnShutterButtonListener listener) {
         mListener = listener;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent m) {
+        if (mTouchEnabled) {
+            return super.dispatchTouchEvent(m);
+        } else {
+            return false;
+        }
+    }
+
+    public void enableTouch(boolean enable) {
+        mTouchEnabled = enable;
     }
 
     /**
