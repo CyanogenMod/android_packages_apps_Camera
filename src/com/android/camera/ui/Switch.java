@@ -61,6 +61,7 @@ public class Switch extends CompoundButton {
     private Drawable mTrackDrawable;
     private int mThumbTextPadding;
     private int mSwitchMinWidth;
+    private int mSwitchTextMaxWidth;
     private int mSwitchPadding;
     private CharSequence mTextOn;
     private CharSequence mTextOff;
@@ -127,6 +128,7 @@ public class Switch extends CompoundButton {
         mTextOff = res.getString(R.string.capital_off);
         mThumbTextPadding = res.getDimensionPixelSize(R.dimen.thumb_text_padding);
         mSwitchMinWidth = res.getDimensionPixelSize(R.dimen.switch_min_width);
+        mSwitchTextMaxWidth = res.getDimensionPixelSize(R.dimen.switch_text_max_width);
         mSwitchPadding = res.getDimensionPixelSize(R.dimen.switch_padding);
         setSwitchTextAppearance(context, android.R.style.TextAppearance_Holo_Small);
 
@@ -155,15 +157,18 @@ public class Switch extends CompoundButton {
 
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         if (mOnLayout == null) {
-            mOnLayout = makeLayout(mTextOn);
+            mOnLayout = makeLayout(mTextOn, mSwitchTextMaxWidth);
         }
         if (mOffLayout == null) {
-            mOffLayout = makeLayout(mTextOff);
+            mOffLayout = makeLayout(mTextOff, mSwitchTextMaxWidth);
         }
 
         mTrackDrawable.getPadding(mTempRect);
-        final int maxTextWidth = Math.max(mOnLayout.getWidth(), mOffLayout.getWidth());
+        final int maxTextWidth = Math.min(mSwitchTextMaxWidth,
+                Math.max(mOnLayout.getWidth(), mOffLayout.getWidth()));
         final int switchWidth = Math.max(mSwitchMinWidth,
                 maxTextWidth * 2 + mThumbTextPadding * 4 + mTempRect.left + mTempRect.right);
         final int switchHeight = mTrackDrawable.getIntrinsicHeight();
@@ -175,8 +180,9 @@ public class Switch extends CompoundButton {
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         final int measuredHeight = getMeasuredHeight();
+        final int measuredWidth = getMeasuredWidth();
         if (measuredHeight < switchHeight) {
-            setMeasuredDimension(getMeasuredWidth(), switchHeight);
+            setMeasuredDimension(measuredWidth, switchHeight);
         }
     }
 
@@ -190,10 +196,14 @@ public class Switch extends CompoundButton {
         }
     }
 
-    private Layout makeLayout(CharSequence text) {
-        return new StaticLayout(text, mTextPaint,
-                (int) Math.ceil(Layout.getDesiredWidth(text, mTextPaint)),
-                Layout.Alignment.ALIGN_NORMAL, 1.f, 0, true);
+    private Layout makeLayout(CharSequence text, int maxWidth) {
+        int actual_width = (int) Math.ceil(Layout.getDesiredWidth(text, mTextPaint));
+        StaticLayout l = new StaticLayout(text, 0, text.length(), mTextPaint,
+                actual_width,
+                Layout.Alignment.ALIGN_NORMAL, 1.f, 0, true,
+                TextUtils.TruncateAt.END,
+                (int) Math.min(actual_width, maxWidth));
+        return l;
     }
 
     /**
@@ -407,7 +417,7 @@ public class Switch extends CompoundButton {
 
         Layout switchText = getTargetCheckedState() ? mOnLayout : mOffLayout;
 
-        canvas.translate((thumbLeft + thumbRight) / 2 - switchText.getWidth() / 2,
+        canvas.translate((thumbLeft + thumbRight) / 2 - switchText.getEllipsizedWidth() / 2,
                 (switchInnerTop + switchInnerBottom) / 2 - switchText.getHeight() / 2);
         switchText.draw(canvas);
 

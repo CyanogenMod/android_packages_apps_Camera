@@ -44,6 +44,7 @@
     <dimen name="thumbnail_size">67dp</dimen>
     <dimen name="switch_padding">16dp</dimen>
     <dimen name="switch_min_width">96dp</dimen>
+    <dimen name="switch_text_max_width">44dp</dimen>
     <dimen name="thumb_text_padding">12dp</dimen>
     <dimen name="thumb_text_size">14sp</dimen>
     <dimen name="setting_popup_right_margin_large">8dp</dimen>
