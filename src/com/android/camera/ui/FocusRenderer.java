@@ -117,7 +117,7 @@ public class FocusRenderer extends OverlayRenderer
     }
 
     public int getSize() {
-        return mCircleSize;
+        return 2 * mCircleSize;
     }
 
     private int getRandomAngle() {
