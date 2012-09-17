@@ -29,6 +29,7 @@ public class PieItem {
 
     private View mView;
     private int level;
+    private float mCenter;
     private float start;
     private float sweep;
     private float animate;
@@ -45,6 +46,8 @@ public class PieItem {
         mEnabled = true;
         setAnimationAngle(getAnimationAngle());
         setAlpha(getAlpha());
+        start = -1;
+        mCenter = -1;
     }
 
     public boolean hasItems() {
@@ -119,6 +122,15 @@ public class PieItem {
         sweep = sw;
         inner = inside;
         outer = outside;
+    }
+
+    public void setFixedSlice(float center, float sweep) {
+        mCenter = center;
+        this.sweep = sweep;
+    }
+
+    public float getCenter() {
+        return mCenter;
     }
 
     public float getStart() {

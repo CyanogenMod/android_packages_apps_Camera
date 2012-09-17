@@ -42,12 +42,10 @@ public class PieController {
     protected static final int MODE_PHOTO = 0;
     protected static final int MODE_VIDEO = 1;
 
-    private static int sPickerResId;
-
     private CameraActivity mActivity;
-    private PreferenceGroup mPreferenceGroup;
-    private OnPreferenceChangedListener mListener;
-    private PieRenderer mRenderer;
+    protected PreferenceGroup mPreferenceGroup;
+    protected OnPreferenceChangedListener mListener;
+    protected PieRenderer mRenderer;
     private List<IconListPreference> mPreferences;
     private Map<IconListPreference, PieItem> mPreferenceMap;
     private Map<IconListPreference, String> mOverrides;
@@ -66,56 +64,15 @@ public class PieController {
         mItemSize = activity.getResources().getDimensionPixelSize(R.dimen.pie_view_size);
     }
 
-    public static void setCameraPickerResourceId(int id) {
-        sPickerResId = id;
-    }
-
-    public void initialize(PreferenceGroup group,
-            boolean isZoomSupported, String[] secondLevelKeys,
-            String[] secondLevelOtherSettingKeys) {
+    public void initialize(PreferenceGroup group) {
         mRenderer.clearItems();
         setPreferenceGroup(group);
-        addControls(secondLevelKeys, secondLevelOtherSettingKeys);
     }
 
     public void onSettingChanged() {
         if (mListener != null) {
             mListener.onSharedPreferenceChanged();
         }
-    }
-
-    protected void addControls(String[] keys, String[] otherSettingKeys) {
-        if (keys != null) {
-            for (int i = 0; i < keys.length; i++) {
-                if (i == keys.length / 2) {
-                    // sneak in camera picker in the middle
-                    initializeCameraPicker();
-                }
-                IconListPreference pref =
-                        (IconListPreference) mPreferenceGroup.findPreference(keys[i]);
-                if (pref != null) {
-                    addItem(pref);
-                }
-            }
-        }
-    }
-
-    protected void initializeCameraPicker() {
-        PieItem item = makeItem(sPickerResId);
-        item.getView().setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // Find the index of next camera.
-                ListPreference pref = mPreferenceGroup.findPreference(CameraSettings.KEY_CAMERA_ID);
-                int index = pref.findIndexOfValue(pref.getValue());
-                CharSequence[] values = pref.getEntryValues();
-                index = (index + 1) % values.length;
-                int newCameraId = Integer.parseInt((String) values[index]);
-                mListener.onCameraPickerClicked(newCameraId);
-            }
-        });
-        mRenderer.addItem(item);
     }
 
     protected void setCameraId(int cameraId) {
@@ -146,7 +103,10 @@ public class PieController {
         return new PieItem(view, 0);
     }
 
-    public void addItem(final IconListPreference pref) {
+    public void addItem(String prefKey, float center, float sweep) {
+        final IconListPreference pref =
+                (IconListPreference) mPreferenceGroup.findPreference(prefKey);
+        if (pref == null) return;
         int[] iconIds = pref.getLargeIconIds();
         int resid = -1;
         if (iconIds != null) {
@@ -158,6 +118,8 @@ public class PieController {
             resid = pref.getSingleIcon();
         }
         PieItem item = makeItem(resid);
+        // use center and sweep to determine layout
+        item.setFixedSlice(center, sweep);
         mRenderer.addItem(item);
         mPreferences.add(pref);
         mPreferenceMap.put(pref, item);
@@ -231,7 +193,6 @@ public class PieController {
         if (keyvalues.length % 2 != 0) {
             throw new IllegalArgumentException();
         }
-
         for (IconListPreference pref : mPreferenceMap.keySet()) {
             override(pref, keyvalues);
         }
@@ -251,6 +212,4 @@ public class PieController {
         }
         reloadPreference(pref);
     }
-
-
 }

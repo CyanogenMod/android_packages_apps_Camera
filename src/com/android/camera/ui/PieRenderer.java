@@ -178,11 +178,23 @@ public class PieRenderer extends OverlayRenderer {
         float emptyangle = PIE_SWEEP / 16;
         float sweep = (float) (PIE_SWEEP - 2 * emptyangle) / items.size();
         float angle = centerAngle - PIE_SWEEP / 2 + emptyangle + sweep / 2;
+        // check if we have custom geometry
+        // first item we find triggers custom sweep for all
+        // this allows us to re-use the path
+        for (PieItem item : items) {
+            if (item.getCenter() >= 0) {
+                sweep = item.getSweep();
+                break;
+            }
+        }
         Path path = makeSlice(getDegrees(0) - gap, getDegrees(sweep) + gap, outer, inner, mCenter);
         for (PieItem item : items) {
             // shared between items
             item.setPath(path);
             View view = item.getView();
+            if (item.getCenter() >= 0) {
+                angle = item.getCenter();
+            }
             if (view != null) {
                 view.measure(view.getLayoutParams().width,
                         view.getLayoutParams().height);
@@ -221,14 +233,11 @@ public class PieRenderer extends OverlayRenderer {
 
     /**
      * converts a
-     *
-     * @param angle from 0..PI to Android degrees (clockwise starting at 3
-     *        o'clock)
+     * @param angle from 0..PI to Android degrees (clockwise starting at 3 o'clock)
      * @return skia angle
      */
     private float getDegrees(double angle) {
         return (float) (360 - 180 * angle / Math.PI);
-//        return (float) (270 - 180 * angle / Math.PI);
     }
 
     @Override
@@ -251,7 +260,7 @@ public class PieRenderer extends OverlayRenderer {
         if (item.getView() != null) {
             Paint p = item.isSelected() ? mSelectedPaint : mNormalPaint;
             int state = canvas.save();
-            float r = getDegrees(item.getStartAngle()); // degrees(0)
+            float r = getDegrees(item.getStartAngle());
             canvas.rotate(r, mCenter.x, mCenter.y);
             canvas.drawPath(item.getPath(), p);
             canvas.restoreToCount(state);
@@ -391,6 +400,9 @@ public class PieRenderer extends OverlayRenderer {
         res.y = (float) Math.sqrt(x * x + y * y) + mTouchOffset;
         if (x != 0) {
             res.x = (float) Math.atan2(y,  x);
+            if (res.x < 0) {
+                res.x = (float) (2 * Math.PI + res.x);
+            }
         }
         return res;
     }

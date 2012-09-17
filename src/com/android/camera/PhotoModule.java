@@ -286,7 +286,7 @@ public class PhotoModule
     private FocusRenderer mFocusRenderer;
 
     private PieRenderer mPieRenderer;
-    private PieController mPieControl;
+    private PhotoController mPhotoControl;
 
     private String mSceneMode;
     private Toast mNotSelectableToast;
@@ -503,11 +503,11 @@ public class PhotoModule
         if (mPieRenderer == null) {
             mPieRenderer = new PieRenderer(mActivity);
             mRenderOverlay.addRenderer(mPieRenderer);
-            mPieControl = new PieController(mActivity, mPieRenderer);
-            mPieControl.setListener(this);
+            mPhotoControl = new PhotoController(mActivity, mPieRenderer);
+            mPhotoControl.setListener(this);
             mPieRenderer.setPieListener(this);
         }
-        initializePieControl();
+        initializePhotoControl();
         mRenderOverlay.requestLayout();
 
         // These depend on camera parameters.
@@ -520,23 +520,9 @@ public class PhotoModule
         showTapToFocusToastIfNeeded();
     }
 
-    private void initializePieControl() {
+    private void initializePhotoControl() {
         loadCameraPreferences();
-        final String[] SETTING_KEYS = {
-                CameraSettings.KEY_FLASH_MODE,
-                CameraSettings.KEY_EXPOSURE};
-        final String[] OTHER_SETTING_KEYS = {
-                CameraSettings.KEY_WHITE_BALANCE,
-                CameraSettings.KEY_SCENE_MODE,
-                CameraSettings.KEY_RECORD_LOCATION,
-                CameraSettings.KEY_PICTURE_SIZE,
-                CameraSettings.KEY_FOCUS_MODE};
-        PieController.setCameraPickerResourceId(
-                R.drawable.ic_switch_photo_facing_holo_light);
-
-        mPieControl.initialize(mPreferenceGroup,
-                mParameters.isZoomSupported(),
-                SETTING_KEYS, OTHER_SETTING_KEYS);
+        mPhotoControl.initialize(mPreferenceGroup);
         updateSceneModeUI();
 //        mIndicatorControlContainer.setListener(this);
     }
@@ -638,8 +624,8 @@ public class PhotoModule
                 mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
             }
         }
-        if (mPieControl != null) {
-            mPieControl.reloadPreferences();
+        if (mPhotoControl != null) {
+            mPhotoControl.reloadPreferences();
         }
     }
 
@@ -1381,9 +1367,9 @@ public class PhotoModule
 
     private void overrideCameraSettings(final String flashMode,
             final String whiteBalance, final String focusMode) {
-        if (mPieControl != null) {
+        if (mPhotoControl != null) {
 //            mPieControl.enableFilter(true);
-            mPieControl.overrideSettings(
+            mPhotoControl.overrideSettings(
                     CameraSettings.KEY_FLASH_MODE, flashMode,
                     CameraSettings.KEY_WHITE_BALANCE, whiteBalance,
                     CameraSettings.KEY_FOCUS_MODE, focusMode);
@@ -1839,7 +1825,7 @@ public class PhotoModule
         initializeFocusManager();
         initializeMiscControls();
         loadCameraPreferences();
-        initializePieControl();
+        initializePhotoControl();
 
         // from onResume()
         if (!mIsImageCaptureIntent) mActivity.updateThumbnailView();
@@ -2370,7 +2356,7 @@ public class PhotoModule
         Log.v(TAG, "Start to switch camera. id=" + mPendingSwitchCameraId);
         mCameraId = mPendingSwitchCameraId;
         mPendingSwitchCameraId = -1;
-        mPieControl.setCameraId(mCameraId);
+        mPhotoControl.setCameraId(mCameraId);
 
         // from onPause
         closeCamera();
@@ -2395,7 +2381,7 @@ public class PhotoModule
         mFocusManager.setParameters(mInitialParams);
         setupPreview();
         loadCameraPreferences();
-        initializePieControl();
+        initializePhotoControl();
 
         // from onResume
         setOrientationIndicator(mOrientationCompensation, false);
@@ -2475,7 +2461,7 @@ public class PhotoModule
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
             // TODO: reset zoom
         }
-        mPieControl.reloadPreferences();
+        mPhotoControl.reloadPreferences();
         CameraSettings.restorePreferences(mActivity, mPreferences,
                 mParameters);
         onSharedPreferenceChanged();

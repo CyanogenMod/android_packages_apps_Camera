@@ -333,5 +333,4 @@ public class CameraActivity extends ActivityBase
     public boolean isPanoramaActivity() {
         return (mCurrentModule instanceof PanoramaModule);
     }
-
 }

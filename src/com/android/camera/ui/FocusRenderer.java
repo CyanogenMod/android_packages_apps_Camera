@@ -46,6 +46,7 @@ public class FocusRenderer extends OverlayRenderer
     private static final int SCALING_UP_TIME = 1000;
     private static final int SCALING_DOWN_TIME = 200;
     private static final int DISAPPEAR_TIMEOUT = 200;
+    private static final int DIAL_HORIZONTAL = 157;
 
 
     private Paint mFocusPaint;
@@ -111,6 +112,7 @@ public class FocusRenderer extends OverlayRenderer
         mAnimation.reset();
         mFocusX = x;
         mFocusY = y;
+        mDialAngle = DIAL_HORIZONTAL;
         setCircle(x, y);
         setVisible(true);
         mFocused = false;
