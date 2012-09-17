@@ -1845,7 +1845,6 @@ public class PhotoModule
         // from initializeFirstTime()
         mShutterButton = mActivity.getShutterButton();
         mShutterButton.setOnShutterButtonListener(this);
-        mShutterButton.setVisibility(View.VISIBLE);
         initializeZoom();
         initOnScreenIndicator();
         updateOnScreenIndicators();

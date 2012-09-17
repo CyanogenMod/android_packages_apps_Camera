@@ -300,7 +300,7 @@ public class FocusOverlayManager {
     }
 
     public void onAutoFocusMoving(boolean moving) {
-        if (!isEnabled()) return;
+        if (!isEnabled() || !mInitialized) return;
         // Ignore if the camera has detected some faces.
         if (mFaceView != null && mFaceView.faceExists()) return;
 
