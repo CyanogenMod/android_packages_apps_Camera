@@ -18,18 +18,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <include layout="@layout/gl_root_group" />
+
     <FrameLayout
-        android:id="@+id/event_group"
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
-        <include layout="@layout/gl_root_group" />
-
-        <FrameLayout
-            android:id="@+id/main_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </FrameLayout>
+        android:layout_height="match_parent" />
 
     <com.android.camera.ShutterButton
         android:id="@+id/shutter_button"

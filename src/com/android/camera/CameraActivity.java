@@ -47,7 +47,6 @@ public class CameraActivity extends ActivityBase
     private CameraSwitcher mSwitcher;
     private Drawable[] mDrawables;
     private int mSelectedModule;
-    private View mEventGroup;
     private HashSet<View> mDispatched;
 
     private static final String TAG = "CAM_activity";
@@ -67,7 +66,6 @@ public class CameraActivity extends ActivityBase
         mFrame =(FrameLayout) findViewById(R.id.main_content);
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
         mSwitcher = (CameraSwitcher) findViewById(R.id.camera_switcher);
-        mEventGroup = findViewById(R.id.event_group);
         mDrawables = new Drawable[DRAW_IDS.length];
         for (int i = 0; i < DRAW_IDS.length; i++) {
             Drawable d = getResources().getDrawable(DRAW_IDS[i]);
@@ -262,17 +260,23 @@ public class CameraActivity extends ActivityBase
         // some custom logic to feed both switcher and shutter
         boolean res = mCurrentModule.dispatchTouchEvent(m);
         if (!res) {
+            mSwitcher.enableTouch(true);
+            mShutter.enableTouch(true);
             // try switcher and shutter first
             boolean front = tryDispatch(m, mShutter);
             front |= tryDispatch(m, mSwitcher);
-            return front || mEventGroup.dispatchTouchEvent(m);
+            // disable switcher and shutter before super call
+            mSwitcher.enableTouch(false);
+            mShutter.enableTouch(false);
+            return front || super.dispatchTouchEvent(m);
         }
         return res;
     }
 
     private boolean tryDispatch(MotionEvent m, View v) {
         if ((m.getActionMasked() == MotionEvent.ACTION_DOWN)
-                && isInside(m, v)) {
+                && isInside(m, v) && v.isEnabled()
+                && v.getVisibility() == View.VISIBLE) {
             mDispatched.add(v);
             return v.dispatchTouchEvent(transformEvent(m, v));
         } else {
