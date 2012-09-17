@@ -42,8 +42,7 @@
     <string name="pref_video_quality_title" msgid="8245379279801096922">"视频画质"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"高画质"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"低画质"</string>
-    <!-- no translation found for pref_video_time_lapse_frame_interval_title (6245716906744079302) -->
-    <skip />
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"延时"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"相机设置"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"摄像机设置"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"照片大小"</string>
@@ -126,16 +125,10 @@
     <string name="accessibility_review_retake" msgid="830348126446319954">"重拍"</string>
     <string name="capital_on" msgid="5491353494964003567">"打开"</string>
     <string name="capital_off" msgid="7231052688467970897">"关闭"</string>
-    <!-- no translation found for time_lapse_seconds (2105521458391118041) -->
-    <skip />
-    <!-- no translation found for time_lapse_minutes (7738520349259013762) -->
-    <skip />
-    <!-- no translation found for time_lapse_hours (1776453661704997476) -->
-    <skip />
-    <!-- no translation found for time_lapse_interval_set (2486386210951700943) -->
-    <skip />
-    <!-- no translation found for set_time_interval (2970567717633813771) -->
-    <skip />
-    <!-- no translation found for set_time_interval_help (6665849510484821483) -->
-    <skip />
+    <string name="time_lapse_seconds" msgid="2105521458391118041">"秒"</string>
+    <string name="time_lapse_minutes" msgid="7738520349259013762">"分钟"</string>
+    <string name="time_lapse_hours" msgid="1776453661704997476">"小时"</string>
+    <string name="time_lapse_interval_set" msgid="2486386210951700943">"完成"</string>
+    <string name="set_time_interval" msgid="2970567717633813771">"设置时间间隔"</string>
+    <string name="set_time_interval_help" msgid="6665849510484821483">"时间间隔功能已关闭，要设置时间间隔，请先开启该功能。"</string>
 </resources>
