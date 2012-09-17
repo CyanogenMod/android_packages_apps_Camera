@@ -702,7 +702,9 @@ public class PhotoModule
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         if (mCameraState == SWITCHING_CAMERA) return true;
-        boolean handled = mRenderOverlay.directDispatchTouch(m);
+        if (mRenderOverlay != null) {
+            mRenderOverlay.directDispatchTouch(m);
+        }
         return false;
     }
 
