@@ -208,6 +208,16 @@ public class CameraSwitcher extends ScrollerView {
         snap();
     }
 
+    @Override
+    protected void onOrthoDragFinished(View v) {
+        snap();
+    }
+
+    @Override
+    protected void onOrthoFling(View v, float velocity) {
+        snap();
+    }
+
     private void reposition() {
         if (mHorizontal) {
             smoothScrollTo(convertModuleView(mCurrentModule) * mChildSize, 0);

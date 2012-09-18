@@ -21,10 +21,12 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -48,6 +50,7 @@ public class CameraActivity extends ActivityBase
     private Drawable[] mDrawables;
     private int mSelectedModule;
     private HashSet<View> mDispatched;
+    private Dispatcher mDispatcher;
 
     private static final String TAG = "CAM_activity";
 
@@ -62,6 +65,7 @@ public class CameraActivity extends ActivityBase
     public void onCreate(Bundle state) {
         super.onCreate(state);
         mDispatched = new HashSet<View>();
+        mDispatcher = new Dispatcher();
         setContentView(R.layout.camera_main);
         mFrame =(FrameLayout) findViewById(R.id.main_content);
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
@@ -258,43 +262,23 @@ public class CameraActivity extends ActivityBase
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
-        // some custom logic to feed both switcher and shutter
-        boolean res = mCurrentModule.dispatchTouchEvent(m);
-        if (!res) {
-            mSwitcher.enableTouch(true);
+        boolean handled = false;
+        if ((m.getActionMasked() == MotionEvent.ACTION_DOWN) || mDispatcher.isActive()) {
             mShutter.enableTouch(true);
-            // try switcher and shutter first
-            boolean front = tryDispatch(m, mShutter);
-            front |= tryDispatch(m, mSwitcher);
-            // disable switcher and shutter before super call
-            mSwitcher.enableTouch(false);
+            mSwitcher.enableTouch(true);
+            handled = mDispatcher.dispatchTouchEvent(m);
             mShutter.enableTouch(false);
-            return front || super.dispatchTouchEvent(m);
+            mSwitcher.enableTouch(false);
         }
-        return res;
-    }
-
-    private boolean tryDispatch(MotionEvent m, View v) {
-        if ((m.getActionMasked() == MotionEvent.ACTION_DOWN)
-                && isInside(m, v) && v.isEnabled()
-                && v.getVisibility() == View.VISIBLE) {
-            mDispatched.add(v);
-            return v.dispatchTouchEvent(transformEvent(m, v));
-        } else {
-            if (mDispatched.contains(v)) {
-                boolean res = v.dispatchTouchEvent(transformEvent(m, v));
-                if (MotionEvent.ACTION_UP == m.getActionMasked()
-                        || MotionEvent.ACTION_CANCEL == m.getActionMasked()) {
-                    mDispatched.remove(v);
-                }
-                return res;
-            }
-            return false;
+        if (!handled) {
+            handled = mCurrentModule.dispatchTouchEvent(m);
         }
+        return handled || super.dispatchTouchEvent(m);
     }
 
     private boolean isInside(MotionEvent evt, View v) {
-        return (evt.getX() >= v.getLeft() && evt.getX() < v.getRight()
+        return (v.getVisibility() == View.VISIBLE
+                && evt.getX() >= v.getLeft() && evt.getX() < v.getRight()
                 && evt.getY() >= v.getTop() && evt.getY() < v.getBottom());
     }
 
@@ -333,4 +317,79 @@ public class CameraActivity extends ActivityBase
     public boolean isPanoramaActivity() {
         return (mCurrentModule instanceof PanoramaModule);
     }
+
+    private class Dispatcher {
+
+        private boolean mActive;
+        private int mDownX;
+        private int mSlop;
+        private boolean mDownInShutter;
+
+        public Dispatcher() {
+            mSlop = ViewConfiguration.get(CameraActivity.this).getScaledTouchSlop();
+            mActive = true;
+        }
+
+        public boolean isActive() {
+            return mActive;
+        }
+
+        public boolean dispatchTouchEvent(MotionEvent m) {
+            switch (m.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                mDownInShutter = isInside(m, mShutter);
+                if (mDownInShutter) {
+                    mDownX = (int) m.getX();
+                    sendTo(m, mShutter);
+                    mActive = true;
+                }
+                if (isInside(m, mSwitcher)) {
+                    sendTo(m, mSwitcher);
+                    mActive = true;
+                } else {
+                    mActive = false;
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (mDownInShutter) {
+                    if (Math.abs(m.getX() - mDownX) > mSlop) {
+                        // sliding switcher
+                        mDownInShutter = false;
+                        MotionEvent cancel = MotionEvent.obtain(m);
+                        cancel.setAction(MotionEvent.ACTION_CANCEL);
+                        sendTo(cancel, mShutter);
+                        sendTo(m, mSwitcher);
+                    } else {
+                        sendTo(m, mShutter);
+                        sendTo(m, mSwitcher);
+                    }
+                } else {
+                    sendTo(m, mSwitcher);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mDownInShutter) {
+                    sendTo(m, mShutter);
+                    MotionEvent cancel = MotionEvent.obtain(m);
+                    cancel.setAction(MotionEvent.ACTION_CANCEL);
+                    sendTo(cancel, mSwitcher);
+                } else {
+                    sendTo(m, mSwitcher);
+                }
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                if (mDownInShutter) {
+                    sendTo(m, mShutter);
+                }
+                sendTo(m, mSwitcher);
+                break;
+            }
+            return mActive;
+        }
+    }
+
+    private boolean sendTo(MotionEvent m, View v) {
+        return v.dispatchTouchEvent(transformEvent(m, v));
+    }
+
 }
