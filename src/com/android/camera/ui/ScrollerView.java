@@ -582,6 +582,9 @@ public class ScrollerView extends FrameLayout {
 
         case MotionEvent.ACTION_CANCEL:
         case MotionEvent.ACTION_UP:
+            if (mIsBeingDragged) {
+                onScrollUp();
+            }
             /* Release the drag */
             mIsBeingDragged = false;
             mIsOrthoDragged = false;
