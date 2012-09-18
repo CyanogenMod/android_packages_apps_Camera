@@ -121,4 +121,88 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Prebaci na fotografiju"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Prebaci na videozapis"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Prebaci na panoramski način"</string>
+
+    <!-- Additional CM strings -->
+
+    <!-- More Settings screen, power button title -->
+    <string name="pref_camera_power_shutter_title">Power shutter</string>
+
+    <!--Settings screen, Timer mode title -->
+    <string name="pref_camera_timer_title">Timer mod</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_timer_entry_0">Isklj.</string>
+    <string name="pref_camera_timer_entry_10">10s</string>
+    <string name="pref_camera_timer_entry_20">20s</string>
+    <string name="pref_camera_timer_entry_30">30s</string>
+    <string name="pref_camera_timer_entry_40">40s</string>
+    <string name="pref_camera_timer_entry_50">50s</string>
+    <string name="pref_camera_timer_entry_60">60s</string>
+
+    <!-- Settings screen, Burst mode title -->
+    <string name="pref_camera_burst_title">Burst mod</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_off">Isklj.</string>
+    <string name="pref_camera_burst_entry_5">5 slika</string>
+    <string name="pref_camera_burst_entry_10">10 slika</string>
+    <string name="pref_camera_burst_entry_15">15 slika</string>
+    <string name="pref_camera_burst_entry_20">20 slika</string>
+
+ <!-- Settings screen, JPEG dialog radio button choices -->
+    <string name="pref_camera_jpeg_entry_super">Super</string>
+    <string name="pref_camera_jpeg_entry_high">Visoka</string>
+    <string name="pref_camera_jpeg_entry_medium">Srednja</string>
+    <string name="pref_camera_jpeg_entry_low">Niska</string>
+
+
+<!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">Efekti</string>
+
+    <!-- Default color effect setting. -->
+    <string name="pref_camera_coloreffect_default" translatable="false">Nijedan</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">Nijedan</string>
+    <string name="pref_camera_coloreffect_entry_mono">Mono</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negativ</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Solarize</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Posterize</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Aqua</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Emboss</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Crtež</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mozaik</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Crveno</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Plavo</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Zeleno</string>
+
+    <string name="pref_camera_scenemode_entry_asd">ASD</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portret</string>
+    <string name="pref_camera_scenemode_entry_landscape">Priroda</string>
+    <string name="pref_camera_scenemode_entry_night_portrait">Noćni Portret</string>
+    <string name="pref_camera_scenemode_entry_theatre">Teatar</string>
+    <string name="pref_camera_scenemode_entry_beach">Plaža</string>
+    <string name="pref_camera_scenemode_entry_snow">Snijeg</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Mirna Slika</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Vatromet</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Svijeća</string>
+    <string name="pref_camera_scenemode_entry_flowers">Cvijeće</string>
+    <string name="pref_camera_scenemode_entry_ar">AR</string>
+
+    <!-- Other settings -->
+    <string name="pref_camera_focus_title">Trajanje fokusa</string>
+    <string name="pref_camera_focus_summary">Odaberite trajanje touch fokusa</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_focus_entry_10">10s</string>
+    <string name="pref_camera_focus_entry_15">15s</string>
+    <string name="pref_camera_focus_entry_20">20s</string>
+    <string name="pref_camera_focus_entry_30">30s</string>
+    <string name="pref_camera_focus_entry_40">40s</string>
+    <string name="pref_camera_focus_entry_infinit">Beskonačno</string>
+
 </resources>
