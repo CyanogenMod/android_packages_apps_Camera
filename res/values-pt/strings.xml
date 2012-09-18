@@ -172,4 +172,19 @@
     <string name="pref_camera_focus_title">Duração do toque para foco</string>
     <string name="pref_camera_focus_summary">Selecionar duração para toque para foco</string>
     <string name="pref_camera_focus_entry_infinit">infinito</string>
+    <string name="pref_camera_iso_entry_auto">Automático</string>
+    <string name="pref_camera_iso_entry_isodeblur">Automático (HJR)</string>
+    <string name="pref_camera_timer_title">Modo temporizador</string>
+    <string name="pref_camera_timer_entry_0">Desligado</string>
+    <string name="pref_camera_burst_title">Modo contínuo</string>
+    <string name="pref_camera_burst_entry_off">Desligado</string>
+    <string name="pref_camera_burst_entry_5">5 disparos</string>
+    <string name="pref_camera_burst_entry_10">10 disparos</string>
+    <string name="pref_camera_burst_entry_15">15 disparos</string>
+    <string name="pref_camera_burst_entry_20">20 disparos</string>
+    <string name="pref_camera_jpeg_entry_super">Excelente</string>
+    <string name="pref_camera_jpeg_entry_high">Alto</string>
+    <string name="pref_camera_jpeg_entry_medium">Médio</string>
+    <string name="pref_camera_jpeg_entry_low">Baixo</string>
+    <string name="pref_camera_antibanding_entry_3">Automático</string>
 </resources>
