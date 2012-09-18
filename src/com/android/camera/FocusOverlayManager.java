@@ -356,6 +356,8 @@ public class FocusOverlayManager {
         // Initialize variables.
         int focusWidth = mFocusRenderer.getSize();
         int focusHeight = mFocusRenderer.getSize();
+        if (focusWidth == 0 || mFocusRenderer.getWidth() == 0
+                || mFocusRenderer.getHeight() == 0) return;
         int previewWidth = mPreviewWidth;
         int previewHeight = mPreviewHeight;
         // Initialize mFocusArea.
