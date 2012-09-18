@@ -2193,13 +2193,8 @@ public class VideoModule implements CameraModule,
 
         // Change layout in response to configuration change
         LayoutInflater inflater = mActivity.getLayoutInflater();
-        LinearLayout appRoot = (LinearLayout) mRootView.findViewById(R.id.camera_app_root);
-        appRoot.setOrientation(
-                newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
-                ? LinearLayout.HORIZONTAL : LinearLayout.VERTICAL);
-        appRoot.removeAllViews();
-        inflater.inflate(R.layout.preview_frame_video, appRoot);
-        inflater.inflate(R.layout.camera_control, appRoot);
+        ((ViewGroup) mRootView).removeAllViews();
+        inflater.inflate(R.layout.video_module, (ViewGroup) mRootView);
 
         // from onCreate()
         initializeControlByIntent();
