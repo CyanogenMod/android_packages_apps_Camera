@@ -1,0 +1,11 @@
+Change-Id: I3932a970d60f587499b958d23329e29355775311
+Code-Review+2: Steve Kondik <shade@chemlab.org>
+Verified+1: Steve Kondik <shade@chemlab.org>
+Code-Review+1: Dmitriy Chermenev <chdiman86@gmail.com>
+Code-Review+1: Alexey Alexeevich <madzerling@gmail.com>
+Code-Review+1: Anatoly Nechaev <mr.prayer@gmail.com>
+Submitted-by: Steve Kondik <shade@chemlab.org>
+Submitted-at: Tue, 18 Sep 2012 02:06:35 -0400
+Reviewed-on: http://review.cyanogenmod.com/23341
+Project: CyanogenMod/android_packages_apps_Camera
+Branch: refs/heads/jellybean
