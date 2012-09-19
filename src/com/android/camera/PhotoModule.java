@@ -123,6 +123,10 @@ public class PhotoModule
     private static final int UPDATE_PARAM_PREFERENCE = 4;
     private static final int UPDATE_PARAM_ALL = -1;
 
+    // This is the timeout to keep the camera in onPause for the first time
+    // after screen on if the activity is started from secure lock screen.
+    private static final int KEEP_CAMERA_TIMEOUT = 1000; // ms
+
     // copied from Camera hierarchy
     private CameraActivity mActivity;
     private View mRootView;
@@ -1691,6 +1695,15 @@ public class PhotoModule
         // Wait the camera start up thread to finish.
         waitCameraStartUpThread();
 
+        // When camera is started from secure lock screen for the first time
+        // after screen on, the activity gets onCreate->onResume->onPause->onResume.
+        // To reduce the latency, keep the camera for a short time so it does
+        // not need to be opened again.
+        if (mCameraDevice != null && mActivity.isSecureCamera()
+                && ActivityBase.isFirstStartAfterScreenOn()) {
+            ActivityBase.resetFirstStartAfterScreenOn();
+            CameraHolder.instance().keep(KEEP_CAMERA_TIMEOUT);
+        }
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
