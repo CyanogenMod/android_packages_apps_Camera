@@ -42,7 +42,7 @@
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualité vidéo"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Élevée"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Faible"</string>
-    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Accéléré"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Intervalle de temps"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Paramètres appareil photo"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Mode Caméra"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Taille d\'image"</string>
@@ -130,5 +130,5 @@
     <string name="time_lapse_hours" msgid="1776453661704997476">"heures"</string>
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"OK"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Définir l\'intervalle de temps"</string>
-    <string name="set_time_interval_help" msgid="6665849510484821483">"La fonctionnalité d\'accéléré est désactivée. Veuillez l\'activer pour définir un intervalle."</string>
+    <string name="set_time_interval_help" msgid="6665849510484821483">"La fonctionnalité Time Lapse est désactivée. Veuillez l\'activer pour définir un intervalle."</string>
 </resources>
