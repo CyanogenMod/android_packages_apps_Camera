@@ -21,7 +21,6 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,8 +32,6 @@ import android.widget.ImageView;
 
 import com.android.camera.ui.CameraSwitcher;
 import com.android.gallery3d.util.LightCycleHelper;
-
-import java.util.HashSet;
 
 public class CameraActivity extends ActivityBase
         implements CameraSwitcher.CameraSwitchListener {
@@ -49,7 +46,6 @@ public class CameraActivity extends ActivityBase
     private CameraSwitcher mSwitcher;
     private Drawable[] mDrawables;
     private int mSelectedModule;
-    private HashSet<View> mDispatched;
     private Dispatcher mDispatcher;
 
     private static final String TAG = "CAM_activity";
@@ -64,7 +60,6 @@ public class CameraActivity extends ActivityBase
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
-        mDispatched = new HashSet<View>();
         mDispatcher = new Dispatcher();
         setContentView(R.layout.camera_main);
         mFrame =(FrameLayout) findViewById(R.id.main_content);

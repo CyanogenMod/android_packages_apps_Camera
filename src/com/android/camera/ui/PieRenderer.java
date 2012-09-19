@@ -268,13 +268,7 @@ public class PieRenderer extends OverlayRenderer {
             View view = item.getView();
             state = canvas.save();
             canvas.translate(view.getX(), view.getY());
-            if (!item.isEnabled()) {
-                p.setAlpha(64);
-            }
             view.draw(canvas);
-            if (!item.isEnabled()) {
-                p.setAlpha(0);
-            }
             canvas.restoreToCount(state);
         }
     }
@@ -363,7 +357,7 @@ public class PieRenderer extends OverlayRenderer {
         if (mCurrentItem != null) {
             mCurrentItem.setSelected(false);
         }
-        if (item != null) {
+        if (item != null && item.isEnabled()) {
             item.setSelected(true);
             mCurrentItem = item;
             if ((mCurrentItem != mOpenItem) && mCurrentItem.hasItems()) {
