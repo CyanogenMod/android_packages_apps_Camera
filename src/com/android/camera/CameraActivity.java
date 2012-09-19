@@ -260,6 +260,13 @@ public class CameraActivity extends ActivityBase
                 || super.onKeyUp(keyCode, event);
     }
 
+    public void cancelActivityTouchHandling() {
+        MotionEvent e = mDispatcher.getCancelEvent();
+        if (e != null) {
+            super.dispatchTouchEvent(e);
+        }
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         boolean handled = false;
@@ -321,13 +328,22 @@ public class CameraActivity extends ActivityBase
     private class Dispatcher {
 
         private boolean mActive;
-        private int mDownX;
+        private MotionEvent mDown;
         private int mSlop;
         private boolean mDownInShutter;
 
         public Dispatcher() {
             mSlop = ViewConfiguration.get(CameraActivity.this).getScaledTouchSlop();
             mActive = true;
+        }
+
+        public MotionEvent getCancelEvent() {
+            if (mDown != null) {
+                MotionEvent cancel = MotionEvent.obtain(mDown);
+                cancel.setAction(MotionEvent.ACTION_CANCEL);
+                return cancel;
+            }
+            return null;
         }
 
         public boolean isActive() {
@@ -339,8 +355,8 @@ public class CameraActivity extends ActivityBase
             case MotionEvent.ACTION_DOWN:
                 mActive = false;
                 mDownInShutter = isInside(m, mShutter);
+                mDown = m;
                 if (mDownInShutter) {
-                    mDownX = (int) m.getX();
                     sendTo(m, mShutter);
                     mActive = true;
                 }
@@ -351,7 +367,7 @@ public class CameraActivity extends ActivityBase
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mDownInShutter) {
-                    if (Math.abs(m.getX() - mDownX) > mSlop) {
+                    if (Math.abs(m.getX() - mDown.getX()) > mSlop) {
                         // sliding switcher
                         mDownInShutter = false;
                         MotionEvent cancel = MotionEvent.obtain(m);

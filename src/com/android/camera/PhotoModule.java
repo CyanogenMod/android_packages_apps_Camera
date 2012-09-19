@@ -2399,6 +2399,7 @@ public class PhotoModule
 
     @Override
     public void onPieOpened(int centerX, int centerY) {
+        mActivity.cancelActivityTouchHandling();
         mActivity.setSwipingEnabled(false);
         if (mFocusManager != null) {
             mFocusManager.setEnabled(false);
