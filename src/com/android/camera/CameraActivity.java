@@ -337,6 +337,7 @@ public class CameraActivity extends ActivityBase
         public boolean dispatchTouchEvent(MotionEvent m) {
             switch (m.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                mActive = false;
                 mDownInShutter = isInside(m, mShutter);
                 if (mDownInShutter) {
                     mDownX = (int) m.getX();
@@ -346,8 +347,6 @@ public class CameraActivity extends ActivityBase
                 if (isInside(m, mSwitcher)) {
                     sendTo(m, mSwitcher);
                     mActive = true;
-                } else {
-                    mActive = false;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
