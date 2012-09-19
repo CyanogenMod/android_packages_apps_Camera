@@ -42,7 +42,7 @@ public class PieController {
     protected static final int MODE_PHOTO = 0;
     protected static final int MODE_VIDEO = 1;
 
-    private CameraActivity mActivity;
+    protected CameraActivity mActivity;
     protected PreferenceGroup mPreferenceGroup;
     protected OnPreferenceChangedListener mListener;
     protected PieRenderer mRenderer;
