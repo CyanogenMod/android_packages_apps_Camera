@@ -125,8 +125,8 @@
     <string name="accessibility_review_retake" msgid="830348126446319954">"Сними поново у режиму прегледа"</string>
     <string name="capital_on" msgid="5491353494964003567">"УКЉУЧEНO"</string>
     <string name="capital_off" msgid="7231052688467970897">"ИСКЉУЧEНO"</string>
-    <string name="time_lapse_seconds" msgid="2105521458391118041">"секунде"</string>
-    <string name="time_lapse_minutes" msgid="7738520349259013762">"минути"</string>
+    <string name="time_lapse_seconds" msgid="2105521458391118041">"секунди"</string>
+    <string name="time_lapse_minutes" msgid="7738520349259013762">"минута"</string>
     <string name="time_lapse_hours" msgid="1776453661704997476">"сати"</string>
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Готово"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Подеси временски интервал"</string>
