@@ -130,5 +130,5 @@
     <string name="time_lapse_hours" msgid="1776453661704997476">"ure"</string>
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Klaar"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Stel tydinterval"</string>
-    <string name="set_time_interval_help" msgid="6665849510484821483">"Tydsverloop-kenmerk is af. Skakel dit aan om tydinterval te stel."</string>
+    <string name="set_time_interval_help" msgid="6665849510484821483">"Tydsverloop-kenmerk is af. Skakel dit aan om tydstussenpose te stel."</string>
 </resources>
