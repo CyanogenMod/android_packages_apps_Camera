@@ -183,7 +183,6 @@ public class PhotoModule
     private volatile SurfaceHolder mCameraSurfaceHolder;
 
     private RotateDialogController mRotateDialog;
-    private ModePicker mModePicker;
     private FaceView mFaceView;
     private RenderOverlay mRenderOverlay;
     private Rotatable mReviewCancelButton;
@@ -628,11 +627,6 @@ public class PhotoModule
         keepMediaProviderInstance();
         hidePostCaptureAlert();
 
-        if (!mIsImageCaptureIntent) {
-            if (mModePicker != null) {
-                mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
-            }
-        }
         if (mPhotoControl != null) {
             mPhotoControl.reloadPreferences();
         }
@@ -1759,6 +1753,7 @@ public class PhotoModule
 
     private void initializeControlByIntent() {
         if (mIsImageCaptureIntent) {
+
             mActivity.hideSwitcher();
             // Cannot use RotateImageView for "done" and "cancel" button because
             // the tablet layout uses RotateLayout, which cannot be cast to
@@ -1795,11 +1790,6 @@ public class PhotoModule
                 mActivity.mThumbnailView.enableFilter(false);
                 mActivity.mThumbnailView.setVisibility(View.VISIBLE);
                 mActivity.mThumbnailViewWidth = mActivity.mThumbnailView.getLayoutParams().width;
-
-                mModePicker = (ModePicker) mRootView.findViewById(R.id.mode_picker);
-                mModePicker.setVisibility(View.VISIBLE);
-//                mModePicker.setOnModeChangeListener(this);
-                mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
             }
         }
     }

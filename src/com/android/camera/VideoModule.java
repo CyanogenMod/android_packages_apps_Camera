@@ -1567,7 +1567,7 @@ public class VideoModule implements CameraModule,
     private void startVideoRecording() {
         Log.v(TAG, "startVideoRecording");
         mActivity.setSwipingEnabled(false);
-        mActivity.hideSwitcher();
+        mActivity.hideSwitcher(R.drawable.ic_switch_video_active);
 
         mActivity.updateStorageSpaceAndHint();
         if (mActivity.getStorageSpace() <= Storage.LOW_STORAGE_THRESHOLD) {
@@ -1664,7 +1664,6 @@ public class VideoModule implements CameraModule,
 //                mZoomControl.setVisibility(View.VISIBLE);
             }
         }
-        mShutterButton.setActivated(recording);
     }
 
     private void getThumbnail() {
@@ -2187,7 +2186,7 @@ public class VideoModule implements CameraModule,
         mReviewImage = (ImageView) mRootView.findViewById(R.id.review_image);
 
         mShutterButton = mActivity.getShutterButton();
-        mShutterButton.setImageResource(R.drawable.btn_new_shutter);
+        mShutterButton.setImageResource(R.drawable.btn_new_shutter_video);
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
 

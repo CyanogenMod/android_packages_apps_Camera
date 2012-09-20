@@ -110,7 +110,6 @@ public class CameraSwitcher extends ScrollerView {
         mTouchEnabled = enable;
     }
 
-
     private void updateOrientation() {
         Configuration config = getContext().getResources().getConfiguration();
         switch(config.orientation) {
@@ -136,7 +135,6 @@ public class CameraSwitcher extends ScrollerView {
         }
         super.setOrientation(orientation);
     }
-
 
     public void setCurrentModule(int i) {
         int oldModule = mCurrentModule;

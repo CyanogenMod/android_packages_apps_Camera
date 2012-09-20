@@ -43,6 +43,7 @@ public class CameraActivity extends ActivityBase
     CameraModule mCurrentModule;
     private FrameLayout mFrame;
     private ShutterButton mShutter;
+    private ImageView mShutterIcon;
     private CameraSwitcher mSwitcher;
     private Drawable[] mDrawables;
     private int mSelectedModule;
@@ -51,9 +52,9 @@ public class CameraActivity extends ActivityBase
     private static final String TAG = "CAM_activity";
 
     private static final int[] DRAW_IDS = {
-            R.drawable.ic_switch_video_holo_light,
-            R.drawable.ic_switch_camera_holo_light,
-            R.drawable.ic_switch_pan_holo_light,
+            R.drawable.ic_switch_video,
+            R.drawable.ic_switch_camera,
+            R.drawable.ic_switch_pan,
             R.drawable.ic_switch_photo_pan_holo_light
     };
 
@@ -64,6 +65,7 @@ public class CameraActivity extends ActivityBase
         setContentView(R.layout.camera_main);
         mFrame =(FrameLayout) findViewById(R.id.main_content);
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
+        mShutterIcon = (ImageView) findViewById(R.id.shutter_overlay);
         mSwitcher = (CameraSwitcher) findViewById(R.id.camera_switcher);
         mDrawables = new Drawable[DRAW_IDS.length];
         for (int i = 0; i < DRAW_IDS.length; i++) {
@@ -143,6 +145,17 @@ public class CameraActivity extends ActivityBase
         mFrame.removeAllViews();
     }
 
+    private void showShutterIcon(boolean show) {
+        showShutterIcon(show, DRAW_IDS[mSelectedModule]);
+    }
+
+    private void showShutterIcon(boolean show, int resid) {
+        if (show) {
+            mShutterIcon.setImageResource(resid);
+        }
+        mShutterIcon.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
     public ShutterButton getShutterButton() {
         return mShutter;
     }
@@ -150,6 +163,7 @@ public class CameraActivity extends ActivityBase
     public void hideUI() {
         hideSwitcher();
         mShutter.setVisibility(View.GONE);
+        mShutterIcon.setVisibility(View.GONE);
     }
 
     public void showUI() {
@@ -157,13 +171,21 @@ public class CameraActivity extends ActivityBase
         mShutter.setVisibility(View.VISIBLE);
     }
 
+    // hide the switcher and show the given shutter icon
+    public void hideSwitcher(int resid) {
+        mSwitcher.setVisibility(View.GONE);
+        showShutterIcon(true, resid);
+    }
+
     public void hideSwitcher() {
         mSwitcher.setVisibility(View.GONE);
+        showShutterIcon(true);
     }
 
     public void showSwitcher() {
         if (mCurrentModule.needsSwitcher()) {
             mSwitcher.setVisibility(View.VISIBLE);
+            showShutterIcon(false);
         }
     }
 
@@ -278,19 +300,6 @@ public class CameraActivity extends ActivityBase
         return handled || super.dispatchTouchEvent(m);
     }
 
-    private boolean isInside(MotionEvent evt, View v) {
-        return (v.getVisibility() == View.VISIBLE
-                && evt.getX() >= v.getLeft() && evt.getX() < v.getRight()
-                && evt.getY() >= v.getTop() && evt.getY() < v.getBottom());
-    }
-
-    private MotionEvent transformEvent(MotionEvent m, View v) {
-        MotionEvent r = MotionEvent.obtain(m);
-        r.offsetLocation(- v.getLeft(), - v.getTop());
-        return r;
-    }
-
-
     // Preview texture has been copied. Now camera can be released and the
     // animation can be started.
     @Override
@@ -400,6 +409,18 @@ public class CameraActivity extends ActivityBase
 
     private boolean sendTo(MotionEvent m, View v) {
         return v.dispatchTouchEvent(transformEvent(m, v));
+    }
+
+    private boolean isInside(MotionEvent evt, View v) {
+        return (v.getVisibility() == View.VISIBLE
+                && evt.getX() >= v.getLeft() && evt.getX() < v.getRight()
+                && evt.getY() >= v.getTop() && evt.getY() < v.getBottom());
+    }
+
+    private MotionEvent transformEvent(MotionEvent m, View v) {
+        MotionEvent r = MotionEvent.obtain(m);
+        r.offsetLocation(- v.getLeft(), - v.getTop());
+        return r;
     }
 
 }
