@@ -32,4 +32,7 @@
     <color name="holo_blue_light">#ff33b5e5</color>
     <color name="bright_foreground_disabled_holo_dark">#ff4c4c4c</color>
     <color name="bright_foreground_holo_dark">#fff3f3f3</color>
+    <color name="face_detect_start">#ffffffff</color>
+    <color name="face_detect_success">#ff50d060</color>
+    <color name="face_detect_fail">#ffd05060</color>
 </resources>
