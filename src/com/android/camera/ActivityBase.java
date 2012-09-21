@@ -66,6 +66,8 @@ public abstract class ActivityBase extends AbstractGalleryActivity
             "com.android.gallery3d.action.DELETE_PICTURE";
     private static final String INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE =
             "android.media.action.STILL_IMAGE_CAMERA_SECURE";
+    private static final String ACTION_IMAGE_CAPTURE_SECURE =
+            "android.media.action.IMAGE_CAPTURE_SECURE";
     // The intent extra for camera from secure lock screen. True if the gallery
     // should only show newly captured pictures. sSecureAlbumId does not
     // increment. This is used when switching between camera, camcorder, and
@@ -115,8 +117,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     // launched from the secure lock screen. The id should be the same when
     // switching between camera, camcorder, and panorama.
     protected static int sSecureAlbumId;
-    // True if the gallery should only show newly captured pictures or recorded
-    // videos.
+    // True if the camera is started from secure lock screen.
     protected boolean mSecureCamera;
     private static boolean sFirstStartAfterScreenOn = true;
 
@@ -218,10 +219,13 @@ public abstract class ActivityBase extends AbstractGalleryActivity
 
         // Check if this is in the secure camera mode.
         Intent intent = getIntent();
-        if (INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE.equals(intent.getAction())) {
+        String action = intent.getAction();
+        if (INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE.equals(action)) {
             mSecureCamera = true;
             // Use a new album when this is started from the lock screen.
             sSecureAlbumId++;
+        } else if (ACTION_IMAGE_CAPTURE_SECURE.equals(action)) {
+            mSecureCamera = true;
         } else {
             mSecureCamera = intent.getBooleanExtra(SECURE_CAMERA_EXTRA, false);
         }
@@ -500,17 +504,18 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         mCameraAppView = findViewById(R.id.camera_app_root);
         Bundle data = new Bundle();
         String path;
-        if (mSecureCamera) {
-            path = "/secure/all/" + sSecureAlbumId;
+        if (getPictures) {
+            if (mSecureCamera) {
+                path = "/secure/all/" + sSecureAlbumId;
+            } else {
+                path = "/local/all/" + MediaSetUtils.CAMERA_BUCKET_ID;
+            }
         } else {
-            path = "/local/all/";
-            // Intent mode does not show camera roll. Use 0 as a work around for
-            // invalid bucket id.
-            // TODO: add support of empty media set in gallery.
-            path += (getPictures ? MediaSetUtils.CAMERA_BUCKET_ID : "0");
+            path = "/local/all/0"; // Use 0 so gallery does not show anything.
         }
         data.putString(PhotoPage.KEY_MEDIA_SET_PATH, path);
         data.putString(PhotoPage.KEY_MEDIA_ITEM_PATH, path);
+        data.putBoolean(PhotoPage.KEY_SHOW_WHEN_LOCKED, mSecureCamera);
 
         // Send an AppBridge to gallery to enable the camera preview.
         mAppBridge = new MyAppBridge();
@@ -524,17 +529,18 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         mCameraAppView = findViewById(R.id.camera_app_root);
         Bundle data = new Bundle();
         String path;
-        if (mSecureCamera) {
-            path = "/secure/all/" + sSecureAlbumId;
+        if (getPictures) {
+            if (mSecureCamera) {
+                path = "/secure/all/" + sSecureAlbumId;
+            } else {
+                path = "/local/all/" + MediaSetUtils.CAMERA_BUCKET_ID;
+            }
         } else {
-            path = "/local/all/";
-            // Intent mode does not show camera roll. Use 0 as a work around for
-            // invalid bucket id.
-            // TODO: add support of empty media set in gallery.
-            path += (getPictures ? MediaSetUtils.CAMERA_BUCKET_ID : "0");
+            path = "/local/all/0"; // Use 0 so gallery does not show anything.
         }
         data.putString(PhotoPage.KEY_MEDIA_SET_PATH, path);
         data.putString(PhotoPage.KEY_MEDIA_ITEM_PATH, path);
+        data.putBoolean(PhotoPage.KEY_SHOW_WHEN_LOCKED, mSecureCamera);
 
         // Send an AppBridge to gallery to enable the camera preview.
         if (mAppBridge == null) {
