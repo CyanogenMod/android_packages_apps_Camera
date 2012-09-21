@@ -294,10 +294,11 @@ public class CameraActivity extends ActivityBase
             mShutter.enableTouch(false);
             mSwitcher.enableTouch(false);
         }
-        if (!handled) {
-            handled = mCurrentModule.dispatchTouchEvent(m);
-        }
-        return handled || super.dispatchTouchEvent(m);
+        return handled || mCurrentModule.dispatchTouchEvent(m);
+    }
+
+    public boolean superDispatchTouchEvent(MotionEvent m) {
+        return super.dispatchTouchEvent(m);
     }
 
     // Preview texture has been copied. Now camera can be released and the

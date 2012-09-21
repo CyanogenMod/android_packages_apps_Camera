@@ -57,10 +57,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.FrameLayout.LayoutParams;
 
 import com.android.camera.CameraManager.CameraProxy;
 import com.android.camera.ui.AbstractSettingPopup;
@@ -75,9 +75,9 @@ import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.TwoStateImageView;
-import com.android.camera.ui.ZoomControl;
-import com.android.gallery3d.common.ApiHelper;
+import com.android.camera.ui.ZoomRenderer;
 import com.android.gallery3d.app.CropImage;
+import com.android.gallery3d.common.ApiHelper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -297,6 +297,8 @@ public class PhotoModule
     private PieRenderer mPieRenderer;
     private PhotoController mPhotoControl;
 
+    private ZoomRenderer mZoomRenderer;
+
     private String mSceneMode;
     private Toast mNotSelectableToast;
 
@@ -307,6 +309,8 @@ public class PhotoModule
 
     CameraStartUpThread mCameraStartUpThread;
     ConditionVariable mStartPreviewPrerequisiteReady = new ConditionVariable();
+
+    private PreviewGestures mGestures;
 
     protected class CameraOpenThread extends Thread {
         @Override
@@ -516,6 +520,13 @@ public class PhotoModule
             mPhotoControl.setListener(this);
             mPieRenderer.setPieListener(this);
         }
+        if (mZoomRenderer == null) {
+            mZoomRenderer = new ZoomRenderer(mActivity);
+            mRenderOverlay.addRenderer(mZoomRenderer);
+        }
+        // this will handle gesture disambiguation and dispatching
+        mGestures = new PreviewGestures(mActivity, mRenderOverlay,
+                mZoomRenderer, mPieRenderer, mFocusManager);
         initializePhotoControl();
         mRenderOverlay.requestLayout();
 
@@ -633,7 +644,7 @@ public class PhotoModule
         }
     }
 
-    private class ZoomChangeListener implements ZoomControl.OnZoomChangedListener {
+    private class ZoomChangeListener implements ZoomRenderer.OnZoomChangedListener {
         @Override
         public void onZoomValueChanged(int index) {
             // Not useful to change zoom value when the activity is paused.
@@ -644,11 +655,30 @@ public class PhotoModule
             mParameters.setZoom(mZoomValue);
             mCameraDevice.setParametersAsync(mParameters);
         }
+
+        @Override
+        public void onZoomStart() {
+            if (mFocusManager != null) {
+                mFocusManager.setEnabled(false);
+            }
+        }
+
+        @Override
+        public void onZoomEnd() {
+            if (mFocusManager != null) {
+                mFocusManager.setEnabled(true);
+            }
+        }
     }
 
     private void initializeZoom() {
         if (!mParameters.isZoomSupported()) return;
         mZoomMax = mParameters.getMaxZoom();
+        // Currently we use immediate zoom for fast zooming to get better UX and
+        // there is no plan to take advantage of the smooth zoom.
+        mZoomRenderer.setZoomMax(mZoomMax);
+        mZoomRenderer.setZoomIndex(mParameters.getZoom());
+        mZoomRenderer.setOnZoomChangeListener(new ZoomChangeListener());
     }
 
     @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -675,7 +705,6 @@ public class PhotoModule
         }
     }
 
-
     @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void stopFaceDetection() {
@@ -692,8 +721,10 @@ public class PhotoModule
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         if (mCameraState == SWITCHING_CAMERA) return true;
-        if (mPopup == null && mRenderOverlay != null) {
-            mRenderOverlay.directDispatchTouch(m);
+        if (mPopup == null && mGestures != null && mRenderOverlay != null) {
+            return mGestures.dispatchTouch(m);
+        } else if (mPopup != null) {
+            return mActivity.superDispatchTouchEvent(m);
         }
         return false;
     }
@@ -1324,8 +1355,10 @@ public class PhotoModule
         if (mPopup != null) {
             dismissPopup();
         }
+        if (mGestures != null) {
+            mGestures.setEnabled(full);
+        }
         if (ApiHelper.HAS_SURFACE_TEXTURE) return;
-
         if (full) {
             mPreviewSurfaceView.expand();
         } else {

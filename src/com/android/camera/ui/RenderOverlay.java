@@ -19,7 +19,6 @@ package com.android.camera.ui;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -83,10 +82,11 @@ public class RenderOverlay extends RotateLayout {
         return false;
     }
 
-    public boolean directDispatchTouch(MotionEvent m) {
-        MotionEvent m1 = MotionEvent.obtain(m);
-        m1.setLocation(m.getX() - mPosition[0], m.getY() - mPosition[1]);
-        return super.dispatchTouchEvent(m1);
+    public boolean directDispatchTouch(MotionEvent m, Renderer target) {
+        mRenderView.setTouchTarget(target);
+        boolean res = super.dispatchTouchEvent(m);
+        mRenderView.setTouchTarget(null);
+        return res;
     }
 
     private void adjustPosition() {
@@ -103,13 +103,22 @@ public class RenderOverlay extends RotateLayout {
 
     private class RenderView extends View {
 
+        private Renderer mTouchTarget;
+
         public RenderView(Context context) {
             super(context);
             setWillNotDraw(false);
         }
 
+        public void setTouchTarget(Renderer target) {
+            mTouchTarget = target;
+        }
+
         @Override
         public boolean onTouchEvent(MotionEvent evt) {
+            if (mTouchTarget != null) {
+                return mTouchTarget.onTouchEvent(evt);
+            }
             if (mTouchClients != null) {
                 boolean res = false;
                 for (Renderer client : mTouchClients) {
