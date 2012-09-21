@@ -46,24 +46,29 @@ import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
+import android.widget.FrameLayout;
+import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.camera.ui.AbstractSettingPopup;
 import com.android.camera.ui.CameraPicker;
-import com.android.camera.ui.IndicatorControlContainer;
+import com.android.camera.ui.PieRenderer;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.PreviewSurfaceView;
+import com.android.camera.ui.RenderOverlay;
 import com.android.camera.ui.Rotatable;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
@@ -84,7 +89,8 @@ public class VideoModule implements CameraModule,
     ShutterButton.OnShutterButtonListener,
     MediaRecorder.OnErrorListener,
     MediaRecorder.OnInfoListener,
-    EffectsRecorder.EffectsListener {
+    EffectsRecorder.EffectsListener,
+    PieRenderer.PieListener {
 
     private static final String TAG = "CAM_VideoModule";
 
@@ -205,6 +211,15 @@ public class VideoModule implements CameraModule,
     private LocationManager mLocationManager;
 
     private VideoNamer mVideoNamer;
+
+    private RenderOverlay mRenderOverlay;
+    private PieRenderer mPieRenderer;
+
+    private VideoController mVideoControl;
+    private AbstractSettingPopup mPopup;
+    private int mPendingSwitchCameraId;
+    private boolean mControlEnabled;
+
 
     private final Handler mHandler = new MainHandler();
 
@@ -360,6 +375,17 @@ public class VideoModule implements CameraModule,
         }
     }
 
+    private void initializeOverlay() {
+        mRenderOverlay = (RenderOverlay) mRootView.findViewById(R.id.render_overlay);
+        if (mPieRenderer == null) {
+            mPieRenderer = new PieRenderer(mActivity);
+            mRenderOverlay.addRenderer(mPieRenderer);
+            mVideoControl = new VideoController(mActivity, this, mPieRenderer);
+            mVideoControl.setListener(this);
+            mPieRenderer.setPieListener(this);
+        }
+    }
+
     @Override
     public void init(CameraActivity activity, View root, boolean reuseScreenNail) {
         mActivity = activity;
@@ -419,6 +445,8 @@ public class VideoModule implements CameraModule,
         });
         startPreviewThread.start();
 
+        initializeOverlay();
+
         initializeControlByIntent();
         initializeMiscControls();
 
@@ -445,7 +473,9 @@ public class VideoModule implements CameraModule,
         initializeVideoSnapshot();
         resizeForPreviewAspectRatio();
 
-        initializeIndicatorControl();
+        initializeVideoControl();
+        mControlEnabled = true;
+        mPendingSwitchCameraId = -1;
     }
 
     @Override
@@ -461,29 +491,24 @@ public class VideoModule implements CameraModule,
 
     @Override
     public boolean collapseCameraControls() {
+        if (mPopup != null) {
+            dismissPopup();
+            return true;
+        }
         return false;
     }
 
     private void enableCameraControls(boolean enable) {
+        mControlEnabled = enable;
     }
 
-    private void initializeIndicatorControl() {
+    private void initializeVideoControl() {
         loadCameraPreferences();
-
-        final String[] SETTING_KEYS = {
-                    CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
-                    CameraSettings.KEY_WHITE_BALANCE,
-                    CameraSettings.KEY_VIDEO_EFFECT,
-                    CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
-                    CameraSettings.KEY_VIDEO_QUALITY};
-        final String[] OTHER_SETTING_KEYS = {
-                    CameraSettings.KEY_RECORD_LOCATION};
-
-
+        mVideoControl.initialize(mPreferenceGroup);
         if (effectsActive()) {
-//            mIndicatorControlContainer.overrideSettings(
-//                    CameraSettings.KEY_VIDEO_QUALITY,
-//                    Integer.toString(getLowVideoQuality()));
+            mVideoControl.overrideSettings(
+                    CameraSettings.KEY_VIDEO_QUALITY,
+                    Integer.toString(getLowVideoQuality()));
         }
     }
 
@@ -546,7 +571,7 @@ public class VideoModule implements CameraModule,
 
     private void setOrientationIndicator(int orientation, boolean animation) {
         Rotatable[] indicators = {
-                //mActivity.mThumbnailView, mModePicker,
+                mRenderOverlay,
                 mBgLearningMessageRotater,
                 mReviewDoneButton, mReviewPlayButton, mRotateDialog};
         for (Rotatable indicator : indicators) {
@@ -1026,7 +1051,7 @@ public class VideoModule implements CameraModule,
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
         mHandler.removeMessages(SWITCH_CAMERA);
         mHandler.removeMessages(SWITCH_CAMERA_START_ANIMATION);
-        mActivity.mPendingSwitchCameraId = -1;
+        mPendingSwitchCameraId = -1;
         mSwitchingCamera = false;
         // Call onPause after stopping video recording. So the camera can be
         // released as soon as possible.
@@ -1542,7 +1567,7 @@ public class VideoModule implements CameraModule,
     private void startVideoRecording() {
         Log.v(TAG, "startVideoRecording");
         mActivity.setSwipingEnabled(false);
-        mActivity.hideSwitcher();
+        mActivity.hideSwitcher(R.drawable.ic_switch_video_active);
 
         mActivity.updateStorageSpaceAndHint();
         if (mActivity.getStorageSpace() <= Storage.LOW_STORAGE_THRESHOLD) {
@@ -1639,7 +1664,6 @@ public class VideoModule implements CameraModule,
 //                mZoomControl.setVisibility(View.VISIBLE);
             }
         }
-        mShutterButton.setActivated(recording);
     }
 
     private void getThumbnail() {
@@ -2162,7 +2186,7 @@ public class VideoModule implements CameraModule,
         mReviewImage = (ImageView) mRootView.findViewById(R.id.review_image);
 
         mShutterButton = mActivity.getShutterButton();
-        mShutterButton.setImageResource(R.drawable.btn_new_shutter);
+        mShutterButton.setImageResource(R.drawable.btn_new_shutter_video);
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.requestFocus();
 
@@ -2197,13 +2221,14 @@ public class VideoModule implements CameraModule,
         inflater.inflate(R.layout.video_module, (ViewGroup) mRootView);
 
         // from onCreate()
+        initializeOverlay();
         initializeControlByIntent();
         initializeSurfaceView();
         initializeMiscControls();
         showTimeLapseUI(mCaptureTimeLapse);
         initializeVideoSnapshot();
         resizeForPreviewAspectRatio();
-        initializeIndicatorControl();
+        initializeVideoControl();
 
         // from onResume()
         showVideoSnapshotUI(false);
@@ -2293,9 +2318,9 @@ public class VideoModule implements CameraModule,
         if (mPaused) return;
 
         Log.d(TAG, "Start to switch camera.");
-        mCameraId = mActivity.mPendingSwitchCameraId;
-        mActivity.mPendingSwitchCameraId = -1;
-        mActivity.mCameraPicker.setCameraId(mCameraId);
+        mCameraId = mPendingSwitchCameraId;
+        mPendingSwitchCameraId = -1;
+        mVideoControl.setCameraId(mCameraId);
 
         closeCamera();
 
@@ -2313,7 +2338,7 @@ public class VideoModule implements CameraModule,
         startPreview();
         initializeVideoSnapshot();
         resizeForPreviewAspectRatio();
-        initializeIndicatorControl();
+        initializeVideoControl();
 
         // From onResume
         initializeZoom();
@@ -2396,6 +2421,9 @@ public class VideoModule implements CameraModule,
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         if (mSwitchingCamera) return true;
+        if (mPopup == null && mRenderOverlay != null && mControlEnabled) {
+            mRenderOverlay.directDispatchTouch(m);
+        }
         return false;
     }
 
@@ -2452,8 +2480,15 @@ public class VideoModule implements CameraModule,
             return;
         }
 
-        if (mPaused || mSnapshotInProgress
-                || !mMediaRecorderRecording || effectsActive()) {
+        if (mPaused || mSnapshotInProgress || effectsActive()) {
+            return;
+        }
+
+        if (!mMediaRecorderRecording)
+        {
+            // check for dismissing popup
+            if (mPopup != null)
+                dismissPopup();
             return;
         }
 
@@ -2707,11 +2742,54 @@ public class VideoModule implements CameraModule,
     // required by OnPreferenceChangedListener
     @Override
     public void onCameraPickerClicked(int cameraId) {
+        if (mPaused || mPendingSwitchCameraId != -1) return;
+
+        mPendingSwitchCameraId = cameraId;
+        if (ApiHelper.HAS_SURFACE_TEXTURE) {
+            Log.d(TAG, "Start to copy texture.");
+            // We need to keep a preview frame for the animation before
+            // releasing the camera. This will trigger onPreviewTextureCopied.
+            ((CameraScreenNail) mActivity.mCameraScreenNail).copyTexture();
+            // Disable all camera controls.
+            mSwitchingCamera = true;
+        } else {
+            switchCamera();
+        }
     }
 
     @Override
     public boolean needsSwitcher() {
         return !mIsVideoCaptureIntent;
     }
+
+    @Override
+    public void onPieOpened(int centerX, int centerY) {
+        mActivity.cancelActivityTouchHandling();
+        mActivity.setSwipingEnabled(false);
+    }
+
+    @Override
+    public void onPieClosed() {
+        mActivity.setSwipingEnabled(true);
+    }
+
+    public void showPopup(AbstractSettingPopup popup) {
+        mActivity.hideUI();
+        mPopup = popup;
+        mPopup.setVisibility(View.VISIBLE);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.CENTER;
+        ((FrameLayout) mRootView).addView(mPopup, lp);
+    }
+
+    public void dismissPopup() {
+        mActivity.showUI();
+        if (mPopup != null) {
+            ((FrameLayout) mRootView).removeView(mPopup);
+            mPopup = null;
+        }
+    }
+
 
 }
