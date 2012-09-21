@@ -130,5 +130,5 @@
     <string name="time_lapse_hours" msgid="1776453661704997476">"小时"</string>
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"完成"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"设置时间间隔"</string>
-    <string name="set_time_interval_help" msgid="6665849510484821483">"时间间隔功能已关闭，要设置时间间隔，请先开启该功能。"</string>
+    <string name="set_time_interval_help" msgid="6665849510484821483">"延时拍摄功能已关闭，要设置时间间隔，请先开启该功能。"</string>
 </resources>

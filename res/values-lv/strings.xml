@@ -130,5 +130,5 @@
     <string name="time_lapse_hours" msgid="1776453661704997476">"stundas"</string>
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Gatavs"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Laika intervāla iestatīšana"</string>
-    <string name="set_time_interval_help" msgid="6665849510484821483">"Laika intervāla filmēšanas funkcija ir izslēgta. Ieslēdziet to, lai iestatītu laika intervālu."</string>
+    <string name="set_time_interval_help" msgid="6665849510484821483">"Palēninātās filmēšanas funkcija ir izslēgta. Ieslēdziet to, lai iestatītu laika intervālu."</string>
 </resources>
