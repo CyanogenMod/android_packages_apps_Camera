@@ -130,5 +130,5 @@
     <string name="time_lapse_hours" msgid="1776453661704997476">"horas"</string>
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Listo"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Establecer intervalo de tiempo"</string>
-    <string name="set_time_interval_help" msgid="6665849510484821483">"La función de intervalo de tiempo está desactivada. Actívala para establecer el intervalo de tiempo."</string>
+    <string name="set_time_interval_help" msgid="6665849510484821483">"La función de intervalo de tiempo está desactivada. Actívala para definir el intervalo de tiempo."</string>
 </resources>
