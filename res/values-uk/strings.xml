@@ -125,7 +125,7 @@
     <string name="accessibility_review_retake" msgid="830348126446319954">"Повторити перегляд"</string>
     <string name="capital_on" msgid="5491353494964003567">"УВІМКНЕНО"</string>
     <string name="capital_off" msgid="7231052688467970897">"ВИМКНЕНО"</string>
-    <string name="time_lapse_seconds" msgid="2105521458391118041">"сек."</string>
+    <string name="time_lapse_seconds" msgid="2105521458391118041">"с."</string>
     <string name="time_lapse_minutes" msgid="7738520349259013762">"хв."</string>
     <string name="time_lapse_hours" msgid="1776453661704997476">"год."</string>
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Готово"</string>
