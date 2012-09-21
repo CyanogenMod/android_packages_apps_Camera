@@ -28,6 +28,10 @@
                 android:layout_height="match_parent"
                 android:visibility="gone"
                 android:background="@drawable/ic_snapshot_border" />
+        <com.android.camera.ui.RenderOverlay
+            android:id="@+id/render_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
         <com.android.camera.ui.RotateLayout android:id="@+id/recording_time_rect"
                 style="@style/ViewfinderLabelLayout">
             <include layout="@layout/viewfinder_labels_video" android:id="@+id/labels" />
