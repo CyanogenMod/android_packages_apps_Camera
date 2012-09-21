@@ -77,6 +77,7 @@ import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomControl;
 import com.android.gallery3d.common.ApiHelper;
+import com.android.gallery3d.app.CropImage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -1550,6 +1551,9 @@ public class PhotoModule
                 newExtras.putParcelable(MediaStore.EXTRA_OUTPUT, mSaveUri);
             } else {
                 newExtras.putBoolean("return-data", true);
+            }
+            if (mActivity.isSecureCamera()) {
+                newExtras.putBoolean(CropImage.KEY_SHOW_WHEN_LOCKED, true);
             }
 
             Intent cropIntent = new Intent("com.android.camera.action.CROP");
