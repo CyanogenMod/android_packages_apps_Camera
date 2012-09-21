@@ -18,10 +18,12 @@ package com.android.camera.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera.Face;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -46,17 +48,23 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
     private Matrix mMatrix = new Matrix();
     private RectF mRect = new RectF();
     private Face[] mFaces;
-    private Drawable mFaceIndicator;
-    private final Drawable mDrawableFocusing;
-    private final Drawable mDrawableFocused;
-    private final Drawable mDrawableFocusFailed;
+    private int mColor;
+    private final int mFocusingColor;
+    private final int mFocusedColor;
+    private final int mFailColor;
+    private Paint mPaint;
 
     public FaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mDrawableFocusing = getResources().getDrawable(R.drawable.ic_focus_focusing);
-        mDrawableFocused = getResources().getDrawable(R.drawable.ic_focus_face_focused);
-        mDrawableFocusFailed = getResources().getDrawable(R.drawable.ic_focus_failed);
-        mFaceIndicator = mDrawableFocusing;
+        Resources res = getResources();
+        mFocusingColor = res.getColor(R.color.face_detect_start);
+        mFocusedColor = res.getColor(R.color.face_detect_success);
+        mFailColor = res.getColor(R.color.face_detect_fail);
+        mColor = mFocusingColor;
+        mPaint = new Paint();
+        mPaint.setAntiAlias(true);
+        mPaint.setStyle(Style.STROKE);
+        mPaint.setStrokeWidth(res.getDimension(R.dimen.focus_outer_stroke));
     }
 
     public void setFaces(Face[] faces) {
@@ -88,21 +96,21 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
 
     @Override
     public void showStart() {
-        mFaceIndicator = mDrawableFocusing;
+        mColor = mFocusingColor;
         invalidate();
     }
 
     // Ignore the parameter. No autofocus animation for face detection.
     @Override
     public void showSuccess(boolean timeout) {
-        mFaceIndicator = mDrawableFocused;
+        mColor = mFocusedColor;
         invalidate();
     }
 
     // Ignore the parameter. No autofocus animation for face detection.
     @Override
     public void showFail(boolean timeout) {
-        mFaceIndicator = mDrawableFocusFailed;
+        mColor = mFailColor;
         invalidate();
     }
 
@@ -110,7 +118,7 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
     public void clear() {
         // Face indicator is displayed during preview. Do not clear the
         // drawable.
-        mFaceIndicator = mDrawableFocusing;
+        mColor = mFocusingColor;
         mFaces = null;
         invalidate();
     }
@@ -143,10 +151,8 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
                 if (LOGV) Util.dumpRect(mRect, "Original rect");
                 mMatrix.mapRect(mRect);
                 if (LOGV) Util.dumpRect(mRect, "Transformed rect");
-
-                mFaceIndicator.setBounds(Math.round(mRect.left), Math.round(mRect.top),
-                        Math.round(mRect.right), Math.round(mRect.bottom));
-                mFaceIndicator.draw(canvas);
+                mPaint.setColor(mColor);
+                canvas.drawOval(mRect, mPaint);
             }
             canvas.restore();
         }
