@@ -1927,7 +1927,15 @@ public class PhotoModule
 
     @Override
     public boolean onBackPressed() {
-        if (!isCameraIdle()) {
+        // In image capture mode, back button should:
+        // 1) if there is any popup, dismiss them, 2) otherwise, get out of image capture
+        if (mIsImageCaptureIntent) {
+            if (!collapseCameraControls()) {
+                // no popup to dismiss, cancel image capture
+                doCancel();
+            }
+            return true;
+        } else if (!isCameraIdle()) {
             // ignore backs while we're taking a picture
             return true;
         } else {
