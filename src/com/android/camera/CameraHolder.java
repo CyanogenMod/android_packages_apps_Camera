@@ -46,6 +46,7 @@ import java.io.IOException;
  */
 public class CameraHolder {
     private static final String TAG = "CameraHolder";
+    private static final int KEEP_CAMERA_TIMEOUT = 3000; // 3 seconds
     private CameraProxy mCameraDevice;
     private long mKeepBeforeTime;  // Keep the Camera before this time.
     private final Handler mHandler;
@@ -214,13 +215,15 @@ public class CameraHolder {
         mCameraId = -1;
     }
 
-    public synchronized void keep() {
+    public void keep() {
+        keep(KEEP_CAMERA_TIMEOUT);
+    }
+
+    public synchronized void keep(int time) {
         // We allow mCameraOpened in either state for the convenience of the
         // calling activity. The activity may not have a chance to call open()
         // before the user switches to another activity.
-
-        // Keep the camera instance for 3 seconds.
-        mKeepBeforeTime = System.currentTimeMillis() + 3000;
+        mKeepBeforeTime = System.currentTimeMillis() + time;
     }
 
     public int getBackCameraId() {

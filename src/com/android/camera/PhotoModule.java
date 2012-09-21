@@ -46,6 +46,7 @@ import android.os.MessageQueue;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -55,11 +56,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.FrameLayout.LayoutParams;
 
 import com.android.camera.CameraManager.CameraProxy;
+import com.android.camera.ui.AbstractSettingPopup;
 import com.android.camera.ui.FaceView;
 import com.android.camera.ui.FocusRenderer;
 import com.android.camera.ui.PieRenderer;
@@ -119,6 +123,10 @@ public class PhotoModule
     private static final int UPDATE_PARAM_PREFERENCE = 4;
     private static final int UPDATE_PARAM_ALL = -1;
 
+    // This is the timeout to keep the camera in onPause for the first time
+    // after screen on if the activity is started from secure lock screen.
+    private static final int KEEP_CAMERA_TIMEOUT = 1000; // ms
+
     // copied from Camera hierarchy
     private CameraActivity mActivity;
     private View mRootView;
@@ -126,6 +134,7 @@ public class PhotoModule
     private int mCameraId;
     private Parameters mParameters;
     private boolean mPaused;
+    private AbstractSettingPopup mPopup;
 
     // these are only used by Camera
 
@@ -174,7 +183,6 @@ public class PhotoModule
     private volatile SurfaceHolder mCameraSurfaceHolder;
 
     private RotateDialogController mRotateDialog;
-    private ModePicker mModePicker;
     private FaceView mFaceView;
     private RenderOverlay mRenderOverlay;
     private Rotatable mReviewCancelButton;
@@ -503,7 +511,7 @@ public class PhotoModule
         if (mPieRenderer == null) {
             mPieRenderer = new PieRenderer(mActivity);
             mRenderOverlay.addRenderer(mPieRenderer);
-            mPhotoControl = new PhotoController(mActivity, mPieRenderer);
+            mPhotoControl = new PhotoController(mActivity, this, mPieRenderer);
             mPhotoControl.setListener(this);
             mPieRenderer.setPieListener(this);
         }
@@ -619,11 +627,6 @@ public class PhotoModule
         keepMediaProviderInstance();
         hidePostCaptureAlert();
 
-        if (!mIsImageCaptureIntent) {
-            if (mModePicker != null) {
-                mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
-            }
-        }
         if (mPhotoControl != null) {
             mPhotoControl.reloadPreferences();
         }
@@ -688,7 +691,7 @@ public class PhotoModule
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         if (mCameraState == SWITCHING_CAMERA) return true;
-        if (mRenderOverlay != null) {
+        if (mPopup == null && mRenderOverlay != null) {
             mRenderOverlay.directDispatchTouch(m);
         }
         return false;
@@ -1317,6 +1320,9 @@ public class PhotoModule
 
     @Override
     public void onFullScreenChanged(boolean full) {
+        if (mPopup != null) {
+            dismissPopup();
+        }
         if (ApiHelper.HAS_SURFACE_TEXTURE) return;
 
         if (full) {
@@ -1385,6 +1391,10 @@ public class PhotoModule
 
     @Override
     public boolean collapseCameraControls() {
+        if (mPopup != null) {
+            dismissPopup();
+            return true;
+        }
         return false;
     }
 
@@ -1432,6 +1442,9 @@ public class PhotoModule
         // icon.
         if (mReviewCancelButton instanceof RotateLayout) {
             mReviewCancelButton.setOrientation(orientation, animation);
+        }
+        if (mPopup != null) {
+            mPopup.setOrientation(orientation, animation);
         }
     }
 
@@ -1676,6 +1689,15 @@ public class PhotoModule
         // Wait the camera start up thread to finish.
         waitCameraStartUpThread();
 
+        // When camera is started from secure lock screen for the first time
+        // after screen on, the activity gets onCreate->onResume->onPause->onResume.
+        // To reduce the latency, keep the camera for a short time so it does
+        // not need to be opened again.
+        if (mCameraDevice != null && mActivity.isSecureCamera()
+                && ActivityBase.isFirstStartAfterScreenOn()) {
+            ActivityBase.resetFirstStartAfterScreenOn();
+            CameraHolder.instance().keep(KEEP_CAMERA_TIMEOUT);
+        }
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
@@ -1731,13 +1753,14 @@ public class PhotoModule
 
     private void initializeControlByIntent() {
         if (mIsImageCaptureIntent) {
+
             mActivity.hideSwitcher();
             // Cannot use RotateImageView for "done" and "cancel" button because
             // the tablet layout uses RotateLayout, which cannot be cast to
             // RotateImageView.
             mReviewDoneButton = (Rotatable) mRootView.findViewById(R.id.btn_done);
             mReviewCancelButton = (Rotatable) mRootView.findViewById(R.id.btn_cancel);
-            
+
             ((View) mReviewCancelButton).setVisibility(View.VISIBLE);
 
             ((View) mReviewDoneButton).setOnClickListener(new OnClickListener() {
@@ -1767,11 +1790,6 @@ public class PhotoModule
                 mActivity.mThumbnailView.enableFilter(false);
                 mActivity.mThumbnailView.setVisibility(View.VISIBLE);
                 mActivity.mThumbnailViewWidth = mActivity.mThumbnailView.getLayoutParams().width;
-
-                mModePicker = (ModePicker) mRootView.findViewById(R.id.mode_picker);
-                mModePicker.setVisibility(View.VISIBLE);
-//                mModePicker.setOnModeChangeListener(this);
-                mModePicker.setCurrentMode(ModePicker.MODE_CAMERA);
             }
         }
     }
@@ -2086,7 +2104,6 @@ public class PhotoModule
         }
     }
 
-
     @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
     private void setAutoExposureLockIfSupported() {
         if (mAeLockSupported) {
@@ -2399,6 +2416,7 @@ public class PhotoModule
 
     @Override
     public void onPieOpened(int centerX, int centerY) {
+        mActivity.cancelActivityTouchHandling();
         mActivity.setSwipingEnabled(false);
         if (mFocusManager != null) {
             mFocusManager.setEnabled(false);
@@ -2461,9 +2479,10 @@ public class PhotoModule
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
             // TODO: reset zoom
         }
-        mPhotoControl.reloadPreferences();
+        dismissPopup();
         CameraSettings.restorePreferences(mActivity, mPreferences,
                 mParameters);
+        mPhotoControl.reloadPreferences();
         onSharedPreferenceChanged();
     }
 
@@ -2510,6 +2529,24 @@ public class PhotoModule
     @Override
     public boolean needsSwitcher() {
         return !mIsImageCaptureIntent;
+    }
+
+    public void showPopup(AbstractSettingPopup popup) {
+        mActivity.hideUI();
+        mPopup = popup;
+        mPopup.setVisibility(View.VISIBLE);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.CENTER;
+        ((FrameLayout) mRootView).addView(mPopup, lp);
+    }
+
+    public void dismissPopup() {
+        mActivity.showUI();
+        if (mPopup != null) {
+            ((FrameLayout) mRootView).removeView(mPopup);
+            mPopup = null;
+        }
     }
 
 }

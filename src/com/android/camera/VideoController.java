@@ -25,17 +25,17 @@ import com.android.camera.ui.OtherSettingsPopup;
 import com.android.camera.ui.PieItem;
 import com.android.camera.ui.PieRenderer;
 
-public class PhotoController extends PieController
+public class VideoController extends PieController
         implements OtherSettingsPopup.Listener {
 
-    private static String TAG = "CAM_photocontrol";
+    private static String TAG = "CAM_videocontrol";
     private static float FLOAT_PI_DIVIDED_BY_TWO = (float) Math.PI / 2;
 
-    private PhotoModule mModule;
+    private VideoModule mModule;
     private String[] mOtherKeys;
     private OtherSettingsPopup mPopup;
 
-    public PhotoController(CameraActivity activity, PhotoModule module, PieRenderer pie) {
+    public VideoController(CameraActivity activity, VideoModule module, PieRenderer pie) {
         super(activity, pie);
         mModule = module;
     }
@@ -43,9 +43,10 @@ public class PhotoController extends PieController
     public void initialize(PreferenceGroup group) {
         super.initialize(group);
         float sweep = FLOAT_PI_DIVIDED_BY_TWO / 2;
-        addItem(CameraSettings.KEY_FLASH_MODE, FLOAT_PI_DIVIDED_BY_TWO - sweep, sweep);
-        addItem(CameraSettings.KEY_EXPOSURE, FLOAT_PI_DIVIDED_BY_TWO + sweep, sweep);
-        PieItem item = makeItem(R.drawable.ic_switch_photo_facing_holo_light);
+
+        addItem(CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE, FLOAT_PI_DIVIDED_BY_TWO - sweep, sweep);
+        addItem(CameraSettings.KEY_WHITE_BALANCE, FLOAT_PI_DIVIDED_BY_TWO + sweep, sweep);
+        PieItem item = makeItem(R.drawable.ic_switch_video_facing_holo_light);
         item.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO,  sweep);
         item.getView().setOnClickListener(new OnClickListener() {
 
@@ -62,11 +63,11 @@ public class PhotoController extends PieController
         });
         mRenderer.addItem(item);
         mOtherKeys = new String[] {
-                CameraSettings.KEY_WHITE_BALANCE,
-                CameraSettings.KEY_SCENE_MODE,
-                CameraSettings.KEY_RECORD_LOCATION,
-                CameraSettings.KEY_PICTURE_SIZE,
-                CameraSettings.KEY_FOCUS_MODE};
+                CameraSettings.KEY_VIDEO_EFFECT,
+                CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL,
+                CameraSettings.KEY_VIDEO_QUALITY,
+                CameraSettings.KEY_RECORD_LOCATION};
+
         item = makeItem(R.drawable.ic_settings_holo_light);
         item.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO * 3, sweep);
         item.getView().setOnClickListener(new OnClickListener() {

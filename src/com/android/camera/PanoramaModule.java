@@ -513,9 +513,8 @@ public class PanoramaModule implements CameraModule,
         mCancelComputation = false;
         mTimeTaken = System.currentTimeMillis();
         mActivity.setSwipingEnabled(false);
-        mActivity.hideSwitcher();
+        mActivity.hideSwitcher(R.drawable.ic_switch_pano_active);
         mCaptureState = CAPTURE_STATE_MOSAIC;
-        mShutterButton.setActivated(true);
         mCaptureIndicator.setVisibility(View.VISIBLE);
         showDirectionIndicators(PanoProgressBar.DIRECTION_NONE);
 
@@ -665,7 +664,7 @@ public class PanoramaModule implements CameraModule,
         });
 
         mShutterButton = mActivity.getShutterButton();
-        mShutterButton.setImageResource(R.drawable.btn_new_shutter);
+        mShutterButton.setImageResource(R.drawable.btn_new_shutter_pano);
         mShutterButton.setOnShutterButtonListener(this);
 
         if (mActivity.getResources().getConfiguration().orientation
@@ -841,7 +840,6 @@ public class PanoramaModule implements CameraModule,
         mActivity.setSwipingEnabled(true);
         mActivity.showSwitcher();
         mReviewLayout.setVisibility(View.GONE);
-        mShutterButton.setActivated(false);
         mPanoProgressBar.setVisibility(View.GONE);
         mCaptureLayout.setVisibility(View.VISIBLE);
         mMosaicFrameProcessor.reset();
