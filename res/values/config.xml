@@ -42,6 +42,8 @@
     <bool name="noFaceDetectOnRearCamera">false</bool>
     <!-- Use ZSL mode -->
     <bool name="enableZSL">false</bool>
+    <!-- Front Camera needs ZSL mode -->
+    <bool name="enableZSLFrontCam">false</bool>
     <!-- Reset rotation parameter in video camera -->
     <bool name="resetVideoRotationParameter">false</bool>
     <!-- The camera HAL does its own preview state management during snaps -->
