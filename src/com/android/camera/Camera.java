@@ -950,6 +950,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
                 setCameraState(IDLE);
                 startFaceDetection();
             } else {
+                // Check ZSL Setting on Front Camera and if it is not supported,
+                // restart the preview so that the stream resumes properly.
+                if((CameraHolder.instance().getCameraInfo()[mCameraId].facing == CameraInfo.CAMERA_FACING_FRONT)&&
+                   (!getResources().getBoolean(R.bool.enableZSLFrontCam))){
+                        startPreview();
+                }
                 mFocusManager.resetTouchFocus();
                 setCameraState(IDLE);
             }
