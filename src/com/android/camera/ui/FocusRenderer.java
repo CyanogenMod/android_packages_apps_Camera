@@ -82,6 +82,7 @@ public class FocusRenderer extends OverlayRenderer
         mInnerOffset = ctx.getResources().getDimensionPixelSize(R.dimen.focus_inner_offset);
         mOuterStroke = ctx.getResources().getDimensionPixelSize(R.dimen.focus_outer_stroke);
         mInnerStroke = ctx.getResources().getDimensionPixelSize(R.dimen.focus_inner_stroke);
+        setVisible(false);
     }
 
     public void setFocus(int x, int y) {

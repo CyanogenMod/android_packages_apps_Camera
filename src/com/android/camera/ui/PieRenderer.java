@@ -27,6 +27,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -39,9 +40,8 @@ public class PieRenderer extends OverlayRenderer {
 
     private static final String TAG = "CAM Pie";
 
-    private static final long PIE_OPEN_DELAY = 100;
+    private static final long PIE_OPEN_DELAY = 200;
 
-    private static final int MSG_SHOW = 1;
     private static final int MSG_OPEN = 2;
     private static final int MSG_CLOSE = 3;
     private static final int MSG_SUBMENU = 4;
@@ -71,12 +71,13 @@ public class PieRenderer extends OverlayRenderer {
 
     private boolean mAnimating;
 
+    // TODO: use mCenter
+    private int mDownX;
+    private int mDownY;
+
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch(msg.what) {
-            case MSG_SHOW:
-                show(true);
-                break;
             case MSG_OPEN:
                 if (mListener != null) {
                     mListener.onPieOpened(mCenter.x, mCenter.y);
@@ -160,6 +161,10 @@ public class PieRenderer extends OverlayRenderer {
         mHandler.sendEmptyMessage(mOpen ? MSG_OPEN : MSG_CLOSE);
     }
 
+    public boolean isOpen() {
+        return mOpen;
+    }
+
     private void setCenter(int x, int y) {
         mCenter.x = x;
         mCenter.y = y;
@@ -173,8 +178,8 @@ public class PieRenderer extends OverlayRenderer {
         layoutItems(mItems, (float) (Math.PI / 2), inner, outer, gap);
     }
 
-    private void layoutItems(List<PieItem> items, float centerAngle, int inner, int outer, int gap) {
-        float pi = (float) Math.PI;
+    private void layoutItems(List<PieItem> items, float centerAngle, int inner,
+            int outer, int gap) {
         float emptyangle = PIE_SWEEP / 16;
         float sweep = (float) (PIE_SWEEP - 2 * emptyangle) / items.size();
         float angle = centerAngle - PIE_SWEEP / 2 + emptyangle + sweep / 2;
@@ -187,7 +192,8 @@ public class PieRenderer extends OverlayRenderer {
                 break;
             }
         }
-        Path path = makeSlice(getDegrees(0) - gap, getDegrees(sweep) + gap, outer, inner, mCenter);
+        Path path = makeSlice(getDegrees(0) - gap, getDegrees(sweep) + gap,
+                outer, inner, mCenter);
         for (PieItem item : items) {
             // shared between items
             item.setPath(path);
@@ -210,11 +216,12 @@ public class PieRenderer extends OverlayRenderer {
             float itemstart = angle - sweep / 2;
             item.setGeometry(itemstart, sweep, inner, outer);
             if (item.hasItems()) {
-                layoutItems(item.getItems(), angle, inner, outer + mRadiusInc / 2, gap);
+                layoutItems(item.getItems(), angle, inner,
+                        outer + mRadiusInc / 2, gap);
             }
             angle += sweep;
         }
-   }
+    }
 
     private Path makeSlice(float start, float end, int outer, int inner, Point center) {
         outer = inner + (outer - inner) * 2 / 3;
@@ -275,10 +282,6 @@ public class PieRenderer extends OverlayRenderer {
 
     // touch handling for pie
 
-    // TODO: use mCenter
-    int mDownX;
-    int mDownY;
-
     @Override
     public boolean onTouchEvent(MotionEvent evt) {
         float x = evt.getX();
@@ -288,7 +291,7 @@ public class PieRenderer extends OverlayRenderer {
             mDownX = (int) x;
             mDownY = (int) y;
             setCenter((int) x, (int) y);
-            mHandler.sendEmptyMessageDelayed(MSG_SHOW, PIE_OPEN_DELAY);
+            show(true);
             return true;
         } else if (MotionEvent.ACTION_UP == action) {
             if (mOpen) {
@@ -303,46 +306,37 @@ public class PieRenderer extends OverlayRenderer {
                     }
                 }
                 return true;
-            } else {
-                mHandler.removeMessages(MSG_SHOW);
             }
         } else if (MotionEvent.ACTION_CANCEL == action) {
             if (mOpen) {
                 show(false);
             }
-            mHandler.removeMessages(MSG_SHOW);
             if (!mAnimating) {
                 deselect();
             }
             return false;
         } else if (MotionEvent.ACTION_MOVE == action) {
             if (mAnimating) return false;
-            if (!mOpen) {
-                if ((Math.abs(x - mDownX) > mSlop) || Math.abs(y - mDownY) > mSlop) {
-                    mHandler.removeMessages(MSG_SHOW);
-                }
-            } else {
-                PointF polar = getPolar(x, y);
-                int maxr = mRadius + mRadiusInc + 50;
-                if (polar.y < mRadius) {
-                    if (mOpenItem != null) {
-                        mOpenItem = null;
-                    } else if (!mAnimating) {
-                        deselect();
-                    }
-                    return false;
-                }
-                if (polar.y > maxr) {
+            PointF polar = getPolar(x, y);
+            int maxr = mRadius + mRadiusInc + 50;
+            if (polar.y < mRadius) {
+                if (mOpenItem != null) {
+                    mOpenItem = null;
+                } else if (!mAnimating) {
                     deselect();
-                    show(false);
-                    evt.setAction(MotionEvent.ACTION_DOWN);
-                    return false;
                 }
-                PieItem item = findItem(polar);
-                if (item == null) {
-                } else if (mCurrentItem != item) {
-                    onEnter(item);
-                }
+                return false;
+            }
+            if (polar.y > maxr) {
+                deselect();
+                show(false);
+                evt.setAction(MotionEvent.ACTION_DOWN);
+                return false;
+            }
+            PieItem item = findItem(polar);
+            if (item == null) {
+            } else if (mCurrentItem != item) {
+                onEnter(item);
             }
         }
         return false;
