@@ -36,6 +36,7 @@ public class PreviewGestures
     private static final int MODE_NONE = 0;
     private static final int MODE_PIE = 1;
     private static final int MODE_ZOOM = 2;
+    private static final int MODE_SWIPE = 3;
     private static final int MODE_ALL = 4;
 
     private CameraActivity mActivity;
@@ -101,11 +102,13 @@ public class PreviewGestures
             // make sure this is ok
             return mActivity.superDispatchTouchEvent(m);
         } else if (mMode == MODE_NONE) {
-            return mActivity.superDispatchTouchEvent(m);
+            return false;
         } else if (mMode == MODE_PIE) {
             return sendToPie(m);
         } else if (mMode == MODE_ZOOM) {
             return mScale.onTouchEvent(m);
+        } else if (mMode == MODE_SWIPE) {
+            return mActivity.superDispatchTouchEvent(m);
         } else {
             if (MotionEvent.ACTION_POINTER_DOWN == m.getActionMasked()) {
                 if (!mZoomOnly) {
@@ -139,9 +142,17 @@ public class PreviewGestures
                         || Math.abs(m.getY() - mDown.getY()) > mSlop) {
                     // moved too far and no timeout yet, no focus or pie
                     cancelPie();
-                    mMode = MODE_NONE;
+                    float dx = m.getX() - mDown.getX();
+                    if (dx < 0
+                            && Math.abs(m.getY() - mDown.getY()) / -dx < 0.6f) {
+                        // within about 37 degrees of x-axis
+                        mMode = MODE_SWIPE;
+                        return mActivity.superDispatchTouchEvent(m);
+                    } else {
+                        mMode = MODE_NONE;
+                        cancelActivityTouchHandling(m);
+                    }
                 }
-                return mActivity.superDispatchTouchEvent(m);
             }
             return false;
         }
