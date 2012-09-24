@@ -92,7 +92,7 @@ public class PreviewGestures
         if (MotionEvent.ACTION_DOWN == m.getActionMasked()) {
             mMode = MODE_ALL;
             mDown = MotionEvent.obtain(m);
-            if (mPie != null && !mZoomOnly && m.getPointerCount() < 2) {
+            if (mPie != null && !mZoomOnly) {
                 mHandler.sendEmptyMessageDelayed(MSG_PIE, TIMEOUT_PIE);
             }
             if (mZoom != null) {
@@ -108,10 +108,11 @@ public class PreviewGestures
             return mScale.onTouchEvent(m);
         } else {
             if (MotionEvent.ACTION_POINTER_DOWN == m.getActionMasked()) {
-                if (!mZoomOnly && !mScale.isInProgress()) {
+                if (!mZoomOnly) {
                     cancelPie();
                 }
-            }             // not zoom or pie mode and no timeout yet
+            }
+            // not zoom or pie mode and no timeout yet
             if (mZoom != null) {
                 boolean res = mScale.onTouchEvent(m);
                 if (mScale.isInProgress()) {
@@ -136,7 +137,7 @@ public class PreviewGestures
             } else if (MotionEvent.ACTION_MOVE == m.getActionMasked()) {
                 if ((Math.abs(m.getX() - mDown.getX()) > mSlop)
                         || Math.abs(m.getY() - mDown.getY()) > mSlop) {
-                    // moved to far and no timeout yet, no focus or pie
+                    // moved too far and no timeout yet, no focus or pie
                     cancelPie();
                     mMode = MODE_NONE;
                 }
