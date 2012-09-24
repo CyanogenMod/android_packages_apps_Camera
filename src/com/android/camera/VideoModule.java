@@ -64,7 +64,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.camera.ui.AbstractSettingPopup;
-import com.android.camera.ui.CameraPicker;
+import com.android.camera.ui.FocusRenderer;
 import com.android.camera.ui.PieRenderer;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.PreviewSurfaceView;
@@ -74,7 +74,7 @@ import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.TwoStateImageView;
-import com.android.camera.ui.ZoomControl;
+import com.android.camera.ui.ZoomRenderer;
 import com.android.gallery3d.common.ApiHelper;
 
 import java.io.File;
@@ -214,12 +214,15 @@ public class VideoModule implements CameraModule,
 
     private RenderOverlay mRenderOverlay;
     private PieRenderer mPieRenderer;
+    private FocusRenderer mFocusRenderer;
 
     private VideoController mVideoControl;
     private AbstractSettingPopup mPopup;
     private int mPendingSwitchCameraId;
-    private boolean mControlEnabled;
 
+    private ZoomRenderer mZoomRenderer;
+
+    private PreviewGestures mGestures;
 
     private final Handler mHandler = new MainHandler();
 
@@ -377,12 +380,24 @@ public class VideoModule implements CameraModule,
 
     private void initializeOverlay() {
         mRenderOverlay = (RenderOverlay) mRootView.findViewById(R.id.render_overlay);
+        if (mFocusRenderer == null) {
+            mFocusRenderer = new FocusRenderer(mActivity);
+            mRenderOverlay.addRenderer(mFocusRenderer);
+        }
         if (mPieRenderer == null) {
             mPieRenderer = new PieRenderer(mActivity);
             mRenderOverlay.addRenderer(mPieRenderer);
             mVideoControl = new VideoController(mActivity, this, mPieRenderer);
             mVideoControl.setListener(this);
             mPieRenderer.setPieListener(this);
+        }
+        if (mZoomRenderer == null) {
+            mZoomRenderer = new ZoomRenderer(mActivity);
+            mRenderOverlay.addRenderer(mZoomRenderer);
+        }
+        if (mGestures == null) {
+            mGestures = new PreviewGestures(mActivity, mRenderOverlay,
+                    mZoomRenderer, mPieRenderer, null);
         }
     }
 
@@ -474,7 +489,6 @@ public class VideoModule implements CameraModule,
         resizeForPreviewAspectRatio();
 
         initializeVideoControl();
-        mControlEnabled = true;
         mPendingSwitchCameraId = -1;
     }
 
@@ -499,7 +513,9 @@ public class VideoModule implements CameraModule,
     }
 
     private void enableCameraControls(boolean enable) {
-        mControlEnabled = enable;
+        if (mGestures != null) {
+            mGestures.setZoomOnly(!enable);
+        }
     }
 
     private void initializeVideoControl() {
@@ -1703,6 +1719,7 @@ public class VideoModule implements CameraModule,
 
         Util.fadeIn((View) mReviewDoneButton);
         Util.fadeIn(mReviewPlayButton);
+        enableCameraControls(false);
 
         showTimeLapseUI(false);
     }
@@ -2421,13 +2438,15 @@ public class VideoModule implements CameraModule,
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         if (mSwitchingCamera) return true;
-        if (mPopup == null && mRenderOverlay != null && mControlEnabled) {
-            mRenderOverlay.directDispatchTouch(m);
+        if (mPopup == null && mGestures != null && mRenderOverlay != null) {
+            return mGestures.dispatchTouch(m);
+        } else if (mPopup != null) {
+            return mActivity.superDispatchTouchEvent(m);
         }
         return false;
     }
 
-    private class ZoomChangeListener implements ZoomControl.OnZoomChangedListener {
+    private class ZoomChangeListener implements ZoomRenderer.OnZoomChangedListener {
         @Override
         public void onZoomValueChanged(int index) {
             // Not useful to change zoom value when the activity is paused.
@@ -2439,9 +2458,23 @@ public class VideoModule implements CameraModule,
             mParameters.setZoom(mZoomValue);
             mActivity.mCameraDevice.setParametersAsync(mParameters);
         }
+
+        @Override
+        public void onZoomStart() {
+        }
+        @Override
+        public void onZoomEnd() {
+        }
     }
 
     private void initializeZoom() {
+        if (!mParameters.isZoomSupported()) return;
+        mZoomMax = mParameters.getMaxZoom();
+        // Currently we use immediate zoom for fast zooming to get better UX and
+        // there is no plan to take advantage of the smooth zoom.
+        mZoomRenderer.setZoomMax(mZoomMax);
+        mZoomRenderer.setZoomIndex(mParameters.getZoom());
+        mZoomRenderer.setOnZoomChangeListener(new ZoomChangeListener());
         if (!mParameters.isZoomSupported()) return;
 
         mZoomMax = mParameters.getMaxZoom();
@@ -2525,6 +2558,9 @@ public class VideoModule implements CameraModule,
 
     @Override
     public void onFullScreenChanged(boolean full) {
+        if (mGestures != null) {
+            mGestures.setEnabled(full);
+        }
         if (ApiHelper.HAS_SURFACE_TEXTURE) return;
 
         if (full) {
@@ -2766,11 +2802,14 @@ public class VideoModule implements CameraModule,
     public void onPieOpened(int centerX, int centerY) {
         mActivity.cancelActivityTouchHandling();
         mActivity.setSwipingEnabled(false);
+        mFocusRenderer.setFocus(centerX, centerY);
+        mFocusRenderer.setVisible(true);
     }
 
     @Override
     public void onPieClosed() {
         mActivity.setSwipingEnabled(true);
+        mFocusRenderer.setVisible(false);
     }
 
     public void showPopup(AbstractSettingPopup popup) {
