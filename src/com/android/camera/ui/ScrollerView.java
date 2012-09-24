@@ -749,6 +749,8 @@ public class ScrollerView extends FrameLayout {
                             invalidate();
                         }
                     }
+                    // when touch is cancelled, treat it as up to allow icons to snap back
+                    onScrollUp();
                     mActivePointerId = INVALID_POINTER;
                     endDrag();
                 } else {
