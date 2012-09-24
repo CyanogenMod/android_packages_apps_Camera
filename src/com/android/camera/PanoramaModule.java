@@ -341,9 +341,7 @@ public class PanoramaModule implements CameraModule,
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
-        // Dismiss the mode selection window if the ACTION_DOWN event is out of
-        // its view area.
-        return false;
+        return mActivity.superDispatchTouchEvent(m);
     }
 
     private void setupCamera() throws CameraHardwareException, CameraDisabledException {

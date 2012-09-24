@@ -46,6 +46,7 @@ import android.os.MessageQueue;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -55,11 +56,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.camera.CameraManager.CameraProxy;
+import com.android.camera.ui.AbstractSettingPopup;
 import com.android.camera.ui.FaceView;
 import com.android.camera.ui.FocusRenderer;
 import com.android.camera.ui.PieRenderer;
@@ -71,9 +75,9 @@ import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.TwoStateImageView;
-import com.android.camera.ui.ZoomControl;
-import com.android.gallery3d.common.ApiHelper;
+import com.android.camera.ui.ZoomRenderer;
 import com.android.gallery3d.app.CropImage;
+import com.android.gallery3d.common.ApiHelper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -120,6 +124,10 @@ public class PhotoModule
     private static final int UPDATE_PARAM_PREFERENCE = 4;
     private static final int UPDATE_PARAM_ALL = -1;
 
+    // This is the timeout to keep the camera in onPause for the first time
+    // after screen on if the activity is started from secure lock screen.
+    private static final int KEEP_CAMERA_TIMEOUT = 1000; // ms
+
     // copied from Camera hierarchy
     private CameraActivity mActivity;
     private View mRootView;
@@ -127,6 +135,7 @@ public class PhotoModule
     private int mCameraId;
     private Parameters mParameters;
     private boolean mPaused;
+    private AbstractSettingPopup mPopup;
 
     // these are only used by Camera
 
@@ -288,6 +297,8 @@ public class PhotoModule
     private PieRenderer mPieRenderer;
     private PhotoController mPhotoControl;
 
+    private ZoomRenderer mZoomRenderer;
+
     private String mSceneMode;
     private Toast mNotSelectableToast;
 
@@ -298,6 +309,8 @@ public class PhotoModule
 
     CameraStartUpThread mCameraStartUpThread;
     ConditionVariable mStartPreviewPrerequisiteReady = new ConditionVariable();
+
+    private PreviewGestures mGestures;
 
     protected class CameraOpenThread extends Thread {
         @Override
@@ -503,10 +516,17 @@ public class PhotoModule
         if (mPieRenderer == null) {
             mPieRenderer = new PieRenderer(mActivity);
             mRenderOverlay.addRenderer(mPieRenderer);
-            mPhotoControl = new PhotoController(mActivity, mPieRenderer);
+            mPhotoControl = new PhotoController(mActivity, this, mPieRenderer);
             mPhotoControl.setListener(this);
             mPieRenderer.setPieListener(this);
         }
+        if (mZoomRenderer == null) {
+            mZoomRenderer = new ZoomRenderer(mActivity);
+            mRenderOverlay.addRenderer(mZoomRenderer);
+        }
+        // this will handle gesture disambiguation and dispatching
+        mGestures = new PreviewGestures(mActivity, mRenderOverlay,
+                mZoomRenderer, mPieRenderer, mFocusManager);
         initializePhotoControl();
         mRenderOverlay.requestLayout();
 
@@ -624,7 +644,7 @@ public class PhotoModule
         }
     }
 
-    private class ZoomChangeListener implements ZoomControl.OnZoomChangedListener {
+    private class ZoomChangeListener implements ZoomRenderer.OnZoomChangedListener {
         @Override
         public void onZoomValueChanged(int index) {
             // Not useful to change zoom value when the activity is paused.
@@ -635,11 +655,30 @@ public class PhotoModule
             mParameters.setZoom(mZoomValue);
             mCameraDevice.setParametersAsync(mParameters);
         }
+
+        @Override
+        public void onZoomStart() {
+            if (mFocusManager != null) {
+                mFocusManager.setEnabled(false);
+            }
+        }
+
+        @Override
+        public void onZoomEnd() {
+            if (mFocusManager != null) {
+                mFocusManager.setEnabled(true);
+            }
+        }
     }
 
     private void initializeZoom() {
         if (!mParameters.isZoomSupported()) return;
         mZoomMax = mParameters.getMaxZoom();
+        // Currently we use immediate zoom for fast zooming to get better UX and
+        // there is no plan to take advantage of the smooth zoom.
+        mZoomRenderer.setZoomMax(mZoomMax);
+        mZoomRenderer.setZoomIndex(mParameters.getZoom());
+        mZoomRenderer.setOnZoomChangeListener(new ZoomChangeListener());
     }
 
     @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -666,7 +705,6 @@ public class PhotoModule
         }
     }
 
-
     @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void stopFaceDetection() {
@@ -683,8 +721,10 @@ public class PhotoModule
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         if (mCameraState == SWITCHING_CAMERA) return true;
-        if (mRenderOverlay != null) {
-            mRenderOverlay.directDispatchTouch(m);
+        if (mPopup == null && mGestures != null && mRenderOverlay != null) {
+            return mGestures.dispatchTouch(m);
+        } else if (mPopup != null) {
+            return mActivity.superDispatchTouchEvent(m);
         }
         return false;
     }
@@ -1312,8 +1352,13 @@ public class PhotoModule
 
     @Override
     public void onFullScreenChanged(boolean full) {
+        if (mPopup != null) {
+            dismissPopup();
+        }
+        if (mGestures != null) {
+            mGestures.setEnabled(full);
+        }
         if (ApiHelper.HAS_SURFACE_TEXTURE) return;
-
         if (full) {
             mPreviewSurfaceView.expand();
         } else {
@@ -1380,6 +1425,10 @@ public class PhotoModule
 
     @Override
     public boolean collapseCameraControls() {
+        if (mPopup != null) {
+            dismissPopup();
+            return true;
+        }
         return false;
     }
 
@@ -1427,6 +1476,9 @@ public class PhotoModule
         // icon.
         if (mReviewCancelButton instanceof RotateLayout) {
             mReviewCancelButton.setOrientation(orientation, animation);
+        }
+        if (mPopup != null) {
+            mPopup.setOrientation(orientation, animation);
         }
     }
 
@@ -1674,6 +1726,15 @@ public class PhotoModule
         // Wait the camera start up thread to finish.
         waitCameraStartUpThread();
 
+        // When camera is started from secure lock screen for the first time
+        // after screen on, the activity gets onCreate->onResume->onPause->onResume.
+        // To reduce the latency, keep the camera for a short time so it does
+        // not need to be opened again.
+        if (mCameraDevice != null && mActivity.isSecureCamera()
+                && ActivityBase.isFirstStartAfterScreenOn()) {
+            ActivityBase.resetFirstStartAfterScreenOn();
+            CameraHolder.instance().keep(KEEP_CAMERA_TIMEOUT);
+        }
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
@@ -1736,7 +1797,7 @@ public class PhotoModule
             // RotateImageView.
             mReviewDoneButton = (Rotatable) mRootView.findViewById(R.id.btn_done);
             mReviewCancelButton = (Rotatable) mRootView.findViewById(R.id.btn_cancel);
-            
+
             ((View) mReviewCancelButton).setVisibility(View.VISIBLE);
 
             ((View) mReviewDoneButton).setOnClickListener(new OnClickListener() {
@@ -2088,7 +2149,6 @@ public class PhotoModule
         }
     }
 
-
     @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN)
     private void setAutoExposureLockIfSupported() {
         if (mAeLockSupported) {
@@ -2401,6 +2461,7 @@ public class PhotoModule
 
     @Override
     public void onPieOpened(int centerX, int centerY) {
+        mActivity.cancelActivityTouchHandling();
         mActivity.setSwipingEnabled(false);
         if (mFocusManager != null) {
             mFocusManager.setEnabled(false);
@@ -2463,9 +2524,10 @@ public class PhotoModule
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
             // TODO: reset zoom
         }
-        mPhotoControl.reloadPreferences();
+        dismissPopup();
         CameraSettings.restorePreferences(mActivity, mPreferences,
                 mParameters);
+        mPhotoControl.reloadPreferences();
         onSharedPreferenceChanged();
     }
 
@@ -2512,6 +2574,24 @@ public class PhotoModule
     @Override
     public boolean needsSwitcher() {
         return !mIsImageCaptureIntent;
+    }
+
+    public void showPopup(AbstractSettingPopup popup) {
+        mActivity.hideUI();
+        mPopup = popup;
+        mPopup.setVisibility(View.VISIBLE);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.CENTER;
+        ((FrameLayout) mRootView).addView(mPopup, lp);
+    }
+
+    public void dismissPopup() {
+        mActivity.showUI();
+        if (mPopup != null) {
+            ((FrameLayout) mRootView).removeView(mPopup);
+            mPopup = null;
+        }
     }
 
 }

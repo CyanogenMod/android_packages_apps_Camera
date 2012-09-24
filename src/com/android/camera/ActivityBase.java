@@ -119,6 +119,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     protected static int sSecureAlbumId;
     // True if the camera is started from secure lock screen.
     protected boolean mSecureCamera;
+    private static boolean sFirstStartAfterScreenOn = true;
 
     private long mStorageSpace = Storage.LOW_STORAGE_THRESHOLD;
     private static final int UPDATE_STORAGE_HINT = 0;
@@ -169,6 +170,22 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         }
     };
 
+    private static BroadcastReceiver sScreenOffReceiver;
+    private static class ScreenOffReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            sFirstStartAfterScreenOn = true;
+        }
+    }
+
+    public static boolean isFirstStartAfterScreenOn() {
+        return sFirstStartAfterScreenOn;
+    }
+
+    public static void resetFirstStartAfterScreenOn() {
+        sFirstStartAfterScreenOn = false;
+    }
+
     protected class CameraOpenThread extends Thread {
         @Override
         public void run() {
@@ -185,11 +202,6 @@ public abstract class ActivityBase extends AbstractGalleryActivity
 
     @Override
     public void onCreate(Bundle icicle) {
-        // Setting the flag FLAG_SECURE causes white screen and flickering on Gingerbread,
-        // so we do not set the flag.
-        if (ApiHelper.CAN_USE_FLAG_SECURE) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
-        }
         super.disableToggleStatusBar();
         // Set a theme with action bar. It is not specified in manifest because
         // we want to hide it by default. setTheme must happen before
@@ -218,9 +230,12 @@ public abstract class ActivityBase extends AbstractGalleryActivity
             mSecureCamera = intent.getBooleanExtra(SECURE_CAMERA_EXTRA, false);
         }
         if (mSecureCamera) {
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-            registerReceiver(mScreenOffReceiver, intentFilter);
+            IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+            registerReceiver(mScreenOffReceiver, filter);
+            if (sScreenOffReceiver == null) {
+                sScreenOffReceiver = new ScreenOffReceiver();
+                getApplicationContext().registerReceiver(sScreenOffReceiver, filter);
+            }
         }
         super.onCreate(icicle);
     }
@@ -673,6 +688,10 @@ public abstract class ActivityBase extends AbstractGalleryActivity
             int id = Integer.parseInt(uri.getLastPathSegment());
             mAppBridge.addSecureAlbumItem(isVideo, id);
         }
+    }
+
+    public boolean isSecureCamera() {
+        return mSecureCamera;
     }
 
     //////////////////////////////////////////////////////////////////////////
