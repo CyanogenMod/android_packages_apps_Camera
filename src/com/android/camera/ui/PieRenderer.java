@@ -112,10 +112,10 @@ public class PieRenderer extends OverlayRenderer {
     private void init(Context ctx) {
         mItems = new ArrayList<PieItem>();
         Resources res = ctx.getResources();
-        mRadius = (int) res.getDimension(R.dimen.pie_radius_start);
-        mRadiusInc =  (int) res.getDimension(R.dimen.pie_radius_increment);
-        mSlop = (int) res.getDimension(R.dimen.pie_touch_slop);
-        mTouchOffset = (int) res.getDimension(R.dimen.pie_touch_offset);
+        mRadius = (int) res.getDimensionPixelSize(R.dimen.pie_radius_start);
+        mRadiusInc =  (int) res.getDimensionPixelSize(R.dimen.pie_radius_increment);
+        mSlop = (int) res.getDimensionPixelSize(R.dimen.pie_touch_slop);
+        mTouchOffset = (int) res.getDimensionPixelSize(R.dimen.pie_touch_offset);
         mOpen = false;
         mCenter = new Point(0,0);
         mNormalPaint = new Paint();
@@ -385,13 +385,14 @@ public class PieRenderer extends OverlayRenderer {
         res.x = (float) Math.PI / 2;
         x = x - mCenter.x;
         y = mCenter.y - y;
-        res.y = (float) Math.sqrt(x * x + y * y) + mTouchOffset;
+        res.y = (float) Math.sqrt(x * x + y * y);
         if (x != 0) {
             res.x = (float) Math.atan2(y,  x);
             if (res.x < 0) {
                 res.x = (float) (2 * Math.PI + res.x);
             }
         }
+        res.y = res.y + mTouchOffset;
         return res;
     }
 
@@ -403,16 +404,16 @@ public class PieRenderer extends OverlayRenderer {
         // find the matching item:
         List<PieItem> items = (mOpenItem != null) ? mOpenItem.getItems() : mItems;
         for (PieItem item : items) {
-            if (inside(polar, mTouchOffset, item)) {
+            if (inside(polar, item)) {
                 return item;
             }
         }
         return null;
     }
 
-    private boolean inside(PointF polar, float offset, PieItem item) {
-        return (item.getInnerRadius() < polar.y + offset)
-        && (item.getOuterRadius() > polar.y + offset)
+    private boolean inside(PointF polar, PieItem item) {
+        return (item.getInnerRadius() < polar.y)
+        && (item.getOuterRadius() > polar.y)
         && (item.getStartAngle() < polar.x)
         && (item.getStartAngle() + item.getSweep() > polar.x);
     }
