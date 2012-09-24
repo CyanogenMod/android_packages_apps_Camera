@@ -100,7 +100,7 @@ public class VideoCamera extends ActivityBase
     private static final int SHOW_TAP_TO_SNAPSHOT_TOAST = 7;
     private static final int SWITCH_CAMERA = 8;
     private static final int SWITCH_CAMERA_START_ANIMATION = 9;
-    private static final int HIDE_SURFACE_VIEW = 10;
+    private static final int SHRINK_SURFACE_VIEW = 10;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
 
@@ -275,8 +275,8 @@ public class VideoCamera extends ActivityBase
                     break;
                 }
 
-                case HIDE_SURFACE_VIEW: {
-                    mPreviewSurfaceView.setVisibility(View.GONE);
+                case SHRINK_SURFACE_VIEW: {
+                    mPreviewSurfaceView.shrink();
                     break;
                 }
 
@@ -335,11 +335,12 @@ public class VideoCamera extends ActivityBase
                 mFrameDrawnListener = new CameraScreenNail.OnFrameDrawnListener() {
                     @Override
                     public void onFrameDrawn(CameraScreenNail c) {
-                        mHandler.sendEmptyMessage(HIDE_SURFACE_VIEW);
+                        mHandler.sendEmptyMessage(SHRINK_SURFACE_VIEW);
                     }
                 };
             }
             mPreviewSurfaceView.getHolder().addCallback(mSurfaceViewCallback);
+            mPreviewSurfaceView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -964,8 +965,7 @@ public class VideoCamera extends ActivityBase
                 screenNail.releaseSurfaceTexture();
             }
             if (!ApiHelper.HAS_SURFACE_TEXTURE_RECORDING) {
-                mHandler.removeMessages(HIDE_SURFACE_VIEW);
-                mPreviewSurfaceView.setVisibility(View.GONE);
+                mHandler.removeMessages(SHRINK_SURFACE_VIEW);
             }
         }
     }
@@ -1136,12 +1136,11 @@ public class VideoCamera extends ActivityBase
         if (mCameraDevice == null) return;
 
         if (!ApiHelper.HAS_SURFACE_TEXTURE_RECORDING && ApiHelper.HAS_SURFACE_TEXTURE) {
-            // Set the SurfaceView to visible so the surface gets created.
-            // surfaceCreated() is called immediately when the visibility is
-            // changed to visible. Thus, mSurfaceViewReady should become true
-            // right after calling setVisibility().
-            mPreviewSurfaceView.setVisibility(View.VISIBLE);
-            if (!mSurfaceViewReady) return;
+            mPreviewSurfaceView.expand();
+            if (!mSurfaceViewReady) {
+                Log.e(TAG, "Surface view is not ready");
+                return;
+            }
         }
 
         Intent intent = getIntent();

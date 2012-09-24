@@ -21,7 +21,6 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,8 +32,6 @@ import android.widget.ImageView;
 
 import com.android.camera.ui.CameraSwitcher;
 import com.android.gallery3d.util.LightCycleHelper;
-
-import java.util.HashSet;
 
 public class CameraActivity extends ActivityBase
         implements CameraSwitcher.CameraSwitchListener {
@@ -50,7 +47,6 @@ public class CameraActivity extends ActivityBase
     private CameraSwitcher mSwitcher;
     private Drawable[] mDrawables;
     private int mSelectedModule;
-    private HashSet<View> mDispatched;
     private Dispatcher mDispatcher;
 
     private static final String TAG = "CAM_activity";
@@ -65,7 +61,6 @@ public class CameraActivity extends ActivityBase
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
-        mDispatched = new HashSet<View>();
         mDispatcher = new Dispatcher();
         setContentView(R.layout.camera_main);
         mFrame =(FrameLayout) findViewById(R.id.main_content);
@@ -282,6 +277,13 @@ public class CameraActivity extends ActivityBase
                 || super.onKeyUp(keyCode, event);
     }
 
+    public void cancelActivityTouchHandling() {
+        MotionEvent e = mDispatcher.getCancelEvent();
+        if (e != null) {
+            super.dispatchTouchEvent(e);
+        }
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         boolean handled = false;
@@ -292,10 +294,11 @@ public class CameraActivity extends ActivityBase
             mShutter.enableTouch(false);
             mSwitcher.enableTouch(false);
         }
-        if (!handled) {
-            handled = mCurrentModule.dispatchTouchEvent(m);
-        }
-        return handled || super.dispatchTouchEvent(m);
+        return handled || mCurrentModule.dispatchTouchEvent(m);
+    }
+
+    public boolean superDispatchTouchEvent(MotionEvent m) {
+        return super.dispatchTouchEvent(m);
     }
 
     // Preview texture has been copied. Now camera can be released and the
@@ -330,13 +333,22 @@ public class CameraActivity extends ActivityBase
     private class Dispatcher {
 
         private boolean mActive;
-        private int mDownX;
+        private MotionEvent mDown;
         private int mSlop;
         private boolean mDownInShutter;
 
         public Dispatcher() {
             mSlop = ViewConfiguration.get(CameraActivity.this).getScaledTouchSlop();
             mActive = true;
+        }
+
+        public MotionEvent getCancelEvent() {
+            if (mDown != null) {
+                MotionEvent cancel = MotionEvent.obtain(mDown);
+                cancel.setAction(MotionEvent.ACTION_CANCEL);
+                return cancel;
+            }
+            return null;
         }
 
         public boolean isActive() {
@@ -348,8 +360,8 @@ public class CameraActivity extends ActivityBase
             case MotionEvent.ACTION_DOWN:
                 mActive = false;
                 mDownInShutter = isInside(m, mShutter);
+                mDown = m;
                 if (mDownInShutter) {
-                    mDownX = (int) m.getX();
                     sendTo(m, mShutter);
                     mActive = true;
                 }
@@ -360,7 +372,7 @@ public class CameraActivity extends ActivityBase
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mDownInShutter) {
-                    if (Math.abs(m.getX() - mDownX) > mSlop) {
+                    if (Math.abs(m.getX() - mDown.getX()) > mSlop) {
                         // sliding switcher
                         mDownInShutter = false;
                         MotionEvent cancel = MotionEvent.obtain(m);
