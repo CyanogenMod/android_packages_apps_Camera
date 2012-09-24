@@ -524,9 +524,11 @@ public class PhotoModule
             mZoomRenderer = new ZoomRenderer(mActivity);
             mRenderOverlay.addRenderer(mZoomRenderer);
         }
-        // this will handle gesture disambiguation and dispatching
-        mGestures = new PreviewGestures(mActivity, mRenderOverlay,
-                mZoomRenderer, mPieRenderer, mFocusManager);
+        if (mGestures == null) {
+            // this will handle gesture disambiguation and dispatching
+            mGestures = new PreviewGestures(mActivity, mRenderOverlay,
+                    mZoomRenderer, mPieRenderer, mFocusManager);
+        }
         initializePhotoControl();
         mRenderOverlay.requestLayout();
 
@@ -721,10 +723,10 @@ public class PhotoModule
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
         if (mCameraState == SWITCHING_CAMERA) return true;
-        if (mPopup == null && mGestures != null && mRenderOverlay != null) {
-            return mGestures.dispatchTouch(m);
-        } else if (mPopup != null) {
+        if (mPopup != null) {
             return mActivity.superDispatchTouchEvent(m);
+        } else if (mGestures != null && mRenderOverlay != null) {
+            return mGestures.dispatchTouch(m);
         }
         return false;
     }
