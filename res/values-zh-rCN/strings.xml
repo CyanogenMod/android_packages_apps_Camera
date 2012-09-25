@@ -78,6 +78,37 @@
     <string name="pref_camera_iso_entry_iso100">100</string>
     <string name="pref_camera_iso_entry_iso50">50</string>
 
+    <!-- Settings screen, Timer mode title -->
+    <string name="pref_camera_timer_title">定时模式</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_timer_entry_0">关闭</string>
+    <string name="pref_camera_timer_entry_10">10 秒</string>
+    <string name="pref_camera_timer_entry_20">20 秒</string>
+    <string name="pref_camera_timer_entry_30">30 秒</string>
+    <string name="pref_camera_timer_entry_40">40 秒</string>
+    <string name="pref_camera_timer_entry_50">50 秒</string>
+    <string name="pref_camera_timer_entry_60">60 秒</string>
+
+    <!-- Settings screen, Burst mode title -->
+    <string name="pref_camera_burst_title">连拍模式</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_off">关闭</string>
+    <string name="pref_camera_burst_entry_5">5 张</string>
+    <string name="pref_camera_burst_entry_10">10 张</string>
+    <string name="pref_camera_burst_entry_15">15 张</string>
+    <string name="pref_camera_burst_entry_20">20 张</string>
+
+    <!-- Settings screen, JPEG -->
+    <string name="pref_camera_jpeg_title">JPEG 质量</string>
+
+    <!-- Settings screen, JPEG dialog radio button choices -->
+    <string name="pref_camera_jpeg_entry_super">无损</string>
+    <string name="pref_camera_jpeg_entry_high">高</string>
+    <string name="pref_camera_jpeg_entry_medium">中</string>
+    <string name="pref_camera_jpeg_entry_low">低</string>
+
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"闪光模式"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"自动"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"开"</string>
