@@ -18,13 +18,18 @@ package com.android.camera;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.android.camera.ui.PieRenderer;
 import com.android.camera.ui.RenderOverlay;
 import com.android.camera.ui.ZoomRenderer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PreviewGestures
         implements ScaleGestureDetector.OnScaleGestureListener {
@@ -36,16 +41,17 @@ public class PreviewGestures
     private static final int MODE_NONE = 0;
     private static final int MODE_PIE = 1;
     private static final int MODE_ZOOM = 2;
-    private static final int MODE_SWIPE = 3;
+    private static final int MODE_MODULE = 3;
     private static final int MODE_ALL = 4;
 
     private CameraActivity mActivity;
+    private CameraModule mModule;
     private RenderOverlay mOverlay;
     private PieRenderer mPie;
     private ZoomRenderer mZoom;
-    private FocusOverlayManager mFocus;
     private MotionEvent mDown;
     private ScaleGestureDetector mScale;
+    private List<View> mReceivers;
     private int mMode;
     private int mSlop;
     private int mTapTimeout;
@@ -61,13 +67,14 @@ public class PreviewGestures
         }
     };
 
-    public PreviewGestures(CameraActivity ctx, RenderOverlay overlay, ZoomRenderer zoom,
-            PieRenderer pie, FocusOverlayManager focus) {
+    public PreviewGestures(CameraActivity ctx, CameraModule module,
+            RenderOverlay overlay, ZoomRenderer zoom,
+            PieRenderer pie) {
         mActivity = ctx;
+        mModule = module;
         mOverlay = overlay;
         mPie = pie;
         mZoom = zoom;
-        mFocus = focus;
         mMode = MODE_ALL;
         mScale = new ScaleGestureDetector(ctx, this);
         mSlop = (int) ctx.getResources().getDimension(R.dimen.pie_touch_slop);
@@ -86,28 +93,40 @@ public class PreviewGestures
         mZoomOnly = true;
     }
 
+    public void addTouchReceiver(View v) {
+        if (mReceivers == null) {
+            mReceivers = new ArrayList<View>();
+        }
+        mReceivers.add(v);
+    }
+
     public boolean dispatchTouch(MotionEvent m) {
         if (!mEnabled) {
             return mActivity.superDispatchTouchEvent(m);
         }
         if (MotionEvent.ACTION_DOWN == m.getActionMasked()) {
-            mMode = MODE_ALL;
-            mDown = MotionEvent.obtain(m);
-            if (mPie != null && !mZoomOnly) {
-                mHandler.sendEmptyMessageDelayed(MSG_PIE, TIMEOUT_PIE);
+            if (checkReceivers(m)) {
+                mMode = MODE_MODULE;
+                return mActivity.superDispatchTouchEvent(m);
+            } else {
+                mMode = MODE_ALL;
+                mDown = MotionEvent.obtain(m);
+                if (mPie != null && !mZoomOnly) {
+                    mHandler.sendEmptyMessageDelayed(MSG_PIE, TIMEOUT_PIE);
+                }
+                if (mZoom != null) {
+                    mScale.onTouchEvent(m);
+                }
+                // make sure this is ok
+                return mActivity.superDispatchTouchEvent(m);
             }
-            if (mZoom != null) {
-                mScale.onTouchEvent(m);
-            }
-            // make sure this is ok
-            return mActivity.superDispatchTouchEvent(m);
         } else if (mMode == MODE_NONE) {
             return false;
         } else if (mMode == MODE_PIE) {
             return sendToPie(m);
         } else if (mMode == MODE_ZOOM) {
             return mScale.onTouchEvent(m);
-        } else if (mMode == MODE_SWIPE) {
+        } else if (mMode == MODE_MODULE) {
             return mActivity.superDispatchTouchEvent(m);
         } else {
             if (MotionEvent.ACTION_POINTER_DOWN == m.getActionMasked()) {
@@ -127,12 +146,9 @@ public class PreviewGestures
             if (MotionEvent.ACTION_UP == m.getActionMasked()) {
                 cancelPie();
                 cancelActivityTouchHandling(m);
-                // must have been tap to focus
-                if (mFocus != null && !mZoomOnly
-                        && (m.getEventTime() - mDown.getEventTime() < mTapTimeout)) {
-                    mDown.offsetLocation(-mOverlay.getWindowPositionX(),
-                            -mOverlay.getWindowPositionY());
-                    mFocus.onSingleTapUp((int) mDown.getX(), (int) mDown.getY());
+                // must have been tap
+                if (m.getEventTime() - mDown.getEventTime() < mTapTimeout) {
+                    mModule.onSingleTapUp(null, (int) mDown.getX(), (int) mDown.getY());
                     return true;
                 } else {
                     return mActivity.superDispatchTouchEvent(m);
@@ -146,7 +162,7 @@ public class PreviewGestures
                     if (dx < 0
                             && Math.abs(m.getY() - mDown.getY()) / -dx < 0.6f) {
                         // within about 37 degrees of x-axis
-                        mMode = MODE_SWIPE;
+                        mMode = MODE_MODULE;
                         return mActivity.superDispatchTouchEvent(m);
                     } else {
                         mMode = MODE_NONE;
@@ -156,6 +172,23 @@ public class PreviewGestures
             }
             return false;
         }
+    }
+
+    private boolean checkReceivers(MotionEvent m) {
+        if (mReceivers != null) {
+            for (View receiver : mReceivers) {
+                if (isInside(m, receiver)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isInside(MotionEvent evt, View v) {
+        return (v.getVisibility() == View.VISIBLE
+                && evt.getX() >= v.getLeft() && evt.getX() < v.getRight()
+                && evt.getY() >= v.getTop() && evt.getY() < v.getBottom());
     }
 
     public void cancelActivityTouchHandling(MotionEvent m) {
