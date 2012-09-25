@@ -2354,7 +2354,8 @@ public class PhotoModule
 
     private boolean isImageCaptureIntent() {
         String action = mActivity.getIntent().getAction();
-        return (MediaStore.ACTION_IMAGE_CAPTURE.equals(action));
+        return (MediaStore.ACTION_IMAGE_CAPTURE.equals(action)
+                || ActivityBase.ACTION_IMAGE_CAPTURE_SECURE.equals(action));
     }
 
     private void setupCaptureParams() {
