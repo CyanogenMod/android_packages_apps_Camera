@@ -1349,7 +1349,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public void playSound(int soundId) {
-        mCameraSound.play(soundId);
+        // Play only a sound when its turned on
+        if (CameraSettings.KEY_SOUND == "on")
+            mCameraSound.play(soundId);
     }
 
     private int getPreferredCameraId(ComboPreferences preferences) {
