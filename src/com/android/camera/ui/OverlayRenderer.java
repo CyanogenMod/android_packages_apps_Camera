@@ -27,11 +27,15 @@ public abstract class OverlayRenderer implements RenderOverlay.Renderer {
 
     protected int mLeft, mTop, mRight, mBottom;
 
-    protected boolean mVisible = true;
+    protected boolean mVisible;
 
     public void setVisible(boolean vis) {
         mVisible = vis;
         update();
+    }
+
+    public boolean isVisible() {
+        return mVisible;
     }
 
     // default does not handle touch
@@ -84,7 +88,7 @@ public abstract class OverlayRenderer implements RenderOverlay.Renderer {
 
     protected void update() {
         if (mOverlay != null) {
-            mOverlay.postInvalidate();
+            mOverlay.update();
         }
     }
 

@@ -231,6 +231,7 @@ public class FocusRenderer extends OverlayRenderer
         mAnimation.setScale(fromScale, toScale);
         mAnimation.setAnimationListener(timeout ? mEndAction : null);
         mOverlay.startAnimation(mAnimation);
+        update();
     }
 
     private class EndAction implements Animation.AnimationListener {
