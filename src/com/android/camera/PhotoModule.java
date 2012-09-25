@@ -441,6 +441,7 @@ public class PhotoModule
                         mCameraDevice.setPreviewDisplayAsync(mCameraSurfaceHolder);
                     }
                     startFaceDetection();
+                    startPieFade();
                     break;
                 }
 
@@ -601,6 +602,13 @@ public class PhotoModule
         addIdleHandler();
 
         mActivity.updateStorageSpaceAndHint();
+    }
+
+    private void startPieFade() {
+        if (mPieRenderer != null) {
+            mPieRenderer.setCenter(mRootView.getWidth() / 2, mRootView.getHeight() / 2);
+            mPieRenderer.fade();
+        }
     }
 
     private void showTapToFocusToastIfNeeded() {
