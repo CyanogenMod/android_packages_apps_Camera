@@ -520,7 +520,12 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         // Send an AppBridge to gallery to enable the camera preview.
         mAppBridge = new MyAppBridge();
         data.putParcelable(PhotoPage.KEY_APP_BRIDGE, mAppBridge);
-        getStateManager().startState(PhotoPage.class, data);
+        if (getStateManager().getStateCount() == 0) {
+            getStateManager().startState(PhotoPage.class, data);
+        } else {
+            getStateManager().switchState(getStateManager().getTopState(),
+                    PhotoPage.class, data);
+        }
         mCameraScreenNail = mAppBridge.getCameraScreenNail();
     }
 
