@@ -66,7 +66,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
             "com.android.gallery3d.action.DELETE_PICTURE";
     private static final String INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE =
             "android.media.action.STILL_IMAGE_CAMERA_SECURE";
-    private static final String ACTION_IMAGE_CAPTURE_SECURE =
+    public static final String ACTION_IMAGE_CAPTURE_SECURE =
             "android.media.action.IMAGE_CAPTURE_SECURE";
     // The intent extra for camera from secure lock screen. True if the gallery
     // should only show newly captured pictures. sSecureAlbumId does not
