@@ -27,7 +27,6 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -56,8 +55,6 @@ public class PieRenderer extends OverlayRenderer {
     // finger covers it
     private int mTouchOffset;
 
-    private boolean mOpen;
-
     private List<PieItem> mItems;
 
     private PieItem mOpenItem;
@@ -70,10 +67,6 @@ public class PieRenderer extends OverlayRenderer {
     private PieItem mCurrentItem;
 
     private boolean mAnimating;
-
-    // TODO: use mCenter
-    private int mDownX;
-    private int mDownY;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -110,13 +103,13 @@ public class PieRenderer extends OverlayRenderer {
         init(context);
     }
     private void init(Context ctx) {
+        setVisible(false);
         mItems = new ArrayList<PieItem>();
         Resources res = ctx.getResources();
         mRadius = (int) res.getDimensionPixelSize(R.dimen.pie_radius_start);
         mRadiusInc =  (int) res.getDimensionPixelSize(R.dimen.pie_radius_increment);
         mSlop = (int) res.getDimensionPixelSize(R.dimen.pie_touch_slop);
         mTouchOffset = (int) res.getDimensionPixelSize(R.dimen.pie_touch_offset);
-        mOpen = false;
         mCenter = new Point(0,0);
         mNormalPaint = new Paint();
         mNormalPaint.setColor(Color.argb(0, 0, 0, 0));
@@ -157,12 +150,8 @@ public class PieRenderer extends OverlayRenderer {
             }
             layoutPie();
         }
-        mOpen = show;
-        mHandler.sendEmptyMessage(mOpen ? MSG_OPEN : MSG_CLOSE);
-    }
-
-    public boolean isOpen() {
-        return mOpen;
+        setVisible(show);
+        mHandler.sendEmptyMessage(show ? MSG_OPEN : MSG_CLOSE);
     }
 
     private void setCenter(int x, int y) {
@@ -249,16 +238,14 @@ public class PieRenderer extends OverlayRenderer {
 
     @Override
     public void onDraw(Canvas canvas) {
-        if (mOpen) {
-            if (mOpenItem == null) {
-                // draw base menu
-                for (PieItem item : mItems) {
-                    drawItem(canvas, item);
-                }
-            } else {
-                for (PieItem inner : mOpenItem.getItems()) {
-                    drawItem(canvas, inner);
-                }
+        if (mOpenItem == null) {
+            // draw base menu
+            for (PieItem item : mItems) {
+                drawItem(canvas, item);
+            }
+        } else {
+            for (PieItem inner : mOpenItem.getItems()) {
+                drawItem(canvas, inner);
             }
         }
     }
@@ -288,13 +275,11 @@ public class PieRenderer extends OverlayRenderer {
         float y = evt.getY();
         int action = evt.getActionMasked();
         if (MotionEvent.ACTION_DOWN == action) {
-            mDownX = (int) x;
-            mDownY = (int) y;
             setCenter((int) x, (int) y);
             show(true);
             return true;
         } else if (MotionEvent.ACTION_UP == action) {
-            if (mOpen) {
+            if (isVisible()) {
                 PieItem item = mCurrentItem;
                 if (!mAnimating) {
                     deselect();
@@ -308,7 +293,7 @@ public class PieRenderer extends OverlayRenderer {
                 return true;
             }
         } else if (MotionEvent.ACTION_CANCEL == action) {
-            if (mOpen) {
+            if (isVisible()) {
                 show(false);
             }
             if (!mAnimating) {

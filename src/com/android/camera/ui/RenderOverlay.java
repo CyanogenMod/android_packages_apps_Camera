@@ -53,6 +53,7 @@ public class RenderOverlay extends RotateLayout {
                 LayoutParams.MATCH_PARENT));
         mClients = new ArrayList<Renderer>(10);
         mTouchClients = new ArrayList<Renderer>(10);
+        setWillNotDraw(false);
     }
 
     public void addRenderer(Renderer renderer) {
@@ -101,6 +102,10 @@ public class RenderOverlay extends RotateLayout {
         return mPosition[1];
     }
 
+    public void update() {
+        mRenderView.invalidate();
+    }
+
     private class RenderView extends View {
 
         private Renderer mTouchTarget;
@@ -142,10 +147,14 @@ public class RenderOverlay extends RotateLayout {
         @Override
         public void draw(Canvas canvas) {
             if (mClients == null) return;
+            boolean redraw = false;
             for (Renderer renderer : mClients) {
                 renderer.draw(canvas);
+                redraw = redraw || ((OverlayRenderer) renderer).isVisible();
             }
-            invalidate();
+            if (redraw) {
+                invalidate();
+            }
         }
     }
 
