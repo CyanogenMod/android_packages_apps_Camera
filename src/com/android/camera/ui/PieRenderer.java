@@ -16,6 +16,7 @@
 
 package com.android.camera.ui;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -27,10 +28,15 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.Transformation;
 
 import com.android.camera.R;
+import com.android.gallery3d.common.ApiHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,17 +73,18 @@ public class PieRenderer extends OverlayRenderer {
     private PieItem mCurrentItem;
 
     private boolean mAnimating;
+    private float mAlpha;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch(msg.what) {
             case MSG_OPEN:
-                if (mListener != null) {
+                if (mListener != null && !mAnimating) {
                     mListener.onPieOpened(mCenter.x, mCenter.y);
                 }
                 break;
             case MSG_CLOSE:
-                if (mListener != null) {
+                if (mListener != null && !mAnimating) {
                     mListener.onPieClosed();
                 }
                 break;
@@ -135,6 +142,32 @@ public class PieRenderer extends OverlayRenderer {
         mItems.clear();
     }
 
+    public void fade() {
+        Animation anim = new AlphaAnimation();
+        anim.setFillAfter(true);
+        anim.setAnimationListener(new AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                mAnimating = true;
+                update();
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                show(false);
+                mAlpha = 0f;
+                mAnimating = false;
+                setViewAlpha(mOverlay, 1);
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        anim.reset();
+        anim.setDuration(500);
+        show(true);
+        mOverlay.startAnimation(anim);
+    }
+
     /**
      * guaranteed has center set
      * @param show
@@ -154,7 +187,7 @@ public class PieRenderer extends OverlayRenderer {
         mHandler.sendEmptyMessage(show ? MSG_OPEN : MSG_CLOSE);
     }
 
-    private void setCenter(int x, int y) {
+    public void setCenter(int x, int y) {
         mCenter.x = x;
         mCenter.y = y;
     }
@@ -238,6 +271,9 @@ public class PieRenderer extends OverlayRenderer {
 
     @Override
     public void onDraw(Canvas canvas) {
+        if (mAnimating) {
+            setViewAlpha(mOverlay, mAlpha);
+        }
         if (mOpenItem == null) {
             // draw base menu
             for (PieItem item : mItems) {
@@ -264,6 +300,13 @@ public class PieRenderer extends OverlayRenderer {
             canvas.translate(view.getX(), view.getY());
             view.draw(canvas);
             canvas.restoreToCount(state);
+        }
+    }
+
+    @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
+    private void setViewAlpha(View v, float alpha) {
+        if (ApiHelper.HAS_VIEW_TRANSFORM_PROPERTIES) {
+            v.setAlpha(alpha);
         }
     }
 
@@ -411,6 +454,13 @@ public class PieRenderer extends OverlayRenderer {
     @Override
     public void layout(int l, int t, int r, int b) {
         super.layout(l, t, r, b);
+    }
+
+    private class AlphaAnimation extends Animation {
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            mAlpha = 1 - interpolatedTime;
+        }
     }
 
 }
