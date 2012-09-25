@@ -396,8 +396,16 @@ public class VideoModule implements CameraModule,
             mRenderOverlay.addRenderer(mZoomRenderer);
         }
         if (mGestures == null) {
-            mGestures = new PreviewGestures(mActivity, mRenderOverlay,
-                    mZoomRenderer, mPieRenderer, null);
+            mGestures = new PreviewGestures(mActivity, this, mRenderOverlay,
+                    mZoomRenderer, mPieRenderer);
+            if (isVideoCaptureIntent()) {
+                if (mReviewCancelButton != null) {
+                    mGestures.addTouchReceiver((View) mReviewCancelButton);
+                }
+                if (mReviewDoneButton != null) {
+                    mGestures.addTouchReceiver((View) mReviewDoneButton);
+                }
+            }
         }
     }
 
@@ -460,9 +468,8 @@ public class VideoModule implements CameraModule,
         });
         startPreviewThread.start();
 
-        initializeOverlay();
-
         initializeControlByIntent();
+        initializeOverlay();
         initializeMiscControls();
 
         mRotateDialog = new RotateDialogController(mActivity, R.layout.rotate_dialog);
@@ -2238,8 +2245,8 @@ public class VideoModule implements CameraModule,
         inflater.inflate(R.layout.video_module, (ViewGroup) mRootView);
 
         // from onCreate()
-        initializeOverlay();
         initializeControlByIntent();
+        initializeOverlay();
         initializeSurfaceView();
         initializeMiscControls();
         showTimeLapseUI(mCaptureTimeLapse);

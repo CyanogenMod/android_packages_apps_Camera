@@ -527,8 +527,16 @@ public class PhotoModule
         }
         if (mGestures == null) {
             // this will handle gesture disambiguation and dispatching
-            mGestures = new PreviewGestures(mActivity, mRenderOverlay,
-                    mZoomRenderer, mPieRenderer, mFocusManager);
+            mGestures = new PreviewGestures(mActivity, this, mRenderOverlay,
+                    mZoomRenderer, mPieRenderer);
+            if (isImageCaptureIntent()) {
+                if (mReviewCancelButton != null) {
+                    mGestures.addTouchReceiver((View) mReviewCancelButton);
+                }
+                if (mReviewDoneButton != null) {
+                    mGestures.addTouchReceiver((View) mReviewDoneButton);
+                }
+            }
         }
         initializePhotoControl();
         mRenderOverlay.requestLayout();
