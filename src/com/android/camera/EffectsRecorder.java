@@ -664,9 +664,11 @@ public class EffectsRecorder {
             case EFFECT_BACKDROPPER:
                 tryEnableVideoStabilization(false);
                 Object backgroundSrc = getGraphFilter(mRunner, "background");
-                // Set the context first before setting sourceUrl to guarantee
-                // the content URI get resolved properly.
-                setInputValue(backgroundSrc, "context", mContext);
+                if (ApiHelper.HAS_EFFECTS_RECORDING_CONTEXT_INPUT) {
+                    // Set the context first before setting sourceUrl to
+                    // guarantee the content URI get resolved properly.
+                    setInputValue(backgroundSrc, "context", mContext);
+                }
                 setInputValue(backgroundSrc, "sourceUrl", mEffectParameter);
                 // For front camera, the background video needs to be mirrored in the
                 // backdropper filter
