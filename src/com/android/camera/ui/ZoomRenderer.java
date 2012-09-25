@@ -21,8 +21,6 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.android.camera.R;
@@ -41,7 +39,6 @@ public class ZoomRenderer extends OverlayRenderer
     private int mCircleSize;
     private int mCenterX;
     private int mCenterY;
-    private boolean mScaling;
     private float mMaxCircle;
     private float mMinCircle;
     private float mScale = 1f;
@@ -63,6 +60,7 @@ public class ZoomRenderer extends OverlayRenderer
         mPaint.setStrokeWidth(res.getDimensionPixelSize(R.dimen.focus_outer_stroke));
         mDetector = new ScaleGestureDetector(ctx, this);
         mMinCircle = res.getDimensionPixelSize(R.dimen.zoom_ring_min);
+        setVisible(false);
     }
 
     // set from module
@@ -95,10 +93,8 @@ public class ZoomRenderer extends OverlayRenderer
 
     @Override
     public void onDraw(Canvas canvas) {
-        if (mScaling) {
-            canvas.drawCircle((float) mCenterX, (float) mCenterY,
-                    (float) mCircleSize, mPaint);
-        }
+        canvas.drawCircle((float) mCenterX, (float) mCenterY,
+                (float) mCircleSize, mPaint);
     }
 
     @Override
@@ -120,17 +116,17 @@ public class ZoomRenderer extends OverlayRenderer
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        mScaling = true;
+        setVisible(true);
         if (mListener != null) {
             mListener.onZoomStart();
         }
-        mOverlay.postInvalidate();
+        update();
         return true;
     }
 
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
-        mScaling = false;
+        setVisible(false);
         if (mListener != null) {
             mListener.onZoomEnd();
         }
