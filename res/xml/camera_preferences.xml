@@ -60,6 +60,12 @@
             camera:entries="@array/pref_switch_entries"
             camera:entryValues="@array/pref_switch_entryvalues" />
     <ListPreference
+	    camera:key="pref_sound"
+	    camera:defaultValue="@string/pref_camera_sound_default"
+	    camera:title="@string/pref_camera_sound_title"
+	    camera:entries="@array/pref_switch_entries"
+	    camera:entryValues="@array/pref_switch_entryvalues" />
+    <ListPreference
             camera:key="pref_camera_picturesize_key"
             camera:title="@string/pref_camera_picturesize_title"
             camera:entries="@array/pref_camera_picturesize_entries"

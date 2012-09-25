@@ -69,6 +69,7 @@ public class CameraSettings {
     public static final String KEY_FOCUS_TIME = "pref_camera_focus_key";
     public static final String KEY_ISO = "pref_camera_iso_key";
     public static final String KEY_REDEYE_REDUCTION = "pref_camera_redeyereduction_key";
+    public static final String KEY_SOUND = "pref_camera_sound_key";
 
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
 
@@ -195,6 +196,7 @@ public class CameraSettings {
         ListPreference iso = group.findPreference(KEY_ISO);
         ListPreference burstMode = group.findPreference(KEY_BURST_MODE);
         ListPreference jpeg = group.findPreference(KEY_JPEG);
+	ListPreference sound = group.findPreference(KEY_SOUND);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -240,6 +242,7 @@ public class CameraSettings {
         }
         if (burstMode != null) burstMode.setValueIndex(4);
         qcomInitPreferences(group);
+	if (sound != null) sound.setValue(VALUE_ON);
     }
 
     private void buildExposureCompensation(
