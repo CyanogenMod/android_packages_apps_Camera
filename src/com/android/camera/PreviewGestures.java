@@ -148,7 +148,9 @@ public class PreviewGestures
                 cancelActivityTouchHandling(m);
                 // must have been tap
                 if (m.getEventTime() - mDown.getEventTime() < mTapTimeout) {
-                    mModule.onSingleTapUp(null, (int) mDown.getX(), (int) mDown.getY());
+                    mModule.onSingleTapUp(null,
+                            (int) mDown.getX() - mOverlay.getWindowPositionX(),
+                            (int) mDown.getY() - mOverlay.getWindowPositionY());
                     return true;
                 } else {
                     return mActivity.superDispatchTouchEvent(m);

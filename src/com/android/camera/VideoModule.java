@@ -64,7 +64,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.camera.ui.AbstractSettingPopup;
-import com.android.camera.ui.FocusRenderer;
 import com.android.camera.ui.PieRenderer;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.PreviewSurfaceView;
@@ -214,7 +213,6 @@ public class VideoModule implements CameraModule,
 
     private RenderOverlay mRenderOverlay;
     private PieRenderer mPieRenderer;
-    private FocusRenderer mFocusRenderer;
 
     private VideoController mVideoControl;
     private AbstractSettingPopup mPopup;
@@ -380,10 +378,6 @@ public class VideoModule implements CameraModule,
 
     private void initializeOverlay() {
         mRenderOverlay = (RenderOverlay) mRootView.findViewById(R.id.render_overlay);
-        if (mFocusRenderer == null) {
-            mFocusRenderer = new FocusRenderer(mActivity);
-            mRenderOverlay.addRenderer(mFocusRenderer);
-        }
         if (mPieRenderer == null) {
             mPieRenderer = new PieRenderer(mActivity);
             mRenderOverlay.addRenderer(mPieRenderer);
@@ -2809,14 +2803,11 @@ public class VideoModule implements CameraModule,
     public void onPieOpened(int centerX, int centerY) {
         mActivity.cancelActivityTouchHandling();
         mActivity.setSwipingEnabled(false);
-        mFocusRenderer.setFocus(centerX, centerY);
-        mFocusRenderer.setVisible(true);
     }
 
     @Override
     public void onPieClosed() {
         mActivity.setSwipingEnabled(true);
-        mFocusRenderer.setVisible(false);
     }
 
     public void showPopup(AbstractSettingPopup popup) {

@@ -29,7 +29,7 @@ import android.util.Log;
 
 import com.android.camera.ui.FaceView;
 import com.android.camera.ui.FocusIndicator;
-import com.android.camera.ui.FocusRenderer;
+import com.android.camera.ui.PieRenderer;
 import com.android.gallery3d.common.ApiHelper;
 
 import java.util.ArrayList;
@@ -78,8 +78,7 @@ public class FocusOverlayManager {
     private boolean mAeAwbLock;
     private Matrix mMatrix;
 
-    // The parent layout that includes only the focus indicator.
-    private FocusRenderer mFocusRenderer;
+    private PieRenderer mPieRenderer;
 
     private int mPreviewWidth; // The width of the preview frame layout.
     private int mPreviewHeight; // The height of the preview frame layout.
@@ -141,8 +140,8 @@ public class FocusOverlayManager {
         mEnabled = enabled;
     }
 
-    public void setFocusRenderer(FocusRenderer renderer) {
-        mFocusRenderer = renderer;
+    public void setFocusRenderer(PieRenderer renderer) {
+        mPieRenderer = renderer;
         mInitialized = (mMatrix != null);
     }
 
@@ -185,7 +184,7 @@ public class FocusOverlayManager {
             // coordinates. In tap focus, the inverted matrix converts the UI
             // coordinates to driver coordinates.
             matrix.invert(mMatrix);
-            mInitialized = (mFocusRenderer != null);
+            mInitialized = (mPieRenderer != null);
         }
     }
 
@@ -309,9 +308,9 @@ public class FocusOverlayManager {
         if (mState != STATE_IDLE) return;
 
         if (moving) {
-            mFocusRenderer.showStart();
+            mPieRenderer.showStart();
         } else {
-            mFocusRenderer.showSuccess(true);
+            mPieRenderer.showSuccess(true);
         }
     }
 
@@ -354,10 +353,10 @@ public class FocusOverlayManager {
         }
 
         // Initialize variables.
-        int focusWidth = mFocusRenderer.getSize();
-        int focusHeight = mFocusRenderer.getSize();
-        if (focusWidth == 0 || mFocusRenderer.getWidth() == 0
-                || mFocusRenderer.getHeight() == 0) return;
+        int focusWidth = mPieRenderer.getSize();
+        int focusHeight = mPieRenderer.getSize();
+        if (focusWidth == 0 || mPieRenderer.getWidth() == 0
+                || mPieRenderer.getHeight() == 0) return;
         int previewWidth = mPreviewWidth;
         int previewHeight = mPreviewHeight;
         // Initialize mFocusArea.
@@ -372,7 +371,7 @@ public class FocusOverlayManager {
         }
 
         // Use margin to set the focus indicator to the touched area.
-        mFocusRenderer.setFocus(x, y);
+        mPieRenderer.setFocus(x, y);
 
         // Stop face detection because we want to specify focus and metering area.
         mListener.stopFaceDetection();
@@ -485,7 +484,7 @@ public class FocusOverlayManager {
 
         // Show only focus indicator or face indicator.
         boolean faceExists = (mFaceView != null && mFaceView.faceExists());
-        FocusIndicator focusIndicator = (faceExists) ? mFaceView : mFocusRenderer;
+        FocusIndicator focusIndicator = (faceExists) ? mFaceView : mPieRenderer;
 
         if (mState == STATE_IDLE) {
             if (mFocusArea == null) {
@@ -514,7 +513,7 @@ public class FocusOverlayManager {
         if (!mInitialized) return;
 
         // Put focus indicator to the center. clear reset position
-        mFocusRenderer.clear();
+        mPieRenderer.clear();
 
         mFocusArea = null;
         mMeteringArea = null;
