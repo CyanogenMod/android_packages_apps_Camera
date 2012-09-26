@@ -65,13 +65,13 @@
     <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Баланс белого"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Авто"</string>
     <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Лампа накаливания"</string>
-    <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Дневной свет"</string>
-    <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Лампа дневного света"</string>
-    <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Пасмурно"</string>
+    <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Солнечный свет"</string>
+    <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Лампа дн. света"</string>
+    <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Пасмурный день"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Режим съемки"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Авто"</string>
     <string name="pref_camera_scenemode_entry_hdr" msgid="2923388802899511784">"Эффект HDR"</string>
-    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Действие"</string>
+    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Спорт"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Ночь"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Закат"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Вечеринка"</string>
