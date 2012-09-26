@@ -16,12 +16,13 @@
 
 package com.android.camera.stress;
 
-import com.android.camera.VideoCamera;
+import com.android.camera.CameraActivity;
 import com.android.camera.stress.TestUtil;
 
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.provider.MediaStore;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.KeyEvent;
@@ -39,7 +40,7 @@ import com.android.camera.stress.CameraStressTestRunner;
  *
  */
 
-public class VideoCapture extends ActivityInstrumentationTestCase2 <VideoCamera> {
+public class VideoCapture extends ActivityInstrumentationTestCase2 <CameraActivity> {
     private static final long WAIT_FOR_PREVIEW = 1500; //1.5 seconds
     private static final long WAIT_FOR_SWITCH_CAMERA = 3000; //2 seconds
 
@@ -50,7 +51,7 @@ public class VideoCapture extends ActivityInstrumentationTestCase2 <VideoCamera>
     private TestUtil testUtil = new TestUtil();
 
     public VideoCapture() {
-        super(VideoCamera.class);
+        super(CameraActivity.class);
     }
 
     @Override
@@ -85,9 +86,9 @@ public class VideoCapture extends ActivityInstrumentationTestCase2 <VideoCamera>
     @LargeTest
     public void testBackVideoCapture() throws Exception {
         Instrumentation inst = getInstrumentation();
-        Intent intent = new Intent();
+        Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
 
-        intent.setClass(getInstrumentation().getTargetContext(), VideoCamera.class);
+        intent.setClass(getInstrumentation().getTargetContext(), CameraActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRAS_CAMERA_FACING,
                 android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK);
@@ -100,9 +101,9 @@ public class VideoCapture extends ActivityInstrumentationTestCase2 <VideoCamera>
     @LargeTest
     public void testFrontVideoCapture() throws Exception {
         Instrumentation inst = getInstrumentation();
-        Intent intent = new Intent();
+        Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
 
-        intent.setClass(getInstrumentation().getTargetContext(), VideoCamera.class);
+        intent.setClass(getInstrumentation().getTargetContext(), CameraActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRAS_CAMERA_FACING,
                 android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT);
