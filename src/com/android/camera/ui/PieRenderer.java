@@ -376,18 +376,20 @@ public class PieRenderer extends OverlayRenderer
                         view.getTop() + view.getHeight() / 2,
                         mDotRadius, mDotPaint);
             } else {
-                Paint p = item.isSelected() ? mSelectedPaint : mNormalPaint;
-                int state = canvas.save();
-                float r = getDegrees(item.getStartAngle());
-                canvas.rotate(r, mCenter.x, mCenter.y);
-                canvas.drawPath(item.getPath(), p);
-                canvas.restoreToCount(state);
-                // draw the item view
-                View view = item.getView();
-                state = canvas.save();
-                canvas.translate(view.getX(), view.getY());
-                view.draw(canvas);
-                canvas.restoreToCount(state);
+                if (item.getPath() != null) {
+                    Paint p = item.isSelected() ? mSelectedPaint : mNormalPaint;
+                    int state = canvas.save();
+                    float r = getDegrees(item.getStartAngle());
+                    canvas.rotate(r, mCenter.x, mCenter.y);
+                    canvas.drawPath(item.getPath(), p);
+                    canvas.restoreToCount(state);
+                    // draw the item view
+                    View view = item.getView();
+                    state = canvas.save();
+                    canvas.translate(view.getX(), view.getY());
+                    view.draw(canvas);
+                    canvas.restoreToCount(state);
+                }
             }
         }
     }
