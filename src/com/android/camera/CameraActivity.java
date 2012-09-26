@@ -84,8 +84,7 @@ public class CameraActivity extends ActivityBase
             iv.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View arg0) {
-                    mSwitcher.setCurrentModule(index);
-                    onCameraSelected(index);
+                    mSwitcher.animateToModule(index);
                 }
             });
         }
@@ -100,7 +99,7 @@ public class CameraActivity extends ActivityBase
             mSelectedModule = PHOTO_MODULE_INDEX;
         }
         mCurrentModule.init(this, mFrame, true);
-        mSwitcher.setCurrentModule(mSelectedModule);
+        mSwitcher.animateToModule(mSelectedModule);
     }
 
     @Override
@@ -187,11 +186,6 @@ public class CameraActivity extends ActivityBase
             mSwitcher.setVisibility(View.VISIBLE);
             showShutterIcon(false);
         }
-    }
-
-    public void switchToModule(int moduleIndex) {
-        mSwitcher.setCurrentModule(moduleIndex);
-        onCameraSelected(moduleIndex);
     }
 
     @Override
