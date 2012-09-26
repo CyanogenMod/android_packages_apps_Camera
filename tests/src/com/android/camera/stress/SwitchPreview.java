@@ -16,11 +16,11 @@
 
 package com.android.camera.stress;
 
-import com.android.camera.Camera;
-import com.android.camera.VideoCamera;
+import com.android.camera.CameraActivity;
 
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.provider.MediaStore;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.os.Environment;
@@ -39,7 +39,7 @@ import java.io.FileWriter;
  *    -w com.android.camera.tests/com.android.camera.stress.CameraStressTestRunner
  *
  */
-public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera>{
+public class SwitchPreview extends ActivityInstrumentationTestCase2 <CameraActivity>{
     private String TAG = "SwitchPreview";
     private static final int TOTAL_NUMBER_OF_SWITCHING = 200;
     private static final long WAIT_FOR_PREVIEW = 4000;
@@ -50,7 +50,7 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
     private FileWriter mfstream;
 
     public SwitchPreview() {
-        super(VideoCamera.class);
+        super(CameraActivity.class);
     }
 
     @Override
@@ -96,16 +96,16 @@ public class SwitchPreview extends ActivityInstrumentationTestCase2 <VideoCamera
             mOut.write("loop: ");
             for (int i=0; i< TOTAL_NUMBER_OF_SWITCHING; i++) {
                 Thread.sleep(WAIT_FOR_PREVIEW);
-                Intent intent = new Intent();
+                Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setClass(getInstrumentation().getTargetContext(),
-                        VideoCamera.class);
+                        CameraActivity.class);
                 getActivity().startActivity(intent);
                 Thread.sleep(WAIT_FOR_PREVIEW);
                 intent = new Intent();
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setClass(getInstrumentation().getTargetContext(),
-                        Camera.class);
+                        CameraActivity.class);
                 getActivity().startActivity(intent);
                 mOut.write(" ," + i);
                 mOut.flush();
