@@ -16,7 +16,7 @@
 
 package com.android.camera.stress;
 
-import com.android.camera.Camera;
+import com.android.camera.CameraActivity;
 import com.android.camera.stress.CameraStressTestRunner;
 
 import android.app.Instrumentation;
@@ -38,7 +38,7 @@ import android.app.Activity;
  *
  */
 
-public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
+public class ImageCapture extends ActivityInstrumentationTestCase2 <CameraActivity> {
     private String TAG = "ImageCapture";
     private static final long WAIT_FOR_IMAGE_CAPTURE_TO_BE_TAKEN = 1500;   //1.5 sedconds
     private static final long WAIT_FOR_SWITCH_CAMERA = 3000; //3 seconds
@@ -50,7 +50,7 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
         "android.intent.extras.CAMERA_FACING";
 
     public ImageCapture() {
-        super(Camera.class);
+        super(CameraActivity.class);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
         Instrumentation inst = getInstrumentation();
         Intent intent = new Intent();
 
-        intent.setClass(getInstrumentation().getTargetContext(), Camera.class);
+        intent.setClass(getInstrumentation().getTargetContext(), CameraActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRAS_CAMERA_FACING,
                 android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK);
@@ -109,7 +109,7 @@ public class ImageCapture extends ActivityInstrumentationTestCase2 <Camera> {
         Instrumentation inst = getInstrumentation();
         Intent intent = new Intent();
 
-        intent.setClass(getInstrumentation().getTargetContext(), Camera.class);
+        intent.setClass(getInstrumentation().getTargetContext(), CameraActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(EXTRAS_CAMERA_FACING,
                 android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT);
