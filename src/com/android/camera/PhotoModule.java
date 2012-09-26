@@ -65,7 +65,6 @@ import android.widget.Toast;
 import com.android.camera.CameraManager.CameraProxy;
 import com.android.camera.ui.AbstractSettingPopup;
 import com.android.camera.ui.FaceView;
-import com.android.camera.ui.FocusRenderer;
 import com.android.camera.ui.PieRenderer;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.PreviewSurfaceView;
@@ -292,7 +291,6 @@ public class PhotoModule
 
     // This handles everything about focus.
     private FocusOverlayManager mFocusManager;
-    private FocusRenderer mFocusRenderer;
 
     private PieRenderer mPieRenderer;
     private PhotoController mPhotoControl;
@@ -441,7 +439,6 @@ public class PhotoModule
                         mCameraDevice.setPreviewDisplayAsync(mCameraSurfaceHolder);
                     }
                     startFaceDetection();
-                    startPieFade();
                     break;
                 }
 
@@ -509,17 +506,13 @@ public class PhotoModule
     }
 
     private void initializeAfterCameraOpen() {
-        if (mFocusRenderer == null) {
-            mFocusRenderer = new FocusRenderer(mActivity);
-            mRenderOverlay.addRenderer(mFocusRenderer);
-            mFocusManager.setFocusRenderer(mFocusRenderer);
-        }
         if (mPieRenderer == null) {
             mPieRenderer = new PieRenderer(mActivity);
             mRenderOverlay.addRenderer(mPieRenderer);
             mPhotoControl = new PhotoController(mActivity, this, mPieRenderer);
             mPhotoControl.setListener(this);
             mPieRenderer.setPieListener(this);
+            mFocusManager.setFocusRenderer(mPieRenderer);
         }
         if (mZoomRenderer == null) {
             mZoomRenderer = new ZoomRenderer(mActivity);
@@ -610,13 +603,6 @@ public class PhotoModule
         addIdleHandler();
 
         mActivity.updateStorageSpaceAndHint();
-    }
-
-    private void startPieFade() {
-        if (mPieRenderer != null) {
-            mPieRenderer.setCenter(mRootView.getWidth() / 2, mRootView.getHeight() / 2);
-            mPieRenderer.fade();
-        }
     }
 
     private void showTapToFocusToastIfNeeded() {
@@ -2482,19 +2468,11 @@ public class PhotoModule
     public void onPieOpened(int centerX, int centerY) {
         mActivity.cancelActivityTouchHandling();
         mActivity.setSwipingEnabled(false);
-        if (mFocusManager != null) {
-            mFocusManager.setEnabled(false);
-            mFocusRenderer.showFocus(centerX, centerY);
-        }
     }
 
     @Override
     public void onPieClosed() {
         mActivity.setSwipingEnabled(true);
-        if (mFocusManager != null) {
-            mFocusRenderer.setVisible(false);
-            mFocusManager.setEnabled(true);
-        }
     }
 
     // Preview texture has been copied. Now camera can be released and the
