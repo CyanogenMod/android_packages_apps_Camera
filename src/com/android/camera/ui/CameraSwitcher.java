@@ -136,11 +136,14 @@ public class CameraSwitcher extends ScrollerView {
         super.setOrientation(orientation);
     }
 
-    public void setCurrentModule(int i) {
+    public void animateToModule(int i) {
         int oldModule = mCurrentModule;
         mCurrentModule = i;
         enable(oldModule, mCurrentModule);
         reposition();
+        // TODO: Replace this with a proper animation instead of a smoothScrollTo
+        // and a magic number
+        mHandler.sendEmptyMessageDelayed(MSG_SET_CAM, 170);
     }
 
     public void setSwitchListener(CameraSwitchListener l) {
