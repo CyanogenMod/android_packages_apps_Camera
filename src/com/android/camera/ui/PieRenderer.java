@@ -64,10 +64,12 @@ public class PieRenderer extends OverlayRenderer
     private static final int DIAL_HORIZONTAL = 157;
 
     private static final long PIE_OPEN_DELAY = 200;
+    private static final long FOCUS_TAP_TIMEOUT = 200;
 
     private static final int MSG_OPEN = 2;
     private static final int MSG_CLOSE = 3;
     private static final int MSG_SUBMENU = 4;
+    private static final int MSG_FOCUS_TAP = 5;
     private static final float PIE_SWEEP = (float)(Math.PI * 2 / 3);
     // geometry
     private Point mCenter;
@@ -114,7 +116,9 @@ public class PieRenderer extends OverlayRenderer
     private int mInnerOffset;
     private int mOuterStroke;
     private int mInnerStroke;
-    private boolean mFirstTime = true;
+    private boolean mShowFade = true;
+    private boolean mFocusFromTap;
+    private boolean mShowItems;
 
 
     private Handler mHandler = new Handler() {
@@ -132,6 +136,10 @@ public class PieRenderer extends OverlayRenderer
                 break;
             case MSG_SUBMENU:
                 openCurrentItem();
+                break;
+            case MSG_FOCUS_TAP:
+                // reset flag
+                mShowItems = false;
                 break;
             }
         }
@@ -177,7 +185,7 @@ public class PieRenderer extends OverlayRenderer
         mSuccessPaint.setColor(Color.GREEN);
         mDotPaint = new Paint();
         mDotPaint.setAntiAlias(true);
-        mDotPaint.setColor(Color.argb(80, 255, 255, 255));
+        mDotPaint.setColor(Color.argb(160, 255, 255, 255));
         mDotPaint.setStyle(Paint.Style.FILL);
         mCircle = new RectF();
         mDial = new RectF();
@@ -188,7 +196,11 @@ public class PieRenderer extends OverlayRenderer
         mInnerStroke = res.getDimensionPixelSize(R.dimen.focus_inner_stroke);
         mDotRadius = res.getDimensionPixelSize(R.dimen.focus_dot_radius);
         setVisible(false);
+        mState = STATE_IDLE;
+    }
 
+    public void showFade() {
+        mShowFade = true;
     }
 
     public void addItem(PieItem item) {
@@ -205,7 +217,7 @@ public class PieRenderer extends OverlayRenderer
     }
 
     public void fade() {
-        mFirstTime = false;
+        mShowFade = false;
         setCenter(mCenterX, mCenterY);
         Animation anim = new AlphaAnimation();
         anim.setFillAfter(true);
@@ -370,12 +382,7 @@ public class PieRenderer extends OverlayRenderer
 
     private void drawItem(Canvas canvas, PieItem item) {
         if (item.getView() != null) {
-            if (mState == STATE_FOCUSING) {
-                View view = item.getView();
-                canvas.drawCircle(view.getLeft() + view.getWidth() / 2,
-                        view.getTop() + view.getHeight() / 2,
-                        mDotRadius, mDotPaint);
-            } else {
+            if ((mFocusFromTap && mShowItems) || (mState == STATE_PIE)) {
                 if (item.getPath() != null) {
                     Paint p = item.isSelected() ? mSelectedPaint : mNormalPaint;
                     int state = canvas.save();
@@ -390,6 +397,11 @@ public class PieRenderer extends OverlayRenderer
                     view.draw(canvas);
                     canvas.restoreToCount(state);
                 }
+            } else if (mState == STATE_FOCUSING && !mFocusFromTap) {
+                View view = item.getView();
+                canvas.drawCircle(view.getLeft() + view.getWidth() / 2,
+                        view.getTop() + view.getHeight() / 2, mDotRadius,
+                        mDotPaint);
             }
         }
     }
@@ -552,6 +564,8 @@ public class PieRenderer extends OverlayRenderer
     // focus specific code
 
     public void setFocus(int x, int y) {
+        mFocusFromTap = true;
+        mShowItems = true;
         switch(mOverlay.getOrientation()) {
         case 0:
             mFocusX = x;
@@ -606,7 +620,7 @@ public class PieRenderer extends OverlayRenderer
         mFocusX = mCenterX;
         mFocusY = mCenterY;
         setCircle(mFocusX, mFocusY);
-        if (mFirstTime) {
+        if (mShowFade) {
             fade();
         }
     }
@@ -647,6 +661,11 @@ public class PieRenderer extends OverlayRenderer
     @Override
     public void showStart() {
         if (mState == STATE_IDLE) {
+            if (mFocusFromTap) {
+                mHandler.removeMessages(MSG_FOCUS_TAP);
+                mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_FOCUS_TAP),
+                        FOCUS_TAP_TIMEOUT);
+            }
             int angle = getRandomAngle();
             int range = getRandomRange();
             startAnimation(R.drawable.ic_focus_focusing, SCALING_UP_TIME,
@@ -680,6 +699,7 @@ public class PieRenderer extends OverlayRenderer
     public void clear() {
         mAnimation.cancel();
         mFocused = false;
+        mFocusFromTap = false;
         mOverlay.removeCallbacks(mDisappear);
         mDisappear.run();
     }
