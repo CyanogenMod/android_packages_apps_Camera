@@ -94,6 +94,7 @@ public class CameraActivity extends ActivityBase
                 continue; // not enabled, so don't add to UI
             }
             ImageView iv = new ImageView(this);
+            iv.setScaleType(ImageView.ScaleType.CENTER);
             iv.setImageDrawable(mDrawables[i]);
             mSwitcher.add(iv, new LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
