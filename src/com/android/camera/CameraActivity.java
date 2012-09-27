@@ -22,10 +22,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -191,6 +193,46 @@ public class CameraActivity extends ActivityBase
     @Override
     public void onConfigurationChanged(Configuration config) {
         super.onConfigurationChanged(config);
+
+        ViewGroup appRoot = (ViewGroup) findViewById(R.id.content);
+        // remove old switcher, shutter and shutter icon
+        View cameraControlsView = findViewById(R.id.camera_shutter_switcher);
+        appRoot.removeView(cameraControlsView);
+
+        // create new layout with the current orientation
+        LayoutInflater inflater = getLayoutInflater();
+        inflater.inflate(R.layout.camera_shutter_switcher, appRoot);
+        mShutter = (ShutterButton) findViewById(R.id.shutter_button);
+        mShutterIcon = (ImageView) findViewById(R.id.shutter_overlay);
+        mSwitcher = (CameraSwitcher) findViewById(R.id.camera_switcher);
+
+        // from onCreate
+        for (int i = 0; i < DRAW_IDS.length; i++) {
+            Drawable d = getResources().getDrawable(DRAW_IDS[i]);
+            mDrawables[i] = d;
+        }
+        for (int i = 0; i < mDrawables.length; i++) {
+            if (i == LIGHTCYCLE_MODULE_INDEX && !LightCycleHelper.hasLightCycleCapture(this)) {
+                continue; // not enabled, so don't add to UI
+            }
+            ImageView iv = new ImageView(this);
+            iv.setImageDrawable(mDrawables[i]);
+            mSwitcher.add(iv, new LayoutParams(LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT));
+            final int index = i;
+            iv.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    mSwitcher.setCurrentModule(index);
+                    onCameraSelected(index);
+                }
+            });
+        }
+
+        mSwitcher.setCurrentModule(mSelectedModule);
+        mSwitcher.setSwitchListener(this);
+        hideUI();
+
         mCurrentModule.onConfigurationChanged(config);
     }
 
