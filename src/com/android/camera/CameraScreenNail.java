@@ -26,11 +26,11 @@ import com.android.gallery3d.ui.RawTexture;
 import com.android.gallery3d.ui.SurfaceTextureScreenNail;
 
 /*
- * This is a ScreenNail which can displays camera preview.
+ * This is a ScreenNail which can display camera's preview.
  */
 @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
 public class CameraScreenNail extends SurfaceTextureScreenNail {
-    private static final String TAG = "CameraScreenNail";
+    private static final String TAG = "CAM_ScreenNail";
     private static final int ANIM_NONE = 0;
     // Capture animation is about to start.
     private static final int ANIM_CAPTURE_START = 1;
@@ -67,6 +67,12 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     private Object mLock = new Object();
 
     private OnFrameDrawnListener mOneTimeFrameDrawnListener;
+    private float mAspectRatio;
+    private int mRenderWidth;
+    private int mRenderHeight;
+    private int mPreviewWidth;
+    private int mPreviewHeight;
+    private boolean mFullScreen;
 
     public interface Listener {
         void requestRender();
@@ -80,6 +86,45 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
     public CameraScreenNail(Listener listener) {
         mListener = listener;
+    }
+
+    public void setFullScreen(boolean full) {
+        mFullScreen = full;
+    }
+
+    @Override
+    public void setSize(int w, int h) {
+        super.setSize(w,  h);
+        if (w > h) {
+            mAspectRatio  = (float) w / h;
+        } else {
+            mAspectRatio = (float) h / w;
+        }
+        updateRenderSize();
+    }
+
+    private void setPreviewLayoutSize(int w, int h) {
+        mPreviewWidth = w;
+        mPreviewHeight = h;
+        updateRenderSize();
+    }
+
+    private void updateRenderSize() {
+        // these callbacks above come at different times,
+        // so make sure we have all the data
+        if (mPreviewWidth != 0 && mAspectRatio > 0) {
+            if (mPreviewWidth > mPreviewHeight) {
+                mRenderWidth = Math.max(mPreviewWidth,
+                        (int) (mPreviewHeight * mAspectRatio));
+                mRenderHeight = Math.max(mPreviewHeight,
+                        (int)(mPreviewWidth / mAspectRatio));
+            } else {
+                mRenderWidth = Math.max(mPreviewWidth,
+                        (int) (mPreviewHeight / mAspectRatio));
+                mRenderHeight = Math.max(mPreviewHeight,
+                        (int) (mPreviewWidth * mAspectRatio));
+            }
+        }
     }
 
     @Override
@@ -145,6 +190,13 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
             switch (mAnimState) {
                 case ANIM_NONE:
+                    if (mFullScreen && (mRenderWidth != 0)) {
+                        // overscale image to make it fullscreen
+                        x = (x + width / 2) - mRenderWidth / 2;
+                        y = (y + height / 2) - mRenderHeight / 2;
+                        width = mRenderWidth;
+                        height = mRenderHeight;
+                    }
                     super.draw(canvas, x, y, width, height);
                     break;
                 case ANIM_SWITCH_COPY_TEXTURE:
@@ -245,6 +297,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     public void setPreviewFrameLayoutSize(int width, int height) {
         synchronized (mLock) {
             mSwitchAnimManager.setPreviewFrameLayoutSize(width, height);
+            setPreviewLayoutSize(width, height);
         }
     }
 

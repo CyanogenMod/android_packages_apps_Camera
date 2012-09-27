@@ -444,7 +444,6 @@ public class Util {
         // an exception. For now, just get the screen size.
         Point point = getDefaultDisplaySize(currentActivity, new Point());
         int targetHeight = Math.min(point.x, point.y);
-
         // Try to find an size match aspect ratio and size
         for (Size size : sizes) {
             double ratio = (double) size.width / size.height;
@@ -454,7 +453,6 @@ public class Util {
                 minDiff = Math.abs(size.height - targetHeight);
             }
         }
-
         // Cannot find the one match the aspect ratio. This should not happen.
         // Ignore the requirement.
         if (optimalSize == null) {
