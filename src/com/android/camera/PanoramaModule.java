@@ -328,6 +328,7 @@ public class PanoramaModule implements CameraModule,
                     case MSG_RESET_TO_PREVIEW:
                         onBackgroundThreadFinished();
                         resetToPreview();
+                        mActivity.showSwitcher();
                         clearMosaicFrameProcessorIfNeeded();
                         break;
                     case MSG_CLEAR_SCREEN_DELAY:
@@ -836,7 +837,6 @@ public class PanoramaModule implements CameraModule,
         // the first camera frame is available and therefore it is done by
         // mOnFirstFrameAvailableRunnable.
         mActivity.setSwipingEnabled(true);
-        mActivity.showSwitcher();
         mReviewLayout.setVisibility(View.GONE);
         mPanoProgressBar.setVisibility(View.GONE);
         mCaptureLayout.setVisibility(View.VISIBLE);
