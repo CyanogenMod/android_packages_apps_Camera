@@ -22,10 +22,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -64,14 +66,29 @@ public class CameraActivity extends ActivityBase
         mDispatcher = new Dispatcher();
         setContentView(R.layout.camera_main);
         mFrame =(FrameLayout) findViewById(R.id.main_content);
+        mDrawables = new Drawable[DRAW_IDS.length];
+        for (int i = 0; i < DRAW_IDS.length; i++) {
+            mDrawables[i] = getResources().getDrawable(DRAW_IDS[i]);
+        }
+        init();
+        mSwitcher.setSwitchListener(this);
+        if (MediaStore.INTENT_ACTION_VIDEO_CAMERA.equals(getIntent().getAction())
+                || MediaStore.ACTION_VIDEO_CAPTURE.equals(getIntent().getAction())) {
+            mCurrentModule = new VideoModule();
+            mSelectedModule = VIDEO_MODULE_INDEX;
+        } else {
+            mCurrentModule = new PhotoModule();
+            mSelectedModule = PHOTO_MODULE_INDEX;
+        }
+        mCurrentModule.init(this, mFrame, true);
+        mSwitcher.animateToModule(mSelectedModule);
+    }
+
+    public void init()
+    {
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
         mShutterIcon = (ImageView) findViewById(R.id.shutter_overlay);
         mSwitcher = (CameraSwitcher) findViewById(R.id.camera_switcher);
-        mDrawables = new Drawable[DRAW_IDS.length];
-        for (int i = 0; i < DRAW_IDS.length; i++) {
-            Drawable d = getResources().getDrawable(DRAW_IDS[i]);
-            mDrawables[i] = d;
-        }
         for (int i = 0; i < mDrawables.length; i++) {
             if (i == LIGHTCYCLE_MODULE_INDEX && !LightCycleHelper.hasLightCycleCapture(this)) {
                 continue; // not enabled, so don't add to UI
@@ -88,18 +105,6 @@ public class CameraActivity extends ActivityBase
                 }
             });
         }
-
-        mSwitcher.setSwitchListener(this);
-        if (MediaStore.INTENT_ACTION_VIDEO_CAMERA.equals(getIntent().getAction())
-                || MediaStore.ACTION_VIDEO_CAPTURE.equals(getIntent().getAction())) {
-            mCurrentModule = new VideoModule();
-            mSelectedModule = VIDEO_MODULE_INDEX;
-        } else {
-            mCurrentModule = new PhotoModule();
-            mSelectedModule = PHOTO_MODULE_INDEX;
-        }
-        mCurrentModule.init(this, mFrame, true);
-        mSwitcher.animateToModule(mSelectedModule);
     }
 
     @Override
@@ -191,6 +196,25 @@ public class CameraActivity extends ActivityBase
     @Override
     public void onConfigurationChanged(Configuration config) {
         super.onConfigurationChanged(config);
+
+        ViewGroup appRoot = (ViewGroup) findViewById(R.id.content);
+        // remove old switcher, shutter and shutter icon
+        View cameraControlsView = findViewById(R.id.camera_shutter_switcher);
+        appRoot.removeView(cameraControlsView);
+
+        // create new layout with the current orientation
+        LayoutInflater inflater = getLayoutInflater();
+        inflater.inflate(R.layout.camera_shutter_switcher, appRoot);
+        init();
+
+        mSwitcher.animateToModule(mSelectedModule);
+        mSwitcher.setSwitchListener(this);
+        if (mShowCameraAppView) {
+            showUI();
+        } else {
+            hideUI();
+        }
+
         mCurrentModule.onConfigurationChanged(config);
     }
 
