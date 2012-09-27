@@ -351,7 +351,6 @@ public class FocusOverlayManager {
                     mState == STATE_SUCCESS || mState == STATE_FAIL)) {
             cancelAutoFocus();
         }
-
         // Initialize variables.
         int focusWidth = mPieRenderer.getSize();
         int focusHeight = mPieRenderer.getSize();
@@ -481,7 +480,6 @@ public class FocusOverlayManager {
 
     public void updateFocusUI() {
         if (!mInitialized) return;
-
         // Show only focus indicator or face indicator.
         boolean faceExists = (mFaceView != null && mFaceView.faceExists());
         FocusIndicator focusIndicator = (faceExists) ? mFaceView : mPieRenderer;
