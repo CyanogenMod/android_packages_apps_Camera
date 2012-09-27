@@ -195,7 +195,6 @@ public class PieRenderer extends OverlayRenderer
         mOuterStroke = res.getDimensionPixelSize(R.dimen.focus_outer_stroke);
         mInnerStroke = res.getDimensionPixelSize(R.dimen.focus_inner_stroke);
         mDotRadius = res.getDimensionPixelSize(R.dimen.focus_dot_radius);
-        setVisible(false);
         mState = STATE_IDLE;
     }
 
@@ -259,6 +258,8 @@ public class PieRenderer extends OverlayRenderer
                 item.setSelected(false);
             }
             layoutPie();
+        } else {
+            mState = STATE_IDLE;
         }
         setVisible(show);
         mHandler.sendEmptyMessage(show ? MSG_OPEN : MSG_CLOSE);
@@ -660,6 +661,9 @@ public class PieRenderer extends OverlayRenderer
 
     @Override
     public void showStart() {
+        if (mAnimating) {
+            mState = STATE_IDLE;
+        }
         if (mState == STATE_IDLE) {
             if (mFocusFromTap) {
                 mHandler.removeMessages(MSG_FOCUS_TAP);
