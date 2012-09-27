@@ -90,7 +90,7 @@ public class PreviewGestures
     }
 
     public void setZoomOnly(boolean zoom) {
-        mZoomOnly = true;
+        mZoomOnly = zoom;
     }
 
     public void addTouchReceiver(View v) {
