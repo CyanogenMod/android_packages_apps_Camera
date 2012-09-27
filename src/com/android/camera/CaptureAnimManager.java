@@ -30,9 +30,9 @@ import com.android.gallery3d.ui.RawTexture;
 public class CaptureAnimManager {
     @SuppressWarnings("unused")
     private static final String TAG = "CAM_Capture";
-    private static final int TIME_FLASH = 80;
-    private static final int TIME_HOLD = 200;
-    private static final int TIME_SLIDE = 600;  // milliseconds.
+    private static final int TIME_FLASH = 200;
+    private static final int TIME_HOLD = 400;
+    private static final int TIME_SLIDE = 400;  // milliseconds.
 
     private final Interpolator mSlideInterpolator = new DecelerateInterpolator();
 
@@ -43,13 +43,11 @@ public class CaptureAnimManager {
     private float mDelta;
     private int mDrawWidth;
     private int mDrawHeight;
-    private int mFlashColor;
 
     /* preview: camera preview view.
      * review: view of picture just taken.
      */
     public CaptureAnimManager() {
-        mFlashColor = Color.argb(180, 255, 255, 255);
     }
 
     public void setOrientation(int animOrientation) {
@@ -88,7 +86,9 @@ public class CaptureAnimManager {
         if (timeDiff < TIME_HOLD) {
             review.draw(canvas, (int) mX, (int) mY, mDrawWidth, mDrawHeight);
             if (timeDiff < TIME_FLASH) {
-                canvas.fillRect(mX, mY, mDrawWidth, mDrawHeight, mFlashColor);
+                float f = 0.3f - 0.3f * timeDiff / TIME_FLASH;
+                int color = Color.argb((int) (255 * f), 255, 255, 255);
+                canvas.fillRect(mX, mY, mDrawWidth, mDrawHeight, color);
             }
         } else {
             float fraction = (float) (timeDiff - TIME_HOLD) / TIME_SLIDE;
