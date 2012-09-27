@@ -21,6 +21,7 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -84,8 +85,7 @@ public class CameraActivity extends ActivityBase
         mSwitcher.animateToModule(mSelectedModule);
     }
 
-    public void init()
-    {
+    public void init() {
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
         mShutterIcon = (ImageView) findViewById(R.id.shutter_overlay);
         mSwitcher = (CameraSwitcher) findViewById(R.id.camera_switcher);
@@ -214,7 +214,6 @@ public class CameraActivity extends ActivityBase
         } else {
             hideUI();
         }
-
         mCurrentModule.onConfigurationChanged(config);
     }
 
