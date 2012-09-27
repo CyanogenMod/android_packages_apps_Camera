@@ -88,6 +88,14 @@ public class VideoController extends PieController
     }
 
     @Override
+    public void reloadPreferences() {
+        super.reloadPreferences();
+        if (mPopup != null) {
+            mPopup.reloadPreference();
+        }
+    }
+
+    @Override
     public void overrideSettings(final String ... keyvalues) {
         super.overrideSettings(keyvalues);
         if (mPopup == null) {
