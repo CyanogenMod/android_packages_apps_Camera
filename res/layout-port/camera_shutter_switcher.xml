@@ -23,6 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="-12dip"
         android:layout_centerHorizontal="true"
         android:clickable="true"
         android:contentDescription="@string/accessibility_shutter_button"
@@ -33,16 +34,23 @@
     <com.android.camera.ui.CameraSwitcher
         android:id="@+id/camera_switcher"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="72dip"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="6dip" />
+        android:layout_marginBottom="2dip" />
+
+    <View
+        android:layout_height="1dip"
+        android:layout_width="match_parent"
+        android:layout_alignTop="@id/camera_switcher"
+        android:background="#5AF5F5F5" />
 
     <ImageView
         android:id="@+id/shutter_overlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="72dip"
+        android:layout_height="72dip"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="6dip" />
+        android:layout_marginBottom="8dip"
+        android:scaleType="center" />
 
 </RelativeLayout>

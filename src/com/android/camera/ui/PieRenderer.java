@@ -229,9 +229,7 @@ public class PieRenderer extends OverlayRenderer
             @Override
             public void onAnimationEnd(Animation animation) {
                 show(false);
-                mAlpha = 0f;
-                mAnimating = false;
-                setViewAlpha(mOverlay, 1);
+                resetAnimation();
             }
             @Override
             public void onAnimationRepeat(Animation animation) {
@@ -243,12 +241,21 @@ public class PieRenderer extends OverlayRenderer
         mOverlay.startAnimation(anim);
     }
 
+    private void resetAnimation() {
+        mAlpha = 0f;
+        mAnimating = false;
+        setViewAlpha(mOverlay, 1);
+    }
+
     /**
      * guaranteed has center set
      * @param show
      */
     private void show(boolean show) {
         if (show) {
+            if (mAnimating) {
+                resetAnimation();
+            }
             mState = STATE_PIE;
             // ensure clean state
             mAnimating = false;
@@ -339,7 +346,6 @@ public class PieRenderer extends OverlayRenderer
     }
 
     private Path makeSlice(float start, float end, int outer, int inner, Point center) {
-        outer = inner + (outer - inner) * 2 / 3;
         RectF bb =
                 new RectF(center.x - outer, center.y - outer, center.x + outer,
                         center.y + outer);
@@ -450,7 +456,6 @@ public class PieRenderer extends OverlayRenderer
         } else if (MotionEvent.ACTION_MOVE == action) {
             if (mAnimating) return false;
             PointF polar = getPolar(x, y);
-            int maxr = mRadius + mRadiusInc + 50;
             if (polar.y < mRadius) {
                 if (mOpenItem != null) {
                     mOpenItem = null;
@@ -459,15 +464,8 @@ public class PieRenderer extends OverlayRenderer
                 }
                 return false;
             }
-            if (polar.y > maxr) {
-                deselect();
-                show(false);
-                evt.setAction(MotionEvent.ACTION_DOWN);
-                return false;
-            }
             PieItem item = findItem(polar);
-            if (item == null) {
-            } else if (mCurrentItem != item) {
+            if ((item != null) && (mCurrentItem != item)) {
                 onEnter(item);
             }
         }
@@ -663,6 +661,7 @@ public class PieRenderer extends OverlayRenderer
     public void showStart() {
         if (mAnimating) {
             mState = STATE_IDLE;
+            resetAnimation();
         }
         if (mState == STATE_IDLE) {
             if (mFocusFromTap) {
