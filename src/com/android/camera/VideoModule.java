@@ -594,6 +594,9 @@ public class VideoModule implements CameraModule,
         for (Rotatable indicator : indicators) {
             if (indicator != null) indicator.setOrientation(orientation, animation);
         }
+        if (mGestures != null) {
+            mGestures.setOrientation(orientation);
+        }
 
         // We change the orientation of the review cancel button only for tablet
         // UI because there's a label along with the X icon. For phone UI, we

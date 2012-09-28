@@ -57,6 +57,7 @@ public class PreviewGestures
     private int mTapTimeout;
     private boolean mEnabled;
     private boolean mZoomOnly;
+    private int mOrientation;
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == MSG_PIE) {
@@ -80,6 +81,10 @@ public class PreviewGestures
         mSlop = (int) ctx.getResources().getDimension(R.dimen.pie_touch_slop);
         mTapTimeout = ViewConfiguration.getTapTimeout();
         mEnabled = true;
+    }
+
+    public void setOrientation(int orientation) {
+        mOrientation = orientation;
     }
 
     public void setEnabled(boolean enabled) {
@@ -160,10 +165,7 @@ public class PreviewGestures
                         || Math.abs(m.getY() - mDown.getY()) > mSlop) {
                     // moved too far and no timeout yet, no focus or pie
                     cancelPie();
-                    float dx = m.getX() - mDown.getX();
-                    if (dx < 0
-                            && Math.abs(m.getY() - mDown.getY()) / -dx < 0.6f) {
-                        // within about 37 degrees of x-axis
+                    if (isSwipe(m)) {
                         mMode = MODE_MODULE;
                         return mActivity.superDispatchTouchEvent(m);
                     } else {
@@ -183,6 +185,25 @@ public class PreviewGestures
                     return true;
                 }
             }
+        }
+        return false;
+    }
+
+    private boolean isSwipe(MotionEvent m) {
+        float dx = 0;
+        switch (mOrientation) {
+        case 0:
+            dx = m.getX() - mDown.getX();
+          return (dx < 0 && Math.abs(m.getY() - mDown.getY()) / -dx < 0.6f);
+        case 90:
+            dx = - (m.getY() - mDown.getY());
+            return (dx < 0 && Math.abs(m.getX() - mDown.getX()) / -dx < 0.6f);
+        case 180:
+            dx = -(m.getX() - mDown.getX());
+            return (dx < 0 && Math.abs(m.getY() - mDown.getY()) / -dx < 0.6f);
+        case 270:
+            dx = m.getY() - mDown.getY();
+            return (dx < 0 && Math.abs(m.getX() - mDown.getX()) / -dx < 0.6f);
         }
         return false;
     }
