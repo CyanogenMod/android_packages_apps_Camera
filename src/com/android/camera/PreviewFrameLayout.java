@@ -31,6 +31,9 @@ import com.android.gallery3d.common.ApiHelper;
  * A layout which handles the preview aspect ratio.
  */
 public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNotifier {
+
+    private static final String TAG = "CAM_preview";
+
     /** A callback to be invoked when the preview frame's size changes. */
     public interface OnSizeChangedListener {
         public void onSizeChanged(int width, int height);
@@ -95,11 +98,6 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
         // Resize the preview frame with correct aspect ratio.
         previewWidth -= hPadding;
         previewHeight -= vPadding;
-        if (previewWidth > previewHeight * mAspectRatio) {
-            previewWidth = (int) (previewHeight * mAspectRatio + .5);
-        } else {
-            previewHeight = (int) (previewWidth / mAspectRatio + .5);
-        }
 
         // Add the padding of the border.
         previewWidth += hPadding;

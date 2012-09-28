@@ -1362,7 +1362,12 @@ public class PhotoModule
         if (mGestures != null) {
             mGestures.setEnabled(full);
         }
-        if (ApiHelper.HAS_SURFACE_TEXTURE) return;
+        if (ApiHelper.HAS_SURFACE_TEXTURE) {
+            if (mActivity.mCameraScreenNail != null) {
+                ((CameraScreenNail) mActivity.mCameraScreenNail).setFullScreen(full);
+            }
+            return;
+        }
         if (full) {
             mPreviewSurfaceView.expand();
         } else {
