@@ -1915,6 +1915,12 @@ public class PhotoModule
             mFaceView.resume();
             mFocusManager.setFaceView(mFaceView);
         }
+        if (mPieRenderer != null) {
+            mRenderOverlay.addRenderer(mPieRenderer);
+        }
+        if (mZoomRenderer != null) {
+            mRenderOverlay.addRenderer(mZoomRenderer);
+        }
     }
 
     @Override
