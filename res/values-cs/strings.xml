@@ -42,7 +42,6 @@
     <string name="pref_camera_id_title" msgid="4040791582294635851">"Zvolit fotoaparát"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Zadní"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Přední"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Úložiště"</string>
     <string name="pref_camera_recordlocation_entry_off" msgid="8888142742988946038">"Vypnuto"</string>
     <string name="pref_camera_recordlocation_entry_on" msgid="7954533529969575594">"Zapnout"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Kvalita videa"</string>
@@ -123,7 +122,7 @@
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Přepnout do panoramatického režimu"</string>
 
     <!-- Update for JB -->
-    <string name="pref_camera_power_shutter_title">Power shutter</string>
+    <string name="pref_camera_power_shutter_title">Použít zapínací tlačítko</string>
     <string name="pref_camera_focusmode_entry_fixed">Na pevno</string>
     <string name="pref_camera_focusmode_entry_facedetect">Detekce obličeje</string>
     <string name="pref_camera_focusmode_entry_continuouspicture">Nepřerušovaný snímek</string>
@@ -194,8 +193,12 @@
     <string name="pref_camera_burst_entry_10">10 snímků</string>
     <string name="pref_camera_burst_entry_15">15 snímků</string>
     <string name="pref_camera_burst_entry_20">20 snímků</string>
-    <string name="pref_camera_jpeg_title">JPEG</string>
+    <string name="pref_camera_jpeg_title">Kvalita JPEG</string>
     <string name="pref_camera_jpeg_entry_super">Nejlepší</string>
     <string name="pref_camera_jpeg_entry_high">Vysoká</string>
     <string name="pref_camera_jpeg_entry_medium">Střední</string>
+    <string name="pref_camera_jpeg_entry_low">Nízká</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">Ukládat polohu</string>
+    <string name="pref_camera_iso_entry_auto">Automaticky</string>
+    <string name="pref_camera_iso_entry_isodeblur">Automaticky (HJR)</string>
 </resources>
