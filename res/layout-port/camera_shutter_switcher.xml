@@ -50,7 +50,7 @@
         android:layout_height="72dip"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="8dip"
+        android:layout_marginBottom="2dip"
         android:scaleType="center" />
 
 </RelativeLayout>
