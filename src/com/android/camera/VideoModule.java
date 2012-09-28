@@ -384,9 +384,13 @@ public class VideoModule implements CameraModule,
             mVideoControl = new VideoController(mActivity, this, mPieRenderer);
             mVideoControl.setListener(this);
             mPieRenderer.setPieListener(this);
+        } else {
+            mRenderOverlay.addRenderer(mPieRenderer);
         }
         if (mZoomRenderer == null) {
             mZoomRenderer = new ZoomRenderer(mActivity);
+            mRenderOverlay.addRenderer(mZoomRenderer);
+        } else {
             mRenderOverlay.addRenderer(mZoomRenderer);
         }
         if (mGestures == null) {
