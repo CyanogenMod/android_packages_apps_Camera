@@ -172,7 +172,7 @@ public abstract class IndicatorControl extends RelativeLayout implements
     }
 
     @Override
-    public void onSettingChanged() {
+    public void onSettingChanged(ListPreference pref) {
         if (mListener != null) {
             mListener.onSharedPreferenceChanged();
         }

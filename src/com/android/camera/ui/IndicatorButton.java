@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 
 import com.android.camera.CameraSettings;
 import com.android.camera.IconListPreference;
+import com.android.camera.ListPreference;
 import com.android.camera.R;
 
 // An indicator button that represents one camera setting. Ex: flash. Pressing it opens a popup
@@ -37,7 +38,7 @@ public class IndicatorButton extends AbstractIndicatorButton
     private Listener mListener;
 
     static public interface Listener {
-        public void onSettingChanged();
+        public void onSettingChanged(ListPreference pref);
     }
 
     public void setSettingChangedListener(Listener listener) {
@@ -134,7 +135,7 @@ public class IndicatorButton extends AbstractIndicatorButton
         // Dismiss later so the activated state can be updated before dismiss.
         dismissPopupDelayed();
         if (mListener != null) {
-            mListener.onSettingChanged();
+            mListener.onSettingChanged(mPreference);
         }
     }
 }
