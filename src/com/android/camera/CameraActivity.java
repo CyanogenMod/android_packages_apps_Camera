@@ -16,6 +16,7 @@
 
 package com.android.camera;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
@@ -25,6 +26,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
@@ -34,6 +36,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.android.camera.ui.CameraSwitcher;
+import com.android.camera.ui.RotateImageView;
 import com.android.gallery3d.util.LightCycleHelper;
 
 public class CameraActivity extends ActivityBase
@@ -46,11 +49,18 @@ public class CameraActivity extends ActivityBase
     CameraModule mCurrentModule;
     private FrameLayout mFrame;
     private ShutterButton mShutter;
-    private ImageView mShutterIcon;
+    private RotateImageView mShutterIcon;
     private CameraSwitcher mSwitcher;
     private Drawable[] mDrawables;
     private int mSelectedModule;
     private Dispatcher mDispatcher;
+
+    private MyOrientationEventListener mOrientationListener;
+    // The degrees of the device rotated clockwise from its natural orientation.
+    private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
+    // The orientation compensation for icons. Eg: if the value
+    // is 90, the UI components should be rotated 90 degrees counter-clockwise.
+    private int mOrientationCompensation = 0;
 
     private static final String TAG = "CAM_activity";
 
@@ -83,19 +93,22 @@ public class CameraActivity extends ActivityBase
         }
         mCurrentModule.init(this, mFrame, true);
         mSwitcher.animateToModule(mSelectedModule);
+        mOrientationListener = new MyOrientationEventListener(this);
     }
 
     public void init() {
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
-        mShutterIcon = (ImageView) findViewById(R.id.shutter_overlay);
+        mShutterIcon = (RotateImageView) findViewById(R.id.shutter_overlay);
+        mShutterIcon.enableFilter(false);
         mSwitcher = (CameraSwitcher) findViewById(R.id.camera_switcher);
         for (int i = 0; i < mDrawables.length; i++) {
             if (i == LIGHTCYCLE_MODULE_INDEX && !LightCycleHelper.hasLightCycleCapture(this)) {
                 continue; // not enabled, so don't add to UI
             }
-            ImageView iv = new ImageView(this);
+            RotateImageView iv = new RotateImageView(this);
             iv.setScaleType(ImageView.ScaleType.CENTER);
             iv.setImageDrawable(mDrawables[i]);
+            iv.enableFilter(false);
             mSwitcher.add(iv, new LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
             final int index = i;
@@ -108,6 +121,33 @@ public class CameraActivity extends ActivityBase
         }
     }
 
+    private class MyOrientationEventListener
+            extends OrientationEventListener {
+        public MyOrientationEventListener(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void onOrientationChanged(int orientation) {
+            // We keep the last known orientation. So if the user first orient
+            // the camera then point the camera to floor or sky, we still have
+            // the correct orientation.
+            if (orientation == ORIENTATION_UNKNOWN) return;
+            mOrientation = Util.roundOrientation(orientation, mOrientation);
+            // When the screen is unlocked, display rotation may change. Always
+            // calculate the up-to-date orientationCompensation.
+            int orientationCompensation =
+                    (mOrientation + Util.getDisplayRotation(CameraActivity.this)) % 360;
+            // Rotate camera mode icons in the switcher
+            if (mOrientationCompensation != orientationCompensation) {
+                mOrientationCompensation = orientationCompensation;
+                if(mSwitcher != null) {
+                    mSwitcher.rotateIcons(mOrientationCompensation, true);
+                }
+            }
+            mCurrentModule.onOrientationChanged(orientation);
+        }
+    }
     @Override
     public void onScroll() {
     }
@@ -157,6 +197,7 @@ public class CameraActivity extends ActivityBase
     private void showShutterIcon(boolean show, int resid) {
         if (show) {
             mShutterIcon.setImageResource(resid);
+            mShutterIcon.setOrientation(mOrientationCompensation, false);
         }
         mShutterIcon.setVisibility(show ? View.VISIBLE : View.GONE);
     }
@@ -221,6 +262,7 @@ public class CameraActivity extends ActivityBase
     @Override
     public void onPause() {
         mPaused = true;
+        mOrientationListener.disable();
         mCurrentModule.onPauseBeforeSuper();
         super.onPause();
         mCurrentModule.onPauseAfterSuper();
@@ -229,6 +271,7 @@ public class CameraActivity extends ActivityBase
     @Override
     public void onResume() {
         mPaused = false;
+        mOrientationListener.enable();
         mCurrentModule.onResumeBeforeSuper();
         super.onResume();
         mCurrentModule.onResumeAfterSuper();

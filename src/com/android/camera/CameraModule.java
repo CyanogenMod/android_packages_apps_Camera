@@ -66,4 +66,6 @@ public interface CameraModule {
 
     public boolean needsSwitcher();
 
+    public void onOrientationChanged(int orientation);
+
 }
