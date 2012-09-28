@@ -1489,6 +1489,9 @@ public class PhotoModule
         if (mPopup != null) {
             mPopup.setOrientation(orientation, animation);
         }
+        if (mGestures != null) {
+            mGestures.setOrientation(orientation);
+        }
     }
 
     @Override
