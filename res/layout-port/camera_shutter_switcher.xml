@@ -18,6 +18,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <View
+        android:layout_height="1dip"
+        android:layout_width="match_parent"
+        android:layout_alignTop="@+id/camera_switcher"
+        android:background="#5AF5F5F5" />
+
     <com.android.camera.ShutterButton
         android:id="@+id/shutter_button"
         android:layout_width="wrap_content"
@@ -37,12 +43,6 @@
         android:layout_height="72dip"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="2dip" />
-
-    <View
-        android:layout_height="1dip"
-        android:layout_width="match_parent"
-        android:layout_alignTop="@id/camera_switcher"
-        android:background="#5AF5F5F5" />
 
     <ImageView
         android:id="@+id/shutter_overlay"
