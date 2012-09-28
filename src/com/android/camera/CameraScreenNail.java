@@ -221,6 +221,13 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                     break;
                 case ANIM_CAPTURE_START:
                     copyPreviewTexture(canvas);
+                    if (mRenderWidth > 0) {
+                        // overscale image to make it fullscreen
+                        x = (x + width / 2) - mRenderWidth / 2;
+                        y = (y + height / 2) - mRenderHeight / 2;
+                        width = mRenderWidth;
+                        height = mRenderHeight;
+                    }
                     mCaptureAnimManager.startAnimation(x, y, width, height);
                     mAnimState = ANIM_CAPTURE_RUNNING;
                     break;
@@ -240,6 +247,13 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                     // Continue to the normal draw procedure if the animation is
                     // not drawn.
                     mAnimState = ANIM_NONE;
+                    if (mRenderWidth != 0) {
+                        // overscale image to make it fullscreen
+                        x = (x + width / 2) - mRenderWidth / 2;
+                        y = (y + height / 2) - mRenderHeight / 2;
+                        width = mRenderWidth;
+                        height = mRenderHeight;
+                    }
                     super.draw(canvas, x, y, width, height);
                 }
             }
