@@ -172,7 +172,7 @@ public class PieRenderer extends OverlayRenderer
         mNormalPaint.setColor(Color.argb(0, 0, 0, 0));
         mNormalPaint.setAntiAlias(true);
         mSelectedPaint = new Paint();
-        mSelectedPaint.setColor(Color.argb(128, 0, 0, 0)); //res.getColor(R.color.qc_selected));
+        mSelectedPaint.setColor(Color.argb(255, 51, 181, 229)); //res.getColor(R.color.qc_selected));
         mSelectedPaint.setAntiAlias(true);
         mSubPaint = new Paint();
         mSubPaint.setAntiAlias(true);
