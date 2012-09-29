@@ -169,6 +169,16 @@ public class CameraSwitcher extends ScrollerView {
         mContent.addView(view, lp);
     }
 
+    public void rotateIcons(int degree, boolean animation)
+    {
+        for(int i = 0; i < mContent.getChildCount(); i++) {
+            View v = mContent.getChildAt(i);
+            if (v instanceof RotateImageView) {
+                ((RotateImageView) v).setOrientation(degree, animation);
+            }
+        }
+    }
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         if (!changed) return;
