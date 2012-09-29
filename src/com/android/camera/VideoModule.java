@@ -379,29 +379,26 @@ public class VideoModule implements CameraModule,
         mRenderOverlay = (RenderOverlay) mRootView.findViewById(R.id.render_overlay);
         if (mPieRenderer == null) {
             mPieRenderer = new PieRenderer(mActivity);
-            mRenderOverlay.addRenderer(mPieRenderer);
             mVideoControl = new VideoController(mActivity, this, mPieRenderer);
             mVideoControl.setListener(this);
             mPieRenderer.setPieListener(this);
-        } else {
-            mRenderOverlay.addRenderer(mPieRenderer);
         }
+        mRenderOverlay.addRenderer(mPieRenderer);
         if (mZoomRenderer == null) {
             mZoomRenderer = new ZoomRenderer(mActivity);
-            mRenderOverlay.addRenderer(mZoomRenderer);
-        } else {
-            mRenderOverlay.addRenderer(mZoomRenderer);
         }
+        mRenderOverlay.addRenderer(mZoomRenderer);
         if (mGestures == null) {
-            mGestures = new PreviewGestures(mActivity, this, mRenderOverlay,
-                    mZoomRenderer, mPieRenderer);
-            if (isVideoCaptureIntent()) {
-                if (mReviewCancelButton != null) {
-                    mGestures.addTouchReceiver((View) mReviewCancelButton);
-                }
-                if (mReviewDoneButton != null) {
-                    mGestures.addTouchReceiver((View) mReviewDoneButton);
-                }
+            mGestures = new PreviewGestures(mActivity, this, mZoomRenderer, mPieRenderer);
+        }
+        mGestures.setRenderOverlay(mRenderOverlay);
+        mGestures.clearTouchReceivers();
+        if (isVideoCaptureIntent()) {
+            if (mReviewCancelButton != null) {
+                mGestures.addTouchReceiver((View) mReviewCancelButton);
+            }
+            if (mReviewDoneButton != null) {
+                mGestures.addTouchReceiver((View) mReviewDoneButton);
             }
         }
     }
