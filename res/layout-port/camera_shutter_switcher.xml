@@ -44,7 +44,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="2dip" />
 
-    <ImageView
+    <com.android.camera.ui.RotateImageView
         android:id="@+id/shutter_overlay"
         android:layout_width="72dip"
         android:layout_height="72dip"
