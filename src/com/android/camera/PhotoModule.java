@@ -161,7 +161,6 @@ public class PhotoModule
     private boolean mAwbLockSupported;
     private boolean mContinousFocusSupported;
 
-    private MyOrientationEventListener mOrientationListener;
     // The degrees of the device rotated clockwise from its natural orientation.
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
     // The orientation compensation for icons and thumbnails. Ex: if the value
@@ -578,11 +577,6 @@ public class PhotoModule
     private void initializeFirstTime() {
         if (mFirstTimeInitialized) return;
 
-        // Create orientation listener. This should be done first because it
-        // takes some time to get first orientation.
-        mOrientationListener = new MyOrientationEventListener(mActivity);
-        mOrientationListener.enable();
-
         // Initialize location service.
         boolean recordLocation = RecordLocationPreference.get(
                 mPreferences, mContentResolver);
@@ -628,9 +622,6 @@ public class PhotoModule
     // If the activity is paused and resumed, this method will be called in
     // onResume.
     private void initializeSecondTime() {
-        // Start orientation listener as soon as possible because it takes
-        // some time to get first orientation.
-        mOrientationListener.enable();
 
         // Start location update if needed.
         boolean recordLocation = RecordLocationPreference.get(
@@ -1441,33 +1432,26 @@ public class PhotoModule
         return false;
     }
 
-    private class MyOrientationEventListener
-            extends OrientationEventListener {
-        public MyOrientationEventListener(Context context) {
-            super(context);
+    @Override
+    public void onOrientationChanged(int orientation) {
+        // We keep the last known orientation. So if the user first orient
+        // the camera then point the camera to floor or sky, we still have
+        // the correct orientation.
+        if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) return;
+        mOrientation = Util.roundOrientation(orientation, mOrientation);
+        // When the screen is unlocked, display rotation may change. Always
+        // calculate the up-to-date orientationCompensation.
+        int orientationCompensation =
+                (mOrientation + Util.getDisplayRotation(mActivity)) % 360;
+        if (mOrientationCompensation != orientationCompensation) {
+            mOrientationCompensation = orientationCompensation;
+            setOrientationIndicator(mOrientationCompensation, true);
         }
 
-        @Override
-        public void onOrientationChanged(int orientation) {
-            // We keep the last known orientation. So if the user first orient
-            // the camera then point the camera to floor or sky, we still have
-            // the correct orientation.
-            if (orientation == ORIENTATION_UNKNOWN) return;
-            mOrientation = Util.roundOrientation(orientation, mOrientation);
-            // When the screen is unlocked, display rotation may change. Always
-            // calculate the up-to-date orientationCompensation.
-            int orientationCompensation =
-                    (mOrientation + Util.getDisplayRotation(mActivity)) % 360;
-            if (mOrientationCompensation != orientationCompensation) {
-                mOrientationCompensation = orientationCompensation;
-                setOrientationIndicator(mOrientationCompensation, true);
-            }
-
-            // Show the toast after getting the first orientation changed.
-            if (mHandler.hasMessages(SHOW_TAP_TO_FOCUS_TOAST)) {
-                mHandler.removeMessages(SHOW_TAP_TO_FOCUS_TOAST);
-                showTapToFocusToast();
-            }
+        // Show the toast after getting the first orientation changed.
+        if (mHandler.hasMessages(SHOW_TAP_TO_FOCUS_TOAST)) {
+            mHandler.removeMessages(SHOW_TAP_TO_FOCUS_TOAST);
+            showTapToFocusToast();
         }
     }
 
@@ -1768,7 +1752,6 @@ public class PhotoModule
         if (mFaceView != null) mFaceView.clear();
 
         if (mFirstTimeInitialized) {
-            mOrientationListener.disable();
             if (mImageSaver != null) {
                 mImageSaver.finish();
                 mImageSaver = null;

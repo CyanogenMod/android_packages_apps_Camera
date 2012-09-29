@@ -224,7 +224,6 @@ public class VideoModule implements CameraModule,
 
     private final Handler mHandler = new MainHandler();
 
-    private MyOrientationEventListener mOrientationListener;
     // The degrees of the device rotated clockwise from its natural orientation.
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
     // The orientation compensation for icons and thumbnails. Ex: if the value
@@ -472,7 +471,6 @@ public class VideoModule implements CameraModule,
 
         mRotateDialog = new RotateDialogController(mActivity, R.layout.rotate_dialog);
         mQuickCapture = mActivity.getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
-        mOrientationListener = new MyOrientationEventListener(mActivity);
         mLocationManager = new LocationManager(mActivity, null);
 
         // Make sure preview is started.
@@ -542,51 +540,45 @@ public class VideoModule implements CameraModule,
         }
     }
 
-    private class MyOrientationEventListener
-            extends OrientationEventListener {
-        public MyOrientationEventListener(Context context) {
-            super(context);
+
+    @Override
+    public void onOrientationChanged(int orientation) {
+        // We keep the last known orientation. So if the user first orient
+        // the camera then point the camera to floor or sky, we still have
+        // the correct orientation.
+        if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) return;
+        int newOrientation = Util.roundOrientation(orientation, mOrientation);
+
+        if (mOrientation != newOrientation) {
+            mOrientation = newOrientation;
+            // The input of effects recorder is affected by
+            // android.hardware.Camera.setDisplayOrientation. Its value only
+            // compensates the camera orientation (no Display.getRotation).
+            // So the orientation hint here should only consider sensor
+            // orientation.
+            if (effectsActive()) {
+                mEffectsRecorder.setOrientationHint(mOrientation);
+            }
         }
 
-        @Override
-        public void onOrientationChanged(int orientation) {
-            // We keep the last known orientation. So if the user first orient
-            // the camera then point the camera to floor or sky, we still have
-            // the correct orientation.
-            if (orientation == ORIENTATION_UNKNOWN) return;
-            int newOrientation = Util.roundOrientation(orientation, mOrientation);
+        // When the screen is unlocked, display rotation may change. Always
+        // calculate the up-to-date orientationCompensation.
+        int orientationCompensation =
+                (mOrientation + Util.getDisplayRotation(mActivity)) % 360;
 
-            if (mOrientation != newOrientation) {
-                mOrientation = newOrientation;
-                // The input of effects recorder is affected by
-                // android.hardware.Camera.setDisplayOrientation. Its value only
-                // compensates the camera orientation (no Display.getRotation).
-                // So the orientation hint here should only consider sensor
-                // orientation.
-                if (effectsActive()) {
-                    mEffectsRecorder.setOrientationHint(mOrientation);
-                }
+        if (mOrientationCompensation != orientationCompensation) {
+            mOrientationCompensation = orientationCompensation;
+            // Do not rotate the icons during recording because the video
+            // orientation is fixed after recording.
+            if (!mMediaRecorderRecording) {
+                setOrientationIndicator(mOrientationCompensation, true);
             }
+        }
 
-            // When the screen is unlocked, display rotation may change. Always
-            // calculate the up-to-date orientationCompensation.
-            int orientationCompensation =
-                    (mOrientation + Util.getDisplayRotation(mActivity)) % 360;
-
-            if (mOrientationCompensation != orientationCompensation) {
-                mOrientationCompensation = orientationCompensation;
-                // Do not rotate the icons during recording because the video
-                // orientation is fixed after recording.
-                if (!mMediaRecorderRecording) {
-                    setOrientationIndicator(mOrientationCompensation, true);
-                }
-            }
-
-            // Show the toast after getting the first orientation changed.
-            if (mHandler.hasMessages(SHOW_TAP_TO_SNAPSHOT_TOAST)) {
-                mHandler.removeMessages(SHOW_TAP_TO_SNAPSHOT_TOAST);
-                showTapToSnapshotToast();
-            }
+        // Show the toast after getting the first orientation changed.
+        if (mHandler.hasMessages(SHOW_TAP_TO_SNAPSHOT_TOAST)) {
+            mHandler.removeMessages(SHOW_TAP_TO_SNAPSHOT_TOAST);
+            showTapToSnapshotToast();
         }
     }
 
@@ -862,9 +854,7 @@ public class VideoModule implements CameraModule,
 
         showVideoSnapshotUI(false);
 
-        // Start orientation listener as soon as possible because it takes
-        // some time to get first orientation.
-        mOrientationListener.enable();
+
         if (!mPreviewing) {
             if (resetEffect()) {
                 mBgLearningMessageFrame.setVisibility(View.GONE);
@@ -1069,7 +1059,6 @@ public class VideoModule implements CameraModule,
         }
         resetScreenOn();
 
-        if (mOrientationListener != null) mOrientationListener.disable();
         if (mLocationManager != null) mLocationManager.recordLocation(false);
 
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
