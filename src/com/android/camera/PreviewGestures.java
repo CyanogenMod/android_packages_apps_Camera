@@ -69,11 +69,9 @@ public class PreviewGestures
     };
 
     public PreviewGestures(CameraActivity ctx, CameraModule module,
-            RenderOverlay overlay, ZoomRenderer zoom,
-            PieRenderer pie) {
+            ZoomRenderer zoom, PieRenderer pie) {
         mActivity = ctx;
         mModule = module;
-        mOverlay = overlay;
         mPie = pie;
         mZoom = zoom;
         mMode = MODE_ALL;
@@ -81,6 +79,10 @@ public class PreviewGestures
         mSlop = (int) ctx.getResources().getDimension(R.dimen.pie_touch_slop);
         mTapTimeout = ViewConfiguration.getTapTimeout();
         mEnabled = true;
+    }
+
+    public void setRenderOverlay(RenderOverlay overlay) {
+        mOverlay = overlay;
     }
 
     public void setOrientation(int orientation) {
@@ -103,6 +105,12 @@ public class PreviewGestures
             mReceivers = new ArrayList<View>();
         }
         mReceivers.add(v);
+    }
+
+    public void clearTouchReceivers() {
+        if (mReceivers != null) {
+            mReceivers.clear();
+        }
     }
 
     public boolean dispatchTouch(MotionEvent m) {
