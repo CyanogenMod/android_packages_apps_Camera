@@ -90,5 +90,5 @@
     <dimen name="focus_outer_stroke">3dp</dimen>
     <dimen name="focus_inner_stroke">2dp</dimen>
     <dimen name="focus_dot_radius">4dp</dimen>
-    <dimen name="zoom_ring_min">80dp</dimen>
+    <dimen name="zoom_ring_min">48dp</dimen>
 </resources>

@@ -44,6 +44,8 @@ public class ZoomRenderer extends OverlayRenderer
     private float mScale = 1f;
     private float mMinScale = 1f;
     private float mMaxScale = 3f;
+    private int mInnerStroke;
+    private int mOuterStroke;
 
     public interface OnZoomChangedListener {
         void onZoomStart();
@@ -57,7 +59,8 @@ public class ZoomRenderer extends OverlayRenderer
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.WHITE);
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(res.getDimensionPixelSize(R.dimen.focus_outer_stroke));
+        mInnerStroke = res.getDimensionPixelSize(R.dimen.focus_inner_stroke);
+        mOuterStroke = res.getDimensionPixelSize(R.dimen.focus_outer_stroke);
         mDetector = new ScaleGestureDetector(ctx, this);
         mMinCircle = res.getDimensionPixelSize(R.dimen.zoom_ring_min);
         setVisible(false);
@@ -93,6 +96,12 @@ public class ZoomRenderer extends OverlayRenderer
 
     @Override
     public void onDraw(Canvas canvas) {
+        mPaint.setStrokeWidth(mInnerStroke);
+        canvas.drawCircle(mCenterX, mCenterY, mMinCircle, mPaint);
+        canvas.drawCircle(mCenterX, mCenterY, mMaxCircle, mPaint);
+        canvas.drawLine(mCenterX - mMinCircle, mCenterY,
+                mCenterX - mMaxCircle - 4, mCenterY, mPaint);
+        mPaint.setStrokeWidth(mOuterStroke);
         canvas.drawCircle((float) mCenterX, (float) mCenterY,
                 (float) mCircleSize, mPaint);
     }
