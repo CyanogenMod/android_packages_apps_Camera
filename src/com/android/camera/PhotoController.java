@@ -42,6 +42,7 @@ public class PhotoController extends PieController
 
     public void initialize(PreferenceGroup group) {
         super.initialize(group);
+        mPopup = null;
         float sweep = FLOAT_PI_DIVIDED_BY_TWO / 2;
         addItem(CameraSettings.KEY_FLASH_MODE, FLOAT_PI_DIVIDED_BY_TWO - sweep, sweep);
         addItem(CameraSettings.KEY_EXPOSURE, FLOAT_PI_DIVIDED_BY_TWO + sweep, sweep);
