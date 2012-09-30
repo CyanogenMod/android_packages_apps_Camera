@@ -27,7 +27,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-
 public class CameraSwitcher extends ScrollerView {
 
     private static final String TAG = "CAM_Switcher";
@@ -95,6 +94,18 @@ public class CameraSwitcher extends ScrollerView {
         // initialize to non-zero
         mChildSize = 100;
         mOffset = 100;
+    }
+
+    public void setModuleIndex(int index) {
+        mCurrentModule = index;
+        enable(0, mCurrentModule);
+        setIgnoreScroll(true);
+        if (mHorizontal) {
+            scrollTo(convertModuleView(mCurrentModule) * mChildSize, 0);
+        } else {
+            scrollTo(0, convertModuleView(mCurrentModule) * mChildSize);
+        }
+        setIgnoreScroll(false);
     }
 
     @Override
