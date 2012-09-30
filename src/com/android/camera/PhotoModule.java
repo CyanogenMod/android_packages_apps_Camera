@@ -552,6 +552,9 @@ public class PhotoModule
         initializeZoom();
         updateOnScreenIndicators();
         showTapToFocusToastIfNeeded();
+        if (mPieRenderer != null) {
+            mPieRenderer.showFade();
+        }
     }
 
     private void initializePhotoControl() {
@@ -1712,9 +1715,6 @@ public class PhotoModule
         PopupManager.getInstance(mActivity).notifyShowPopup(null);
 
         mSoundPlayer = SoundClips.getPlayer(mActivity);
-        if (mPieRenderer != null) {
-            mPieRenderer.showFade();
-        }
     }
 
     void waitCameraStartUpThread() {
