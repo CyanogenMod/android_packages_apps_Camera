@@ -137,7 +137,7 @@ public class PreviewGestures
             return false;
         } else if (mMode == MODE_PIE) {
             return sendToPie(m);
-        } else if (mMode == MODE_ZOOM) {
+        } else if (mMode == MODE_ZOOM && mScale.isInProgress()) {
             return mScale.onTouchEvent(m);
         } else if (mMode == MODE_MODULE) {
             return mActivity.superDispatchTouchEvent(m);
@@ -151,6 +151,13 @@ public class PreviewGestures
                 if (!mZoomOnly) {
                     cancelPie();
                 }
+                if (mZoom != null) {
+                    onScaleBegin(mScale);
+                }
+            } else if ((mMode == MODE_ZOOM) && !mScale.isInProgress()
+                    && MotionEvent.ACTION_POINTER_UP == m.getActionMasked()) {
+                // user initiated and stopped zoom gesture without zooming
+                onScaleEnd(mScale);
             }
             // not zoom or pie mode and no timeout yet
             if (mZoom != null) {
@@ -256,8 +263,12 @@ public class PreviewGestures
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        mMode = MODE_ZOOM;
-        return mZoom.onScaleBegin(detector);
+        if (mMode != MODE_ZOOM) {
+            mMode = MODE_ZOOM;
+            return mZoom.onScaleBegin(detector);
+        } else {
+            return true;
+        }
     }
 
     @Override
