@@ -92,7 +92,7 @@ public class CameraActivity extends ActivityBase
             mSelectedModule = PHOTO_MODULE_INDEX;
         }
         mCurrentModule.init(this, mFrame, true);
-        mSwitcher.animateToModule(mSelectedModule);
+        mSwitcher.setModuleIndex(mSelectedModule);
         mOrientationListener = new MyOrientationEventListener(this);
     }
 
