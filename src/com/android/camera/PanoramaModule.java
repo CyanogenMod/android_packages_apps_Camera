@@ -559,6 +559,9 @@ public class PanoramaModule implements CameraModule,
 
         if (!aborted && !mThreadRunning) {
             mRotateDialog.showWaitingDialog(mPreparePreviewString);
+            // Hide shutter button, shutter icon, etc when waiting for
+            // panorama to stitch
+            mActivity.hideUI();
             runBackgroundThread(new Thread() {
                 @Override
                 public void run() {
@@ -1031,6 +1034,9 @@ public class PanoramaModule implements CameraModule,
         if (!mThreadRunning && mMosaicFrameProcessor.isMosaicMemoryAllocated()) {
             mGLRootView.setVisibility(View.GONE);
             mRotateDialog.showWaitingDialog(mDialogWaitingPreviousString);
+            // If stitching is still going on, make sure switcher and shutter button
+            // are not showing
+            mActivity.hideUI();
             mWaitProcessorTask = new WaitProcessorTask().execute();
         } else {
             if (!mThreadRunning) mGLRootView.setVisibility(View.VISIBLE);
@@ -1126,6 +1132,9 @@ public class PanoramaModule implements CameraModule,
 
         mCameraDevice.startPreviewAsync();
         mCameraState = PREVIEW_ACTIVE;
+
+        // make sure camera controls are visible in preview
+        mActivity.showUI();
     }
 
     private void stopCameraPreview() {
