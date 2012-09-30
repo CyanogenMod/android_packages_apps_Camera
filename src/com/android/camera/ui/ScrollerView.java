@@ -190,6 +190,10 @@ public class ScrollerView extends FrameLayout {
         return mIgnoreScroll;
     }
 
+    public void setIgnoreScroll(boolean ignore) {
+        mIgnoreScroll = ignore;
+    }
+
     @Override
     public boolean shouldDelayChildPressedState() {
         return true;
