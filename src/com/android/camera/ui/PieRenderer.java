@@ -28,7 +28,6 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -46,6 +45,7 @@ public class PieRenderer extends OverlayRenderer
 
     private static final String TAG = "CAM Pie";
 
+    private static final long PIE_FADE_DURATION = 1500;
     // Sometimes continuous autofocus starts and stops several times quickly.
     // These states are used to make sure the animation is run for at least some
     // time.
@@ -236,7 +236,7 @@ public class PieRenderer extends OverlayRenderer
             }
         });
         anim.reset();
-        anim.setDuration(1000);
+        anim.setDuration(PIE_FADE_DURATION);
         show(true);
         mOverlay.startAnimation(anim);
     }
@@ -700,6 +700,7 @@ public class PieRenderer extends OverlayRenderer
 
     @Override
     public void clear() {
+        if (mState == STATE_PIE) return;
         mAnimation.cancel();
         mFocused = false;
         mFocusFromTap = false;
