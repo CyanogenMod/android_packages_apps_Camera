@@ -504,23 +504,16 @@ public class PhotoModule
 //        enableCameraControls(false);
     }
 
-    private void initializeAfterCameraOpen() {
-        if (mPieRenderer == null) {
-            mPieRenderer = new PieRenderer(mActivity);
+    private void initializeRenderOverlay() {
+        if (mPieRenderer != null) {
             mRenderOverlay.addRenderer(mPieRenderer);
-            mPhotoControl = new PhotoController(mActivity, this, mPieRenderer);
-            mPhotoControl.setListener(this);
-            mPieRenderer.setPieListener(this);
-            mFocusManager.setFocusRenderer(mPieRenderer);
         }
-        if (mZoomRenderer == null) {
-            mZoomRenderer = new ZoomRenderer(mActivity);
+        if (mZoomRenderer != null) {
             mRenderOverlay.addRenderer(mZoomRenderer);
         }
-        if (mGestures == null) {
-            // this will handle gesture disambiguation and dispatching
-            mGestures = new PreviewGestures(mActivity, this, mRenderOverlay,
-                    mZoomRenderer, mPieRenderer);
+        if (mGestures != null) {
+            mGestures.clearTouchReceivers();
+            mGestures.setRenderOverlay(mRenderOverlay);
             if (isImageCaptureIntent()) {
                 if (mReviewCancelButton != null) {
                     mGestures.addTouchReceiver((View) mReviewCancelButton);
@@ -530,8 +523,26 @@ public class PhotoModule
                 }
             }
         }
-        initializePhotoControl();
         mRenderOverlay.requestLayout();
+    }
+
+    private void initializeAfterCameraOpen() {
+        if (mPieRenderer == null) {
+            mPieRenderer = new PieRenderer(mActivity);
+            mPhotoControl = new PhotoController(mActivity, this, mPieRenderer);
+            mPhotoControl.setListener(this);
+            mPieRenderer.setPieListener(this);
+            mFocusManager.setFocusRenderer(mPieRenderer);
+        }
+        if (mZoomRenderer == null) {
+            mZoomRenderer = new ZoomRenderer(mActivity);
+        }
+        if (mGestures == null) {
+            // this will handle gesture disambiguation and dispatching
+            mGestures = new PreviewGestures(mActivity, this, mZoomRenderer, mPieRenderer);
+        }
+        initializeRenderOverlay();
+        initializePhotoControl();
 
         // These depend on camera parameters.
         setPreviewFrameLayoutAspectRatio();
@@ -1898,12 +1909,7 @@ public class PhotoModule
             mFaceView.resume();
             mFocusManager.setFaceView(mFaceView);
         }
-        if (mPieRenderer != null) {
-            mRenderOverlay.addRenderer(mPieRenderer);
-        }
-        if (mZoomRenderer != null) {
-            mRenderOverlay.addRenderer(mZoomRenderer);
-        }
+        initializeRenderOverlay();
     }
 
     @Override
