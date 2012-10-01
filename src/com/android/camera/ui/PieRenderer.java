@@ -164,6 +164,7 @@ public class PieRenderer extends OverlayRenderer
         mItems = new ArrayList<PieItem>();
         Resources res = ctx.getResources();
         mRadius = (int) res.getDimensionPixelSize(R.dimen.pie_radius_start);
+        mCircleSize = mRadius - res.getDimensionPixelSize(R.dimen.focus_radius_offset);
         mRadiusInc =  (int) res.getDimensionPixelSize(R.dimen.pie_radius_increment);
         mSlop = (int) res.getDimensionPixelSize(R.dimen.pie_touch_slop);
         mTouchOffset = (int) res.getDimensionPixelSize(R.dimen.pie_touch_offset);
@@ -613,7 +614,6 @@ public class PieRenderer extends OverlayRenderer
     @Override
     public void layout(int l, int t, int r, int b) {
         super.layout(l, t, r, b);
-        mCircleSize = Math.min(200, Math.min(getWidth(), getHeight()) / 5);
         mCenterX = (r - l) / 2;
         mCenterY = (b - t) / 2;
         mFocusX = mCenterX;
