@@ -142,6 +142,11 @@ public class PreviewGestures
         } else if (mMode == MODE_MODULE) {
             return mActivity.superDispatchTouchEvent(m);
         } else {
+            // didn't receive down event previously;
+            // assume module wasn't initialzed and ignore this event.
+            if (mDown == null) {
+                return true;
+            }
             if (MotionEvent.ACTION_POINTER_DOWN == m.getActionMasked()) {
                 if (!mZoomOnly) {
                     cancelPie();
