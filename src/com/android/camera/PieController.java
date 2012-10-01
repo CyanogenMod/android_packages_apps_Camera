@@ -148,12 +148,6 @@ public class PieController {
 
     public void setPreferenceGroup(PreferenceGroup group) {
         mPreferenceGroup = group;
-        // Preset the current mode from the title of preference group.
-        String title = group.getTitle();
-        if (title.equals(mActivity.getString(
-                R.string.pref_camcorder_settings_category))) {
-//            mCurrentMode = MODE_VIDEO;
-        }
     }
 
     public void reloadPreferences() {
