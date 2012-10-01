@@ -507,6 +507,7 @@ public class PhotoModule
     private void initializeRenderOverlay() {
         if (mPieRenderer != null) {
             mRenderOverlay.addRenderer(mPieRenderer);
+            mFocusManager.setFocusRenderer(mPieRenderer);
         }
         if (mZoomRenderer != null) {
             mRenderOverlay.addRenderer(mZoomRenderer);
@@ -532,7 +533,6 @@ public class PhotoModule
             mPhotoControl = new PhotoController(mActivity, this, mPieRenderer);
             mPhotoControl.setListener(this);
             mPieRenderer.setPieListener(this);
-            mFocusManager.setFocusRenderer(mPieRenderer);
         }
         if (mZoomRenderer == null) {
             mZoomRenderer = new ZoomRenderer(mActivity);
@@ -1851,9 +1851,15 @@ public class PhotoModule
         boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
         String[] defaultFocusModes = mActivity.getResources().getStringArray(
                 R.array.pref_camera_focusmode_default_array);
-        mFocusManager = new FocusOverlayManager(mPreferences, defaultFocusModes,
-                mInitialParams, this, mirror,
-                mActivity.getMainLooper());
+        // if mFocusManager not null, reuse it
+        // otherwise create a new instance
+        if (mFocusManager != null) {
+            mFocusManager.removeMessages();
+        } else {
+            mFocusManager = new FocusOverlayManager(mPreferences, defaultFocusModes,
+                    mInitialParams, this, mirror,
+                    mActivity.getMainLooper());
+        }
     }
 
     private void initializeMiscControls() {
@@ -1885,7 +1891,7 @@ public class PhotoModule
 
         // from onCreate()
         initializeControlByIntent();
-        if (mFocusManager != null) mFocusManager.removeMessages();
+
         initializeFocusManager();
         initializeMiscControls();
         loadCameraPreferences();
