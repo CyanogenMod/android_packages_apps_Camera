@@ -86,6 +86,7 @@
     <dimen name="pie_touch_slop">12dp</dimen>
     <dimen name="pie_touch_offset">40dp</dimen>
     <dimen name="pie_view_size">48dp</dimen>
+    <dimen name="focus_radius_offset">8dp</dimen>
     <dimen name="focus_inner_offset">24dp</dimen>
     <dimen name="focus_outer_stroke">3dp</dimen>
     <dimen name="focus_inner_stroke">2dp</dimen>
