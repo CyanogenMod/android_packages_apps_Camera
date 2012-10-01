@@ -185,12 +185,18 @@ public class PreviewGestures
                         || Math.abs(m.getY() - mDown.getY()) > mSlop) {
                     // moved too far and no timeout yet, no focus or pie
                     cancelPie();
-                    if (isSwipe(m)) {
+                    if (isSwipe(m, true)) {
                         mMode = MODE_MODULE;
                         return mActivity.superDispatchTouchEvent(m);
                     } else {
-                        mMode = MODE_NONE;
                         cancelActivityTouchHandling(m);
+                        if (isSwipe(m , false)) {
+                            mMode = MODE_NONE;
+                        } else {
+                            mMode = MODE_PIE;
+                            openPie();
+                            sendToPie(m);
+                        }
                     }
                 }
             }
@@ -209,23 +215,33 @@ public class PreviewGestures
         return false;
     }
 
-    private boolean isSwipe(MotionEvent m) {
+    // left tests for finger moving right to left
+    private boolean isSwipe(MotionEvent m, boolean left) {
         float dx = 0;
+        float dy = 0;
         switch (mOrientation) {
         case 0:
             dx = m.getX() - mDown.getX();
-          return (dx < 0 && Math.abs(m.getY() - mDown.getY()) / -dx < 0.6f);
+            dy = Math.abs(m.getY() - mDown.getY());
+            break;
         case 90:
             dx = - (m.getY() - mDown.getY());
-            return (dx < 0 && Math.abs(m.getX() - mDown.getX()) / -dx < 0.6f);
+            dy = Math.abs(m.getX() - mDown.getX());
+            break;
         case 180:
             dx = -(m.getX() - mDown.getX());
-            return (dx < 0 && Math.abs(m.getY() - mDown.getY()) / -dx < 0.6f);
+            dy = Math.abs(m.getY() - mDown.getY());
+            break;
         case 270:
             dx = m.getY() - mDown.getY();
-            return (dx < 0 && Math.abs(m.getX() - mDown.getX()) / -dx < 0.6f);
+            dy = Math.abs(m.getX() - mDown.getX());
+            break;
         }
-        return false;
+        if (left) {
+            return (dx < 0 && dy / -dx < 0.6f);
+        } else {
+            return (dx > 0 && dy / dx < 0.6f);
+        }
     }
 
     private boolean isInside(MotionEvent evt, View v) {
