@@ -993,6 +993,10 @@ public class PanoramaModule implements CameraModule,
     }
 
     @Override
+    public void onOrientationChanged(int orientation) {
+    }
+
+    @Override
     public void onResumeBeforeSuper() {
         mPaused = false;
     }
