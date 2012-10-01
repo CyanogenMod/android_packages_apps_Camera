@@ -577,6 +577,11 @@ public class VideoModule implements CameraModule,
             mHandler.removeMessages(SHOW_TAP_TO_SNAPSHOT_TOAST);
             showTapToSnapshotToast();
         }
+
+        // Rotate the pop-up if needed
+        if (mPopup != null) {
+            mPopup.setOrientation(mOrientationCompensation, true);
+        }
     }
 
     private void setOrientationIndicator(int orientation, boolean animation) {
@@ -2810,6 +2815,8 @@ public class VideoModule implements CameraModule,
     public void showPopup(AbstractSettingPopup popup) {
         mActivity.hideUI();
         mPopup = popup;
+        // Make sure popup is brought up with the right orientation
+        mPopup.setOrientation(mOrientationCompensation, false);
         mPopup.setVisibility(View.VISIBLE);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT);
