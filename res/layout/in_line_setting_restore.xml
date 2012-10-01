@@ -19,5 +19,6 @@
         android:background="@drawable/bg_pressed_exit_fading">
     <TextView android:id="@+id/title"
             style="@style/SettingItemText"
+            android:gravity="left"
             android:layout_width="match_parent" />
 </com.android.camera.ui.InLineSettingRestore>
