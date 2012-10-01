@@ -2497,7 +2497,11 @@ public class VideoModule implements CameraModule,
 
     void showVideoSnapshotUI(boolean enabled) {
         if (Util.isVideoSnapshotSupported(mParameters) && !mIsVideoCaptureIntent) {
-            mPreviewFrameLayout.showBorder(enabled);
+            if (ApiHelper.HAS_SURFACE_TEXTURE && enabled) {
+                ((CameraScreenNail) mActivity.mCameraScreenNail).animateCapture(getCameraRotation());
+            } else {
+                mPreviewFrameLayout.showBorder(enabled);
+            }
 //            mIndicatorControlContainer.enableZoom(!enabled);
             mShutterButton.setEnabled(!enabled);
         }
