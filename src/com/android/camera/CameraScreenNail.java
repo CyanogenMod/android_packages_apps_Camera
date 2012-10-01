@@ -292,6 +292,9 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
         synchronized (mLock) {
+            if (getSurfaceTexture() != surfaceTexture) {
+                return;
+            }
             mFirstFrameArrived = true;
             if (mVisible) {
                 if (mAnimState == ANIM_SWITCH_WAITING_FIRST_FRAME) {
