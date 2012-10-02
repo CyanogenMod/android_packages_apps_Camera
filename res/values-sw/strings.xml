@@ -78,6 +78,8 @@
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Haiwezi kuchaguliwa ikiwa katika hali ya mandhari."</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Rejesha kwa chaguo misingi"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Mfichuo"</string>
+    <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
+    <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"SAWA"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Hifadhi yako ya USB inaishiwa na nafasi. Badilisha mipangilio ya ubora au futa baadhi ya picha au faili."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Nafasi ya kadi yako ya SD inaelekea kuisha. Badlisha mpangilio wa ubora au futa baadhi ya picha au faili zingine."</string>
@@ -131,4 +133,8 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Imekamilika"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Weka Nafasi ya Muda"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Kipengele cha muda kupita kimezimika. Kiwashe ili kuweka nafasi ya muda."</string>
+    <string name="remember_location_title" msgid="9060472929006917810">"Kumbuka maeneo ya picha?"</string>
+    <string name="remember_location_prompt" msgid="9107532965604174377">"Tolea maelezo picha na video zako kwa maeneo yaliyohifadhiwa ambapo zilichukuliwa."\n\n"Programu nyingine zinaweza kufikia  maelezo haya pamoja na picha zako zilizohifadhiwa."</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"La, asante"</string>
+    <string name="remember_location_yes" msgid="862884269285964180">"Ndiyo"</string>
 </resources>
