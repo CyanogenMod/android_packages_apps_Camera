@@ -1808,12 +1808,12 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
         }
     }
 
-    @Override
+    /*@Override
     protected void onPause() {
         mPaused = true;
         super.onPause();
         stopCamera();
-    }
+    }*/
 
     private void initializeControlByIntent() {
         if (mIsImageCaptureIntent) {
