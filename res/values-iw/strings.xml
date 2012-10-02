@@ -78,6 +78,8 @@
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"לא ניתן לבחירה במצב נוף."</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"שחזר ברירות מחדל"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"חשיפה"</string>
+    <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
+    <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"אישור"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"אוזל המקום באמצעי האחסון מסוג USB. שנה את הגדרת האיכות או מחק כמה תמונות או קבצים אחרים."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"השטח בכרטיס SD אוזל. שנה את הגדרת האיכות או מחק חלק מהתמונות או קבצים אחרים."</string>
@@ -131,4 +133,8 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"בוצע"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"הגדר מרווח זמן"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"תכונת ההילוך המהיר כבויה. הפעל אותה כדי להגדיר מרווח זמן."</string>
+    <string name="remember_location_title" msgid="9060472929006917810">"האם לזכור מיקומי תמונות?"</string>
+    <string name="remember_location_prompt" msgid="9107532965604174377">"הוספת כיתובים בתמונות ובסרטונים המציינים את המקומות שבהם צולמו."\n\n"יישומים אחרים יכולים לגשת למידע זה, יחד עם תמונות שנשמרו."</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"לא, תודה"</string>
+    <string name="remember_location_yes" msgid="862884269285964180">"כן"</string>
 </resources>
