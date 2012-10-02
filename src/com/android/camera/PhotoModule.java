@@ -685,9 +685,11 @@ public class PhotoModule
         mZoomMax = mParameters.getMaxZoom();
         // Currently we use immediate zoom for fast zooming to get better UX and
         // there is no plan to take advantage of the smooth zoom.
-        mZoomRenderer.setZoomMax(mZoomMax);
-        mZoomRenderer.setZoomIndex(mParameters.getZoom());
-        mZoomRenderer.setOnZoomChangeListener(new ZoomChangeListener());
+        if (mZoomRenderer != null) {
+            mZoomRenderer.setZoomMax(mZoomMax);
+            mZoomRenderer.setZoomIndex(mParameters.getZoom());
+            mZoomRenderer.setOnZoomChangeListener(new ZoomChangeListener());
+        }
     }
 
     @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
