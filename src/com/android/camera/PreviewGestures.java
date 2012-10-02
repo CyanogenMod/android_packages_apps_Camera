@@ -145,8 +145,13 @@ public class PreviewGestures
                 return sendToPie(m);
             }
             return true;
-        } else if (mMode == MODE_ZOOM && mScale.isInProgress()) {
-            return mScale.onTouchEvent(m);
+        } else if (mMode == MODE_ZOOM) {
+            mScale.onTouchEvent(m);
+            if (!mScale.isInProgress() && MotionEvent.ACTION_POINTER_UP == m.getActionMasked()) {
+                mMode = MODE_NONE;
+                onScaleEnd(mScale);
+            }
+            return true;
         } else if (mMode == MODE_MODULE) {
             return mActivity.superDispatchTouchEvent(m);
         } else {
@@ -158,13 +163,16 @@ public class PreviewGestures
             if (MotionEvent.ACTION_POINTER_DOWN == m.getActionMasked()) {
                 if (!mZoomOnly) {
                     cancelPie();
+                    sendToPie(makeCancelEvent(m));
                 }
                 if (mZoom != null) {
+                    mScale.onTouchEvent(m);
                     onScaleBegin(mScale);
                 }
             } else if ((mMode == MODE_ZOOM) && !mScale.isInProgress()
                     && MotionEvent.ACTION_POINTER_UP == m.getActionMasked()) {
                 // user initiated and stopped zoom gesture without zooming
+                mScale.onTouchEvent(m);
                 onScaleEnd(mScale);
             }
             // not zoom or pie mode and no timeout yet
