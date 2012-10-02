@@ -28,6 +28,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -58,13 +59,13 @@ public class PieRenderer extends OverlayRenderer
 
     private Runnable mDisappear = new Disappear();
     private Animation.AnimationListener mEndAction = new EndAction();
-    private static final int SCALING_UP_TIME = 1000;
-    private static final int SCALING_DOWN_TIME = 200;
+    private static final int SCALING_UP_TIME = 600;
+    private static final int SCALING_DOWN_TIME = 100;
     private static final int DISAPPEAR_TIMEOUT = 200;
     private static final int DIAL_HORIZONTAL = 157;
 
     private static final long PIE_OPEN_DELAY = 200;
-    private static final long FOCUS_TAP_TIMEOUT = 200;
+    private static final long FOCUS_TAP_TIMEOUT = 500;
 
     private static final int MSG_OPEN = 2;
     private static final int MSG_CLOSE = 3;
@@ -97,7 +98,8 @@ public class PieRenderer extends OverlayRenderer
     private float mAlpha;
 
     private Paint mFocusPaint;
-    private Paint mSuccessPaint;
+    private int mSuccessColor;
+    private int mFailColor;
     private Paint mDotPaint;
     private int mCircleSize;
     private int mDotRadius;
@@ -173,17 +175,17 @@ public class PieRenderer extends OverlayRenderer
         mNormalPaint.setColor(Color.argb(0, 0, 0, 0));
         mNormalPaint.setAntiAlias(true);
         mSelectedPaint = new Paint();
-        mSelectedPaint.setColor(Color.argb(255, 51, 181, 229)); //res.getColor(R.color.qc_selected));
+        mSelectedPaint.setColor(Color.argb(255, 51, 181, 229));
         mSelectedPaint.setAntiAlias(true);
         mSubPaint = new Paint();
         mSubPaint.setAntiAlias(true);
-        mSubPaint.setColor(Color.argb(200, 250, 230, 128)); //res.getColor(R.color.qc_sub));
+        mSubPaint.setColor(Color.argb(200, 250, 230, 128));
         mFocusPaint = new Paint();
         mFocusPaint.setAntiAlias(true);
         mFocusPaint.setColor(Color.WHITE);
         mFocusPaint.setStyle(Paint.Style.STROKE);
-        mSuccessPaint = new Paint(mFocusPaint);
-        mSuccessPaint.setColor(Color.GREEN);
+        mSuccessColor = Color.GREEN;
+        mFailColor = Color.RED;
         mDotPaint = new Paint();
         mDotPaint.setAntiAlias(true);
         mDotPaint.setColor(Color.argb(160, 255, 255, 255));
@@ -201,6 +203,10 @@ public class PieRenderer extends OverlayRenderer
 
     public void showFade() {
         mShowFade = true;
+    }
+
+    public boolean showsItems() {
+        return mShowItems;
     }
 
     public void addItem(PieItem item) {
@@ -390,7 +396,7 @@ public class PieRenderer extends OverlayRenderer
 
     private void drawItem(Canvas canvas, PieItem item) {
         if (item.getView() != null) {
-            if ((mFocusFromTap && mShowItems) || (mState == STATE_PIE)) {
+            if ((mFocusFromTap && (mState == STATE_FOCUSING)) || (mState == STATE_PIE)) {
                 if (item.getPath() != null) {
                     Paint p = item.isSelected() ? mSelectedPaint : mNormalPaint;
                     int state = canvas.save();
@@ -433,7 +439,7 @@ public class PieRenderer extends OverlayRenderer
             show(true);
             return true;
         } else if (MotionEvent.ACTION_UP == action) {
-            if (isVisible()) {
+            if (isVisible() || mShowItems) {
                 PieItem item = mCurrentItem;
                 if (!mAnimating) {
                     deselect();
@@ -447,7 +453,7 @@ public class PieRenderer extends OverlayRenderer
                 return true;
             }
         } else if (MotionEvent.ACTION_CANCEL == action) {
-            if (isVisible()) {
+            if (isVisible() || mShowItems) {
                 show(false);
             }
             if (!mAnimating) {
@@ -456,7 +462,7 @@ public class PieRenderer extends OverlayRenderer
             return false;
         } else if (MotionEvent.ACTION_MOVE == action) {
             if (mAnimating) return false;
-            PointF polar = getPolar(x, y);
+            PointF polar = getPolar(x, y, true);
             if (polar.y < mRadius) {
                 if (mOpenItem != null) {
                     mOpenItem = null;
@@ -510,7 +516,7 @@ public class PieRenderer extends OverlayRenderer
         }
     }
 
-    private PointF getPolar(float x, float y) {
+    private PointF getPolar(float x, float y, boolean useOffset) {
         PointF res = new PointF();
         // get angle and radius from x/y
         res.x = (float) Math.PI / 2;
@@ -523,7 +529,7 @@ public class PieRenderer extends OverlayRenderer
                 res.x = (float) (2 * Math.PI + res.x);
             }
         }
-        res.y = res.y + mTouchOffset;
+        res.y = res.y + (useOffset ? mTouchOffset : 0);
         return res;
     }
 
@@ -544,7 +550,6 @@ public class PieRenderer extends OverlayRenderer
 
     private boolean inside(PointF polar, PieItem item) {
         return (item.getInnerRadius() < polar.y)
-        && (item.getOuterRadius() > polar.y)
         && (item.getStartAngle() < polar.x)
         && (item.getStartAngle() + item.getSweep() > polar.x);
     }
@@ -603,12 +608,8 @@ public class PieRenderer extends OverlayRenderer
         return 2 * mCircleSize;
     }
 
-    private int getRandomAngle() {
-        return (int)(90 * Math.random());
-    }
-
     private int getRandomRange() {
-        return (int)(120 * Math.random());
+        return (int)(-60 + 120 * Math.random());
     }
 
     @Override
@@ -634,14 +635,18 @@ public class PieRenderer extends OverlayRenderer
     public void drawFocus(Canvas canvas) {
         mFocusPaint.setStrokeWidth(mOuterStroke);
         canvas.drawCircle((float) mFocusX, (float) mFocusY, (float) mCircleSize, mFocusPaint);
-        Paint inner = (mFocused ? mSuccessPaint : mFocusPaint);
-        inner.setStrokeWidth(mInnerStroke);
-        canvas.drawArc(mDial, mDialAngle, 45, false, inner);
-        canvas.drawArc(mDial, mDialAngle + 180, 45, false, inner);
-        drawLine(canvas, mDialAngle, inner);
-        drawLine(canvas, mDialAngle + 45, inner);
-        drawLine(canvas, mDialAngle + 180, inner);
-        drawLine(canvas, mDialAngle + 225, inner);
+        int color = mFocusPaint.getColor();
+        if (mState == STATE_FINISHING) {
+            mFocusPaint.setColor(mFocused ? mSuccessColor : mFailColor);
+        }
+        mFocusPaint.setStrokeWidth(mInnerStroke);
+        canvas.drawArc(mDial, mDialAngle, 45, false, mFocusPaint);
+        canvas.drawArc(mDial, mDialAngle + 180, 45, false, mFocusPaint);
+        drawLine(canvas, mDialAngle, mFocusPaint);
+        drawLine(canvas, mDialAngle + 45, mFocusPaint);
+        drawLine(canvas, mDialAngle + 180, mFocusPaint);
+        drawLine(canvas, mDialAngle + 225, mFocusPaint);
+        mFocusPaint.setColor(color);
     }
 
     private void drawLine(Canvas canvas, int angle, Paint p) {
@@ -669,19 +674,18 @@ public class PieRenderer extends OverlayRenderer
                 mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_FOCUS_TAP),
                         FOCUS_TAP_TIMEOUT);
             }
-            int angle = getRandomAngle();
+            mStartAnimationAngle = 67;
             int range = getRandomRange();
-            startAnimation(R.drawable.ic_focus_focusing, SCALING_UP_TIME,
-                    false, angle, angle + range);
+            startAnimation(SCALING_UP_TIME,
+                    false, mStartAnimationAngle, mStartAnimationAngle + range);
             mState = STATE_FOCUSING;
-            mStartAnimationAngle = angle;
         }
     }
 
     @Override
     public void showSuccess(boolean timeout) {
         if (mState == STATE_FOCUSING) {
-            startAnimation(R.drawable.ic_focus_focused, SCALING_DOWN_TIME,
+            startAnimation(SCALING_DOWN_TIME,
                     timeout, mStartAnimationAngle);
             mState = STATE_FINISHING;
             mFocused = true;
@@ -691,7 +695,7 @@ public class PieRenderer extends OverlayRenderer
     @Override
     public void showFail(boolean timeout) {
         if (mState == STATE_FOCUSING) {
-            startAnimation(R.drawable.ic_focus_failed, SCALING_DOWN_TIME,
+            startAnimation(SCALING_DOWN_TIME,
                     timeout, mStartAnimationAngle);
             mState = STATE_FINISHING;
             mFocused = false;
@@ -708,13 +712,13 @@ public class PieRenderer extends OverlayRenderer
         mDisappear.run();
     }
 
-    private void startAnimation(int resid, long duration, boolean timeout,
+    private void startAnimation(long duration, boolean timeout,
             float toScale) {
-        startAnimation(resid, duration, timeout, mDialAngle,
+        startAnimation(duration, timeout, mDialAngle,
                 toScale);
     }
 
-    private void startAnimation(int resid, long duration, boolean timeout,
+    private void startAnimation(long duration, boolean timeout,
             float fromScale, float toScale) {
         setVisible(true);
         mAnimation.cancel();
