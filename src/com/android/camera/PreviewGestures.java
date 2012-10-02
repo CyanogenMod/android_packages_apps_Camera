@@ -136,7 +136,15 @@ public class PreviewGestures
         } else if (mMode == MODE_NONE) {
             return false;
         } else if (mMode == MODE_PIE) {
-            return sendToPie(m);
+            if (MotionEvent.ACTION_POINTER_DOWN == m.getActionMasked()) {
+                sendToPie(makeCancelEvent(m));
+                if (mZoom != null) {
+                    onScaleBegin(mScale);
+                }
+            } else {
+                return sendToPie(m);
+            }
+            return true;
         } else if (mMode == MODE_ZOOM && mScale.isInProgress()) {
             return mScale.onTouchEvent(m);
         } else if (mMode == MODE_MODULE) {
@@ -251,9 +259,13 @@ public class PreviewGestures
     }
 
     public void cancelActivityTouchHandling(MotionEvent m) {
+        mActivity.superDispatchTouchEvent(makeCancelEvent(m));
+    }
+
+    private MotionEvent makeCancelEvent(MotionEvent m) {
         MotionEvent c = MotionEvent.obtain(m);
         c.setAction(MotionEvent.ACTION_CANCEL);
-        mActivity.superDispatchTouchEvent(c);
+        return c;
     }
 
     private void openPie() {
