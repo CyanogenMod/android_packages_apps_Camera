@@ -78,6 +78,8 @@
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"No es pot seleccionar en mode d\'escena."</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Restaura els valors predeterminats"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposició"</string>
+    <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
+    <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"D\'acord"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"L\'emmagatzematge USB s\'està quedant sense espai. Canvia la configuració de qualitat o bé suprimeix unes quantes imatges o altres fitxers."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"La targeta SD s\'està quedant sense espai. Canvia la configuració de qualitat o suprimeix unes quantes imatges o altres fitxers."</string>
@@ -131,4 +133,8 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Fet"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Definició d\'interval de temps"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"La funció de lapse de temps està desactivada. Activa-la per definir l\'interval de temps."</string>
+    <string name="remember_location_title" msgid="9060472929006917810">"Vols que es recordin les ubicacions de les fotos?"</string>
+    <string name="remember_location_prompt" msgid="9107532965604174377">"Afegeix anotacions a les fotos i als vídeos amb els llocs en què els vas fer."\n\n"Altres aplicacions poden accedir a aquesta informació juntament amb les teves imatges desades."</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"No, gràcies"</string>
+    <string name="remember_location_yes" msgid="862884269285964180">"Sí"</string>
 </resources>
