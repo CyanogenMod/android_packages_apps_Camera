@@ -103,7 +103,6 @@ public class FocusOverlayManager {
         public void startFaceDetection();
         public void stopFaceDetection();
         public void setFocusParameters();
-        public void playSound(int soundId);
     }
 
     private class MainHandler extends Handler {
@@ -277,12 +276,6 @@ public class FocusOverlayManager {
             // take the picture now.
             if (focused) {
                 mState = STATE_SUCCESS;
-                // Do not play the sound in continuous autofocus mode. It does
-                // not do a full scan. The focus callback arrives before doSnap
-                // so the state is always STATE_FOCUSING.
-                if (!Util.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusMode)) {
-                    mListener.playSound(SoundClips.FOCUS_COMPLETE);
-                }
             } else {
                 mState = STATE_FAIL;
             }
