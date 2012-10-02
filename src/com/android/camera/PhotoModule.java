@@ -18,10 +18,12 @@ package com.android.camera;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
@@ -502,6 +504,46 @@ public class PhotoModule
         initOnScreenIndicator();
         // Make sure all views are disabled before camera is open.
 //        enableCameraControls(false);
+        locationFirstRun();
+    }
+
+    // Prompt the user to pick to record location for the very first run of
+    // camera only
+    private void locationFirstRun() {
+        if (RecordLocationPreference.isSet(mPreferences)) {
+            return;
+        }
+        new AlertDialog.Builder(mActivity)
+            .setTitle(R.string.remember_location_title)
+            .setMessage(R.string.remember_location_prompt)
+            .setPositiveButton(R.string.remember_location_yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int arg1) {
+                    setLocationPreference(RecordLocationPreference.VALUE_ON);
+                }
+            })
+            .setNegativeButton(R.string.remember_location_no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int arg1) {
+                    dialog.cancel();
+                }
+            })
+            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    setLocationPreference(RecordLocationPreference.VALUE_OFF);
+                }
+            })
+            .show();
+    }
+
+    private void setLocationPreference(String value) {
+        mPreferences.edit()
+            .putString(RecordLocationPreference.KEY, value)
+            .apply();
+        // TODO: Fix this to use the actual onSharedPreferencesChanged listener
+        // instead of invoking manually
+        onSharedPreferenceChanged();
     }
 
     private void initializeRenderOverlay() {
