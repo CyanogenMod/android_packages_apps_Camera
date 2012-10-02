@@ -708,6 +708,7 @@ public class PhotoModule
         @Override
         public void onZoomStart() {
             if (mFocusManager != null) {
+                mFocusManager.resetTouchFocus();
                 mFocusManager.setEnabled(false);
             }
         }
