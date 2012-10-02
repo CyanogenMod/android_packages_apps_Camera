@@ -43,7 +43,7 @@ public abstract class InLineSettingItem extends LinearLayout {
     protected String mOverrideValue;
 
     static public interface Listener {
-        public void onSettingChanged();
+        public void onSettingChanged(ListPreference pref);
     }
 
     public InLineSettingItem(Context context, AttributeSet attrs) {
@@ -68,7 +68,7 @@ public abstract class InLineSettingItem extends LinearLayout {
         mIndex = index;
         mPreference.setValueIndex(mIndex);
         if (mListener != null) {
-            mListener.onSettingChanged();
+            mListener.onSettingChanged(mPreference);
         }
         updateView();
         sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);

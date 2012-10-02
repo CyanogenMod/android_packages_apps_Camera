@@ -260,7 +260,6 @@
     <!-- Camera Preferences Scene Mode dialog box entries -->
     <string-array name="pref_camera_scenemode_entries" translatable="false">
         <item>@string/pref_camera_scenemode_entry_auto</item>
-        <item>@string/pref_camera_scenemode_entry_hdr</item>
         <item>@string/pref_camera_scenemode_entry_action</item>
         <item>@string/pref_camera_scenemode_entry_night</item>
         <item>@string/pref_camera_scenemode_entry_sunset</item>
@@ -269,7 +268,6 @@
 
     <string-array name="pref_camera_scenemode_entryvalues" translatable="false">
         <item>auto</item>
-        <item>hdr</item>
         <item>action</item>
         <item>night</item>
         <item>sunset</item>
@@ -329,6 +327,16 @@
         <item>@drawable/ic_video_effects_background_fields_of_wheat_holo</item>
         <item>@drawable/ic_video_effects_background_normal_holo_dark</item>
     </array>
+
+    <string-array name="pref_camera_hdr_entries" translatable="false">
+        <item>@string/setting_off</item>
+        <item>@string/setting_on</item>
+    </string-array>
+
+    <string-array name="pref_camera_hdr_entryvalues" translatable="false">
+        <item>@string/setting_off_value</item>
+        <item>@string/setting_on_value</item>
+    </string-array>
 
     <!-- Default focus mode setting.-->
     <string-array name="pref_camera_focusmode_default_array" translatable="false">
