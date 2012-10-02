@@ -50,6 +50,7 @@ public class PreviewGestures
     private PieRenderer mPie;
     private ZoomRenderer mZoom;
     private MotionEvent mDown;
+    private MotionEvent mCurrent;
     private ScaleGestureDetector mScale;
     private List<View> mReceivers;
     private int mMode;
@@ -117,6 +118,7 @@ public class PreviewGestures
         if (!mEnabled) {
             return mActivity.superDispatchTouchEvent(m);
         }
+        mCurrent = m;
         if (MotionEvent.ACTION_DOWN == m.getActionMasked()) {
             if (checkReceivers(m)) {
                 mMode = MODE_MODULE;
@@ -301,6 +303,8 @@ public class PreviewGestures
     public boolean onScaleBegin(ScaleGestureDetector detector) {
         if (mMode != MODE_ZOOM) {
             mMode = MODE_ZOOM;
+        }
+        if (mCurrent.getActionMasked() != MotionEvent.ACTION_MOVE) {
             return mZoom.onScaleBegin(detector);
         } else {
             return true;
@@ -309,6 +313,8 @@ public class PreviewGestures
 
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
-        mZoom.onScaleEnd(detector);
+        if (mCurrent.getActionMasked() != MotionEvent.ACTION_MOVE) {
+            mZoom.onScaleEnd(detector);
+        }
     }
 }
