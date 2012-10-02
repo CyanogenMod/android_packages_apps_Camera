@@ -229,6 +229,11 @@ public class VideoModule implements CameraModule,
     // The orientation compensation for icons and thumbnails. Ex: if the value
     // is 90, the UI components should be rotated 90 degrees counter-clockwise.
     private int mOrientationCompensation = 0;
+
+    // If mOrientationResetNeeded is set to be true, onOrientationChanged will reset
+    // the orientation of the on screen indicators to the current orientation compensation
+    // regardless of whether it's the same as the most recent orientation compensation
+    private boolean mOrientationResetNeeded;
     // The orientation compensation when we start recording.
     private int mOrientationCompensationAtRecordStart;
 
@@ -470,6 +475,10 @@ public class VideoModule implements CameraModule,
         mQuickCapture = mActivity.getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
         mLocationManager = new LocationManager(mActivity, null);
 
+        // Initialize to true to ensure that the on-screen indicators get their
+        // orientation set in onOrientationChanged.
+        mOrientationResetNeeded = true;
+
         // Make sure preview is started.
         try {
             startPreviewThread.join();
@@ -505,6 +514,23 @@ public class VideoModule implements CameraModule,
 
     @Override
     public boolean collapseCameraControls() {
+        boolean ret = false;
+        if (mRotateDialog != null && mRotateDialog.getVisibility() == View.VISIBLE) {
+            mRotateDialog.dismissDialog();
+            ret = true;
+        }
+        if (mPopup != null) {
+            dismissPopup();
+            ret = true;
+        }
+        return ret;
+    }
+
+    public boolean removeTopLevelPopup() {
+        if (mRotateDialog != null && mRotateDialog.getVisibility() == View.VISIBLE) {
+            mRotateDialog.dismissDialog();
+            return true;
+        }
         if (mPopup != null) {
             dismissPopup();
             return true;
@@ -563,12 +589,13 @@ public class VideoModule implements CameraModule,
         int orientationCompensation =
                 (mOrientation + Util.getDisplayRotation(mActivity)) % 360;
 
-        if (mOrientationCompensation != orientationCompensation) {
+        if (mOrientationCompensation != orientationCompensation || mOrientationResetNeeded) {
             mOrientationCompensation = orientationCompensation;
             // Do not rotate the icons during recording because the video
             // orientation is fixed after recording.
             if (!mMediaRecorderRecording) {
                 setOrientationIndicator(mOrientationCompensation, true);
+                mOrientationResetNeeded = false;
             }
         }
 
@@ -1090,7 +1117,7 @@ public class VideoModule implements CameraModule,
             onStopVideoRecording();
             return true;
         } else {
-            return collapseCameraControls();
+            return removeTopLevelPopup();
         }
     }
 
