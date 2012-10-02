@@ -161,10 +161,19 @@ public class CameraSwitcher extends ScrollerView {
         mListener = l;
     }
 
+    private int clampModule(int index) {
+        index = Math.max(0, index);
+        return Math.min(index, mContent.getChildCount() - 1);
+    }
+
     @Override
     public void fling(int velocity) {
-        super.fling(velocity);
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SNAP), FLING_DURATION);
+        if (velocity == 0) {
+            snap();
+        } else {
+            int newModule = clampModule(mCurrentModule + (velocity > 0 ? 1 : -1));
+            animateToModule(newModule);
+        }
     }
 
     @Override
