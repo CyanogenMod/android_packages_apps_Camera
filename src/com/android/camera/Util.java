@@ -83,6 +83,7 @@ public class Util {
     private static final String AUTO_EXPOSURE_LOCK_SUPPORTED = "auto-exposure-lock-supported";
     private static final String AUTO_WHITE_BALANCE_LOCK_SUPPORTED = "auto-whitebalance-lock-supported";
     private static final String VIDEO_SNAPSHOT_SUPPORTED = "video-snapshot-supported";
+    public static final String SCENE_MODE_HDR = "hdr";
     public static final String TRUE = "true";
     public static final String FALSE = "false";
 
@@ -100,6 +101,11 @@ public class Util {
 
     public static boolean isVideoSnapshotSupported(Parameters params) {
         return TRUE.equals(params.get(VIDEO_SNAPSHOT_SUPPORTED));
+    }
+
+    public static boolean isCameraHdrSupported(Parameters params) {
+        List<String> supported = params.getSupportedSceneModes();
+        return (supported != null) && supported.contains(SCENE_MODE_HDR);
     }
 
     @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
