@@ -17,10 +17,12 @@
 package com.android.camera;
 
 import android.content.Context;
+import android.hardware.Camera.Parameters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.android.camera.R;
 import com.android.camera.ui.OtherSettingsPopup;
 import com.android.camera.ui.PieItem;
 import com.android.camera.ui.PieRenderer;
@@ -30,6 +32,7 @@ public class PhotoController extends PieController
 
     private static String TAG = "CAM_photocontrol";
     private static float FLOAT_PI_DIVIDED_BY_TWO = (float) Math.PI / 2;
+    private final String mSettingOff;
 
     private PhotoModule mModule;
     private String[] mOtherKeys;
@@ -38,6 +41,7 @@ public class PhotoController extends PieController
     public PhotoController(CameraActivity activity, PhotoModule module, PieRenderer pie) {
         super(activity, pie);
         mModule = module;
+        mSettingOff = activity.getString(R.string.setting_off_value);
     }
 
     public void initialize(PreferenceGroup group) {
@@ -63,8 +67,9 @@ public class PhotoController extends PieController
         });
         mRenderer.addItem(item);
         mOtherKeys = new String[] {
-                CameraSettings.KEY_WHITE_BALANCE,
+                CameraSettings.KEY_CAMERA_HDR,
                 CameraSettings.KEY_SCENE_MODE,
+                CameraSettings.KEY_WHITE_BALANCE,
                 CameraSettings.KEY_RECORD_LOCATION,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_FOCUS_MODE};
@@ -120,4 +125,28 @@ public class PhotoController extends PieController
         mModule.onRestorePreferencesClicked();
     }
 
+    // Return true if the preference has the specified key but not the value.
+    private static boolean notSame(ListPreference pref, String key, String value) {
+        return (key.equals(pref.getKey()) && !value.equals(pref.getValue()));
+    }
+
+    private void setPreference(String key, String value) {
+        ListPreference pref = mPreferenceGroup.findPreference(key);
+        if (pref != null && !value.equals(pref.getValue())) {
+            pref.setValue(value);
+            reloadPreferences();
+        }
+    }
+
+    @Override
+    public void onSettingChanged(ListPreference pref) {
+        // Reset the scene mode if HDR is set to on. Reset HDR if scene mode is
+        // set to non-auto.
+        if (notSame(pref, CameraSettings.KEY_CAMERA_HDR, mSettingOff)) {
+            setPreference(CameraSettings.KEY_SCENE_MODE, Parameters.SCENE_MODE_AUTO);
+        } else if (notSame(pref, CameraSettings.KEY_SCENE_MODE, Parameters.SCENE_MODE_AUTO)) {
+            setPreference(CameraSettings.KEY_CAMERA_HDR, mSettingOff);
+        }
+        super.onSettingChanged(pref);
+    }
 }
