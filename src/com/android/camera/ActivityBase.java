@@ -500,7 +500,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     }
 
     // Call this after setContentView.
-    protected void createCameraScreenNail(boolean getPictures) {
+    public ScreenNail createCameraScreenNail(boolean getPictures) {
         mCameraAppView = findViewById(R.id.camera_app_root);
         Bundle data = new Bundle();
         String path;
@@ -527,10 +527,11 @@ public abstract class ActivityBase extends AbstractGalleryActivity
                     PhotoPage.class, data);
         }
         mCameraScreenNail = mAppBridge.getCameraScreenNail();
+        return mCameraScreenNail;
     }
 
     // Call this after setContentView.
-    protected void reuseCameraScreenNail(boolean getPictures) {
+    protected ScreenNail reuseCameraScreenNail(boolean getPictures) {
         mCameraAppView = findViewById(R.id.camera_app_root);
         Bundle data = new Bundle();
         String path;
@@ -556,6 +557,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
             getStateManager().startState(PhotoPage.class, data);
         }
         mCameraScreenNail = mAppBridge.getCameraScreenNail();
+        return mCameraScreenNail;
     }
 
     private class HideCameraAppView implements Animation.AnimationListener {
@@ -681,7 +683,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         mAppBridge.setSwipingEnabled(enabled);
     }
 
-    protected void notifyScreenNailChanged() {
+    public void notifyScreenNailChanged() {
         mAppBridge.notifyScreenNailChanged();
     }
 
