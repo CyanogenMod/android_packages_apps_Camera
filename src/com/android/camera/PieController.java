@@ -69,7 +69,7 @@ public class PieController {
         setPreferenceGroup(group);
     }
 
-    public void onSettingChanged() {
+    public void onSettingChanged(ListPreference pref) {
         if (mListener != null) {
             mListener.onSharedPreferenceChanged();
         }
@@ -139,7 +139,7 @@ public class PieController {
                     public void onClick(View v) {
                         pref.setValueIndex(index);
                         reloadPreference(pref);
-                        onSettingChanged();
+                        onSettingChanged(pref);
                     }
                 });
             }

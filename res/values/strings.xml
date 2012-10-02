@@ -84,6 +84,11 @@
     <!-- Entry of a on/off setting. The setting is turned on. [CHAR LIMIT=15] -->
     <string name="setting_on">On</string>
 
+    <!-- The value of a camera preference indicating the setting is off. -->
+    <string name="setting_off_value" translatable="false">off</string>
+    <!-- The value of a camera preference indicating the setting is on. -->
+    <string name="setting_on_value" translatable="false">on</string>
+
     <!-- The Video quality settings in preference [CHAR LIMIT=21] -->
     <string name="pref_video_quality_title">Video quality</string>
     <!-- The default quality value is 5 (720p) -->
@@ -196,6 +201,9 @@
     <!-- Exposure settings in preference -->
     <string name="pref_exposure_title">Exposure</string>
     <string name="pref_exposure_default" translatable="false">0</string>
+
+    <!-- Default HDR entry value -->
+    <string name="pref_camera_hdr_default">@string/setting_off_value</string>
 
     <!-- Dialog "OK" button. Dismisses dialog. -->
     <string name="dialog_ok">OK</string>

@@ -43,7 +43,7 @@ public class OtherSettingsPopup extends AbstractSettingPopup
     private ArrayList<ListPreference> mListItem = new ArrayList<ListPreference>();
 
     static public interface Listener {
-        public void onSettingChanged();
+        public void onSettingChanged(ListPreference pref);
         public void onRestorePreferencesClicked();
     }
 
@@ -124,9 +124,9 @@ public class OtherSettingsPopup extends AbstractSettingPopup
     }
 
     @Override
-    public void onSettingChanged() {
+    public void onSettingChanged(ListPreference pref) {
         if (mListener != null) {
-            mListener.onSettingChanged();
+            mListener.onSettingChanged(pref);
         }
     }
 

@@ -2262,11 +2262,18 @@ public class PhotoModule
         }
         Log.v(TAG, "Preview size is " + optimalSize.width + "x" + optimalSize.height);
 
-        // Since change scene mode may change supported values,
-        // Set scene mode first,
-        mSceneMode = mPreferences.getString(
+        // Since changing scene mode may change supported values, set scene mode
+        // first. HDR is a scene mode. To promote it in UI, it is stored in a
+        // separate preference.
+        String hdr = mPreferences.getString(CameraSettings.KEY_CAMERA_HDR,
+                mActivity.getString(R.string.pref_camera_hdr_default));
+        if (mActivity.getString(R.string.setting_on_value).equals(hdr)) {
+            mSceneMode = Util.SCENE_MODE_HDR;
+        } else {
+            mSceneMode = mPreferences.getString(
                 CameraSettings.KEY_SCENE_MODE,
                 mActivity.getString(R.string.pref_camera_scenemode_default));
+        }
         if (Util.isSupported(mSceneMode, mParameters.getSupportedSceneModes())) {
             if (!mParameters.getSceneMode().equals(mSceneMode)) {
                 mParameters.setSceneMode(mSceneMode);
