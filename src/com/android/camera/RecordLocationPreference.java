@@ -50,4 +50,9 @@ public class RecordLocationPreference extends IconListPreference {
         String value = pref.getString(KEY, VALUE_NONE);
         return VALUE_ON.equals(value);
     }
+
+    public static boolean isSet(SharedPreferences pref) {
+        String value = pref.getString(KEY, VALUE_NONE);
+        return !VALUE_NONE.equals(value);
+    }
 }
