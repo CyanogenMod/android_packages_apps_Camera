@@ -211,8 +211,6 @@ public class PhotoModule
     // it into MediaStore while picture taking is still in progress.
     private ImageNamer mImageNamer;
 
-    private SoundClips.Player mSoundPlayer;
-
     private Runnable mDoSnapRunnable = new Runnable() {
         @Override
         public void run() {
@@ -1384,11 +1382,6 @@ public class PhotoModule
         setCameraParameters(UPDATE_PARAM_PREFERENCE);
     }
 
-    @Override
-    public void playSound(int soundId) {
-        mSoundPlayer.play(soundId);
-    }
-
     private int getPreferredCameraId(ComboPreferences preferences) {
         int intentCameraId = Util.getCameraFacingIntentExtras(mActivity);
         if (intentCameraId != -1) {
@@ -1755,8 +1748,6 @@ public class PhotoModule
 
         // Dismiss open menu if exists.
         PopupManager.getInstance(mActivity).notifyShowPopup(null);
-
-        mSoundPlayer = SoundClips.getPlayer(mActivity);
     }
 
     void waitCameraStartUpThread() {
@@ -1797,10 +1788,6 @@ public class PhotoModule
         if (mSurfaceTexture != null) {
             ((CameraScreenNail) mActivity.mCameraScreenNail).releaseSurfaceTexture();
             mSurfaceTexture = null;
-        }
-        if (mSoundPlayer != null) {
-            mSoundPlayer.release();
-            mSoundPlayer = null;
         }
         resetScreenOn();
 
