@@ -222,4 +222,9 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_margin">13dp</item>
     </style>
+    <style name="SwitcherButton">
+        <item name="android:layout_width">@dimen/switcher_size</item>
+        <item name="android:layout_height">@dimen/switcher_size</item>
+        <item name="android:background">@drawable/bg_pressed_exit_fading</item>
+    </style>
 </resources>

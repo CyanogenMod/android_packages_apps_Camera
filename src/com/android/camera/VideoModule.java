@@ -89,7 +89,8 @@ public class VideoModule implements CameraModule,
     MediaRecorder.OnErrorListener,
     MediaRecorder.OnInfoListener,
     EffectsRecorder.EffectsListener,
-    PieRenderer.PieListener {
+    PieRenderer.PieListener,
+    CameraActivity.MenuListener {
 
     private static final String TAG = "CAM_VideoModule";
 
@@ -438,6 +439,7 @@ public class VideoModule implements CameraModule,
 
         mActivity.getLayoutInflater().inflate(R.layout.video_module, (ViewGroup) mRootView);
 
+        mActivity.setMenuListener(this);
         // Surface texture is from camera screen nail and startPreview needs it.
         // This must be done before startPreview.
         mIsVideoCaptureIntent = isVideoCaptureIntent();
@@ -1091,6 +1093,13 @@ public class VideoModule implements CameraModule,
     public void onUserInteraction() {
         if (!mMediaRecorderRecording && !mActivity.isFinishing()) {
             keepScreenOnAwhile();
+        }
+    }
+
+    @Override
+    public void onMenuClicked() {
+        if (mPieRenderer != null) {
+            mPieRenderer.showFade();
         }
     }
 
