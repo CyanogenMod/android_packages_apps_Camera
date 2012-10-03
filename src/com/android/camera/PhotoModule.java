@@ -1943,9 +1943,13 @@ public class PhotoModule
         if (collapseCameraControls()) return;
 
         // Check if metering area or focus area is supported.
-        if (!mFocusAreaSupported && !mMeteringAreaSupported) return;
-
-        mFocusManager.onSingleTapUp(x, y);
+        if (!mFocusAreaSupported && !mMeteringAreaSupported) {
+            if (mPieRenderer != null) {
+                mPieRenderer.setFocus(x,  y, true);
+            }
+        } else {
+            mFocusManager.onSingleTapUp(x, y);
+        }
     }
 
     @Override
