@@ -891,7 +891,7 @@ public class PhotoModule
     }
 
     private void updateFocusOnScreenIndicator(String value) {
-        if (mFocusIndicator == null) {
+        if (mFocusIndicator == null || mPreferenceGroup == null) {
             return;
         }
         // Do not show the indicator if users cannot choose.
