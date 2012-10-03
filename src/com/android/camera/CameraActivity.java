@@ -53,6 +53,7 @@ public class CameraActivity extends ActivityBase
     private RotateImageView mMenu;
     private CameraSwitcher mSwitcher;
     private View mShutterSwitcher;
+    private View mBlocker;
     private Drawable[] mDrawables;
     private int mCurrentModuleIndex;
     private MenuListener mMenuListener;
@@ -103,6 +104,7 @@ public class CameraActivity extends ActivityBase
     }
 
     public void init() {
+        mBlocker = findViewById(R.id.blocker);
         mShutterSwitcher = findViewById(R.id.camera_shutter_switcher);
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
         mShutterIcon = (RotateImageView) findViewById(R.id.shutter_overlay);
@@ -239,18 +241,21 @@ public class CameraActivity extends ActivityBase
     public void hideSwitcher(int resid) {
         mSwitcher.setVisibility(View.GONE);
         mMenu.setVisibility(View.GONE);
+        mBlocker.setVisibility(View.GONE);
         showShutterIcon(true, resid);
     }
 
     public void hideSwitcher() {
         mSwitcher.setVisibility(View.GONE);
         mMenu.setVisibility(View.GONE);
+        mBlocker.setVisibility(View.GONE);
         showShutterIcon(true);
     }
 
     public void showSwitcher() {
         if (mCurrentModule.needsSwitcher()) {
             mSwitcher.setVisibility(View.VISIBLE);
+            mBlocker.setVisibility(View.VISIBLE);
             if (mMenuListener != null) {
                 mMenu.setVisibility(View.VISIBLE);
             }
