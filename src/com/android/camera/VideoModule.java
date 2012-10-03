@@ -245,14 +245,18 @@ public class VideoModule implements CameraModule,
     protected class CameraOpenThread extends Thread {
         @Override
         public void run() {
-            try {
-                mActivity.mCameraDevice = Util.openCamera(mActivity, mCameraId);
-                mParameters = mActivity.mCameraDevice.getParameters();
-            } catch (CameraHardwareException e) {
-                mActivity.mOpenCameraFail = true;
-            } catch (CameraDisabledException e) {
-                mActivity.mCameraDisabled = true;
-            }
+            openCamera();
+        }
+    }
+
+    private void openCamera() {
+        try {
+            mActivity.mCameraDevice = Util.openCamera(mActivity, mCameraId);
+            mParameters = mActivity.mCameraDevice.getParameters();
+        } catch (CameraHardwareException e) {
+            mActivity.mOpenCameraFail = true;
+        } catch (CameraDisabledException e) {
+            mActivity.mCameraDisabled = true;
         }
     }
 
@@ -880,22 +884,15 @@ public class VideoModule implements CameraModule,
                 mBgLearningMessageFrame.setVisibility(View.GONE);
 //                mIndicatorControlContainer.reloadPreferences();
             }
-            CameraOpenThread cameraOpenThread = new CameraOpenThread();
-            cameraOpenThread.start();
-            try {
-                cameraOpenThread.join();
-                if (mActivity.mOpenCameraFail) {
-                    Util.showErrorAndFinish(mActivity,
-                            R.string.cannot_connect_camera);
-                    return;
-                } else if (mActivity.mCameraDisabled) {
-                    Util.showErrorAndFinish(mActivity, R.string.camera_disabled);
-                    return;
-                }
-            } catch (InterruptedException ex) {
-                // ignore
+            openCamera();
+            if (mActivity.mOpenCameraFail) {
+                Util.showErrorAndFinish(mActivity,
+                        R.string.cannot_connect_camera);
+                return;
+            } else if (mActivity.mCameraDisabled) {
+                Util.showErrorAndFinish(mActivity, R.string.camera_disabled);
+                return;
             }
-
             readVideoPreferences();
             resizeForPreviewAspectRatio();
             startPreview();
@@ -2330,13 +2327,7 @@ public class VideoModule implements CameraModule,
         // Restart the camera and initialize the UI. From onCreate.
         mPreferences.setLocalId(mActivity, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
-        CameraOpenThread cameraOpenThread = new CameraOpenThread();
-        cameraOpenThread.start();
-        try {
-            cameraOpenThread.join();
-        } catch (InterruptedException ex) {
-            // ignore
-        }
+        openCamera();
         readVideoPreferences();
         startPreview();
         initializeVideoSnapshot();
