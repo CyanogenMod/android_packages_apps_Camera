@@ -311,20 +311,6 @@ public class PhotoModule
 
     private PreviewGestures mGestures;
 
-    protected class CameraOpenThread extends Thread {
-        @Override
-        public void run() {
-            try {
-                mCameraDevice = Util.openCamera(mActivity, mCameraId);
-                mParameters = mCameraDevice.getParameters();
-            } catch (CameraHardwareException e) {
-                mOpenCameraFail = true;
-            } catch (CameraDisabledException e) {
-                mCameraDisabled = true;
-            }
-        }
-    }
-
     // The purpose is not to block the main thread in onCreate and onResume.
     private class CameraStartUpThread extends Thread {
         private volatile boolean mCancelled;
@@ -2427,12 +2413,15 @@ public class PhotoModule
         // Restart the camera and initialize the UI. From onCreate.
         mPreferences.setLocalId(mActivity, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
-        CameraOpenThread cameraOpenThread = new CameraOpenThread();
-        cameraOpenThread.start();
         try {
-            cameraOpenThread.join();
-        } catch (InterruptedException ex) {
-            // ignore
+            mCameraDevice = Util.openCamera(mActivity, mCameraId);
+            mParameters = mCameraDevice.getParameters();
+        } catch (CameraHardwareException e) {
+            Util.showErrorAndFinish(mActivity, R.string.cannot_connect_camera);
+            return;
+        } catch (CameraDisabledException e) {
+            Util.showErrorAndFinish(mActivity, R.string.camera_disabled);
+            return;
         }
         initializeCapabilities();
         CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
