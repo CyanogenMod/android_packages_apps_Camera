@@ -78,6 +78,8 @@
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Not selectable in scene mode."</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Restore defaults"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposure"</string>
+    <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
+    <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Your USB storage is running out of space. Change the quality setting or delete some images or other files."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Your SD card is running out of space. Change the quality setting or delete some images or other files."</string>
@@ -131,4 +133,8 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Done"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Set Time Interval"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Time lapse feature is off. Turn it on to set time interval."</string>
+    <string name="remember_location_title" msgid="9060472929006917810">"Remember photo locations?"</string>
+    <string name="remember_location_prompt" msgid="9107532965604174377">"Annotate your photos and videos with the places where they are taken."\n\n"Other apps can access this information along with your saved images."</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"No thanks"</string>
+    <string name="remember_location_yes" msgid="862884269285964180">"Yes"</string>
 </resources>
