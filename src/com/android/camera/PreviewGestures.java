@@ -126,6 +126,10 @@ public class PreviewGestures
             } else {
                 mMode = MODE_ALL;
                 mDown = MotionEvent.obtain(m);
+                if (mPie != null && mPie.showsItems()) {
+                    mMode = MODE_PIE;
+                    return sendToPie(m);
+                }
                 if (mPie != null && !mZoomOnly) {
                     mHandler.sendEmptyMessageDelayed(MSG_PIE, TIMEOUT_PIE);
                 }
