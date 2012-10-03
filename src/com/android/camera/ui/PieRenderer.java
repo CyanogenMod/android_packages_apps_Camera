@@ -16,7 +16,6 @@
 
 package com.android.camera.ui;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -28,15 +27,12 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.Transformation;
 
 import com.android.camera.R;
-import com.android.gallery3d.common.ApiHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +42,6 @@ public class PieRenderer extends OverlayRenderer
 
     private static final String TAG = "CAM Pie";
 
-    private static final long PIE_FADE_DURATION = 1500;
     // Sometimes continuous autofocus starts and stops several times quickly.
     // These states are used to make sure the animation is run for at least some
     // time.
@@ -94,9 +89,6 @@ public class PieRenderer extends OverlayRenderer
     // touch handling
     private PieItem mCurrentItem;
 
-    private boolean mAnimating;
-    private float mAlpha;
-
     private Paint mFocusPaint;
     private int mSuccessColor;
     private int mFailColor;
@@ -118,7 +110,6 @@ public class PieRenderer extends OverlayRenderer
     private int mInnerOffset;
     private int mOuterStroke;
     private int mInnerStroke;
-    private boolean mShowFade = true;
     private boolean mFocusFromTap;
     private boolean mTapMode;
 
@@ -127,12 +118,12 @@ public class PieRenderer extends OverlayRenderer
         public void handleMessage(Message msg) {
             switch(msg.what) {
             case MSG_OPEN:
-                if (mListener != null && !mAnimating) {
+                if (mListener != null) {
                     mListener.onPieOpened(mCenter.x, mCenter.y);
                 }
                 break;
             case MSG_CLOSE:
-                if (mListener != null && !mAnimating) {
+                if (mListener != null) {
                     mListener.onPieClosed();
                 }
                 break;
@@ -204,10 +195,6 @@ public class PieRenderer extends OverlayRenderer
         mState = STATE_IDLE;
     }
 
-    public void showFade() {
-        mShowFade = true;
-    }
-
     public boolean showsItems() {
         return mTapMode;
     }
@@ -223,38 +210,6 @@ public class PieRenderer extends OverlayRenderer
 
     public void clearItems() {
         mItems.clear();
-    }
-
-    public void fade() {
-        mShowFade = false;
-        setCenter(mCenterX, mCenterY);
-        Animation anim = new AlphaAnimation();
-        anim.setFillAfter(true);
-        anim.setAnimationListener(new AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                mAnimating = true;
-                update();
-            }
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                show(false);
-                resetAnimation();
-            }
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
-        anim.reset();
-        anim.setDuration(PIE_FADE_DURATION);
-        show(true);
-        mOverlay.startAnimation(anim);
-    }
-
-    private void resetAnimation() {
-        mAlpha = 0f;
-        mAnimating = false;
-        setViewAlpha(mOverlay, 1);
     }
 
     public void showInCenter() {
@@ -274,12 +229,8 @@ public class PieRenderer extends OverlayRenderer
      */
     private void show(boolean show) {
         if (show) {
-            if (mAnimating) {
-                resetAnimation();
-            }
             mState = STATE_PIE;
             // ensure clean state
-            mAnimating = false;
             mCurrentItem = null;
             mOpenItem = null;
             for (PieItem item : mItems) {
@@ -304,7 +255,6 @@ public class PieRenderer extends OverlayRenderer
         // when using the focus ring, align pie items
         mCenter.x = x;
         mCenter.y = y;
-        mAnimating = false;
         mCurrentItem = null;
         mOpenItem = null;
         for (PieItem item : mItems) {
@@ -393,9 +343,6 @@ public class PieRenderer extends OverlayRenderer
     public void onDraw(Canvas canvas) {
         drawFocus(canvas);
         if (mState == STATE_FINISHING) return;
-        if (mAnimating) {
-            setViewAlpha(mOverlay, mAlpha);
-        }
         if (mOpenItem == null) {
             // draw base menu
             for (PieItem item : mItems) {
@@ -431,13 +378,6 @@ public class PieRenderer extends OverlayRenderer
                         view.getTop() + view.getHeight() / 2, mDotRadius,
                         mDotPaint);
             }
-        }
-    }
-
-    @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
-    private void setViewAlpha(View v, float alpha) {
-        if (ApiHelper.HAS_VIEW_TRANSFORM_PROPERTIES) {
-            v.setAlpha(alpha);
         }
     }
 
@@ -481,14 +421,10 @@ public class PieRenderer extends OverlayRenderer
                 return true;
             } else if (isVisible()) {
                 PieItem item = mCurrentItem;
-                if (!mAnimating) {
-                    deselect();
-                }
+                deselect();
                 show(false);
                 if ((item != null) && (item.getView() != null)) {
-                    if ((item == mOpenItem) || !mAnimating) {
-                        item.getView().performClick();
-                    }
+                    item.getView().performClick();
                 }
                 return true;
             }
@@ -496,16 +432,13 @@ public class PieRenderer extends OverlayRenderer
             if (isVisible() || mTapMode) {
                 show(false);
             }
-            if (!mAnimating) {
-                deselect();
-            }
+            deselect();
             return false;
         } else if (MotionEvent.ACTION_MOVE == action) {
-            if (mAnimating) return false;
             if (polar.y < mRadius) {
                 if (mOpenItem != null) {
                     mOpenItem = null;
-                } else if (!mAnimating) {
+                } else {
                     deselect();
                 }
                 return false;
@@ -600,13 +533,6 @@ public class PieRenderer extends OverlayRenderer
         return true;
     }
 
-    private class AlphaAnimation extends Animation {
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            mAlpha = 1 - interpolatedTime;
-        }
-    }
-
     // focus specific code
 
     public void setFocus(int x, int y, boolean startImmediately) {
@@ -670,9 +596,6 @@ public class PieRenderer extends OverlayRenderer
         mFocusX = mCenterX;
         mFocusY = mCenterY;
         setCircle(mFocusX, mFocusY);
-        if (mShowFade) {
-            fade();
-        }
     }
 
     private void setCircle(int cx, int cy) {
@@ -714,10 +637,6 @@ public class PieRenderer extends OverlayRenderer
 
     @Override
     public void showStart() {
-        if (mAnimating) {
-            mState = STATE_IDLE;
-            resetAnimation();
-        }
         if (mState == STATE_IDLE) {
             if (mFocusFromTap) {
                 mHandler.removeMessages(MSG_FOCUS_TAP);
