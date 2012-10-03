@@ -2478,6 +2478,10 @@ public class PhotoModule
     }
 
     @Override
+    public void onCaptureTextureCopied() {
+    }
+
+    @Override
     public void onUserInteraction() {
         if (!mActivity.isFinishing()) keepScreenOnAwhile();
     }

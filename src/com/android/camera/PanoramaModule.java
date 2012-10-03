@@ -1191,6 +1191,10 @@ public class PanoramaModule implements CameraModule,
     }
 
     @Override
+    public void onCaptureTextureCopied() {
+    }
+
+    @Override
     public boolean updateStorageHintOnResume() {
         return false;
     }
