@@ -44,7 +44,7 @@ public class CameraButtonIntentReceiver extends BroadcastReceiver {
         holder.keep();
         holder.release();
         Intent i = new Intent(Intent.ACTION_MAIN);
-        i.setClass(context, Camera.class);
+        i.setClass(context, CameraActivity.class);
         i.addCategory(Intent.CATEGORY_LAUNCHER);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
