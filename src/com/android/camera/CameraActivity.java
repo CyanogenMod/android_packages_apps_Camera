@@ -50,10 +50,13 @@ public class CameraActivity extends ActivityBase
     private FrameLayout mFrame;
     private ShutterButton mShutter;
     private RotateImageView mShutterIcon;
+    private RotateImageView mMenu;
     private CameraSwitcher mSwitcher;
+    private View mShutterSwitcher;
     private Drawable[] mDrawables;
-    private int mSelectedModule;
-    private Dispatcher mDispatcher;
+    private int mCurrentModuleIndex;
+    private MenuListener mMenuListener;
+    private MotionEvent mDown;
 
     private MyOrientationEventListener mOrientationListener;
     // The degrees of the device rotated clockwise from its natural orientation.
@@ -71,10 +74,13 @@ public class CameraActivity extends ActivityBase
             R.drawable.ic_switch_photo_pan_holo_light
     };
 
+    public interface MenuListener {
+        public void onMenuClicked();
+    }
+
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
-        mDispatcher = new Dispatcher();
         setContentView(R.layout.camera_main);
         mFrame =(FrameLayout) findViewById(R.id.main_content);
         mDrawables = new Drawable[DRAW_IDS.length];
@@ -86,38 +92,48 @@ public class CameraActivity extends ActivityBase
         if (MediaStore.INTENT_ACTION_VIDEO_CAMERA.equals(getIntent().getAction())
                 || MediaStore.ACTION_VIDEO_CAPTURE.equals(getIntent().getAction())) {
             mCurrentModule = new VideoModule();
-            mSelectedModule = VIDEO_MODULE_INDEX;
+            mCurrentModuleIndex = VIDEO_MODULE_INDEX;
         } else {
             mCurrentModule = new PhotoModule();
-            mSelectedModule = PHOTO_MODULE_INDEX;
+            mCurrentModuleIndex = PHOTO_MODULE_INDEX;
         }
         mCurrentModule.init(this, mFrame, true);
-        mSwitcher.setModuleIndex(mSelectedModule);
+        mSwitcher.setCurrentIndex(mCurrentModuleIndex);
         mOrientationListener = new MyOrientationEventListener(this);
     }
 
     public void init() {
+        mShutterSwitcher = findViewById(R.id.camera_shutter_switcher);
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
         mShutterIcon = (RotateImageView) findViewById(R.id.shutter_overlay);
         mShutterIcon.enableFilter(false);
+        mMenu = (RotateImageView) findViewById(R.id.menu);
         mSwitcher = (CameraSwitcher) findViewById(R.id.camera_switcher);
+        mSwitcher.setDrawIds(DRAW_IDS);
+        mMenu.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMenuListener != null) {
+                    mMenuListener.onMenuClicked();
+                }
+            }
+        });
+        int[] drawids = new int[LightCycleHelper.hasLightCycleCapture(this)
+                                ? DRAW_IDS.length : DRAW_IDS.length - 1];
+        int ix = 0;
         for (int i = 0; i < mDrawables.length; i++) {
             if (i == LIGHTCYCLE_MODULE_INDEX && !LightCycleHelper.hasLightCycleCapture(this)) {
                 continue; // not enabled, so don't add to UI
             }
-            RotateImageView iv = new RotateImageView(this);
-            iv.setScaleType(ImageView.ScaleType.CENTER);
-            iv.setImageDrawable(mDrawables[i]);
-            iv.enableFilter(false);
-            mSwitcher.add(iv, new LayoutParams(LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT));
-            final int index = i;
-            iv.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View arg0) {
-                    mSwitcher.animateToModule(index);
-                }
-            });
+            drawids[ix++] = DRAW_IDS[i];
+        }
+        mSwitcher.setDrawIds(drawids);
+    }
+
+    public void setMenuListener(MenuListener listener) {
+        mMenuListener = listener;
+        if (mMenu != null) {
+            mMenu.setVisibility((listener != null) ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -141,24 +157,25 @@ public class CameraActivity extends ActivityBase
             // Rotate camera mode icons in the switcher
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
-                if(mSwitcher != null) {
-                    mSwitcher.rotateIcons(mOrientationCompensation, true);
+                if (mSwitcher != null) {
+                    mSwitcher.setOrientation(mOrientationCompensation, true);
+                }
+                if (mMenu != null) {
+                    mMenu.setOrientation(mOrientationCompensation, true);
                 }
             }
             mCurrentModule.onOrientationChanged(orientation);
         }
     }
-    @Override
-    public void onScroll() {
-    }
 
     @Override
     public void onCameraSelected(int i) {
-        if (i != mSelectedModule) {
+        if (i != mCurrentModuleIndex) {
             mPaused = true;
             boolean wasPanorama = isPanoramaActivity();
             closeModule(mCurrentModule);
-            mSelectedModule = i;
+            mCurrentModuleIndex = i;
+            mMenuListener = null;
             switch (i) {
                 case VIDEO_MODULE_INDEX:
                     mCurrentModule = new VideoModule();
@@ -192,7 +209,7 @@ public class CameraActivity extends ActivityBase
     }
 
     private void showShutterIcon(boolean show) {
-        showShutterIcon(show, DRAW_IDS[mSelectedModule]);
+        showShutterIcon(show, DRAW_IDS[mCurrentModuleIndex]);
     }
 
     private void showShutterIcon(boolean show, int resid) {
@@ -221,17 +238,22 @@ public class CameraActivity extends ActivityBase
     // hide the switcher and show the given shutter icon
     public void hideSwitcher(int resid) {
         mSwitcher.setVisibility(View.GONE);
+        mMenu.setVisibility(View.GONE);
         showShutterIcon(true, resid);
     }
 
     public void hideSwitcher() {
         mSwitcher.setVisibility(View.GONE);
+        mMenu.setVisibility(View.GONE);
         showShutterIcon(true);
     }
 
     public void showSwitcher() {
         if (mCurrentModule.needsSwitcher()) {
             mSwitcher.setVisibility(View.VISIBLE);
+            if (mMenuListener != null) {
+                mMenu.setVisibility(View.VISIBLE);
+            }
             showShutterIcon(false);
         }
     }
@@ -250,7 +272,7 @@ public class CameraActivity extends ActivityBase
         inflater.inflate(R.layout.camera_shutter_switcher, appRoot);
         init();
 
-        mSwitcher.animateToModule(mSelectedModule);
+        mSwitcher.setImageResource(DRAW_IDS[mCurrentModuleIndex]);
         mSwitcher.setSwitchListener(this);
         if (mShowCameraAppView) {
             showUI();
@@ -340,23 +362,24 @@ public class CameraActivity extends ActivityBase
     }
 
     public void cancelActivityTouchHandling() {
-        MotionEvent e = mDispatcher.getCancelEvent();
-        if (e != null) {
-            super.dispatchTouchEvent(e);
+        if (mDown != null) {
+            MotionEvent cancel = MotionEvent.obtain(mDown);
+            cancel.setAction(MotionEvent.ACTION_CANCEL);
+            super.dispatchTouchEvent(cancel);
         }
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
-        boolean handled = false;
-        if ((m.getActionMasked() == MotionEvent.ACTION_DOWN) || mDispatcher.isActive()) {
-            mShutter.enableTouch(true);
-            mSwitcher.enableTouch(true);
-            handled = mDispatcher.dispatchTouchEvent(m);
-            mShutter.enableTouch(false);
-            mSwitcher.enableTouch(false);
+        if (m.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            mDown = m;
         }
-        return handled || mCurrentModule.dispatchTouchEvent(m);
+        if ((mSwitcher != null) && mSwitcher.showsPopup() && !mSwitcher.isInsidePopup(m)) {
+            return mSwitcher.onTouch(null, m);
+        } else {
+            return mShutterSwitcher.dispatchTouchEvent(m)
+                    || mCurrentModule.dispatchTouchEvent(m);
+        }
     }
 
     public boolean superDispatchTouchEvent(MotionEvent m) {
@@ -391,99 +414,4 @@ public class CameraActivity extends ActivityBase
     public boolean isPanoramaActivity() {
         return (mCurrentModule instanceof PanoramaModule);
     }
-
-    private class Dispatcher {
-
-        private boolean mActive;
-        private MotionEvent mDown;
-        private int mSlop;
-        private boolean mDownInShutter;
-
-        public Dispatcher() {
-            mSlop = ViewConfiguration.get(CameraActivity.this).getScaledTouchSlop();
-            mActive = true;
-        }
-
-        public MotionEvent getCancelEvent() {
-            if (mDown != null) {
-                MotionEvent cancel = MotionEvent.obtain(mDown);
-                cancel.setAction(MotionEvent.ACTION_CANCEL);
-                return cancel;
-            }
-            return null;
-        }
-
-        public boolean isActive() {
-            return mActive;
-        }
-
-        public boolean dispatchTouchEvent(MotionEvent m) {
-            switch (m.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-                mActive = false;
-                mDownInShutter = isInside(m, mShutter);
-                mDown = m;
-                if (mDownInShutter) {
-                    sendTo(m, mShutter);
-                    mActive = true;
-                }
-                if (isInside(m, mSwitcher)) {
-                    sendTo(m, mSwitcher);
-                    mActive = true;
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (mDownInShutter) {
-                    if (Math.abs(m.getX() - mDown.getX()) > mSlop) {
-                        // sliding switcher
-                        mDownInShutter = false;
-                        MotionEvent cancel = MotionEvent.obtain(m);
-                        cancel.setAction(MotionEvent.ACTION_CANCEL);
-                        sendTo(cancel, mShutter);
-                        sendTo(m, mSwitcher);
-                    } else {
-                        sendTo(m, mShutter);
-                        sendTo(m, mSwitcher);
-                    }
-                } else {
-                    sendTo(m, mSwitcher);
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                if (mDownInShutter) {
-                    sendTo(m, mShutter);
-                    MotionEvent cancel = MotionEvent.obtain(m);
-                    cancel.setAction(MotionEvent.ACTION_CANCEL);
-                    sendTo(cancel, mSwitcher);
-                } else {
-                    sendTo(m, mSwitcher);
-                }
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                if (mDownInShutter) {
-                    sendTo(m, mShutter);
-                }
-                sendTo(m, mSwitcher);
-                break;
-            }
-            return mActive;
-        }
-    }
-
-    private boolean sendTo(MotionEvent m, View v) {
-        return v.dispatchTouchEvent(transformEvent(m, v));
-    }
-
-    private boolean isInside(MotionEvent evt, View v) {
-        return (v.getVisibility() == View.VISIBLE
-                && evt.getX() >= v.getLeft() && evt.getX() < v.getRight()
-                && evt.getY() >= v.getTop() && evt.getY() < v.getBottom());
-    }
-
-    private MotionEvent transformEvent(MotionEvent m, View v) {
-        MotionEvent r = MotionEvent.obtain(m);
-        r.offsetLocation(- v.getLeft(), - v.getTop());
-        return r;
-    }
-
 }
