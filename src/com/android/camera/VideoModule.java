@@ -226,7 +226,7 @@ public class VideoModule implements CameraModule,
 
     // The degrees of the device rotated clockwise from its natural orientation.
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
-    // The orientation compensation for icons and thumbnails. Ex: if the value
+    // The orientation compensation for icons and dialogs. Ex: if the value
     // is 90, the UI components should be rotated 90 degrees counter-clockwise.
     private int mOrientationCompensation = 0;
 
@@ -654,14 +654,6 @@ public class VideoModule implements CameraModule,
     }
 
     @OnClickAttr
-    public void onThumbnailClicked(View v) {
-        if (!mMediaRecorderRecording && mActivity.mThumbnail != null
-                && !mSwitchingCamera) {
-            mActivity.gotoGallery();
-        }
-    }
-
-    @OnClickAttr
     public void onReviewRetakeClicked(View v) {
         deleteCurrentVideo();
         hideAlert();
@@ -704,7 +696,6 @@ public class VideoModule implements CameraModule,
                 // will not be continuous for a short period of time.
                 ((CameraScreenNail) mActivity.mCameraScreenNail).animateCapture(getCameraRotation());
             }
-            if (!effectsActive()) getThumbnail();
         }
     }
 
@@ -919,10 +910,6 @@ public class VideoModule implements CameraModule,
         boolean recordLocation = RecordLocationPreference.get(mPreferences,
                 mContentResolver);
         mLocationManager.recordLocation(recordLocation);
-
-        if (!mIsVideoCaptureIntent) {
-            mActivity.getLastThumbnail();
-        }
 
         if (mPreviewing) {
             mOnResumeTime = SystemClock.uptimeMillis();
@@ -1674,7 +1661,6 @@ public class VideoModule implements CameraModule,
 
     private void showRecordingUI(boolean recording) {
         if (recording) {
-            if (mActivity.mThumbnailView != null) mActivity.mThumbnailView.setEnabled(false);
 //            mShutterButton.setImageResource(R.drawable.btn_shutter_video_recording);
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
@@ -1694,7 +1680,6 @@ public class VideoModule implements CameraModule,
 //                mZoomControl.setVisibility(View.GONE);
             }
         } else {
-            if (mActivity.mThumbnailView != null) mActivity.mThumbnailView.setEnabled(true);
 //            mShutterButton.setImageResource(R.drawable.btn_shutter_video);
             mRecordingTimeView.setVisibility(View.GONE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
@@ -1704,19 +1689,6 @@ public class VideoModule implements CameraModule,
             if (!ApiHelper.HAS_ZOOM_WHEN_RECORDING
                     && mParameters.isZoomSupported()) {
 //                mZoomControl.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    private void getThumbnail() {
-        if (mCurrentVideoUri != null) {
-            Bitmap videoFrame = Thumbnail.createVideoThumbnailBitmap(mCurrentVideoFilename,
-                    Math.max(mActivity.mThumbnailViewWidth, MIN_THUMB_SIZE));
-            if (videoFrame != null) {
-                mActivity.mThumbnail = Thumbnail.createThumbnail(mCurrentVideoUri, videoFrame, 0);
-                if (mActivity.mThumbnailView != null) {
-                    mActivity.mThumbnailView.setBitmap(mActivity.mThumbnail.getBitmap());
-                }
             }
         }
     }
@@ -2111,8 +2083,6 @@ public class VideoModule implements CameraModule,
                     } else {
                         showAlert();
                     }
-                } else {
-                    getThumbnail();
                 }
             }
             mEffectsDisplayResult = false;
@@ -2213,13 +2183,6 @@ public class VideoModule implements CameraModule,
             if (mReviewDoneButton instanceof TwoStateImageView) {
                 ((TwoStateImageView) mReviewDoneButton).enableFilter(false);
             }
-        } else {
-            mActivity.mThumbnailView = (RotateImageView) mRootView.findViewById(R.id.thumbnail);
-            if (mActivity.mThumbnailView != null) {
-                mActivity.mThumbnailView.enableFilter(false);
-                mActivity.mThumbnailView.setVisibility(View.VISIBLE);
-                mActivity.mThumbnailViewWidth = mActivity.mThumbnailView.getLayoutParams().width;
-            }
         }
     }
 
@@ -2276,9 +2239,6 @@ public class VideoModule implements CameraModule,
         // from onResume()
         showVideoSnapshotUI(false);
         initializeZoom();
-        if (!mIsVideoCaptureIntent) {
-            mActivity.updateThumbnailView();
-        }
     }
 
     @Override
@@ -2628,14 +2588,6 @@ public class VideoModule implements CameraModule,
         Uri uri = Storage.addImage(mContentResolver, title, dateTaken, loc, orientation, data,
                 s.width, s.height);
         if (uri != null) {
-            // Create a thumbnail whose width is equal or bigger than that of the preview.
-            int ratio = (int) Math.ceil((double) mParameters.getPictureSize().width
-                    / mPreviewFrameLayout.getWidth());
-            int inSampleSize = Integer.highestOneBit(ratio);
-            mActivity.mThumbnail = Thumbnail.createThumbnail(data, orientation, inSampleSize, uri);
-            if (mActivity.mThumbnail != null && mActivity.mThumbnailView != null) {
-                mActivity.mThumbnailView.setBitmap(mActivity.mThumbnail.getBitmap());
-            }
             Util.broadcastNewPicture(mActivity, uri);
         }
     }
