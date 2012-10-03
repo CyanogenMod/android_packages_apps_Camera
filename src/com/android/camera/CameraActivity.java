@@ -22,18 +22,14 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.android.camera.ui.CameraSwitcher;
 import com.android.camera.ui.RotateImageView;
@@ -71,7 +67,7 @@ public class CameraActivity extends ActivityBase
             R.drawable.ic_switch_video,
             R.drawable.ic_switch_camera,
             R.drawable.ic_switch_pan,
-            R.drawable.ic_switch_photo_pan_holo_light
+            com.android.gallery3d.R.drawable.ic_menu_photosphere
     };
 
     public interface MenuListener {
