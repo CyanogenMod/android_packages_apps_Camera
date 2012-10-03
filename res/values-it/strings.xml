@@ -78,6 +78,8 @@
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Non selezionabile in modalità scena."</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Ripristina predefinite"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Esposizione"</string>
+    <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
+    <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Lo spazio dell\'archivio USB si sta esaurendo. Cambia l\'impostazione di qualità o elimina alcune immagini o altri file."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Lo spazio della scheda SD si sta esaurendo. Cambia l\'impostazione di qualità o elimina alcune immagini o altri file."</string>
@@ -131,4 +133,12 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Fine"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Imposta l\'intervallo di tempo"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"La funzione Rallentatore non è attiva. Attivala per impostare l\'intervallo di tempo."</string>
+    <!-- no translation found for remember_location_title (9060472929006917810) -->
+    <skip />
+    <!-- no translation found for remember_location_prompt (9107532965604174377) -->
+    <skip />
+    <!-- no translation found for remember_location_no (7541394381714894896) -->
+    <skip />
+    <!-- no translation found for remember_location_yes (862884269285964180) -->
+    <skip />
 </resources>
