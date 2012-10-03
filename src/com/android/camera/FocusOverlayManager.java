@@ -522,6 +522,10 @@ public class FocusOverlayManager {
         Util.rectFToRect(rectF, rect);
     }
 
+    /* package */ int getFocusState() {
+        return mState;
+    }
+
     public boolean isFocusCompleted() {
         return mState == STATE_SUCCESS || mState == STATE_FAIL;
     }
