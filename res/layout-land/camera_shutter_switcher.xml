@@ -24,6 +24,13 @@
         android:layout_alignLeft="@+id/camera_switcher"
         android:background="#5AF5F5F5" />
 
+    <View
+        android:id="@+id/blocker"
+        android:layout_height="match_parent"
+        android:layout_width="@dimen/switcher_size"
+        android:clickable="true"
+        android:layout_alignParentRight="true" />
+
     <com.android.camera.ShutterButton
         android:id="@+id/shutter_button"
         android:layout_width="wrap_content"
@@ -39,18 +46,27 @@
 
     <com.android.camera.ui.CameraSwitcher
         android:id="@+id/camera_switcher"
-        android:layout_width="72dip"
-        android:layout_height="match_parent"
+        style="@style/SwitcherButton"
         android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginRight="2dip" />
 
     <com.android.camera.ui.RotateImageView
         android:id="@+id/shutter_overlay"
-        android:layout_width="72dip"
-        android:layout_height="72dip"
+        style="@style/SwitcherButton"
+        android:background="@null"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="2dip"
+        android:scaleType="center" />
+
+    <com.android.camera.ui.RotateImageView
+        android:id="@+id/menu"
+        style="@style/SwitcherButton"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="2dip"
+        android:src="@drawable/ic_menu_overflow_large"
         android:scaleType="center" />
 
 </RelativeLayout>
