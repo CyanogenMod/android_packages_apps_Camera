@@ -169,22 +169,7 @@ public class PanoramaModule implements CameraModule,
     private CameraActivity mActivity;
     private View mRootView;
     private CameraProxy mCameraDevice;
-    private boolean mOpenCameraFail;
-    private boolean mCameraDisabled;
     private boolean mPaused;
-
-    private class SetupCameraThread extends Thread {
-        @Override
-        public void run() {
-            try {
-                setupCamera();
-            } catch (CameraHardwareException e) {
-                mOpenCameraFail = true;
-            } catch (CameraDisabledException e) {
-                mCameraDisabled = true;
-            }
-        }
-    }
 
     private class MosaicJpeg {
         public MosaicJpeg(byte[] data, int width, int height) {
@@ -981,18 +966,12 @@ public class PanoramaModule implements CameraModule,
 
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
 
-        SetupCameraThread setupCameraThread = new SetupCameraThread();
-        setupCameraThread.start();
         try {
-            setupCameraThread.join();
-        } catch (InterruptedException ex) {
-            // ignore
-        }
-
-        if (mOpenCameraFail) {
+            setupCamera();
+        } catch (CameraHardwareException e) {
             Util.showErrorAndFinish(mActivity, R.string.cannot_connect_camera);
             return;
-        } else if (mCameraDisabled) {
+        } catch (CameraDisabledException e) {
             Util.showErrorAndFinish(mActivity, R.string.camera_disabled);
             return;
         }
