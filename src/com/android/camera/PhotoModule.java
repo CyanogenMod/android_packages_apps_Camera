@@ -1293,8 +1293,14 @@ public class PhotoModule
         Util.setGpsParameters(mParameters, loc);
         mCameraDevice.setParameters(mParameters);
 
-        mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
-                mPostViewPictureCallback, new JpegPictureCallback(loc));
+        try {
+            mCameraDevice.takePicture(mShutterCallback, mRawPictureCallback,
+                    mPostViewPictureCallback, new JpegPictureCallback(loc));
+        } catch (RuntimeException e) {
+            Log.w(TAG, "take picture failed; mCameraState=" + mCameraState
+                    + ", mFocusManager.mState=" + mFocusManager.getFocusState());
+            throw e;
+        }
 
         Size size = mParameters.getPictureSize();
         mImageNamer.prepareUri(mContentResolver, mCaptureStartTime,
