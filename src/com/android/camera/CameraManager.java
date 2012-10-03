@@ -74,6 +74,7 @@ public class CameraManager {
     private static final int SET_PARAMETERS_ASYNC = 21;
     private static final int WAIT_FOR_IDLE = 22;
     private static final int SET_PREVIEW_DISPLAY_ASYNC = 23;
+    private static final int SET_PREVIEW_CALLBACK = 24;
 
     private Handler mCameraHandler;
     private CameraProxy mCameraProxy;
@@ -227,6 +228,10 @@ public class CameraManager {
                         mCamera.setParameters((Parameters) msg.obj);
                         return;  // no need to call mSig.open()
 
+                    case SET_PREVIEW_CALLBACK:
+                        mCamera.setPreviewCallback((PreviewCallback) msg.obj);
+                        break;
+
                     case WAIT_FOR_IDLE:
                         // do nothing
                         break;
@@ -323,6 +328,12 @@ public class CameraManager {
         public void stopPreview() {
             mSig.close();
             mCameraHandler.sendEmptyMessage(STOP_PREVIEW);
+            mSig.block();
+        }
+
+        public void setPreviewCallback(final PreviewCallback cb) {
+            mSig.close();
+            mCameraHandler.obtainMessage(SET_PREVIEW_CALLBACK, cb).sendToTarget();
             mSig.block();
         }
 
