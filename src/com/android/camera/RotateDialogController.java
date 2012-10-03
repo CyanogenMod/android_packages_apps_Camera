@@ -159,4 +159,10 @@ public class RotateDialogController implements Rotatable {
         fadeInDialog();
     }
 
+    public int getVisibility() {
+        if (mDialogRootLayout != null) {
+            return mDialogRootLayout.getVisibility();
+        }
+        return View.INVISIBLE;
+    }
 }

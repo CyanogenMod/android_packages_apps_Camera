@@ -168,6 +168,10 @@ public class PhotoModule
     // The orientation compensation for icons and thumbnails. Ex: if the value
     // is 90, the UI components should be rotated 90 degrees counter-clockwise.
     private int mOrientationCompensation = 0;
+    // If mOrientationResetNeeded is set to be true, onOrientationChanged will reset
+    // the orientation of the on screen indicators to the current orientation compensation
+    // regardless of whether it's the same as the most recent orientation compensation
+    private boolean mOrientationResetNeeded;
     private ComboPreferences mPreferences;
 
     private static final String sTempCropFilename = "crop-temp";
@@ -500,6 +504,10 @@ public class PhotoModule
         initializeMiscControls();
         mLocationManager = new LocationManager(mActivity, this);
         initOnScreenIndicator();
+
+        // Initialize to true to ensure that the on-screen indicators get their
+        // orientation set in onOrientationChanged.
+        mOrientationResetNeeded = true;
         // Make sure all views are disabled before camera is open.
 //        enableCameraControls(false);
         locationFirstRun();
@@ -1481,6 +1489,25 @@ public class PhotoModule
 
     @Override
     public boolean collapseCameraControls() {
+        // Remove all the popups/dialog boxes
+        boolean ret = false;
+        if(mRotateDialog != null && mRotateDialog.getVisibility() == View.VISIBLE) {
+            mRotateDialog.dismissDialog();
+            ret = true;
+        }
+        if (mPopup != null) {
+            dismissPopup();
+            ret = true;
+        }
+        return ret;
+    }
+
+    public boolean removeTopLevelPopup() {
+        // Remove the top level popup or dialog box and return true if there's any
+        if (mRotateDialog != null && mRotateDialog.getVisibility() == View.VISIBLE) {
+            mRotateDialog.dismissDialog();
+            return true;
+        }
         if (mPopup != null) {
             dismissPopup();
             return true;
@@ -1499,9 +1526,10 @@ public class PhotoModule
         // calculate the up-to-date orientationCompensation.
         int orientationCompensation =
                 (mOrientation + Util.getDisplayRotation(mActivity)) % 360;
-        if (mOrientationCompensation != orientationCompensation) {
+        if (mOrientationCompensation != orientationCompensation || mOrientationResetNeeded) {
             mOrientationCompensation = orientationCompensation;
             setOrientationIndicator(mOrientationCompensation, true);
+            mOrientationResetNeeded = false;
         }
 
         // Show the toast after getting the first orientation changed.
@@ -2019,7 +2047,7 @@ public class PhotoModule
         // In image capture mode, back button should:
         // 1) if there is any popup, dismiss them, 2) otherwise, get out of image capture
         if (mIsImageCaptureIntent) {
-            if (!collapseCameraControls()) {
+            if (!removeTopLevelPopup()) {
                 // no popup to dismiss, cancel image capture
                 doCancel();
             }
@@ -2028,7 +2056,7 @@ public class PhotoModule
             // ignore backs while we're taking a picture
             return true;
         } else {
-            return collapseCameraControls();
+            return removeTopLevelPopup();
         }
     }
 
@@ -2052,7 +2080,7 @@ public class PhotoModule
                     // Start auto-focus immediately to reduce shutter lag. After
                     // the shutter button gets the focus, onShutterButtonFocus()
                     // will be called again but it is fine.
-                    if (collapseCameraControls()) return true;
+                    if (removeTopLevelPopup()) return true;
                     onShutterButtonFocus(true);
                     if (mShutterButton.isInTouchMode()) {
                         mShutterButton.requestFocusFromTouch();
