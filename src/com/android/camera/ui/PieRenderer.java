@@ -405,7 +405,7 @@ public class PieRenderer extends OverlayRenderer
 
     private void drawItem(Canvas canvas, PieItem item) {
         if (item.getView() != null) {
-            if ((mFocusFromTap && (mState == STATE_FOCUSING)) || (mState == STATE_PIE)) {
+            if (mState == STATE_PIE) {
                 if (item.getPath() != null) {
                     Paint p = item.isSelected() ? mSelectedPaint : mNormalPaint;
                     int state = canvas.save();
