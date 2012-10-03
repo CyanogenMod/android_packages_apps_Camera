@@ -582,9 +582,6 @@ public class PhotoModule
         initializeZoom();
         updateOnScreenIndicators();
         showTapToFocusToastIfNeeded();
-        if (mPieRenderer != null) {
-            mPieRenderer.showFade();
-        }
     }
 
     private void initializePhotoControl() {
