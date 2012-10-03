@@ -214,7 +214,7 @@ public class PreviewGestures
                         cancelActivityTouchHandling(m);
                         if (isSwipe(m , false)) {
                             mMode = MODE_NONE;
-                        } else {
+                        } else if (!mZoomOnly) {
                             mMode = MODE_PIE;
                             openPie();
                             sendToPie(m);
