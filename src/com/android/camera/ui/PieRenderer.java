@@ -258,9 +258,14 @@ public class PieRenderer extends OverlayRenderer
     }
 
     public void showInCenter() {
-        setCenter(mCenterX, mCenterY);
-        mTapMode = true;
-        show(true);
+        if (isVisible()) {
+            mTapMode = false;
+            show(false);
+        } else {
+            setCenter(mCenterX, mCenterY);
+            mTapMode = true;
+            show(true);
+        }
     }
 
     /**
