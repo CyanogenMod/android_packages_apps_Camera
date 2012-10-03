@@ -106,6 +106,8 @@
     <!-- no translation found for pref_restore_detail (5732490002291044791) -->
     <skip />
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposiziun"</string>
+    <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
+    <skip />
     <!-- no translation found for dialog_ok (6263301364153382152) -->
     <skip />
     <!-- no translation found for spaceIsLow_content (4401325203349203177) -->
@@ -210,5 +212,13 @@
     <!-- no translation found for set_time_interval (2970567717633813771) -->
     <skip />
     <!-- no translation found for set_time_interval_help (6665849510484821483) -->
+    <skip />
+    <!-- no translation found for remember_location_title (9060472929006917810) -->
+    <skip />
+    <!-- no translation found for remember_location_prompt (9107532965604174377) -->
+    <skip />
+    <!-- no translation found for remember_location_no (7541394381714894896) -->
+    <skip />
+    <!-- no translation found for remember_location_yes (862884269285964180) -->
     <skip />
 </resources>
