@@ -111,13 +111,12 @@ public class PhotoModule
     private static final int SET_CAMERA_PARAMETERS_WHEN_IDLE = 4;
     private static final int CHECK_DISPLAY_ROTATION = 5;
     private static final int SHOW_TAP_TO_FOCUS_TOAST = 6;
-    private static final int UPDATE_THUMBNAIL = 7;
-    private static final int SWITCH_CAMERA = 8;
-    private static final int SWITCH_CAMERA_START_ANIMATION = 9;
-    private static final int CAMERA_OPEN_DONE = 10;
-    private static final int START_PREVIEW_DONE = 11;
-    private static final int OPEN_CAMERA_FAIL = 12;
-    private static final int CAMERA_DISABLED = 13;
+    private static final int SWITCH_CAMERA = 7;
+    private static final int SWITCH_CAMERA_START_ANIMATION = 8;
+    private static final int CAMERA_OPEN_DONE = 9;
+    private static final int START_PREVIEW_DONE = 10;
+    private static final int OPEN_CAMERA_FAIL = 11;
+    private static final int CAMERA_DISABLED = 12;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -165,7 +164,7 @@ public class PhotoModule
 
     // The degrees of the device rotated clockwise from its natural orientation.
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
-    // The orientation compensation for icons and thumbnails. Ex: if the value
+    // The orientation compensation for icons and dialogs. Ex: if the value
     // is 90, the UI components should be rotated 90 degrees counter-clockwise.
     private int mOrientationCompensation = 0;
     // If mOrientationResetNeeded is set to be true, onOrientationChanged will reset
@@ -208,8 +207,8 @@ public class PhotoModule
     // A view group that contains all the small indicators.
     private Rotatable mOnScreenIndicators;
 
-    // We use a thread in ImageSaver to do the work of saving images and
-    // generating thumbnails. This reduces the shot-to-shot time.
+    // We use a thread in ImageSaver to do the work of saving images. This
+    // reduces the shot-to-shot time.
     private ImageSaver mImageSaver;
     // Similarly, we use a thread to generate the name of the picture and insert
     // it into MediaStore while picture taking is still in progress.
@@ -258,7 +257,6 @@ public class PhotoModule
     private boolean mSnapshotOnIdle = false;
 
     private ContentResolver mContentResolver;
-    private boolean mDidRegister = false;
 
     private LocationManager mLocationManager;
 
@@ -411,11 +409,6 @@ public class PhotoModule
 
                 case SHOW_TAP_TO_FOCUS_TOAST: {
                     showTapToFocusToast();
-                    break;
-                }
-
-                case UPDATE_THUMBNAIL: {
-                    mImageSaver.updateThumbnail();
                     break;
                 }
 
@@ -789,16 +782,6 @@ public class PhotoModule
         return false;
     }
 
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (!mIsImageCaptureIntent && action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)) {
-                mActivity.getLastThumbnail();
-            }
-        }
-    };
-
     private void initOnScreenIndicator() {
         mGpsIndicator = (ImageView) mRootView.findViewById(R.id.onscreen_gps_indicator);
         mExposureIndicator = (TextView) mRootView.findViewById(R.id.onscreen_exposure_indicator);
@@ -1017,7 +1000,7 @@ public class PhotoModule
                 mActivity.addSecureAlbumItemIfNeeded(false, uri);
                 String title = mImageNamer.getTitle();
                 mImageSaver.addImage(jpegData, uri, title, mLocation,
-                        width, height, mActivity.mThumbnailViewWidth, orientation);
+                        width, height, orientation);
             } else {
                 mJpegImageData = jpegData;
                 if (!mQuickCapture) {
@@ -1072,7 +1055,6 @@ public class PhotoModule
         String title;
         Location loc;
         int width, height;
-        int thumbnailWidth;
         int orientation;
     }
 
@@ -1095,8 +1077,6 @@ public class PhotoModule
         private static final int QUEUE_LIMIT = 3;
 
         private ArrayList<SaveRequest> mQueue;
-        private Thumbnail mPendingThumbnail;
-        private Object mUpdateThumbnailLock = new Object();
         private boolean mStop;
 
         // Runs in main thread
@@ -1107,8 +1087,7 @@ public class PhotoModule
 
         // Runs in main thread
         public void addImage(final byte[] data, Uri uri, String title,
-                Location loc, int width, int height, int thumbnailWidth,
-                int orientation) {
+                Location loc, int width, int height, int orientation) {
             SaveRequest r = new SaveRequest();
             r.data = data;
             r.uri = uri;
@@ -1116,7 +1095,6 @@ public class PhotoModule
             r.loc = (loc == null) ? null : new Location(loc);  // make a copy
             r.width = width;
             r.height = height;
-            r.thumbnailWidth = thumbnailWidth;
             r.orientation = orientation;
             synchronized (this) {
                 while (mQueue.size() >= QUEUE_LIMIT) {
@@ -1154,7 +1132,7 @@ public class PhotoModule
                     r = mQueue.get(0);
                 }
                 storeImage(r.data, r.uri, r.title, r.loc, r.width, r.height,
-                        r.thumbnailWidth, r.orientation);
+                        r.orientation);
                 synchronized (this) {
                     mQueue.remove(0);
                     notifyAll();  // the main thread may wait in addImage
@@ -1173,7 +1151,6 @@ public class PhotoModule
                     }
                 }
             }
-            updateThumbnail();
         }
 
         // Runs in main thread
@@ -1190,53 +1167,12 @@ public class PhotoModule
             }
         }
 
-        // Runs in main thread (because we need to update mThumbnailView in the
-        // main thread)
-        public void updateThumbnail() {
-            Thumbnail t;
-            synchronized (mUpdateThumbnailLock) {
-                mHandler.removeMessages(UPDATE_THUMBNAIL);
-                t = mPendingThumbnail;
-                mPendingThumbnail = null;
-            }
-
-            if (t != null) {
-                mActivity.mThumbnail = t;
-                if (mActivity.mThumbnailView != null) {
-                    mActivity.mThumbnailView.setBitmap(mActivity.mThumbnail.getBitmap());
-                }
-            }
-        }
-
         // Runs in saver thread
         private void storeImage(final byte[] data, Uri uri, String title,
-                Location loc, int width, int height, int thumbnailWidth,
-                int orientation) {
+                Location loc, int width, int height, int orientation) {
             boolean ok = Storage.updateImage(mContentResolver, uri, title, loc,
                     orientation, data, width, height);
             if (ok) {
-                boolean needThumbnail;
-                synchronized (this) {
-                    // If the number of requests in the queue (include the
-                    // current one) is greater than 1, we don't need to generate
-                    // thumbnail for this image. Because we'll soon replace it
-                    // with the thumbnail for some image later in the queue.
-                    needThumbnail = (mQueue.size() <= 1);
-                }
-                if (needThumbnail) {
-                    // Create a thumbnail whose width is equal or bigger than
-                    // that of the thumbnail view.
-                    int ratio = (int) Math.ceil((double) width / thumbnailWidth);
-                    int inSampleSize = Integer.highestOneBit(ratio);
-                    Thumbnail t = Thumbnail.createThumbnail(
-                                data, orientation, inSampleSize, uri);
-                    synchronized (mUpdateThumbnailLock) {
-                        // We need to update the thumbnail in the main thread,
-                        // so send a message to run updateThumbnail().
-                        mPendingThumbnail = t;
-                        mHandler.sendEmptyMessage(UPDATE_THUMBNAIL);
-                    }
-                }
                 Util.broadcastNewPicture(mActivity, uri);
             }
         }
@@ -1570,14 +1506,6 @@ public class PhotoModule
         }
     }
 
-    @OnClickAttr
-    public void onThumbnailClicked(View v) {
-        if (isCameraIdle() && mActivity.mThumbnail != null) {
-            if (mImageSaver != null) mImageSaver.waitDone();
-            mActivity.gotoGallery();
-        }
-    }
-
     // onClick handler for R.id.btn_retake
     @OnClickAttr
     public void onReviewRetakeClicked(View v) {
@@ -1730,12 +1658,6 @@ public class PhotoModule
 
     @Override
     public void installIntentFilter() {
-        // install an intent filter to receive SD card related events.
-        IntentFilter intentFilter =
-                new IntentFilter(Intent.ACTION_MEDIA_SCANNER_FINISHED);
-        intentFilter.addDataScheme("file");
-        mActivity.registerReceiver(mReceiver, intentFilter);
-        mDidRegister = true;
     }
 
     @Override
@@ -1765,8 +1687,6 @@ public class PhotoModule
             mCameraStartUpThread = new CameraStartUpThread();
             mCameraStartUpThread.start();
         }
-
-        if (!mIsImageCaptureIntent) mActivity.getLastThumbnail();
 
         // If first time initialization is not finished, put it in the
         // message queue.
@@ -1835,10 +1755,6 @@ public class PhotoModule
             }
         }
 
-        if (mDidRegister) {
-            mActivity.unregisterReceiver(mReceiver);
-            mDidRegister = false;
-        }
         if (mLocationManager != null) mLocationManager.recordLocation(false);
         updateExposureOnScreenIndicator(0);
 
@@ -1894,13 +1810,6 @@ public class PhotoModule
             }
 
             setupCaptureParams();
-        } else {
-            mActivity.mThumbnailView = ((RotateImageView) mRootView.findViewById(R.id.thumbnail));
-            if (mActivity.mThumbnailView != null) {
-                mActivity.mThumbnailView.enableFilter(false);
-                mActivity.mThumbnailView.setVisibility(View.VISIBLE);
-                mActivity.mThumbnailViewWidth = mActivity.mThumbnailView.getLayoutParams().width;
-            }
         }
     }
 
@@ -1960,9 +1869,6 @@ public class PhotoModule
         initializeMiscControls();
         loadCameraPreferences();
         initializePhotoControl();
-
-        // from onResume()
-        if (!mIsImageCaptureIntent) mActivity.updateThumbnailView();
 
         // from initializeFirstTime()
         mShutterButton = mActivity.getShutterButton();
