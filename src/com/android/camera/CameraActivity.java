@@ -174,6 +174,7 @@ public class CameraActivity extends ActivityBase
                     break;
             }
             openModule(mCurrentModule, wasPanorama);
+            mCurrentModule.onOrientationChanged(mOrientation);
         }
     }
 
