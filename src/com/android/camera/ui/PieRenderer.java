@@ -120,7 +120,7 @@ public class PieRenderer extends OverlayRenderer
     private int mInnerStroke;
     private boolean mShowFade = true;
     private boolean mFocusFromTap;
-    private boolean mShowItems;
+    private boolean mTapMode;
 
 
     private Handler mHandler = new Handler() {
@@ -141,7 +141,10 @@ public class PieRenderer extends OverlayRenderer
                 break;
             case MSG_FOCUS_TAP:
                 // reset flag
-                mShowItems = false;
+                mTapMode = false;
+                if (mState == STATE_PIE) {
+                    show(false);
+                }
                 break;
             }
         }
@@ -206,7 +209,7 @@ public class PieRenderer extends OverlayRenderer
     }
 
     public boolean showsItems() {
-        return mShowItems;
+        return mTapMode;
     }
 
     public void addItem(PieItem item) {
@@ -434,12 +437,38 @@ public class PieRenderer extends OverlayRenderer
         float x = evt.getX();
         float y = evt.getY();
         int action = evt.getActionMasked();
+        PointF polar = getPolar(x, y, !(mTapMode));
         if (MotionEvent.ACTION_DOWN == action) {
-            setCenter((int) x, (int) y);
-            show(true);
+            if (mTapMode) {
+                PieItem item = findItem(polar);
+                if ((item != null) && (mCurrentItem != item)) {
+                    mHandler.removeMessages(MSG_FOCUS_TAP);
+                    mState = STATE_PIE;
+                    onEnter(item);
+                }
+            } else {
+                setCenter((int) x, (int) y);
+                show(true);
+            }
             return true;
         } else if (MotionEvent.ACTION_UP == action) {
-            if (isVisible() || mShowItems) {
+            if (mTapMode) {
+                PieItem item = findItem(polar);
+                if (item == null) {
+                    mState = STATE_IDLE;
+                    show(false);
+                    mTapMode = false;
+                } else {
+                    if (!item.hasItems()) {
+                        show(false);
+                        mTapMode = false;
+                        mState = STATE_IDLE;
+                        item.getView().performClick();
+                        item.setSelected(false);
+                    }
+                }
+                return true;
+            } else if (isVisible()) {
                 PieItem item = mCurrentItem;
                 if (!mAnimating) {
                     deselect();
@@ -453,7 +482,7 @@ public class PieRenderer extends OverlayRenderer
                 return true;
             }
         } else if (MotionEvent.ACTION_CANCEL == action) {
-            if (isVisible() || mShowItems) {
+            if (isVisible() || mTapMode) {
                 show(false);
             }
             if (!mAnimating) {
@@ -462,7 +491,6 @@ public class PieRenderer extends OverlayRenderer
             return false;
         } else if (MotionEvent.ACTION_MOVE == action) {
             if (mAnimating) return false;
-            PointF polar = getPolar(x, y, true);
             if (polar.y < mRadius) {
                 if (mOpenItem != null) {
                     mOpenItem = null;
@@ -512,6 +540,7 @@ public class PieRenderer extends OverlayRenderer
 
     private void openCurrentItem() {
         if ((mCurrentItem != null) && mCurrentItem.hasItems()) {
+            mCurrentItem.setSelected(false);
             mOpenItem = mCurrentItem;
         }
     }
@@ -550,8 +579,9 @@ public class PieRenderer extends OverlayRenderer
 
     private boolean inside(PointF polar, PieItem item) {
         return (item.getInnerRadius() < polar.y)
-        && (item.getStartAngle() < polar.x)
-        && (item.getStartAngle() + item.getSweep() > polar.x);
+                && (item.getStartAngle() < polar.x)
+                && (item.getStartAngle() + item.getSweep() > polar.x)
+                && (!mTapMode || (item.getOuterRadius() > polar.y));
     }
 
     @Override
@@ -568,9 +598,9 @@ public class PieRenderer extends OverlayRenderer
 
     // focus specific code
 
-    public void setFocus(int x, int y) {
+    public void setFocus(int x, int y, boolean startImmediately) {
         mFocusFromTap = true;
-        mShowItems = true;
+        mTapMode = true;
         switch(mOverlay.getOrientation()) {
         case 0:
             mFocusX = x;
@@ -591,6 +621,15 @@ public class PieRenderer extends OverlayRenderer
         }
         setCircle(mFocusX, mFocusY);
         setupPie(mFocusX, mFocusY);
+        if (startImmediately) {
+            // cameras that don't support focus still need to show menu
+            setVisible(true);
+            mState = STATE_PIE;
+            mHandler.removeMessages(MSG_FOCUS_TAP);
+            mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_FOCUS_TAP),
+                    FOCUS_TAP_TIMEOUT);
+            update();
+        }
     }
 
     public void alignFocus(int x, int y) {
