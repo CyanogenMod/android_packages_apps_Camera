@@ -1099,7 +1099,7 @@ public class VideoModule implements CameraModule,
     @Override
     public void onMenuClicked() {
         if (mPieRenderer != null) {
-            mPieRenderer.showFade();
+            mPieRenderer.showInCenter();
         }
     }
 
