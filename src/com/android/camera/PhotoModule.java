@@ -19,13 +19,10 @@ package com.android.camera;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -72,7 +69,6 @@ import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.PreviewSurfaceView;
 import com.android.camera.ui.RenderOverlay;
 import com.android.camera.ui.Rotatable;
-import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.TwoStateImageView;
@@ -98,7 +94,8 @@ public class PhotoModule
     PreviewFrameLayout.OnSizeChangedListener,
     ShutterButton.OnShutterButtonListener,
     SurfaceHolder.Callback,
-    PieRenderer.PieListener {
+    PieRenderer.PieListener,
+    CameraActivity.MenuListener {
 
     private static final String TAG = "CAM_PhotoModule";
 
@@ -459,6 +456,7 @@ public class PhotoModule
         mCameraStartUpThread.start();
 
         mActivity.getLayoutInflater().inflate(R.layout.photo_module, (ViewGroup) mRootView);
+        mActivity.setMenuListener(this);
 
         // Surface texture is from camera screen nail and startPreview needs it.
         // This must be done before startPreview.
@@ -555,6 +553,11 @@ public class PhotoModule
     }
 
     private void initializeAfterCameraOpen() {
+        if (mRenderOverlay != null) {
+            // render overlay is not initialized when setOrientationIndicator is called
+            // the first time, so do it here in UI thread
+            mRenderOverlay.setOrientation(mOrientationCompensation, false);
+        }
         if (mPieRenderer == null) {
             mPieRenderer = new PieRenderer(mActivity);
             mPhotoControl = new PhotoController(mActivity, this, mPieRenderer);
@@ -1913,6 +1916,13 @@ public class PhotoModule
         mCameraDevice.cancelAutoFocus();
         setCameraState(IDLE);
         setCameraParameters(UPDATE_PARAM_PREFERENCE);
+    }
+
+    @Override
+    public void onMenuClicked() {
+        if (mPieRenderer != null) {
+            mPieRenderer.showInCenter();
+        }
     }
 
     // Preview area is touched. Handle touch focus.

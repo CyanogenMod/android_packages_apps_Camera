@@ -257,6 +257,12 @@ public class PieRenderer extends OverlayRenderer
         setViewAlpha(mOverlay, 1);
     }
 
+    public void showInCenter() {
+        setCenter(mCenterX, mCenterY);
+        mTapMode = true;
+        show(true);
+    }
+
     /**
      * guaranteed has center set
      * @param show
