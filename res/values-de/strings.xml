@@ -78,6 +78,8 @@
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Diese Einstellung kann im Szenenmodus nicht ausgewählt werden."</string>
     <string name="pref_restore_detail" msgid="5732490002291044791">"Standard wiederherstellen"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Belichtung"</string>
+    <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
+    <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Ihr USB-Speicher bietet nicht mehr genug Speicherplatz. Ändern Sie die Qualitätseinstellung oder löschen Sie Bilder oder andere Dateien."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Auf Ihrer SD-Karte ist nicht mehr genügend Speicherplatz vorhanden. Ändern Sie die Qualitätseinstellung oder löschen Sie Bilder oder andere Dateien."</string>
@@ -131,4 +133,12 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Fertig"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Zeitintervall festlegen"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Die Zeitraffer-Funktion ist ausgeschaltet. Schalten Sie sie ein, um das Zeitintervall festzulegen."</string>
+    <!-- no translation found for remember_location_title (9060472929006917810) -->
+    <skip />
+    <!-- no translation found for remember_location_prompt (9107532965604174377) -->
+    <skip />
+    <!-- no translation found for remember_location_no (7541394381714894896) -->
+    <skip />
+    <!-- no translation found for remember_location_yes (862884269285964180) -->
+    <skip />
 </resources>
