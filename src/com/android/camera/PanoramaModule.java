@@ -81,10 +81,9 @@ public class PanoramaModule implements CameraModule,
     public static final int DEFAULT_CAPTURE_PIXELS = 960 * 720;
 
     private static final int MSG_LOW_RES_FINAL_MOSAIC_READY = 1;
-    private static final int MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL = 2;
-    private static final int MSG_GENERATE_FINAL_MOSAIC_ERROR = 3;
-    private static final int MSG_RESET_TO_PREVIEW = 4;
-    private static final int MSG_CLEAR_SCREEN_DELAY = 5;
+    private static final int MSG_GENERATE_FINAL_MOSAIC_ERROR = 2;
+    private static final int MSG_RESET_TO_PREVIEW = 3;
+    private static final int MSG_CLEAR_SCREEN_DELAY = 4;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
 
@@ -297,17 +296,6 @@ public class PanoramaModule implements CameraModule,
                         onBackgroundThreadFinished();
                         showFinalMosaic((Bitmap) msg.obj);
                         saveHighResMosaic();
-                        break;
-                    case MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL:
-                        onBackgroundThreadFinished();
-                        // If the activity is paused, save the thumbnail to the file here.
-                        // If not, it will be saved in onPause.
-                        if (mPaused) mActivity.saveThumbnailToFile();
-                        // Set the thumbnail bitmap here because mThumbnailView must be accessed
-                        // from the UI thread.
-
-                        resetToPreview();
-                        clearMosaicFrameProcessorIfNeeded();
                         break;
                     case MSG_GENERATE_FINAL_MOSAIC_ERROR:
                         onBackgroundThreadFinished();
@@ -789,18 +777,10 @@ public class PanoramaModule implements CameraModule,
                     Uri uri = savePanorama(jpeg.data, jpeg.width, jpeg.height, orientation);
                     if (uri != null) {
                         mActivity.addSecureAlbumItemIfNeeded(false, uri);
-                        // Create a thumbnail whose width and height is equal or bigger
-                        // than the thumbnail view's width.
-                        int ratio = (int) Math.ceil(
-                                (double) (jpeg.height > jpeg.width ? jpeg.width : jpeg.height)
-                                / mActivity.mThumbnailViewWidth);
-                        int inSampleSize = Integer.highestOneBit(ratio);
-                        mActivity.mThumbnail = Thumbnail.createThumbnail(
-                                jpeg.data, orientation, inSampleSize, uri);
                         Util.broadcastNewPicture(mActivity, uri);
                     }
                     mMainHandler.sendMessage(
-                            mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW_WITH_THUMBNAIL));
+                            mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW));
                 }
             }
         });
@@ -822,13 +802,6 @@ public class PanoramaModule implements CameraModule,
         synchronized (mWaitObject) {
             mWaitObject.notify();
         }
-    }
-
-    @OnClickAttr
-    public void onThumbnailClicked(View v) {
-        if (mPaused || mThreadRunning || mCameraTexture == null
-                || mActivity.mThumbnail == null) return;
-        mActivity.gotoGallery();
     }
 
     // This function will be called upon the first camera frame is available.
@@ -991,8 +964,6 @@ public class PanoramaModule implements CameraModule,
             mCaptureLayout.setVisibility(View.GONE);
             mReviewLayout.setVisibility(View.VISIBLE);
         }
-
-        mActivity.updateThumbnailView();
     }
 
     @Override
@@ -1049,7 +1020,6 @@ public class PanoramaModule implements CameraModule,
                 configMosaicPreview(w, h);
             }
         }
-        mActivity.getLastThumbnail();
         keepScreenOnAwhile();
 
         // Dismiss open menu if exists.
