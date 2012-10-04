@@ -526,7 +526,7 @@ public class VideoModule implements CameraModule,
             ret = true;
         }
         if (mPopup != null) {
-            dismissPopup();
+            dismissPopup(false);
             ret = true;
         }
         return ret;
@@ -538,7 +538,7 @@ public class VideoModule implements CameraModule,
             return true;
         }
         if (mPopup != null) {
-            dismissPopup();
+            dismissPopup(true);
             return true;
         }
         return false;
@@ -2511,7 +2511,7 @@ public class VideoModule implements CameraModule,
         {
             // check for dismissing popup
             if (mPopup != null) {
-                dismissPopup();
+                dismissPopup(true);
             } else if (mPieRenderer != null) {
                 mPieRenderer.setFocus(x, y, true);
             }
@@ -2810,12 +2810,13 @@ public class VideoModule implements CameraModule,
         ((FrameLayout) mRootView).addView(mPopup, lp);
     }
 
-    public void dismissPopup() {
+    public void dismissPopup(boolean topLevelPopupOnly) {
         mActivity.showUI();
         if (mPopup != null) {
             ((FrameLayout) mRootView).removeView(mPopup);
             mPopup = null;
         }
+        mVideoControl.popupDismissed(topLevelPopupOnly);
     }
 
 
