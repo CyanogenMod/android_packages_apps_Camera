@@ -133,12 +133,8 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Готово"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Задаване на интервал от време"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Функцията за цайтрафер е изключена. Включете я, за да зададете интервал от време."</string>
-    <!-- no translation found for remember_location_title (9060472929006917810) -->
-    <skip />
-    <!-- no translation found for remember_location_prompt (9107532965604174377) -->
-    <skip />
-    <!-- no translation found for remember_location_no (7541394381714894896) -->
-    <skip />
-    <!-- no translation found for remember_location_yes (862884269285964180) -->
-    <skip />
+    <string name="remember_location_title" msgid="9060472929006917810">"Да се запомнят ли местоположенията на снимките?"</string>
+    <string name="remember_location_prompt" msgid="9107532965604174377">"Поставете в снимките и видеоклиповете си пояснение с местата, на които са направени."\n\n"Другите приложения могат да осъществяват достъп до тази информация, както и до запазените ви изображения."</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"Не, благодаря"</string>
+    <string name="remember_location_yes" msgid="862884269285964180">"Да"</string>
 </resources>
