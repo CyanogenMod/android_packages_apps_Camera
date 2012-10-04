@@ -39,7 +39,7 @@
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Zapis lokalizacji"</string>
     <string name="setting_off" msgid="4480039384202951946">"Wyłączono"</string>
     <string name="setting_on" msgid="8602246224465348901">"Włączono"</string>
-    <string name="pref_video_quality_title" msgid="8245379279801096922">"Jakość filmu wideo"</string>
+    <string name="pref_video_quality_title" msgid="8245379279801096922">"Jakość wideo"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Wysoka"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Niska"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Upływ czasu"</string>
@@ -136,12 +136,8 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Gotowe"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Ustaw interwał czasu"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Funkcja filmu poklatkowego jest wyłączona. Włącz ją, by ustawić interwał czasu."</string>
-    <!-- no translation found for remember_location_title (9060472929006917810) -->
-    <skip />
-    <!-- no translation found for remember_location_prompt (9107532965604174377) -->
-    <skip />
-    <!-- no translation found for remember_location_no (7541394381714894896) -->
-    <skip />
-    <!-- no translation found for remember_location_yes (862884269285964180) -->
-    <skip />
+    <string name="remember_location_title" msgid="9060472929006917810">"Zapamiętywać lokalizacje zdjęć?"</string>
+    <string name="remember_location_prompt" msgid="9107532965604174377">"Dodawaj do zdjęć i filmów adnotacje o miejscach, w których zostały zrobione/nagrane."\n\n"Inne aplikacje mogą odczytywać te informacje wraz z zapisanymi zdjęciami."</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"Nie, dziękuję"</string>
+    <string name="remember_location_yes" msgid="862884269285964180">"Tak"</string>
 </resources>

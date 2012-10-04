@@ -133,12 +133,8 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"OK"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Définir l\'intervalle de temps"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"La fonctionnalité Time Lapse est désactivée. Veuillez l\'activer pour définir un intervalle."</string>
-    <!-- no translation found for remember_location_title (9060472929006917810) -->
-    <skip />
-    <!-- no translation found for remember_location_prompt (9107532965604174377) -->
-    <skip />
-    <!-- no translation found for remember_location_no (7541394381714894896) -->
-    <skip />
-    <!-- no translation found for remember_location_yes (862884269285964180) -->
-    <skip />
+    <string name="remember_location_title" msgid="9060472929006917810">"Se souvenir du lieu des photos ?"</string>
+    <string name="remember_location_prompt" msgid="9107532965604174377">"Annotez vos photos et vos vidéos avec les lieux où elles ont été prises."\n\n"D\'autres applications peuvent accéder à cette information ainsi qu\'à vos images enregistrées."</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"Non, merci"</string>
+    <string name="remember_location_yes" msgid="862884269285964180">"Oui"</string>
 </resources>
