@@ -133,12 +133,8 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Fine"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Imposta l\'intervallo di tempo"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"La funzione Rallentatore non è attiva. Attivala per impostare l\'intervallo di tempo."</string>
-    <!-- no translation found for remember_location_title (9060472929006917810) -->
-    <skip />
-    <!-- no translation found for remember_location_prompt (9107532965604174377) -->
-    <skip />
-    <!-- no translation found for remember_location_no (7541394381714894896) -->
-    <skip />
-    <!-- no translation found for remember_location_yes (862884269285964180) -->
-    <skip />
+    <string name="remember_location_title" msgid="9060472929006917810">"Memorizzare i luoghi delle foto?"</string>
+    <string name="remember_location_prompt" msgid="9107532965604174377">"Aggiungi annotazioni a foto e video relative ai luoghi in cui li hai ripresi."\n\n"Le altre applicazioni possono accedere a queste informazioni e alle immagini salvate."</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"No, grazie"</string>
+    <string name="remember_location_yes" msgid="862884269285964180">"Sì"</string>
 </resources>
