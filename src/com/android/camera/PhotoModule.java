@@ -1336,7 +1336,7 @@ public class PhotoModule
     @Override
     public void onFullScreenChanged(boolean full) {
         if (mPopup != null) {
-            dismissPopup();
+            dismissPopup(false);
         }
         if (mGestures != null) {
             mGestures.setEnabled(full);
@@ -1424,7 +1424,7 @@ public class PhotoModule
             ret = true;
         }
         if (mPopup != null) {
-            dismissPopup();
+            dismissPopup(false);
             ret = true;
         }
         return ret;
@@ -1437,7 +1437,7 @@ public class PhotoModule
             return true;
         }
         if (mPopup != null) {
-            dismissPopup();
+            dismissPopup(true);
             return true;
         }
         return false;
@@ -1939,7 +1939,7 @@ public class PhotoModule
         }
 
         // Do not trigger touch focus if popup window is opened.
-        if (collapseCameraControls()) return;
+        if (removeTopLevelPopup()) return;
 
         // Check if metering area or focus area is supported.
         if (!mFocusAreaSupported && !mMeteringAreaSupported) {
@@ -2516,7 +2516,7 @@ public class PhotoModule
             setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
             // TODO: reset zoom
         }
-        dismissPopup();
+        dismissPopup(true);
         CameraSettings.restorePreferences(mActivity, mPreferences,
                 mParameters);
         mPhotoControl.reloadPreferences();
@@ -2580,12 +2580,13 @@ public class PhotoModule
         ((FrameLayout) mRootView).addView(mPopup, lp);
     }
 
-    public void dismissPopup() {
+    public void dismissPopup(boolean topPopupOnly) {
         mActivity.showUI();
         if (mPopup != null) {
             ((FrameLayout) mRootView).removeView(mPopup);
             mPopup = null;
         }
+        mPhotoControl.popupDismissed(topPopupOnly);
     }
 
 }
