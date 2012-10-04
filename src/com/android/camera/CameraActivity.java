@@ -37,8 +37,8 @@ import com.android.gallery3d.util.LightCycleHelper;
 
 public class CameraActivity extends ActivityBase
         implements CameraSwitcher.CameraSwitchListener {
-    public static final int VIDEO_MODULE_INDEX = 0;
-    public static final int PHOTO_MODULE_INDEX = 1;
+    public static final int PHOTO_MODULE_INDEX = 0;
+    public static final int VIDEO_MODULE_INDEX = 1;
     public static final int PANORAMA_MODULE_INDEX = 2;
     public static final int LIGHTCYCLE_MODULE_INDEX = 3;
 
@@ -65,8 +65,8 @@ public class CameraActivity extends ActivityBase
     private static final String TAG = "CAM_activity";
 
     private static final int[] DRAW_IDS = {
-            R.drawable.ic_switch_video,
             R.drawable.ic_switch_camera,
+            R.drawable.ic_switch_video,
             R.drawable.ic_switch_pan,
             com.android.gallery3d.R.drawable.ic_menu_photosphere
     };
