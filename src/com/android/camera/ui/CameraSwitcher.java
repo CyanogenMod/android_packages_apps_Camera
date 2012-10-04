@@ -92,7 +92,7 @@ public class CameraSwitcher extends RotateImageView
         LinearLayout content = (LinearLayout) mParent.findViewById(R.id.content);
         mPopup = content;
         mPopup.setVisibility(View.GONE);
-        for (int i = 0; i < mDrawIds.length; i++) {
+        for (int i = mDrawIds.length - 1; i >= 0; i--) {
             RotateImageView item = new RotateImageView(getContext());
             item.setImageResource(mDrawIds[i]);
             final int index = i;
