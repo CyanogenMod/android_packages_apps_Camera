@@ -56,6 +56,8 @@ public interface CameraModule {
 
     public void onPreviewTextureCopied();
 
+    public void onCaptureTextureCopied();
+
     public void onUserInteraction();
 
     public boolean updateStorageHintOnResume();

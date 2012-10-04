@@ -395,6 +395,11 @@ public class CameraActivity extends ActivityBase
     }
 
     @Override
+    public void onCaptureTextureCopied() {
+        mCurrentModule.onCaptureTextureCopied();
+    }
+
+    @Override
     public void onUserInteraction() {
         super.onUserInteraction();
         mCurrentModule.onUserInteraction();
