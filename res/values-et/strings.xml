@@ -133,12 +133,8 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Valmis"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Ajavahemiku määramine"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Aeglustamisfunktsioon on välja lülitatud. Ajavahemiku määramiseks lülitage funktsioon sisse."</string>
-    <!-- no translation found for remember_location_title (9060472929006917810) -->
-    <skip />
-    <!-- no translation found for remember_location_prompt (9107532965604174377) -->
-    <skip />
-    <!-- no translation found for remember_location_no (7541394381714894896) -->
-    <skip />
-    <!-- no translation found for remember_location_yes (862884269285964180) -->
-    <skip />
+    <string name="remember_location_title" msgid="9060472929006917810">"Kas jätta meelde fotode jäädvustamise asukohad?"</string>
+    <string name="remember_location_prompt" msgid="9107532965604174377">"Märkige fotodele ja videotele kohad, kus need jäädvustati. "\n" "\n"Muud rakendused saavad koos salvestatud kujutistega juurdepääsu ka sellele teabele."</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"Ei, tänan"</string>
+    <string name="remember_location_yes" msgid="862884269285964180">"Jah"</string>
 </resources>
