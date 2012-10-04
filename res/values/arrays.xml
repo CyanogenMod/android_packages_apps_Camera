@@ -38,14 +38,6 @@
         <item>0</item>
     </string-array>
 
-    <array name="video_quality_largeicons" translatable="false">
-        <item>@drawable/ic_quality_1080p</item>
-        <item>@drawable/ic_quality_720p</item>
-        <item>@drawable/ic_quality_480p</item>
-        <item>@drawable/ic_quality_high</item>
-        <item>@drawable/ic_quality_low</item>
-   </array>
-
     <!-- These values correspond to the time interval between frame capture in millseconds
     for time lapse recording -->
     <string-array name="pref_video_time_lapse_frame_interval_entryvalues" translatable="false">

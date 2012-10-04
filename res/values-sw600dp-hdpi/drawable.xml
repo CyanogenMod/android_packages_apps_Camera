@@ -49,11 +49,6 @@
     <item name="ic_pan_progression" type="drawable">@drawable/ic_pan_progression_large</item>
     <item name="ic_pan_right_indicator_fast" type="drawable">@drawable/ic_pan_right_indicator_fast_large</item>
     <item name="ic_pan_right_indicator" type="drawable">@drawable/ic_pan_right_indicator_large</item>
-    <item name="ic_quality_1080p" type="drawable">@drawable/ic_quality_1080p_large</item>
-    <item name="ic_quality_480p" type="drawable">@drawable/ic_quality_480p_large</item>
-    <item name="ic_quality_720p" type="drawable">@drawable/ic_quality_720p_large</item>
-    <item name="ic_quality_high" type="drawable">@drawable/ic_quality_high_large</item>
-    <item name="ic_quality_low" type="drawable">@drawable/ic_quality_low_large</item>
     <item name="ic_scn_holo_light" type="drawable">@drawable/ic_scn_holo_light_large</item>
     <item name="ic_settings_holo_light" type="drawable">@drawable/ic_settings_holo_light_large</item>
     <item name="ic_snapshot_border" type="drawable">@drawable/ic_snapshot_border_large</item>
