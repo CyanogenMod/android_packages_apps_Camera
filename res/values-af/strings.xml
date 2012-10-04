@@ -133,12 +133,8 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Klaar"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Stel tydinterval"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Tydsverloop-kenmerk is af. Skakel dit aan om tydstussenpose te stel."</string>
-    <!-- no translation found for remember_location_title (9060472929006917810) -->
-    <skip />
-    <!-- no translation found for remember_location_prompt (9107532965604174377) -->
-    <skip />
-    <!-- no translation found for remember_location_no (7541394381714894896) -->
-    <skip />
-    <!-- no translation found for remember_location_yes (862884269285964180) -->
-    <skip />
+    <string name="remember_location_title" msgid="9060472929006917810">"Onthou foto-ligging?"</string>
+    <string name="remember_location_prompt" msgid="9107532965604174377">"Maak aantekeninge vir jou foto\'s en video\'s oor die plekke waar dit geneem is."\n\n"Ander programme kan by hierdie inligting en jou gestoorde prente ingaan."</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"Nee dankie"</string>
+    <string name="remember_location_yes" msgid="862884269285964180">"Ja"</string>
 </resources>
