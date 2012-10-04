@@ -382,6 +382,27 @@ public class CameraManager {
             mSig.block();
         }
 
+        public void takePicture2(final ShutterCallback shutter, final PictureCallback raw,
+                final PictureCallback postview, final PictureCallback jpeg,
+                final int cameraState, final int focusState) {
+            mSig.close();
+            // Too many parameters, so use post for simplicity
+            mCameraHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        mCamera.takePicture(shutter, raw, postview, jpeg);
+                    } catch (RuntimeException e) {
+                        Log.w(TAG, "take picture failed; cameraState:" + cameraState
+                            + ", focusState:" + focusState);
+                        throw e;
+                    }
+                    mSig.open();
+                }
+            });
+            mSig.block();
+        }
+
         public void setDisplayOrientation(int degrees) {
             mSig.close();
             mCameraHandler.obtainMessage(SET_DISPLAY_ORIENTATION, degrees, 0)
