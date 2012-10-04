@@ -415,4 +415,35 @@ public class CameraActivity extends ActivityBase
     public boolean isPanoramaActivity() {
         return (mCurrentModule instanceof PanoramaModule);
     }
+
+    // Accessor methods for getting latency times used in performance testing
+    public long getAutoFocusTime() {
+        return (mCurrentModule instanceof PhotoModule) ?
+                ((PhotoModule)mCurrentModule).mAutoFocusTime : -1;
+    }
+
+    public long getShutterLag() {
+        return (mCurrentModule instanceof PhotoModule) ?
+                ((PhotoModule)mCurrentModule).mShutterLag : -1;
+    }
+
+    public long getShutterToPictureDisplayedTime() {
+        return (mCurrentModule instanceof PhotoModule) ?
+                ((PhotoModule)mCurrentModule).mShutterToPictureDisplayedTime : -1;
+    }
+
+    public long getPictureDisplayedToJpegCallbackTime() {
+        return (mCurrentModule instanceof PhotoModule) ?
+                ((PhotoModule)mCurrentModule).mPictureDisplayedToJpegCallbackTime : -1;
+    }
+
+    public long getJpegCallbackFinishTime() {
+        return (mCurrentModule instanceof PhotoModule) ?
+                ((PhotoModule)mCurrentModule).mJpegCallbackFinishTime : -1;
+    }
+
+    public long getCaptureStartTime() {
+        return (mCurrentModule instanceof PhotoModule) ?
+                ((PhotoModule)mCurrentModule).mCaptureStartTime : -1;
+    }
 }
