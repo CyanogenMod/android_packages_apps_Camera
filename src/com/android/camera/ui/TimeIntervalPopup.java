@@ -26,6 +26,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.android.camera.IconListPreference;
+import com.android.camera.ListPreference;
 import com.android.camera.R;
 
 /**
@@ -46,7 +47,7 @@ public class TimeIntervalPopup extends AbstractSettingPopup {
     private View mTimePicker;
 
     static public interface Listener {
-        public void onSettingChanged();
+        public void onListPrefChanged(ListPreference pref);
     }
 
     public void setSettingChangedListener(Listener listener) {
@@ -156,7 +157,7 @@ public class TimeIntervalPopup extends AbstractSettingPopup {
         }
 
         if (mListener != null) {
-            mListener.onSettingChanged();
+            mListener.onListPrefChanged(mPreference);
         }
     }
 }

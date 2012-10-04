@@ -29,8 +29,7 @@ import com.android.camera.R;
 // An indicator button that represents one camera setting. Ex: flash. Pressing it opens a popup
 // window.
 public class IndicatorButton extends AbstractIndicatorButton
-        implements BasicSettingPopup.Listener, EffectSettingPopup.Listener,
-        TimeIntervalPopup.Listener {
+        implements BasicSettingPopup.Listener, EffectSettingPopup.Listener {
     private static final String TAG = "IndicatorButton";
     private IconListPreference mPreference;
     // Scene mode can override the original preference value.
@@ -113,12 +112,6 @@ public class IndicatorButton extends AbstractIndicatorButton
             effect.initialize(mPreference);
             effect.setSettingChangedListener(this);
             mPopup = effect;
-        } else if (CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL.equals(getKey())) {
-            TimeIntervalPopup timeInterval = (TimeIntervalPopup) inflater.inflate(
-                    R.layout.time_interval_popup, root, false);
-            timeInterval.initialize(mPreference);
-            timeInterval.setSettingChangedListener(this);
-            mPopup = timeInterval;
         } else {
             BasicSettingPopup basic = (BasicSettingPopup) inflater.inflate(
                     R.layout.basic_setting_popup, root, false);
