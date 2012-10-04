@@ -22,7 +22,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 import android.view.KeyEvent;
-import com.android.camera.Camera;
+import com.android.camera.CameraActivity;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 /**
  * Junit / Instrumentation test case for measuring camera shot to shot latency
  */
-public class ShotToShotLatency extends ActivityInstrumentationTestCase2<Camera> {
+public class ShotToShotLatency extends ActivityInstrumentationTestCase2<CameraActivity> {
     private String TAG = "ShotToShotLatency";
     private static final int TOTAL_NUMBER_OF_SNAPSHOTS = 250;
     private static final long SNAPSHOT_WAIT = 1000;
@@ -43,7 +43,7 @@ public class ShotToShotLatency extends ActivityInstrumentationTestCase2<Camera> 
             Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera/";
 
     public ShotToShotLatency() {
-        super(Camera.class);
+        super(CameraActivity.class);
     }
 
     @Override
@@ -98,9 +98,9 @@ public class ShotToShotLatency extends ActivityInstrumentationTestCase2<Camera> 
         for (int i = 0; i < TOTAL_NUMBER_OF_SNAPSHOTS; i++) {
             inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER);
             sleep(SNAPSHOT_WAIT);
-            Camera c = getActivity();
-            if (c.mCaptureStartTime > 0) {
-                captureTimes.add(c.mCaptureStartTime);
+            CameraActivity c = getActivity();
+            if (c.getCaptureStartTime() > 0) {
+                captureTimes.add(c.getCaptureStartTime());
             }
         }
 
