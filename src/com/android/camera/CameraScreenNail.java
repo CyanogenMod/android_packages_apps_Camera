@@ -79,6 +79,8 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         void requestRender();
         // Preview has been copied to a texture.
         void onPreviewTextureCopied();
+
+        void onCaptureTextureCopied();
     }
 
     public interface OnFrameDrawnListener {
@@ -234,6 +236,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                     break;
                 case ANIM_CAPTURE_START:
                     copyPreviewTexture(canvas);
+                    mListener.onCaptureTextureCopied();
                     if (mRenderWidth > 0) {
                         // overscale image to make it fullscreen
                         x = (x + width / 2) - mRenderWidth / 2;
