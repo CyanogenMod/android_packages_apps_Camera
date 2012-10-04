@@ -49,7 +49,7 @@
     <string name="pref_video_time_lapse_frame_interval_title" msgid="5262531404348504642">"Intervalo de tiempo"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configuración de cámara"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configuración de videocámara"</string>
-    <string name="pref_camera_power_shutter_title">"Obturador alternativo"</string>
+    <string name="pref_camera_power_shutter_title">"Disparador alternativo"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Tamaño imagen"</string>
     <string name="pref_camera_picturesize_entry_4000x3000">"12MP"</string>
     <string name="pref_camera_picturesize_entry_4000x2250">"9MP"</string>
@@ -81,8 +81,8 @@
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
     <string name="pref_camera_focusmode_entry_fixed">"Fijo"</string>
-    <string name="pref_camera_focusmode_entry_facedetect">"Detección de rostro"</string>
-    <string name="pref_camera_focusmode_entry_continuouspicture">"Imagen continua"</string>
+    <string name="pref_camera_focusmode_entry_facedetect">"Rostro"</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">"Continuo"</string>
     <string name="pref_camera_iso_title">"ISO"</string>
     <string name="pref_camera_iso_entry_auto">"Auto"</string>
     <string name="pref_camera_iso_entry_isodeblur">"Auto (HJR)"</string>
@@ -94,6 +94,25 @@
     <string name="pref_camera_iso_entry_iso200">"200"</string>
     <string name="pref_camera_iso_entry_iso100">"100"</string>
     <string name="pref_camera_iso_entry_iso50">"50"</string>
+    <string name="pref_camera_timer_title">Modo temporizado</string>
+    <string name="pref_camera_timer_entry_0">Apagado</string>
+    <string name="pref_camera_timer_entry_10">10 seg.</string>
+    <string name="pref_camera_timer_entry_20">20 seg.</string>
+    <string name="pref_camera_timer_entry_30">30 seg.</string>
+    <string name="pref_camera_timer_entry_40">40 seg.</string>
+    <string name="pref_camera_timer_entry_50">50 seg.</string>
+    <string name="pref_camera_timer_entry_60">60 seg.</string>
+    <string name="pref_camera_burst_title">Modo ráfaga</string>
+    <string name="pref_camera_burst_entry_off">Apagado</string>
+    <string name="pref_camera_burst_entry_5">5 disparos</string>
+    <string name="pref_camera_burst_entry_10">10 disparos</string>
+    <string name="pref_camera_burst_entry_15">15 disparos</string>
+    <string name="pref_camera_burst_entry_20">20 disparos</string>
+    <string name="pref_camera_jpeg_title">Calidad JPEG</string>
+    <string name="pref_camera_jpeg_entry_super">Máxima</string>
+    <string name="pref_camera_jpeg_entry_high">Alta</string>
+    <string name="pref_camera_jpeg_entry_medium">Media</string>
+    <string name="pref_camera_jpeg_entry_low">Baja</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automático"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Activado"</string>
@@ -153,7 +172,7 @@
     <string name="clear_effects" msgid="5485339175014139481">"Borrar efectos"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"CARAS GRACIOSAS"</string>
     <string name="effect_background" msgid="6579360207378171022">"FONDO"</string>
-    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Botón del obturador"</string>
+    <string name="accessibility_shutter_button" msgid="2664037763232556307">"Botón del disparador"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Foto más reciente"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Opción de cámara trasera y delantera"</string>
     <string name="accessibility_mode_picker" msgid="3278002189966833100">"Cámara, vídeo o modo panorámico"</string>
@@ -178,7 +197,7 @@
     <string name="pref_camera_antibanding_entry_0">"Apagado"</string>
     <string name="pref_camera_antibanding_entry_1">"50 Hz"</string>
     <string name="pref_camera_antibanding_entry_2">"60 Hz"</string>
-    <string name="pref_camera_antibanding_entry_3">"Automática"</string>
+    <string name="pref_camera_antibanding_entry_3">"Automático"</string>
     <string name="pref_camera_coloreffect_title">"Efecto color"</string>
     <string name="pref_camera_coloreffect_entry_none">"Ninguno"</string>
     <string name="pref_camera_coloreffect_entry_mono">"Mono"</string>
@@ -208,8 +227,8 @@
     <string name="pref_camera_scenemode_entry_candlelight">"Luz de vela"</string>
     <string name="pref_camera_scenemode_entry_flowers">"Flores"</string>
     <string name="pref_camera_scenemode_entry_ar">"AR"</string>
-    <string name="pref_camera_focus_title">"Duración enfocado por pulsación"</string>
-    <string name="pref_camera_focus_summary">"Seleccione la duración de enfocado por pulsación"</string>
+    <string name="pref_camera_focus_title">"Duración enfoque"</string>
+    <string name="pref_camera_focus_summary">"Seleccionar la duración de enfoque por pulsación"</string>
     <string name="pref_camera_focus_entry_10">"10 seg."</string>
     <string name="pref_camera_focus_entry_15">"15 seg."</string>
     <string name="pref_camera_focus_entry_20">"20 seg."</string>
