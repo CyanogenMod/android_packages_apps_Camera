@@ -2361,6 +2361,10 @@ public class VideoModule implements CameraModule,
         mHandler.sendEmptyMessage(SWITCH_CAMERA);
     }
 
+    @Override
+    public void onCaptureTextureCopied() {
+    }
+
     private boolean updateEffectSelection() {
         int previousEffectType = mEffectType;
         Object previousEffectParameter = mEffectParameter;

@@ -690,6 +690,9 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     protected void onPreviewTextureCopied() {
     }
 
+    protected void onCaptureTextureCopied() {
+    }
+
     protected void addSecureAlbumItemIfNeeded(boolean isVideo, Uri uri) {
         if (mSecureCamera) {
             int id = Integer.parseInt(uri.getLastPathSegment());
@@ -755,6 +758,11 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         @Override
         public void onPreviewTextureCopied() {
             ActivityBase.this.onPreviewTextureCopied();
+        }
+
+        @Override
+        public void onCaptureTextureCopied() {
+            ActivityBase.this.onCaptureTextureCopied();
         }
 
         @Override
