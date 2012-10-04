@@ -301,7 +301,6 @@ public class PanoramaModule implements CameraModule,
                     case MSG_RESET_TO_PREVIEW:
                         onBackgroundThreadFinished();
                         resetToPreview();
-                        mActivity.showSwitcher();
                         clearMosaicFrameProcessorIfNeeded();
                         break;
                     case MSG_CLEAR_SCREEN_DELAY:
@@ -800,7 +799,12 @@ public class PanoramaModule implements CameraModule,
         mActivity.setSwipingEnabled(true);
         mReviewLayout.setVisibility(View.GONE);
         mPanoProgressBar.setVisibility(View.GONE);
-        mCaptureLayout.setVisibility(View.VISIBLE);
+        // Orientation change will trigger onLayoutChange->configMosaicPreview->
+        // resetToPreview. Do not show the capture UI in film strip.
+        if (mActivity.mShowCameraAppView) {
+            mCaptureLayout.setVisibility(View.VISIBLE);
+            mActivity.showUI();
+        }
         mMosaicFrameProcessor.reset();
     }
 
@@ -1081,9 +1085,6 @@ public class PanoramaModule implements CameraModule,
 
         mCameraDevice.startPreviewAsync();
         mCameraState = PREVIEW_ACTIVE;
-
-        // make sure camera controls are visible in preview
-        mActivity.showUI();
     }
 
     private void stopCameraPreview() {
