@@ -133,12 +133,8 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"完了"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"間隔を設定"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"低速度撮影機能がOFFになっています。間隔を設定するにはONにしてください。"</string>
-    <!-- no translation found for remember_location_title (9060472929006917810) -->
-    <skip />
-    <!-- no translation found for remember_location_prompt (9107532965604174377) -->
-    <skip />
-    <!-- no translation found for remember_location_no (7541394381714894896) -->
-    <skip />
-    <!-- no translation found for remember_location_yes (862884269285964180) -->
-    <skip />
+    <string name="remember_location_title" msgid="9060472929006917810">"撮影場所を記録しますか？"</string>
+    <string name="remember_location_prompt" msgid="9107532965604174377">"写真や動画に撮影した場所を記録できます。"\n\n"他のアプリから画像にアクセスするときに、これらの情報にもアクセスできます。"</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"いいえ"</string>
+    <string name="remember_location_yes" msgid="862884269285964180">"はい"</string>
 </resources>
