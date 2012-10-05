@@ -73,4 +73,10 @@ public class InLineSettingSwitch extends InLineSettingItem {
         event.getText().add(mPreference.getTitle());
         return true;
     }
+
+    @Override
+    public void setEnabled(boolean enable) {
+        if (mTitle != null) mTitle.setEnabled(enable);
+        if (mSwitch != null) mSwitch.setEnabled(enable);
+    }
 }

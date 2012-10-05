@@ -2511,8 +2511,7 @@ public class VideoModule implements CameraModule,
             return;
         }
 
-        if (!mMediaRecorderRecording)
-        {
+        if (!mMediaRecorderRecording) {
             // check for dismissing popup
             if (mPopup != null) {
                 dismissPopup(true);
