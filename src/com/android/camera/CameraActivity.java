@@ -50,6 +50,7 @@ public class CameraActivity extends ActivityBase
     private CameraSwitcher mSwitcher;
     private View mShutterSwitcher;
     private View mBlocker;
+    private View mSeparator;
     private Drawable[] mDrawables;
     private int mCurrentModuleIndex;
     private MenuListener mMenuListener;
@@ -101,6 +102,7 @@ public class CameraActivity extends ActivityBase
 
     public void init() {
         mBlocker = findViewById(R.id.blocker);
+        mSeparator = findViewById(R.id.separator);
         mShutterSwitcher = findViewById(R.id.camera_shutter_switcher);
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
         mShutterIcon = (RotateImageView) findViewById(R.id.shutter_overlay);
@@ -207,10 +209,6 @@ public class CameraActivity extends ActivityBase
         mFrame.removeAllViews();
     }
 
-    private void showShutterIcon(boolean show) {
-        showShutterIcon(show, DRAW_IDS[mCurrentModuleIndex]);
-    }
-
     private void showShutterIcon(boolean show, int resid) {
         if (show) {
             mShutterIcon.setImageResource(resid);
@@ -239,24 +237,23 @@ public class CameraActivity extends ActivityBase
         mSwitcher.setVisibility(View.GONE);
         mMenu.setVisibility(View.GONE);
         mBlocker.setVisibility(View.GONE);
+        mSeparator.setVisibility(View.GONE);
         showShutterIcon(true, resid);
     }
 
     public void hideSwitcher() {
-        mSwitcher.setVisibility(View.GONE);
-        mMenu.setVisibility(View.GONE);
-        mBlocker.setVisibility(View.GONE);
-        showShutterIcon(true);
+        hideSwitcher(DRAW_IDS[mCurrentModuleIndex]);
     }
 
     public void showSwitcher() {
         if (mCurrentModule.needsSwitcher()) {
             mSwitcher.setVisibility(View.VISIBLE);
             mBlocker.setVisibility(View.VISIBLE);
+            mSeparator.setVisibility(View.VISIBLE);
             if (mMenuListener != null) {
                 mMenu.setVisibility(View.VISIBLE);
             }
-            showShutterIcon(false);
+            showShutterIcon(false, DRAW_IDS[mCurrentModuleIndex]);
         }
     }
 
