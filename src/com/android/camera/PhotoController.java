@@ -68,11 +68,13 @@ public class PhotoController extends PieController
             public void onClick(View v) {
                 // Find the index of next camera.
                 ListPreference pref = mPreferenceGroup.findPreference(CameraSettings.KEY_CAMERA_ID);
-                int index = pref.findIndexOfValue(pref.getValue());
-                CharSequence[] values = pref.getEntryValues();
-                index = (index + 1) % values.length;
-                int newCameraId = Integer.parseInt((String) values[index]);
-                mListener.onCameraPickerClicked(newCameraId);
+                if (pref != null) {
+                    int index = pref.findIndexOfValue(pref.getValue());
+                    CharSequence[] values = pref.getEntryValues();
+                    index = (index + 1) % values.length;
+                    int newCameraId = Integer.parseInt((String) values[index]);
+                    mListener.onCameraPickerClicked(newCameraId);
+                }
             }
         });
         mRenderer.addItem(item);
