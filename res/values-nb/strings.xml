@@ -133,12 +133,8 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Ferdig"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Fast tidsintervall"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Funksjonen for intervallmodus er avslått. Slå den på for å angi et tidsintervall."</string>
-    <!-- no translation found for remember_location_title (9060472929006917810) -->
-    <skip />
-    <!-- no translation found for remember_location_prompt (9107532965604174377) -->
-    <skip />
-    <!-- no translation found for remember_location_no (7541394381714894896) -->
-    <skip />
-    <!-- no translation found for remember_location_yes (862884269285964180) -->
-    <skip />
+    <string name="remember_location_title" msgid="9060472929006917810">"Vil du huske bildestedene?"</string>
+    <string name="remember_location_prompt" msgid="9107532965604174377">"Merk bildene og videoene dine med stedene der de ble tatt eller filmet."\n\n"Andre apper kan bruke denne informasjonen sammen med de lagrede bildene dine."</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"Nei takk"</string>
+    <string name="remember_location_yes" msgid="862884269285964180">"Ja"</string>
 </resources>
