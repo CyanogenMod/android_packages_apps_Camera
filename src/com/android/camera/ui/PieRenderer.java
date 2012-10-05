@@ -92,9 +92,7 @@ public class PieRenderer extends OverlayRenderer
     private Paint mFocusPaint;
     private int mSuccessColor;
     private int mFailColor;
-    private Paint mDotPaint;
     private int mCircleSize;
-    private int mDotRadius;
     private int mFocusX;
     private int mFocusY;
     private int mCenterX;
@@ -180,10 +178,6 @@ public class PieRenderer extends OverlayRenderer
         mFocusPaint.setStyle(Paint.Style.STROKE);
         mSuccessColor = Color.GREEN;
         mFailColor = Color.RED;
-        mDotPaint = new Paint();
-        mDotPaint.setAntiAlias(true);
-        mDotPaint.setColor(Color.argb(160, 255, 255, 255));
-        mDotPaint.setStyle(Paint.Style.FILL);
         mCircle = new RectF();
         mDial = new RectF();
         mPoint1 = new Point();
@@ -191,7 +185,6 @@ public class PieRenderer extends OverlayRenderer
         mInnerOffset = res.getDimensionPixelSize(R.dimen.focus_inner_offset);
         mOuterStroke = res.getDimensionPixelSize(R.dimen.focus_outer_stroke);
         mInnerStroke = res.getDimensionPixelSize(R.dimen.focus_inner_stroke);
-        mDotRadius = res.getDimensionPixelSize(R.dimen.focus_dot_radius);
         mState = STATE_IDLE;
     }
 
@@ -372,11 +365,6 @@ public class PieRenderer extends OverlayRenderer
                     view.draw(canvas);
                     canvas.restoreToCount(state);
                 }
-            } else if (mState == STATE_FOCUSING && !mFocusFromTap) {
-                View view = item.getView();
-                canvas.drawCircle(view.getLeft() + view.getWidth() / 2,
-                        view.getTop() + view.getHeight() / 2, mDotRadius,
-                        mDotPaint);
             }
         }
     }
@@ -596,6 +584,10 @@ public class PieRenderer extends OverlayRenderer
         mFocusX = mCenterX;
         mFocusY = mCenterY;
         setCircle(mFocusX, mFocusY);
+        if (isVisible() && mState == STATE_PIE) {
+            setCenter(mCenterX, mCenterY);
+            layoutPie();
+        }
     }
 
     private void setCircle(int cx, int cy) {
