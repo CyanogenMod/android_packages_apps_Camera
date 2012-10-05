@@ -40,12 +40,10 @@ public class PhotoController extends PieController
 
     private PhotoModule mModule;
     private String[] mOtherKeys;
-    private AbstractSettingPopup mPopup;
-
-    private static final int POPUP_NONE = 0;
-    private static final int POPUP_FIRST_LEVEL = 1;
-    private static final int POPUP_SECOND_LEVEL = 2;
-    private int mPopupStatus;
+    // First level popup
+    private MoreSettingPopup mPopup;
+    // Second level popup
+    private AbstractSettingPopup mSecondPopup;
 
     public PhotoController(CameraActivity activity, PhotoModule module, PieRenderer pie) {
         super(activity, pie);
@@ -56,7 +54,7 @@ public class PhotoController extends PieController
     public void initialize(PreferenceGroup group) {
         super.initialize(group);
         mPopup = null;
-        mPopupStatus = POPUP_NONE;
+        mSecondPopup = null;
         float sweep = FLOAT_PI_DIVIDED_BY_TWO / 2;
         addItem(CameraSettings.KEY_FLASH_MODE, FLOAT_PI_DIVIDED_BY_TWO - sweep, sweep);
         addItem(CameraSettings.KEY_EXPOSURE, FLOAT_PI_DIVIDED_BY_TWO + sweep, sweep);
@@ -90,9 +88,8 @@ public class PhotoController extends PieController
         item.getView().setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mPopup == null || mPopupStatus != POPUP_FIRST_LEVEL) {
+                if (mPopup == null) {
                     initializePopup();
-                    mPopupStatus = POPUP_FIRST_LEVEL;
                 }
                 mModule.showPopup(mPopup);
             }
@@ -116,10 +113,9 @@ public class PhotoController extends PieController
     @Override
     // Hit when an item in the second-level popup gets selected
     public void onListPrefChanged(ListPreference pref) {
-        if (mPopup != null) {
-            if (mPopupStatus == POPUP_SECOND_LEVEL) {
+        if (mPopup != null && mSecondPopup != null) {
                 mModule.dismissPopup(true);
-            }
+                mPopup.reloadPreference();
         }
         onSettingChanged(pref);
     }
@@ -127,11 +123,8 @@ public class PhotoController extends PieController
     @Override
     public void overrideSettings(final String ... keyvalues) {
         super.overrideSettings(keyvalues);
-        if (mPopup == null || mPopupStatus != POPUP_FIRST_LEVEL) {
-            mPopupStatus = POPUP_FIRST_LEVEL;
-            initializePopup();
-        }
-        ((MoreSettingPopup) mPopup).overrideSettings(keyvalues);
+        if (mPopup == null) initializePopup();
+        mPopup.overrideSettings(keyvalues);
     }
 
     protected void initializePopup() {
@@ -139,18 +132,16 @@ public class PhotoController extends PieController
                 Context.LAYOUT_INFLATER_SERVICE);
 
         MoreSettingPopup popup = (MoreSettingPopup) inflater.inflate(
-
                 R.layout.more_setting_popup, null, false);
         popup.setSettingChangedListener(this);
         popup.initialize(mPreferenceGroup, mOtherKeys);
         mPopup = popup;
     }
 
-    public void popupDismissed(boolean topPopupOnly)
-    { // if the 2nd level popup gets dismissed
-        if (mPopupStatus == POPUP_SECOND_LEVEL) {
-            initializePopup();
-            mPopupStatus = POPUP_FIRST_LEVEL;
+    public void popupDismissed(boolean topPopupOnly) {
+        // if the 2nd level popup gets dismissed
+        if (mSecondPopup != null) {
+            mSecondPopup = null;
             if (topPopupOnly) mModule.showPopup(mPopup);
         }
     }
@@ -188,9 +179,8 @@ public class PhotoController extends PieController
     @Override
     // Hit when an item in the first-level popup gets selected, then bring up
     // the second-level popup
-    public void onPreferenceClicked(ListPreference pref)
-    {
-        if (mPopupStatus != POPUP_FIRST_LEVEL) return;
+    public void onPreferenceClicked(ListPreference pref) {
+        if (mSecondPopup != null) return;
 
         LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
@@ -199,8 +189,7 @@ public class PhotoController extends PieController
         basic.initialize(pref);
         basic.setSettingChangedListener(this);
         mModule.dismissPopup(true);
-        mPopup = basic;
-        mModule.showPopup(mPopup);
-        mPopupStatus = POPUP_SECOND_LEVEL;
+        mSecondPopup = basic;
+        mModule.showPopup(mSecondPopup);
     }
 }
