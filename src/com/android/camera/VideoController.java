@@ -143,8 +143,8 @@ public class VideoController extends PieController
         mPopup = popup;
     }
 
-    public void popupDismissed(boolean topPopupOnly)
-    {   // if the 2nd level popup gets dismissed
+    public void popupDismissed(boolean topPopupOnly) {
+        // if the 2nd level popup gets dismissed
         if (mPopupStatus == POPUP_SECOND_LEVEL) {
             initializePopup();
             mPopupStatus = POPUP_FIRST_LEVEL;
@@ -160,8 +160,7 @@ public class VideoController extends PieController
     @Override
     // Hit when an item in the first-level popup gets selected, then bring up
     // the second-level popup
-    public void onPreferenceClicked(ListPreference pref)
-    {
+    public void onPreferenceClicked(ListPreference pref) {
         if (mPopupStatus != POPUP_FIRST_LEVEL) return;
 
         LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(

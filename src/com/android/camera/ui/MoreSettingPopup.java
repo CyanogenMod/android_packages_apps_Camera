@@ -18,6 +18,7 @@ package com.android.camera.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +42,11 @@ public class MoreSettingPopup extends AbstractSettingPopup
     private static final String TAG = "MoreSettingPopup";
 
     private Listener mListener;
-    private AbstractSettingPopup mPopup;
     private ArrayList<ListPreference> mListItem = new ArrayList<ListPreference>();
+
+    // Keep track of which setting items are disabled
+    // e.g. White balance will be disabled when scene mode is set to non-auto
+    private boolean[] mEnabled;
 
     static public interface Listener {
         public void onSettingChanged(ListPreference pref);
@@ -97,7 +101,21 @@ public class MoreSettingPopup extends AbstractSettingPopup
 
             view.initialize(pref); // no init for restore one
             view.setSettingChangedListener(MoreSettingPopup.this);
+            if (position >= 0 && position < mEnabled.length) {
+                view.setEnabled(mEnabled[position]);
+            } else {
+                Log.w(TAG, "Invalid input: enabled list length, " + mEnabled.length
+                        + " position " + position);
+            }
             return view;
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            if (position >= 0 && position < mEnabled.length) {
+                return mEnabled[position];
+            }
+            return true;
         }
     }
 
@@ -123,6 +141,11 @@ public class MoreSettingPopup extends AbstractSettingPopup
         ((ListView) mSettingList).setAdapter(mListItemAdapter);
         ((ListView) mSettingList).setOnItemClickListener(this);
         ((ListView) mSettingList).setSelector(android.R.color.transparent);
+        // Initialize mEnabled
+        mEnabled = new boolean[mListItem.size()];
+        for (int i = 0; i < mEnabled.length; i++) {
+            mEnabled[i] = true;
+        }
     }
 
     public void onSettingChanged(ListPreference pref) {
@@ -133,19 +156,25 @@ public class MoreSettingPopup extends AbstractSettingPopup
 
     // Scene mode can override other camera settings (ex: flash mode).
     public void overrideSettings(final String ... keyvalues) {
-        int count = mSettingList.getChildCount();
+        int count = mEnabled == null ? 0 : mEnabled.length;
         for (int i = 0; i < keyvalues.length; i += 2) {
             String key = keyvalues[i];
             String value = keyvalues[i + 1];
             for (int j = 0; j < count; j++) {
                 ListPreference pref = mListItem.get(j);
                 if (pref != null && key.equals(pref.getKey())) {
-                    InLineSettingItem settingItem =
-                            (InLineSettingItem) mSettingList.getChildAt(j);
-                    settingItem.overrideSettings(value);
+                    // Change preference
+                    if (value != null) pref.setValue(value);
+                    // If the preference is overridden, disable the preference
+                    boolean enable = value == null;
+                    mEnabled[j] = enable;
+                    if (mSettingList.getChildCount() > j) {
+                        mSettingList.getChildAt(j).setEnabled(enable);
+                    }
                 }
             }
         }
+        reloadPreference();
     }
 
     @Override
