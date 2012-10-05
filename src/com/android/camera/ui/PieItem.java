@@ -18,6 +18,7 @@ package com.android.camera.ui;
 
 import android.graphics.Path;
 import android.view.View;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,11 @@ public class PieItem {
     private boolean mEnabled;
     private List<PieItem> mItems;
     private Path mPath;
+
+    // Gray out the view when disabled
+    private static final float ENABLED_ALPHA = 1;
+    private static final float DISABLED_ALPHA = (float) 0.3;
+    private boolean mChangeAlphaWhenDisabled = true;
 
     public PieItem(View view, int level) {
         mView = view;
@@ -73,9 +79,19 @@ public class PieItem {
         return mPath;
     }
 
+    public void setChangeAlphaWhenDisabled (boolean enable) {
+        mChangeAlphaWhenDisabled = enable;
+    }
+
     public void setAlpha(float alpha) {
         if (mView != null) {
-            mView.setAlpha(alpha);
+            if (mView instanceof ImageView) {
+                // Here use deprecated ImageView.setAlpha(int alpha)
+                // for backward compatibility
+                ((ImageView) mView).setAlpha((int) (255.0 * alpha));
+            } else {
+                mView.setAlpha(alpha);
+            }
         }
     }
 
@@ -96,6 +112,13 @@ public class PieItem {
 
     public void setEnabled(boolean enabled) {
         mEnabled = enabled;
+        if (mChangeAlphaWhenDisabled) {
+            if (mEnabled) {
+                setAlpha(ENABLED_ALPHA);
+            } else {
+                setAlpha(DISABLED_ALPHA);
+            }
+        }
     }
 
     public boolean isEnabled() {
