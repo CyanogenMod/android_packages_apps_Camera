@@ -696,16 +696,15 @@ public class PhotoModule
 
         @Override
         public void onZoomStart() {
-            if (mFocusManager != null) {
-                mFocusManager.resetTouchFocus();
-                mFocusManager.setEnabled(false);
+            if (mPieRenderer != null) {
+                mPieRenderer.setBlockFocus(true);
             }
         }
 
         @Override
         public void onZoomEnd() {
-            if (mFocusManager != null) {
-                mFocusManager.setEnabled(true);
+            if (mPieRenderer != null) {
+                mPieRenderer.setBlockFocus(false);
             }
         }
     }
@@ -1266,10 +1265,10 @@ public class PhotoModule
             case SNAPSHOT_IN_PROGRESS:
             case FOCUSING:
             case SWITCHING_CAMERA:
-//                enableCameraControls(false);
+                if (mGestures != null) mGestures.setEnabled(false);
                 break;
             case IDLE:
-//                enableCameraControls(true);
+                if (mGestures != null) mGestures.setEnabled(true);
                 break;
         }
     }
@@ -1338,9 +1337,8 @@ public class PhotoModule
         if (mGestures != null) {
             mGestures.setEnabled(full);
         }
-        if (mFocusManager != null) {
-            mFocusManager.resetTouchFocus();
-            mFocusManager.setEnabled(full);
+        if (mPieRenderer != null) {
+            mPieRenderer.setBlockFocus(!full);
         }
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
             if (mActivity.mCameraScreenNail != null) {

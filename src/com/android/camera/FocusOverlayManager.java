@@ -94,7 +94,6 @@ public class FocusOverlayManager {
     private ComboPreferences mPreferences;
     private Handler mHandler;
     Listener mListener;
-    private boolean mEnabled;
 
     public interface Listener {
         public void autoFocus();
@@ -132,11 +131,6 @@ public class FocusOverlayManager {
         setParameters(parameters);
         mListener = listener;
         setMirror(mirror);
-        mEnabled = true;
-    }
-
-    public void setEnabled(boolean enabled) {
-        mEnabled = enabled;
     }
 
     public void setFocusRenderer(PieRenderer renderer) {
@@ -245,20 +239,7 @@ public class FocusOverlayManager {
         }
     }
 
-    /**
-     * check if focus handling is enabled
-     * turn off if not
-     * @return
-     */
-    private boolean isEnabled() {
-        if (!mEnabled) {
-            mState = STATE_IDLE;
-        }
-        return mEnabled;
-    }
-
     public void onAutoFocus(boolean focused) {
-        if (!isEnabled()) return;
         if (mState == STATE_FOCUSING_SNAP_ON_FINISH) {
             // Take the picture no matter focus succeeds or fails. No need
             // to play the AF sound if we're about to play the shutter
@@ -292,7 +273,7 @@ public class FocusOverlayManager {
     }
 
     public void onAutoFocusMoving(boolean moving) {
-        if (!isEnabled() || !mInitialized) return;
+        if (!mInitialized) return;
         // Ignore if the camera has detected some faces.
         if (mFaceView != null && mFaceView.faceExists()) return;
 
@@ -336,7 +317,6 @@ public class FocusOverlayManager {
     }
 
     public void onSingleTapUp(int x, int y) {
-        if (!isEnabled()) return;
         if (!mInitialized || mState == STATE_FOCUSING_SNAP_ON_FINISH) return;
 
         // Let users be able to cancel previous touch focus.
