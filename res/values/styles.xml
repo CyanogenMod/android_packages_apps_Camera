@@ -60,7 +60,7 @@
     <style name="SettingItemTitle">
         <item name="android:textSize">@dimen/setting_item_text_size</item>
         <item name="android:gravity">left|center_vertical</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/primary_text</item>
         <item name="android:singleLine">true</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_width">0dp</item>
@@ -72,7 +72,7 @@
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:gravity">center</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/primary_text</item>
         <item name="android:textSize">@dimen/setting_item_text_size</item>
     </style>
     <style name="SettingRow">

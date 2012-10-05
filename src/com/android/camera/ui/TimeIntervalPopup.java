@@ -94,8 +94,7 @@ public class TimeIntervalPopup extends AbstractSettingPopup {
         mUnitSpinner.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
         mTimeLapseSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 setTimeSelectionEnabled(isChecked);
             }
         });
