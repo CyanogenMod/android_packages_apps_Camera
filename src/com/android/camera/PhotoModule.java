@@ -1331,7 +1331,7 @@ public class PhotoModule
     @Override
     public void onFullScreenChanged(boolean full) {
         if (mPopup != null) {
-            dismissPopup(false);
+            dismissPopup(false, true);
         }
         if (mGestures != null) {
             mGestures.setEnabled(full);
@@ -2580,12 +2580,18 @@ public class PhotoModule
     }
 
     public void dismissPopup(boolean topPopupOnly) {
-        mActivity.showUI();
+        dismissPopup(topPopupOnly, false);
+    }
+
+    private void dismissPopup(boolean topOnly, boolean fullScreen) {
+        if (!fullScreen) {
+            mActivity.showUI();
+        }
         if (mPopup != null) {
             ((FrameLayout) mRootView).removeView(mPopup);
             mPopup = null;
         }
-        mPhotoControl.popupDismissed(topPopupOnly);
+        mPhotoControl.popupDismissed(topOnly);
     }
 
 }
