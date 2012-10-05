@@ -586,7 +586,9 @@ public class PhotoModule
 
     private void initializePhotoControl() {
         loadCameraPreferences();
-        mPhotoControl.initialize(mPreferenceGroup);
+        if (mPhotoControl != null) {
+            mPhotoControl.initialize(mPreferenceGroup);
+        }
         updateSceneModeUI();
 //        mIndicatorControlContainer.setListener(this);
     }
