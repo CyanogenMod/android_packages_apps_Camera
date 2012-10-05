@@ -19,6 +19,7 @@
     android:layout_height="match_parent" >
 
     <View
+        android:id="@+id/separator"
         android:layout_width="1dip"
         android:layout_height="match_parent"
         android:layout_alignLeft="@+id/camera_switcher"
