@@ -110,6 +110,7 @@ public class PieRenderer extends OverlayRenderer
     private int mInnerStroke;
     private boolean mFocusFromTap;
     private boolean mTapMode;
+    private boolean mBlockFocus;
 
 
     private Handler mHandler = new Handler() {
@@ -186,6 +187,7 @@ public class PieRenderer extends OverlayRenderer
         mOuterStroke = res.getDimensionPixelSize(R.dimen.focus_outer_stroke);
         mInnerStroke = res.getDimensionPixelSize(R.dimen.focus_inner_stroke);
         mState = STATE_IDLE;
+        mBlockFocus = false;
     }
 
     public boolean showsItems() {
@@ -523,6 +525,13 @@ public class PieRenderer extends OverlayRenderer
 
     // focus specific code
 
+    public void setBlockFocus(boolean blocked) {
+        mBlockFocus = blocked;
+        if (blocked) {
+            clear();
+        }
+    }
+
     public void setFocus(int x, int y, boolean startImmediately) {
         mFocusFromTap = true;
         mTapMode = true;
@@ -598,6 +607,7 @@ public class PieRenderer extends OverlayRenderer
     }
 
     public void drawFocus(Canvas canvas) {
+        if (mBlockFocus) return;
         mFocusPaint.setStrokeWidth(mOuterStroke);
         canvas.drawCircle((float) mFocusX, (float) mFocusY, (float) mCircleSize, mFocusPaint);
         int color = mFocusPaint.getColor();
