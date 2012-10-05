@@ -68,4 +68,11 @@ public class InLineSettingMenu extends InLineSettingItem {
         event.getText().add(mPreference.getTitle() + mPreference.getEntry());
         return true;
     }
+
+    @Override
+    public void setEnabled(boolean enable) {
+        super.setEnabled(enable);
+        if (mTitle != null) mTitle.setEnabled(enable);
+        if (mEntry != null) mEntry.setEnabled(enable);
+    }
 }

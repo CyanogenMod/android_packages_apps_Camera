@@ -41,6 +41,7 @@ public abstract class InLineSettingItem extends LinearLayout {
     protected int mIndex;
     // Scene mode can override the original preference value.
     protected String mOverrideValue;
+    protected TextView mTitle;
 
     static public interface Listener {
         public void onSettingChanged(ListPreference pref);
@@ -51,7 +52,8 @@ public abstract class InLineSettingItem extends LinearLayout {
     }
 
     protected void setTitle(ListPreference preference) {
-        ((TextView) findViewById(R.id.title)).setText(preference.getTitle());
+        mTitle = ((TextView) findViewById(R.id.title));
+        mTitle.setText(preference.getTitle());
     }
 
     public void initialize(ListPreference preference) {
