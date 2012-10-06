@@ -20,11 +20,14 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.hardware.Camera.Face;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -47,12 +50,32 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
     private boolean mPause;
     private Matrix mMatrix = new Matrix();
     private RectF mRect = new RectF();
+    // As face detection can be flaky, we add a layer of filtering on top of it
+    // to avoid rapid changes in state (eg, flickering between has faces and
+    // not having faces)
     private Face[] mFaces;
+    private Face[] mPendingFaces;
     private int mColor;
     private final int mFocusingColor;
     private final int mFocusedColor;
     private final int mFailColor;
     private Paint mPaint;
+
+    private static final int MSG_SWITCH_FACES = 1;
+    private static final int SWITCH_DELAY = 70;
+    private boolean mStateSwitchPending = false;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case MSG_SWITCH_FACES:
+                mStateSwitchPending = false;
+                mFaces = mPendingFaces;
+                invalidate();
+                break;
+            }
+        }
+    };
 
     public FaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -70,6 +93,21 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
     public void setFaces(Face[] faces) {
         if (LOGV) Log.v(TAG, "Num of faces=" + faces.length);
         if (mPause) return;
+        if (mFaces != null) {
+            if ((faces.length > 0 && mFaces.length == 0)
+                    || (faces.length == 0 && mFaces.length > 0)) {
+                mPendingFaces = faces;
+                if (!mStateSwitchPending) {
+                    mStateSwitchPending = true;
+                    mHandler.sendEmptyMessageDelayed(MSG_SWITCH_FACES, SWITCH_DELAY);
+                }
+                return;
+            }
+        }
+        if (mStateSwitchPending) {
+            mStateSwitchPending = false;
+            mHandler.removeMessages(MSG_SWITCH_FACES);
+        }
         mFaces = faces;
         invalidate();
     }

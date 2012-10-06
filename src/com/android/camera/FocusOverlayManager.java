@@ -275,7 +275,10 @@ public class FocusOverlayManager {
     public void onAutoFocusMoving(boolean moving) {
         if (!mInitialized) return;
         // Ignore if the camera has detected some faces.
-        if (mFaceView != null && mFaceView.faceExists()) return;
+        if (mFaceView != null && mFaceView.faceExists()) {
+            mPieRenderer.clear();
+            return;
+        }
 
         // Ignore if we have requested autofocus. This method only handles
         // continuous autofocus.
