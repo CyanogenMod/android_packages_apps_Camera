@@ -300,6 +300,8 @@
 
     <!-- The shutter button. [CHAR LIMIT = NONE] -->
     <string name="accessibility_shutter_button">Shutter button</string>
+    <!-- The menu button. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_menu_button">Menu button</string>
     <!-- The button to review the thumbnail. [CHAR LIMIT = NONE] -->
     <string name="accessibility_review_thumbnail">Most recent photo</string>
     <!-- The front/back camera switch. [CHAR LIMIT = NONE] -->
@@ -324,6 +326,8 @@
     <string name="accessibility_switch_to_video">Switch to video</string>
     <!-- The button to switch to Panorama mode. [CHAR LIMIT = NONE] -->
     <string name="accessibility_switch_to_panorama">Switch to panorama</string>
+    <!-- The button to switch to Lightcyle Panorama mode. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_switch_to_lightcycle">Switch to Lightcyle panorama</string>
     <!-- The button in review mode indicating that the photo taking, video recording, and panorama saving session should be canceled [CHAR LIMIT = NONE] -->
     <string name="accessibility_review_cancel">Review cancel</string>
     <!-- The button in review mode indicating that the taken photo/video is OK to be attached/uploaded [CHAR LIMIT = NONE] -->
