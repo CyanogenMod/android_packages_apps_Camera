@@ -75,6 +75,7 @@ public class CameraManager {
     private static final int WAIT_FOR_IDLE = 22;
     private static final int SET_PREVIEW_DISPLAY_ASYNC = 23;
     private static final int SET_PREVIEW_CALLBACK = 24;
+    private static final int ENABLE_SHUTTER_SOUND = 25;
 
     private Handler mCameraHandler;
     private CameraProxy mCameraProxy;
@@ -117,6 +118,11 @@ public class CameraManager {
             } catch(IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        @TargetApi(ApiHelper.VERSION_CODES.JELLY_BEAN_MR1)
+        private void enableShutterSound(boolean enable) {
+            mCamera.enableShutterSound(enable);
         }
 
         /*
@@ -232,9 +238,16 @@ public class CameraManager {
                         mCamera.setPreviewCallback((PreviewCallback) msg.obj);
                         break;
 
+                    case ENABLE_SHUTTER_SOUND:
+                        enableShutterSound((msg.arg1 == 1) ? true : false);
+                        break;
+
                     case WAIT_FOR_IDLE:
                         // do nothing
                         break;
+
+                    default:
+                        throw new RuntimeException("Invalid CameraProxy message=" + msg.what);
                 }
             } catch (RuntimeException e) {
                 if (msg.what != RELEASE && mCamera != null) {
@@ -459,6 +472,13 @@ public class CameraManager {
             Parameters parameters = mParameters;
             mParameters = null;
             return parameters;
+        }
+
+        public void enableShutterSound(boolean enable) {
+            mSig.close();
+            mCameraHandler.obtainMessage(
+                    ENABLE_SHUTTER_SOUND, (enable ? 1 : 0), 0).sendToTarget();
+            mSig.block();
         }
 
         public void waitForIdle() {
