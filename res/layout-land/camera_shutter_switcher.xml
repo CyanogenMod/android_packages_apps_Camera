@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="-12dip"
+        android:layout_marginRight="-22dip"
         android:layout_centerVertical="true"
         android:clickable="true"
         android:contentDescription="@string/accessibility_shutter_button"
@@ -51,15 +51,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginRight="2dip" />
-
-    <com.android.camera.ui.RotateImageView
-        android:id="@+id/shutter_overlay"
-        style="@style/SwitcherButton"
-        android:background="@null"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="2dip"
-        android:scaleType="center" />
 
     <com.android.camera.ui.RotateImageView
         android:id="@+id/menu"
