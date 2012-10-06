@@ -146,11 +146,6 @@ public class PhotoController extends PieController
         }
     }
 
-    @Override
-    public void onRestorePreferencesClicked() {
-        mModule.onRestorePreferencesClicked();
-    }
-
     // Return true if the preference has the specified key but not the value.
     private static boolean notSame(ListPreference pref, String key, String value) {
         return (key.equals(pref.getKey()) && !value.equals(pref.getValue()));
