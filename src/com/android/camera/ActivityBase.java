@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
+import android.content.SharedPreferences;
 import android.hardware.Camera.Parameters;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -318,8 +319,8 @@ abstract public class ActivityBase extends AbstractGalleryActivity
             if (t == null) {
                 Thumbnail result[] = new Thumbnail[1];
                 // Load the thumbnail from the media provider.
-                int code = Thumbnail.getLastThumbnailFromContentResolver(
-                        resolver, result);
+                try{
+                int code = Thumbnail.getLastThumbnailFromContentResolver(resolver, result, Storage.generateBucketId(Storage.mStorage));
                 switch (code) {
                     case Thumbnail.THUMBNAIL_FOUND:
                         return result[0];
@@ -329,6 +330,7 @@ abstract public class ActivityBase extends AbstractGalleryActivity
                         cancel(true);
                         return null;
                 }
+                }catch(Exception ex){}
             }
             return t;
         }
@@ -372,12 +374,12 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         // Intent mode does not show camera roll. Use 0 as a work around for
         // invalid bucket id.
         // TODO: add support of empty media set in gallery.
-        path += (getPictures ? MediaSetUtils.CAMERA_BUCKET_ID : "0");
+        path += (getPictures ? Storage.generateBucketIdInt(Storage.mStorage) : "0");
         data.putString(PhotoPage.KEY_MEDIA_SET_PATH, path);
         data.putString(PhotoPage.KEY_MEDIA_ITEM_PATH, path);
 
         // Send an AppBridge to gallery to enable the camera preview.
-        mAppBridge = new MyAppBridge();
+        if(mAppBridge == null)mAppBridge = new MyAppBridge();
         data.putParcelable(PhotoPage.KEY_APP_BRIDGE, mAppBridge);
         getStateManager().startState(PhotoPage.class, data);
         mCameraScreenNail = mAppBridge.getCameraScreenNail();

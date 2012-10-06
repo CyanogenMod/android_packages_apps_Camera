@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -901,10 +902,10 @@ public class PanoramaActivity extends ActivityBase implements
         if (jpegData != null) {
             String filename = PanoUtil.createName(
                     getResources().getString(R.string.pano_file_name_format), mTimeTaken);
-            Uri uri = Storage.addImage(mContentResolver, filename, mTimeTaken, null,
+            Uri uri = Storage.addImage(mContentResolver, Storage.mStorage, filename, mTimeTaken, null,
                     orientation, jpegData, width, height);
             if (uri != null) {
-                String filepath = Storage.generateFilepath(filename);
+                String filepath = Storage.generateFilepath(filename, Storage.mStorage);
                 try {
                     ExifInterface exif = new ExifInterface(filepath);
 
