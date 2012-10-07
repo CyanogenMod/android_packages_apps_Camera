@@ -19,5 +19,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <include layout="@layout/preview_module_frame"/>
+    <include layout="@layout/menu_indicators"
+        android:layout_width="80dip"
+        android:layout_height="80dip"
+        android:layout_gravity="bottom|right"/>
     <include layout="@layout/review_module_control"/>
 </FrameLayout>

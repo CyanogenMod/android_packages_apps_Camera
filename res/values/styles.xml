@@ -227,4 +227,10 @@
         <item name="android:layout_height">@dimen/switcher_size</item>
         <item name="android:background">@drawable/bg_pressed_exit_fading</item>
     </style>
+    <style name="MenuIndicator">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:enabled">false</item>
+        <item name="android:scaleType">center</item>
+    </style>
 </resources>
