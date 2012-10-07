@@ -20,7 +20,7 @@
     <LinearLayout android:orientation="vertical"
             android:background="@color/popup_background"
             android:layout_height="wrap_content"
-            android:layout_width="@dimen/setting_popup_window_width">
+            android:layout_width="@dimen/big_setting_popup_window_width">
 
         <LinearLayout android:orientation="horizontal"
                 android:layout_height="wrap_content"
@@ -56,10 +56,10 @@
                     android:id="@+id/set_time_interval_help_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="5dip"
+                    android:paddingTop="16dip"
                     android:paddingLeft="16dip"
-                    android:paddingRight="5dip"
-                    android:paddingBottom="5dip"
+                    android:paddingRight="16dip"
+                    android:paddingBottom="16dip"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="@string/set_time_interval_help"/>
         </LinearLayout>
