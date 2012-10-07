@@ -16,6 +16,8 @@
 
 package com.android.camera.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -33,6 +35,7 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
 import com.android.camera.R;
+import com.android.gallery3d.common.ApiHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -241,11 +244,24 @@ public class PieRenderer extends OverlayRenderer
                 item.setSelected(false);
             }
             layoutPie();
+            fadeIn();
         } else {
             mState = STATE_IDLE;
         }
         setVisible(show);
         mHandler.sendEmptyMessage(show ? MSG_OPEN : MSG_CLOSE);
+    }
+
+    private void fadeIn() {
+        if (!ApiHelper.HAS_VIEW_PROPERTY_ANIMATOR) return;
+        mOverlay.setAlpha(0);
+        mOverlay.animate().alpha(1f).setDuration(PIE_OPEN_DELAY).setListener(
+                new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mOverlay.setAlpha(1);
+                    }
+                });
     }
 
     public void setCenter(int x, int y) {
