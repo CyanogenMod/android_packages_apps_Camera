@@ -45,7 +45,6 @@ public class CameraActivity extends ActivityBase
     CameraModule mCurrentModule;
     private FrameLayout mFrame;
     private ShutterButton mShutter;
-    private RotateImageView mShutterIcon;
     private RotateImageView mMenu;
     private CameraSwitcher mSwitcher;
     private View mShutterSwitcher;
@@ -105,8 +104,6 @@ public class CameraActivity extends ActivityBase
         mSeparator = findViewById(R.id.separator);
         mShutterSwitcher = findViewById(R.id.camera_shutter_switcher);
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
-        mShutterIcon = (RotateImageView) findViewById(R.id.shutter_overlay);
-        mShutterIcon.enableFilter(false);
         mMenu = (RotateImageView) findViewById(R.id.menu);
         mSwitcher = (CameraSwitcher) findViewById(R.id.camera_switcher);
         mSwitcher.setDrawIds(DRAW_IDS);
@@ -208,14 +205,6 @@ public class CameraActivity extends ActivityBase
         mFrame.removeAllViews();
     }
 
-    private void showShutterIcon(boolean show, int resid) {
-        if (show) {
-            mShutterIcon.setImageResource(resid);
-            mShutterIcon.setOrientation(mOrientationCompensation, false);
-        }
-        mShutterIcon.setVisibility(show ? View.VISIBLE : View.GONE);
-    }
-
     public ShutterButton getShutterButton() {
         return mShutter;
     }
@@ -223,7 +212,6 @@ public class CameraActivity extends ActivityBase
     public void hideUI() {
         hideSwitcher();
         mShutter.setVisibility(View.GONE);
-        mShutterIcon.setVisibility(View.GONE);
     }
 
     public void showUI() {
@@ -231,17 +219,11 @@ public class CameraActivity extends ActivityBase
         mShutter.setVisibility(View.VISIBLE);
     }
 
-    // hide the switcher and show the given shutter icon
-    public void hideSwitcher(int resid) {
+    public void hideSwitcher() {
         mSwitcher.setVisibility(View.GONE);
         mMenu.setVisibility(View.GONE);
         mBlocker.setVisibility(View.GONE);
         mSeparator.setVisibility(View.GONE);
-        showShutterIcon(true, resid);
-    }
-
-    public void hideSwitcher() {
-        hideSwitcher(DRAW_IDS[mCurrentModuleIndex]);
     }
 
     public void showSwitcher() {
@@ -252,7 +234,6 @@ public class CameraActivity extends ActivityBase
             if (mMenuListener != null) {
                 mMenu.setVisibility(View.VISIBLE);
             }
-            showShutterIcon(false, DRAW_IDS[mCurrentModuleIndex]);
         }
     }
 
