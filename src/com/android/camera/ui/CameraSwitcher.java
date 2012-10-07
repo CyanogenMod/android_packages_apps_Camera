@@ -16,6 +16,9 @@
 
 package com.android.camera.ui;
 
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -27,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.android.camera.R;
+import com.android.gallery3d.common.ApiHelper;
 
 public class CameraSwitcher extends RotateImageView
         implements OnClickListener, OnTouchListener {
@@ -44,6 +48,11 @@ public class CameraSwitcher extends RotateImageView
     private int mItemSize;
     private View mPopup;
     private View mParent;
+    private boolean mShowingPopup;
+    private boolean mNeedsAnimationSetup;
+
+    private AnimatorListener mHideAnimationListener;
+    private AnimatorListener mShowAnimationListener;
 
     public CameraSwitcher(Context context) {
         super(context);
@@ -86,12 +95,19 @@ public class CameraSwitcher extends RotateImageView
         }
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        initPopup();
+    }
+
     private void initPopup() {
         mParent = LayoutInflater.from(getContext()).inflate(R.layout.switcher_popup,
                 (ViewGroup) getParent());
         LinearLayout content = (LinearLayout) mParent.findViewById(R.id.content);
         mPopup = content;
-        mPopup.setVisibility(View.GONE);
+        mPopup.setVisibility(View.INVISIBLE);
+        mNeedsAnimationSetup = true;
         for (int i = mDrawIds.length - 1; i >= 0; i--) {
             RotateImageView item = new RotateImageView(getContext());
             item.setImageResource(mDrawIds[i]);
@@ -108,30 +124,35 @@ public class CameraSwitcher extends RotateImageView
     }
 
     public boolean showsPopup() {
-        return (mPopup != null) && (mPopup.getVisibility() == View.VISIBLE);
+        return mShowingPopup;
     }
 
     public boolean isInsidePopup(MotionEvent evt) {
-        if (mPopup == null) return false;
-        return (mPopup.getVisibility() == View.VISIBLE && evt.getX() >= mPopup.getLeft()
-                && evt.getX() < mPopup.getRight() && evt.getY() >= mPopup.getTop()
-                && evt.getY() < mPopup.getBottom());
+        if (!showsPopup()) return false;
+        return evt.getX() >= mPopup.getLeft()
+                && evt.getX() < mPopup.getRight()
+                && evt.getY() >= mPopup.getTop()
+                && evt.getY() < mPopup.getBottom();
     }
 
     private void hidePopup() {
-        if (mPopup != null) {
-            mPopup.setVisibility(View.GONE);
-            setVisibility(View.VISIBLE);
+        mShowingPopup = false;
+        setVisibility(View.VISIBLE);
+        if (mPopup != null && !animateHidePopup()) {
+            mPopup.setVisibility(View.INVISIBLE);
         }
         mParent.setOnTouchListener(null);
     }
 
     private void showSwitcher() {
+        mShowingPopup = true;
         if (mPopup == null) {
             initPopup();
         }
-        setVisibility(View.GONE);
         mPopup.setVisibility(View.VISIBLE);
+        if (!animateShowPopup()) {
+            setVisibility(View.INVISIBLE);
+        }
         mParent.setOnTouchListener(this);
     }
 
@@ -152,5 +173,70 @@ public class CameraSwitcher extends RotateImageView
             RotateImageView iv = (RotateImageView) content.getChildAt(i);
             iv.setOrientation(degree, animate);
         }
+    }
+
+    private void popupAnimationSetup() {
+        if (!ApiHelper.HAS_VIEW_PROPERTY_ANIMATOR) {
+            return;
+        }
+        mPopup.setScaleX(0.3f);
+        mPopup.setScaleY(0.3f);
+        mPopup.setTranslationX(-getWidth() / 2);
+        mPopup.setTranslationY(getHeight());
+        mNeedsAnimationSetup = false;
+    }
+
+    private boolean animateHidePopup() {
+        if (!ApiHelper.HAS_VIEW_PROPERTY_ANIMATOR) {
+            return false;
+        }
+        if (mHideAnimationListener == null) {
+            mHideAnimationListener = new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    // Verify that we weren't canceled
+                    if (!showsPopup()) {
+                        mPopup.setVisibility(View.INVISIBLE);
+                    }
+                }
+            };
+        }
+        mPopup.animate()
+                .alpha(0f)
+                .scaleX(0.3f).scaleY(0.3f)
+                .translationX(-getWidth() / 2)
+                .translationY(getHeight())
+                .setListener(mHideAnimationListener);
+        animate().alpha(1f).setListener(null);
+        return true;
+    }
+
+    private boolean animateShowPopup() {
+        if (!ApiHelper.HAS_VIEW_PROPERTY_ANIMATOR) {
+            return false;
+        }
+        if (mNeedsAnimationSetup) {
+            popupAnimationSetup();
+        }
+        if (mShowAnimationListener == null) {
+            mShowAnimationListener = new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    // Verify that we weren't canceled
+                    if (showsPopup()) {
+                        setVisibility(View.INVISIBLE);
+                    }
+                }
+            };
+        }
+        mPopup.animate()
+                .alpha(1f)
+                .scaleX(1f).scaleY(1f)
+                .translationX(0)
+                .translationY(0)
+                .setListener(null);
+        animate().alpha(0f)
+                .setListener(mShowAnimationListener);
+        return true;
     }
 }
