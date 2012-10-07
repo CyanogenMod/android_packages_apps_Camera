@@ -52,13 +52,11 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="2dip" />
 
-    <com.android.camera.ui.RotateImageView
+    <FrameLayout
         android:id="@+id/menu"
         style="@style/SwitcherButton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="2dip"
-        android:src="@drawable/ic_menu_overflow_large"
-        android:scaleType="center" />
+        android:layout_marginBottom="2dip" />
 
 </RelativeLayout>
