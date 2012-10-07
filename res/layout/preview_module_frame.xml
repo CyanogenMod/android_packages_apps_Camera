@@ -34,7 +34,6 @@
             android:id="@+id/render_overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-        <include layout="@layout/priority_indicators"/>
     </com.android.camera.PreviewFrameLayout>
     <ImageView android:id="@+id/capture_anim_view"
             android:layout_width="match_parent"
