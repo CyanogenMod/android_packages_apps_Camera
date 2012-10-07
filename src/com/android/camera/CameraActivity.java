@@ -32,7 +32,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.android.camera.ui.CameraSwitcher;
-import com.android.camera.ui.RotateImageView;
 import com.android.gallery3d.util.LightCycleHelper;
 
 public class CameraActivity extends ActivityBase
@@ -390,7 +389,8 @@ public class CameraActivity extends ActivityBase
 
     @Override
     public boolean isPanoramaActivity() {
-        return (mCurrentModule instanceof PanoramaModule);
+        return (mCurrentModuleIndex == PANORAMA_MODULE_INDEX)
+                || (mCurrentModuleIndex == LIGHTCYCLE_MODULE_INDEX);
     }
 
     // Accessor methods for getting latency times used in performance testing
