@@ -74,22 +74,25 @@ public class PhotoController extends PieController
             }
         });
         mRenderer.addItem(item);
-        PieItem hdr = makeItem(R.drawable.ic_hdr);
-        hdr.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO, sweep);
-        hdr.getView().setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Find the index of next camera.
-                ListPreference pref = mPreferenceGroup.findPreference(CameraSettings.KEY_CAMERA_HDR);
-                if (pref != null) {
-                    // toggle hdr value
-                    int index = (pref.findIndexOfValue(pref.getValue()) + 1) % 2;
-                    pref.setValueIndex(index);
-                    onSettingChanged(pref);
+        if (group.findPreference(CameraSettings.KEY_CAMERA_HDR) != null) {
+            PieItem hdr = makeItem(R.drawable.ic_hdr);
+            hdr.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO, sweep);
+            hdr.getView().setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Find the index of next camera.
+                    ListPreference pref = mPreferenceGroup
+                            .findPreference(CameraSettings.KEY_CAMERA_HDR);
+                    if (pref != null) {
+                        // toggle hdr value
+                        int index = (pref.findIndexOfValue(pref.getValue()) + 1) % 2;
+                        pref.setValueIndex(index);
+                        onSettingChanged(pref);
+                    }
                 }
-            }
-        });
-        mRenderer.addItem(hdr);
+            });
+            mRenderer.addItem(hdr);
+        }
         mOtherKeys = new String[] {
                 CameraSettings.KEY_SCENE_MODE,
                 CameraSettings.KEY_RECORD_LOCATION,
