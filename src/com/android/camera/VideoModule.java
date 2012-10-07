@@ -141,7 +141,6 @@ public class VideoModule implements CameraModule,
     private PreviewSurfaceView mPreviewSurfaceView;
     private CameraScreenNail.OnFrameDrawnListener mFrameDrawnListener;
     private View mReviewControl;
-    private RotateDialogController mRotateDialog;
 
     // An review image having same size as preview. It is displayed when
     // recording is stopped in capture intent.
@@ -477,7 +476,6 @@ public class VideoModule implements CameraModule,
         initializeOverlay();
         initializeMiscControls();
 
-        mRotateDialog = new RotateDialogController(mActivity, R.layout.rotate_dialog);
         mQuickCapture = mActivity.getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
         mLocationManager = new LocationManager(mActivity, null);
 
@@ -521,10 +519,6 @@ public class VideoModule implements CameraModule,
     @Override
     public boolean collapseCameraControls() {
         boolean ret = false;
-        if (mRotateDialog != null && mRotateDialog.getVisibility() == View.VISIBLE) {
-            mRotateDialog.dismissDialog();
-            ret = true;
-        }
         if (mPopup != null) {
             dismissPopup(false);
             ret = true;
@@ -533,10 +527,6 @@ public class VideoModule implements CameraModule,
     }
 
     public boolean removeTopLevelPopup() {
-        if (mRotateDialog != null && mRotateDialog.getVisibility() == View.VISIBLE) {
-            mRotateDialog.dismissDialog();
-            return true;
-        }
         if (mPopup != null) {
             dismissPopup(true);
             return true;
@@ -624,7 +614,7 @@ public class VideoModule implements CameraModule,
         Rotatable[] indicators = {
                 mRenderOverlay,
                 mBgLearningMessageRotater,
-                mReviewDoneButton, mReviewPlayButton, mRotateDialog};
+                mReviewDoneButton, mReviewPlayButton};
         for (Rotatable indicator : indicators) {
             if (indicator != null) indicator.setOrientation(orientation, animation);
         }
@@ -2255,35 +2245,8 @@ public class VideoModule implements CameraModule,
     }
 
     @Override
+    // TODO: Delete this after old camera code is removed
     public void onRestorePreferencesClicked() {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                restorePreferences();
-            }
-        };
-        mRotateDialog.showAlertDialog(
-                null,
-                mActivity.getString(R.string.confirm_restore_message),
-                mActivity.getString(android.R.string.ok), runnable,
-                mActivity.getString(android.R.string.cancel), null);
-    }
-
-    private void restorePreferences() {
-        // Reset the zoom. Zoom value is not stored in preference.
-        if (mParameters.isZoomSupported()) {
-            mZoomValue = 0;
-            setCameraParameters();
-//            mZoomControl.setZoomIndex(0);
-        }
-
-//        if (mIndicatorControlContainer != null) {
-//            mIndicatorControlContainer.dismissSettingPopup();
-            CameraSettings.restorePreferences(mActivity, mPreferences,
-                    mParameters);
-//            mIndicatorControlContainer.reloadPreferences();
-            onSharedPreferenceChanged();
-//        }
     }
 
     private boolean effectsActive() {
