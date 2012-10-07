@@ -83,6 +83,51 @@
         <item>86400000</item>
     </string-array>
 
+    <!-- These values correspond to the time interval between frame capture in
+    different units (i.e. seconds, minutes, hours) for time lapse recording -->
+    <string-array name="pref_video_time_lapse_frame_interval_entries">
+        <item>@string/pref_video_time_lapse_frame_interval_off</item>
+        <item>@string/pref_video_time_lapse_frame_interval_500</item>
+        <item>@string/pref_video_time_lapse_frame_interval_1000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_1500</item>
+        <item>@string/pref_video_time_lapse_frame_interval_2000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_2500</item>
+        <item>@string/pref_video_time_lapse_frame_interval_3000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_4000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_5000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_6000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_10000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_12000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_15000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_24000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_30000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_60000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_90000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_120000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_150000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_180000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_240000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_300000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_360000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_600000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_720000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_900000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_1440000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_1800000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_3600000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_5400000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_7200000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_9000000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_10800000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_14400000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_18000000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_21600000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_36000000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_43200000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_54000000</item>
+        <item>@string/pref_video_time_lapse_frame_interval_86400000</item>
+    </string-array>
+
     <!-- These values correspond to the time interval between frame capture
     for time lapse recording -->
     <string-array name="pref_video_time_lapse_frame_interval_duration_values" translatable="false">
