@@ -183,7 +183,6 @@ public class PhotoModule
     private PreviewSurfaceView mPreviewSurfaceView;
     private volatile SurfaceHolder mCameraSurfaceHolder;
 
-    private RotateDialogController mRotateDialog;
     private FaceView mFaceView;
     private RenderOverlay mRenderOverlay;
     private Rotatable mReviewCancelButton;
@@ -476,7 +475,6 @@ public class PhotoModule
         mStartPreviewPrerequisiteReady.open();
 
         initializeControlByIntent();
-        mRotateDialog = new RotateDialogController(mActivity, R.layout.rotate_dialog);
         mQuickCapture = mActivity.getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
         initializeMiscControls();
         mLocationManager = new LocationManager(mActivity, this);
@@ -1414,10 +1412,6 @@ public class PhotoModule
     public boolean collapseCameraControls() {
         // Remove all the popups/dialog boxes
         boolean ret = false;
-        if(mRotateDialog != null && mRotateDialog.getVisibility() == View.VISIBLE) {
-            mRotateDialog.dismissDialog();
-            ret = true;
-        }
         if (mPopup != null) {
             dismissPopup(false);
             ret = true;
@@ -1427,10 +1421,6 @@ public class PhotoModule
 
     public boolean removeTopLevelPopup() {
         // Remove the top level popup or dialog box and return true if there's any
-        if (mRotateDialog != null && mRotateDialog.getVisibility() == View.VISIBLE) {
-            mRotateDialog.dismissDialog();
-            return true;
-        }
         if (mPopup != null) {
             dismissPopup(true);
             return true;
@@ -1465,7 +1455,7 @@ public class PhotoModule
     private void setOrientationIndicator(int orientation, boolean animation) {
         Rotatable[] indicators = {
                 mRenderOverlay, mFaceView,
-                mReviewDoneButton, mRotateDialog, mOnScreenIndicators};
+                mReviewDoneButton, mOnScreenIndicators};
         for (Rotatable indicator : indicators) {
             if (indicator != null) indicator.setOrientation(orientation, animation);
         }
@@ -2492,34 +2482,9 @@ public class PhotoModule
         mHandler.sendEmptyMessageDelayed(CLEAR_SCREEN_DELAY, SCREEN_DELAY);
     }
 
+    // TODO: Delete this function after old camera code is removed
     @Override
     public void onRestorePreferencesClicked() {
-        if (mPaused) return;
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                restorePreferences();
-            }
-        };
-        mRotateDialog.showAlertDialog(
-                null,
-                mActivity.getString(R.string.confirm_restore_message),
-                mActivity.getString(android.R.string.ok), runnable,
-                mActivity.getString(android.R.string.cancel), null);
-    }
-
-    private void restorePreferences() {
-        // Reset the zoom. Zoom value is not stored in preference.
-        if (mParameters.isZoomSupported()) {
-            mZoomValue = 0;
-            setCameraParametersWhenIdle(UPDATE_PARAM_ZOOM);
-            // TODO: reset zoom
-        }
-        dismissPopup(true);
-        CameraSettings.restorePreferences(mActivity, mPreferences,
-                mParameters);
-        mPhotoControl.reloadPreferences();
-        onSharedPreferenceChanged();
     }
 
     @Override

@@ -153,11 +153,6 @@ public class VideoController extends PieController
     }
 
     @Override
-    public void onRestorePreferencesClicked() {
-        mModule.onRestorePreferencesClicked();
-    }
-
-    @Override
     // Hit when an item in the first-level popup gets selected, then bring up
     // the second-level popup
     public void onPreferenceClicked(ListPreference pref) {
