@@ -548,6 +548,9 @@ public class VideoModule implements CameraModule,
         if (mGestures != null) {
             mGestures.setZoomOnly(!enable);
         }
+        if (mPieRenderer != null && mPieRenderer.showsItems()) {
+            mPieRenderer.hide();
+        }
     }
 
     private void initializeVideoControl() {
