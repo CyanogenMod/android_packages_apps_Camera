@@ -49,7 +49,6 @@ public class CameraActivity extends ActivityBase
     private CameraSwitcher mSwitcher;
     private View mShutterSwitcher;
     private View mBlocker;
-    private View mSeparator;
     private Drawable[] mDrawables;
     private int mCurrentModuleIndex;
     private MenuListener mMenuListener;
@@ -101,7 +100,6 @@ public class CameraActivity extends ActivityBase
 
     public void init() {
         mBlocker = findViewById(R.id.blocker);
-        mSeparator = findViewById(R.id.separator);
         mShutterSwitcher = findViewById(R.id.camera_shutter_switcher);
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
         mMenu = (FrameLayout) findViewById(R.id.menu);
@@ -220,14 +218,12 @@ public class CameraActivity extends ActivityBase
         mSwitcher.setVisibility(View.GONE);
         mMenu.setVisibility(View.GONE);
         mBlocker.setVisibility(View.GONE);
-        mSeparator.setVisibility(View.GONE);
     }
 
     public void showSwitcher() {
         if (mCurrentModule.needsSwitcher()) {
             mSwitcher.setVisibility(View.VISIBLE);
             mBlocker.setVisibility(View.VISIBLE);
-            mSeparator.setVisibility(View.VISIBLE);
             if (mMenuListener != null) {
                 mMenu.setVisibility(View.VISIBLE);
             }
