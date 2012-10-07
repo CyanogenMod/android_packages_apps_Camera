@@ -45,7 +45,7 @@ public class CameraActivity extends ActivityBase
     CameraModule mCurrentModule;
     private FrameLayout mFrame;
     private ShutterButton mShutter;
-    private RotateImageView mMenu;
+    private FrameLayout mMenu;
     private CameraSwitcher mSwitcher;
     private View mShutterSwitcher;
     private View mBlocker;
@@ -104,7 +104,7 @@ public class CameraActivity extends ActivityBase
         mSeparator = findViewById(R.id.separator);
         mShutterSwitcher = findViewById(R.id.camera_shutter_switcher);
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
-        mMenu = (RotateImageView) findViewById(R.id.menu);
+        mMenu = (FrameLayout) findViewById(R.id.menu);
         mSwitcher = (CameraSwitcher) findViewById(R.id.camera_switcher);
         mSwitcher.setDrawIds(DRAW_IDS);
         mMenu.setOnClickListener(new OnClickListener() {
@@ -156,9 +156,6 @@ public class CameraActivity extends ActivityBase
                 mOrientationCompensation = orientationCompensation;
                 if (mSwitcher != null) {
                     mSwitcher.setOrientation(mOrientationCompensation, true);
-                }
-                if (mMenu != null) {
-                    mMenu.setOrientation(mOrientationCompensation, true);
                 }
             }
             mCurrentModule.onOrientationChanged(orientation);

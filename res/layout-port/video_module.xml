@@ -19,6 +19,11 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
     <include layout="@layout/preview_module_frame_video"/>
+    <include layout="@layout/menu_indicators"
+        android:layout_width="80dip"
+        android:layout_height="80dip"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" />
     <include layout="@layout/bg_replacement_training_message"/>
     <include layout="@layout/review_module_control"/>
 </RelativeLayout>

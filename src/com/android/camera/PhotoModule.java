@@ -58,7 +58,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.camera.CameraManager.CameraProxy;
@@ -194,14 +193,12 @@ public class PhotoModule
     private Uri mSaveUri;
 
     // Small indicators which show the camera settings in the viewfinder.
-    private TextView mExposureIndicator;
-    private ImageView mGpsIndicator;
+    private ImageView mExposureIndicator;
     private ImageView mFlashIndicator;
     private ImageView mSceneIndicator;
-    private ImageView mWhiteBalanceIndicator;
-    private ImageView mFocusIndicator;
+    private ImageView mHdrIndicator;
     // A view group that contains all the small indicators.
-    private Rotatable mOnScreenIndicators;
+    private RotateLayout mOnScreenIndicators;
 
     // We use a thread in ImageSaver to do the work of saving images. This
     // reduces the shot-to-shot time.
@@ -768,52 +765,51 @@ public class PhotoModule
     }
 
     private void initOnScreenIndicator() {
-        mGpsIndicator = (ImageView) mRootView.findViewById(R.id.onscreen_gps_indicator);
-        mExposureIndicator = (TextView) mRootView.findViewById(R.id.onscreen_exposure_indicator);
-        mFlashIndicator = (ImageView) mRootView.findViewById(R.id.onscreen_flash_indicator);
-        mSceneIndicator = (ImageView) mRootView.findViewById(R.id.onscreen_scene_indicator);
-        mWhiteBalanceIndicator =
-                (ImageView) mRootView.findViewById(R.id.onscreen_white_balance_indicator);
-        mFocusIndicator = (ImageView) mRootView.findViewById(R.id.onscreen_focus_indicator);
+        mOnScreenIndicators = (RotateLayout) mRootView.findViewById(R.id.on_screen_indicators);
+        mExposureIndicator = (ImageView) mOnScreenIndicators.findViewById(R.id.menu_exposure_indicator);
+        mFlashIndicator = (ImageView) mOnScreenIndicators.findViewById(R.id.menu_flash_indicator);
+        mSceneIndicator = (ImageView) mOnScreenIndicators.findViewById(R.id.menu_scenemode_indicator);
+        mHdrIndicator = (ImageView) mOnScreenIndicators.findViewById(R.id.menu_hdr_indicator);
     }
 
     @Override
-    public void showGpsOnScreenIndicator(boolean hasSignal) {
-        if (mGpsIndicator == null) {
-            return;
-        }
-        if (hasSignal) {
-            mGpsIndicator.setImageResource(R.drawable.ic_viewfinder_gps_on);
-        } else {
-            mGpsIndicator.setImageResource(R.drawable.ic_viewfinder_gps_no_signal);
-        }
-        mGpsIndicator.setVisibility(View.VISIBLE);
-    }
+    public void showGpsOnScreenIndicator(boolean hasSignal) { }
 
     @Override
-    public void hideGpsOnScreenIndicator() {
-        if (mGpsIndicator == null) {
-            return;
-        }
-        mGpsIndicator.setVisibility(View.GONE);
-    }
+    public void hideGpsOnScreenIndicator() { }
 
     private void updateExposureOnScreenIndicator(int value) {
         if (mExposureIndicator == null) {
             return;
         }
-        if (value == 0) {
-            mExposureIndicator.setText("");
-            mExposureIndicator.setVisibility(View.GONE);
-        } else {
-            float step = mParameters.getExposureCompensationStep();
-            mFormatterArgs[0] = value * step;
-            mBuilder.delete(0, mBuilder.length());
-            mFormatter.format("%+1.1f", mFormatterArgs);
-            String exposure = mFormatter.toString();
-            mExposureIndicator.setText(exposure);
-            mExposureIndicator.setVisibility(View.VISIBLE);
+        int id = 0;
+        float step = mParameters.getExposureCompensationStep();
+        value = (int) Math.round(value * step);
+        switch(value) {
+        case -3:
+            id = R.drawable.ic_indicator_ev_n3;
+            break;
+        case -2:
+            id = R.drawable.ic_indicator_ev_n2;
+            break;
+        case -1:
+            id = R.drawable.ic_indicator_ev_n1;
+            break;
+        case 0:
+            id = R.drawable.ic_indicator_ev_0;
+            break;
+        case 1:
+            id = R.drawable.ic_indicator_ev_p1;
+            break;
+        case 2:
+            id = R.drawable.ic_indicator_ev_p2;
+            break;
+        case 3:
+            id = R.drawable.ic_indicator_ev_p3;
+            break;
         }
+        mExposureIndicator.setImageResource(id);
+
     }
 
     private void updateFlashOnScreenIndicator(String value) {
@@ -821,16 +817,14 @@ public class PhotoModule
             return;
         }
         if (value == null || Parameters.FLASH_MODE_OFF.equals(value)) {
-            mFlashIndicator.setVisibility(View.GONE);
+            mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_off);
         } else {
-            mFlashIndicator.setVisibility(View.VISIBLE);
             if (Parameters.FLASH_MODE_AUTO.equals(value)) {
-                mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_auto);
+                mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_auto);
             } else if (Parameters.FLASH_MODE_ON.equals(value)) {
-                mFlashIndicator.setImageResource(R.drawable.ic_indicators_landscape_flash_on);
+                mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_on);
             } else {
-                // Should not happen.
-                mFlashIndicator.setVisibility(View.GONE);
+                mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_off);
             }
         }
     }
@@ -839,59 +833,25 @@ public class PhotoModule
         if (mSceneIndicator == null) {
             return;
         }
-        boolean isGone = (value == null) || (Parameters.SCENE_MODE_AUTO.equals(value));
-        mSceneIndicator.setVisibility(isGone ? View.GONE : View.VISIBLE);
-    }
-
-    private void updateWhiteBalanceOnScreenIndicator(String value) {
-        if (mWhiteBalanceIndicator == null) {
-            return;
-        }
-        if (value == null || Parameters.WHITE_BALANCE_AUTO.equals(value)) {
-            mWhiteBalanceIndicator.setVisibility(View.GONE);
+        if ((value == null) || Parameters.SCENE_MODE_AUTO.equals(value)) {
+            mSceneIndicator.setImageResource(R.drawable.ic_indicator_sce_off);
         } else {
-            mWhiteBalanceIndicator.setVisibility(View.VISIBLE);
-            if (Parameters.WHITE_BALANCE_FLUORESCENT.equals(value)) {
-                mWhiteBalanceIndicator.setImageResource(R.drawable.ic_indicators_fluorescent);
-            } else if (Parameters.WHITE_BALANCE_INCANDESCENT.equals(value)) {
-                mWhiteBalanceIndicator.setImageResource(R.drawable.ic_indicators_incandescent);
-            } else if (Parameters.WHITE_BALANCE_DAYLIGHT.equals(value)) {
-                mWhiteBalanceIndicator.setImageResource(R.drawable.ic_indicators_sunlight);
-            } else if (Parameters.WHITE_BALANCE_CLOUDY_DAYLIGHT.equals(value)) {
-                mWhiteBalanceIndicator.setImageResource(R.drawable.ic_indicators_cloudy);
-            } else {
-                // Should not happen.
-                mWhiteBalanceIndicator.setVisibility(View.GONE);
-            }
+            mSceneIndicator.setImageResource(R.drawable.ic_indicator_sce_on);
         }
     }
 
-    private void updateFocusOnScreenIndicator(String value) {
-        if (mFocusIndicator == null || mPreferenceGroup == null) {
+    private void updateHdrOnScreenIndicator(String value) {
+        if (mHdrIndicator == null) {
             return;
         }
-        // Do not show the indicator if users cannot choose.
-        if (mPreferenceGroup.findPreference(CameraSettings.KEY_FOCUS_MODE) == null) {
-            mFocusIndicator.setVisibility(View.GONE);
-        } else {
-            mFocusIndicator.setVisibility(View.VISIBLE);
-            if (Parameters.FOCUS_MODE_INFINITY.equals(value)) {
-                mFocusIndicator.setImageResource(R.drawable.ic_indicators_landscape);
-            } else if (Parameters.FOCUS_MODE_MACRO.equals(value)) {
-                mFocusIndicator.setImageResource(R.drawable.ic_indicators_macro);
-            } else {
-                // Should not happen.
-                mFocusIndicator.setVisibility(View.GONE);
-            }
-        }
+        mHdrIndicator.setImageResource(R.drawable.ic_indicator_hdr_off);
     }
 
     private void updateOnScreenIndicators() {
         updateSceneOnScreenIndicator(mParameters.getSceneMode());
         updateExposureOnScreenIndicator(CameraSettings.readExposure(mPreferences));
         updateFlashOnScreenIndicator(mParameters.getFlashMode());
-        updateWhiteBalanceOnScreenIndicator(mParameters.getWhiteBalance());
-        updateFocusOnScreenIndicator(mParameters.getFocusMode());
+        updateHdrOnScreenIndicator(mParameters.getWhiteBalance());
     }
 
     private final class ShutterCallback
@@ -1466,7 +1426,8 @@ public class PhotoModule
     private void setOrientationIndicator(int orientation, boolean animation) {
         Rotatable[] indicators = {
                 mRenderOverlay, mFaceView,
-                mReviewDoneButton, mOnScreenIndicators};
+                mReviewDoneButton,
+                mOnScreenIndicators };
         for (Rotatable indicator : indicators) {
             if (indicator != null) indicator.setOrientation(orientation, animation);
         }
@@ -1829,7 +1790,6 @@ public class PhotoModule
         // Set touch focus listener.
         mActivity.setSingleTapUpListener(mPreviewFrameLayout);
 
-        mOnScreenIndicators = (Rotatable) mRootView.findViewById(R.id.on_screen_indicators);
         mFaceView = (FaceView) mRootView.findViewById(R.id.face_view);
         mPreviewFrameLayout.setOnSizeChangedListener(this);
         mPreviewFrameLayout.setOnLayoutChangeListener(mActivity);
