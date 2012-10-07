@@ -166,6 +166,7 @@ public class CameraActivity extends ActivityBase
         if (i != mCurrentModuleIndex) {
             mPaused = true;
             boolean wasPanorama = isPanoramaActivity();
+            CameraHolder.instance().keep();
             closeModule(mCurrentModule);
             mCurrentModuleIndex = i;
             mMenuListener = null;
