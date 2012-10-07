@@ -24,28 +24,28 @@
 
         <ImageView
             android:id="@+id/menu_hdr_indicator"
-            style="MenuIndicator"
+            style="@style/MenuIndicator"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:src="@drawable/ic_indicator_hdr_off" />
 
         <ImageView
             android:id="@+id/menu_flash_indicator"
-            style="MenuIndicator"
+            style="@style/MenuIndicator"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:src="@drawable/ic_indicator_flash_off" />
 
         <ImageView
             android:id="@+id/menu_exposure_indicator"
-            style="MenuIndicator"
+            style="@style/MenuIndicator"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:src="@drawable/ic_indicator_ev_0" />
 
         <ImageView
             android:id="@+id/menu_scenemode_indicator"
-            style="MenuIndicator"
+            style="@style/MenuIndicator"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:src="@drawable/ic_indicator_sce_off" />
