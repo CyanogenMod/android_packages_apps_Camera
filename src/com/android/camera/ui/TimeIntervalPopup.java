@@ -72,8 +72,8 @@ public class TimeIntervalPopup extends AbstractSettingPopup {
         // Duration
         int durationCount = mDurations.length;
         mNumberSpinner = (NumberPicker) findViewById(R.id.duration);
-        mNumberSpinner.setMinValue(1);
-        mNumberSpinner.setMaxValue(durationCount);
+        mNumberSpinner.setMinValue(0);
+        mNumberSpinner.setMaxValue(durationCount - 1);
         mNumberSpinner.setDisplayedValues(mDurations);
         mNumberSpinner.setWrapSelectorWheel(false);
 
@@ -118,9 +118,9 @@ public class TimeIntervalPopup extends AbstractSettingPopup {
         } else {
             mTimeLapseSwitch.setChecked(true);
             setTimeSelectionEnabled(true);
-            int durationCount = mNumberSpinner.getMaxValue();
-            int unit = index / durationCount;
-            int number = index % durationCount;
+            int durationCount = mNumberSpinner.getMaxValue() + 1;
+            int unit = (index - 1) / durationCount;
+            int number = (index - 1) % durationCount;
             mUnitSpinner.setValue(unit);
             mNumberSpinner.setValue(number);
         }
@@ -149,8 +149,9 @@ public class TimeIntervalPopup extends AbstractSettingPopup {
 
     private void updateInputState() {
         if (mTimeLapseSwitch.isChecked()) {
-            mPreference.setValueIndex(mUnitSpinner.getValue() * mNumberSpinner.getMaxValue()
-                    + mNumberSpinner.getValue());
+            int newId = mUnitSpinner.getValue() * (mNumberSpinner.getMaxValue() + 1)
+                    + mNumberSpinner.getValue() + 1;
+            mPreference.setValueIndex(newId);
         } else {
             mPreference.setValueIndex(0);
         }
