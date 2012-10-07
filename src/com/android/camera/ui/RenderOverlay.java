@@ -151,6 +151,7 @@ public class RenderOverlay extends RotateLayout {
 
         @Override
         public void draw(Canvas canvas) {
+            super.draw(canvas);
             if (mClients == null) return;
             boolean redraw = false;
             for (Renderer renderer : mClients) {
