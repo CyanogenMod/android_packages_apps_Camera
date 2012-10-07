@@ -16,15 +16,12 @@
 
 package com.android.camera;
 
-import java.util.Stack;
-
 import android.content.Context;
 import android.hardware.Camera.Parameters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.android.camera.R;
 import com.android.camera.ui.AbstractSettingPopup;
 import com.android.camera.ui.ListPrefSettingPopup;
 import com.android.camera.ui.MoreSettingPopup;
@@ -57,9 +54,10 @@ public class PhotoController extends PieController
         mSecondPopup = null;
         float sweep = FLOAT_PI_DIVIDED_BY_TWO / 2;
         addItem(CameraSettings.KEY_FLASH_MODE, FLOAT_PI_DIVIDED_BY_TWO - sweep, sweep);
-        addItem(CameraSettings.KEY_EXPOSURE, FLOAT_PI_DIVIDED_BY_TWO + sweep, sweep);
+        addItem(CameraSettings.KEY_EXPOSURE, 3 * FLOAT_PI_DIVIDED_BY_TWO - sweep, sweep);
+        addItem(CameraSettings.KEY_WHITE_BALANCE, 3 * FLOAT_PI_DIVIDED_BY_TWO + sweep, sweep);
         PieItem item = makeItem(R.drawable.ic_switch_photo_facing_holo_light);
-        item.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO,  sweep);
+        item.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO + sweep,  sweep);
         item.getView().setOnClickListener(new OnClickListener() {
 
             @Override
@@ -79,7 +77,6 @@ public class PhotoController extends PieController
         mOtherKeys = new String[] {
                 CameraSettings.KEY_CAMERA_HDR,
                 CameraSettings.KEY_SCENE_MODE,
-                CameraSettings.KEY_WHITE_BALANCE,
                 CameraSettings.KEY_RECORD_LOCATION,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_FOCUS_MODE};
