@@ -19,13 +19,6 @@
     android:layout_height="match_parent" >
 
     <View
-        android:id="@+id/separator"
-        android:layout_height="1dip"
-        android:layout_width="match_parent"
-        android:layout_alignTop="@+id/camera_switcher"
-        android:background="#5AF5F5F5" />
-
-    <View
         android:id="@+id/blocker"
         android:layout_width="match_parent"
         android:layout_height="@dimen/switcher_size"
