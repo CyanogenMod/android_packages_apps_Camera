@@ -26,8 +26,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.android.camera.CameraSettings;
-import com.android.camera.IconListPreference;
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
@@ -50,7 +48,6 @@ public class MoreSettingPopup extends AbstractSettingPopup
 
     static public interface Listener {
         public void onSettingChanged(ListPreference pref);
-        public void onRestorePreferencesClicked();
         public void onPreferenceClicked(ListPreference pref);
     }
 
@@ -67,9 +64,6 @@ public class MoreSettingPopup extends AbstractSettingPopup
         }
 
         private int getSettingLayoutId(ListPreference pref) {
-            // If the preference is null, it will be the only item , i.e.
-            // 'Restore setting' in the popup window.
-            if (pref == null) return R.layout.in_line_setting_restore;
 
             if (isOnOffPreference(pref)) {
                 return R.layout.in_line_setting_switch;
@@ -95,9 +89,6 @@ public class MoreSettingPopup extends AbstractSettingPopup
             int viewLayoutId = getSettingLayoutId(pref);
             InLineSettingItem view = (InLineSettingItem)
                     mInflater.inflate(viewLayoutId, parent, false);
-            if (viewLayoutId == R.layout.in_line_setting_restore) {
-                view.setId(R.id.restore_default);
-            }
 
             view.initialize(pref); // no init for restore one
             view.setSettingChangedListener(MoreSettingPopup.this);
@@ -133,9 +124,6 @@ public class MoreSettingPopup extends AbstractSettingPopup
             ListPreference pref = group.findPreference(keys[i]);
             if (pref != null) mListItem.add(pref);
         }
-
-        // Prepare the restore setting line.
-        mListItem.add(null);
 
         ArrayAdapter<ListPreference> mListItemAdapter = new MoreSettingAdapter();
         ((ListView) mSettingList).setAdapter(mListItemAdapter);
@@ -181,12 +169,8 @@ public class MoreSettingPopup extends AbstractSettingPopup
     public void onItemClick(AdapterView<?> parent, View view, int position,
             long id) {
         if (mListener != null) {
-            if (position == mListItem.size() - 1) {
-                mListener.onRestorePreferencesClicked();
-            } else {
-                ListPreference pref = mListItem.get(position);
-                mListener.onPreferenceClicked(pref);
-            }
+            ListPreference pref = mListItem.get(position);
+            mListener.onPreferenceClicked(pref);
         }
     }
 
