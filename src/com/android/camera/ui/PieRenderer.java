@@ -64,6 +64,7 @@ public class PieRenderer extends OverlayRenderer
 
     private static final long PIE_OPEN_DELAY = 200;
     private static final long FOCUS_TAP_TIMEOUT = 500;
+    private static final long PIE_SLECECT_FADE_DURATION = 300;
 
     private static final int MSG_OPEN = 2;
     private static final int MSG_CLOSE = 3;
@@ -359,6 +360,23 @@ public class PieRenderer extends OverlayRenderer
         return (float) (360 - 180 * angle / Math.PI);
     }
 
+    private void startFadeOut() {
+        if (ApiHelper.HAS_VIEW_PROPERTY_ANIMATOR) {
+            mOverlay.animate().alpha(0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    deselect();
+                    show(false);
+                    mOverlay.setAlpha(1);
+                    super.onAnimationEnd(animation);
+                }
+            }).setDuration(PIE_SLECECT_FADE_DURATION);
+        } else {
+            deselect();
+            show(false);
+        }
+    }
+
     @Override
     public void onDraw(Canvas canvas) {
         drawFocus(canvas);
@@ -416,28 +434,19 @@ public class PieRenderer extends OverlayRenderer
             }
             return true;
         } else if (MotionEvent.ACTION_UP == action) {
-            if (mTapMode) {
-                PieItem item = findItem(polar);
-                if (item == null) {
-                    mState = STATE_IDLE;
-                    show(false);
-                    mTapMode = false;
-                } else {
-                    if (!item.hasItems()) {
-                        show(false);
-                        mTapMode = false;
-                        mState = STATE_IDLE;
-                        item.getView().performClick();
-                        item.setSelected(false);
-                    }
-                }
-                return true;
-            } else if (isVisible()) {
+            if (isVisible()) {
                 PieItem item = mCurrentItem;
-                deselect();
-                show(false);
-                if ((item != null) && (item.getView() != null)) {
+                if (mTapMode) {
+                    item = findItem(polar);
+                }
+                if (item == null) {
+                    mTapMode = false;
+                    mHandler.removeMessages(MSG_SUBMENU);
+                    show(false);
+                } else if (!item.hasItems() && item.getView() != null) {
                     item.getView().performClick();
+                    startFadeOut();
+                    mTapMode = false;
                 }
                 return true;
             }
