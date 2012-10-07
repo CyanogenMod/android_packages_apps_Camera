@@ -833,7 +833,8 @@ public class PhotoModule
         if (mSceneIndicator == null) {
             return;
         }
-        if ((value == null) || Parameters.SCENE_MODE_AUTO.equals(value)) {
+        if ((value == null) || Parameters.SCENE_MODE_AUTO.equals(value)
+                || Parameters.SCENE_MODE_HDR.equals(value)) {
             mSceneIndicator.setImageResource(R.drawable.ic_indicator_sce_off);
         } else {
             mSceneIndicator.setImageResource(R.drawable.ic_indicator_sce_on);
@@ -844,14 +845,18 @@ public class PhotoModule
         if (mHdrIndicator == null) {
             return;
         }
-        mHdrIndicator.setImageResource(R.drawable.ic_indicator_hdr_off);
+        if ((value != null) && Parameters.SCENE_MODE_HDR.equals(value)) {
+            mHdrIndicator.setImageResource(R.drawable.ic_indicator_hdr_on);
+        } else {
+            mHdrIndicator.setImageResource(R.drawable.ic_indicator_hdr_off);
+        }
     }
 
     private void updateOnScreenIndicators() {
         updateSceneOnScreenIndicator(mParameters.getSceneMode());
         updateExposureOnScreenIndicator(CameraSettings.readExposure(mPreferences));
         updateFlashOnScreenIndicator(mParameters.getFlashMode());
-        updateHdrOnScreenIndicator(mParameters.getWhiteBalance());
+        updateHdrOnScreenIndicator(mParameters.getSceneMode());
     }
 
     private final class ShutterCallback
