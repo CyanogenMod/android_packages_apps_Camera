@@ -1595,7 +1595,6 @@ public class VideoModule implements CameraModule,
     private void startVideoRecording() {
         Log.v(TAG, "startVideoRecording");
         mActivity.setSwipingEnabled(false);
-        mActivity.hideSwitcher(R.drawable.ic_switch_video_active);
 
         mActivity.updateStorageSpaceAndHint();
         if (mActivity.getStorageSpace() <= Storage.LOW_STORAGE_THRESHOLD) {
@@ -1660,7 +1659,7 @@ public class VideoModule implements CameraModule,
 
     private void showRecordingUI(boolean recording) {
         if (recording) {
-//            mShutterButton.setImageResource(R.drawable.btn_shutter_video_recording);
+            mShutterButton.setImageResource(R.drawable.btn_shutter_video_recording);
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.GONE);
@@ -1679,7 +1678,7 @@ public class VideoModule implements CameraModule,
 //                mZoomControl.setVisibility(View.GONE);
             }
         } else {
-//            mShutterButton.setImageResource(R.drawable.btn_shutter_video);
+            mShutterButton.setImageResource(R.drawable.btn_new_shutter_video);
             mRecordingTimeView.setVisibility(View.GONE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
             if (mCaptureTimeLapse) {
