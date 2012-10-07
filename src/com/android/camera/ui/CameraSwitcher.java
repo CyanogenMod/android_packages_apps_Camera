@@ -95,12 +95,6 @@ public class CameraSwitcher extends RotateImageView
         }
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        initPopup();
-    }
-
     private void initPopup() {
         mParent = LayoutInflater.from(getContext()).inflate(R.layout.switcher_popup,
                 (ViewGroup) getParent());
