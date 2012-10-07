@@ -484,7 +484,8 @@ public class PanoramaModule implements CameraModule,
         mCancelComputation = false;
         mTimeTaken = System.currentTimeMillis();
         mActivity.setSwipingEnabled(false);
-        mActivity.hideSwitcher(R.drawable.ic_switch_pano_active);
+        mActivity.hideSwitcher();
+        mShutterButton.setImageResource(R.drawable.btn_shutter_recording);
         mCaptureState = CAPTURE_STATE_MOSAIC;
         mCaptureIndicator.setVisibility(View.VISIBLE);
         showDirectionIndicators(PanoProgressBar.DIRECTION_NONE);
@@ -638,7 +639,7 @@ public class PanoramaModule implements CameraModule,
         });
 
         mShutterButton = mActivity.getShutterButton();
-        mShutterButton.setImageResource(R.drawable.btn_new_shutter_pano);
+        mShutterButton.setImageResource(R.drawable.btn_new_shutter);
         mShutterButton.setOnShutterButtonListener(this);
 
         if (mActivity.getResources().getConfiguration().orientation
@@ -797,6 +798,7 @@ public class PanoramaModule implements CameraModule,
         // the first camera frame is available and therefore it is done by
         // mOnFirstFrameAvailableRunnable.
         mActivity.setSwipingEnabled(true);
+        mShutterButton.setImageResource(R.drawable.btn_new_shutter);
         mReviewLayout.setVisibility(View.GONE);
         mPanoProgressBar.setVisibility(View.GONE);
         // Orientation change will trigger onLayoutChange->configMosaicPreview->
