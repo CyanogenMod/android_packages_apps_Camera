@@ -218,6 +218,10 @@ public class PieRenderer extends OverlayRenderer
         }
     }
 
+    public void hide() {
+        show(false);
+    }
+
     /**
      * guaranteed has center set
      * @param show
