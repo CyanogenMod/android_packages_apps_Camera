@@ -208,10 +208,15 @@ public class PieRenderer extends OverlayRenderer
     }
 
     public void showInCenter() {
-        if (isVisible()) {
+        if ((mState == STATE_PIE) && isVisible()) {
             mTapMode = false;
             show(false);
         } else {
+            if (mState != STATE_IDLE) {
+                mHandler.removeMessages(MSG_FOCUS_TAP);
+                cancelFocus();
+            }
+            mState = STATE_PIE;
             setCenter(mCenterX, mCenterY);
             mTapMode = true;
             show(true);
@@ -355,22 +360,20 @@ public class PieRenderer extends OverlayRenderer
     }
 
     private void drawItem(Canvas canvas, PieItem item) {
-        if (item.getView() != null) {
-            if (mState == STATE_PIE) {
-                if (item.getPath() != null) {
-                    Paint p = item.isSelected() ? mSelectedPaint : mNormalPaint;
-                    int state = canvas.save();
-                    float r = getDegrees(item.getStartAngle());
-                    canvas.rotate(r, mCenter.x, mCenter.y);
-                    canvas.drawPath(item.getPath(), p);
-                    canvas.restoreToCount(state);
-                    // draw the item view
-                    View view = item.getView();
-                    state = canvas.save();
-                    canvas.translate(view.getX(), view.getY());
-                    view.draw(canvas);
-                    canvas.restoreToCount(state);
-                }
+        if ((mState == STATE_PIE) && (item.getView() != null)) {
+            if (item.getPath() != null) {
+                Paint p = item.isSelected() ? mSelectedPaint : mNormalPaint;
+                int state = canvas.save();
+                float r = getDegrees(item.getStartAngle());
+                canvas.rotate(r, mCenter.x, mCenter.y);
+                canvas.drawPath(item.getPath(), p);
+                canvas.restoreToCount(state);
+                // draw the item view
+                View view = item.getView();
+                state = canvas.save();
+                canvas.translate(view.getX(), view.getY());
+                view.draw(canvas);
+                canvas.restoreToCount(state);
             }
         }
     }
@@ -614,6 +617,7 @@ public class PieRenderer extends OverlayRenderer
         if (mBlockFocus) return;
         mFocusPaint.setStrokeWidth(mOuterStroke);
         canvas.drawCircle((float) mFocusX, (float) mFocusY, (float) mCircleSize, mFocusPaint);
+        if (mState == STATE_PIE) return;
         int color = mFocusPaint.getColor();
         if (mState == STATE_FINISHING) {
             mFocusPaint.setColor(mFocused ? mSuccessColor : mFailColor);
@@ -677,6 +681,15 @@ public class PieRenderer extends OverlayRenderer
         }
     }
 
+    private void cancelFocus() {
+        if (mAnimation != null) {
+            mAnimation.cancel();
+        }
+        mOverlay.removeCallbacks(mDisappear);
+        mFocused = false;
+        mFocusFromTap = false;
+    }
+
     @Override
     public void clear() {
         if (mState == STATE_PIE) return;
@@ -724,6 +737,7 @@ public class PieRenderer extends OverlayRenderer
     private class Disappear implements Runnable {
         @Override
         public void run() {
+            if (mState == STATE_PIE) return;
             setVisible(false);
             mFocusX = mCenterX;
             mFocusY = mCenterY;
