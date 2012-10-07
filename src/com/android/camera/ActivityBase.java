@@ -518,6 +518,9 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         data.putBoolean(PhotoPage.KEY_SHOW_WHEN_LOCKED, mSecureCamera);
 
         // Send an AppBridge to gallery to enable the camera preview.
+        if (mAppBridge != null) {
+            mCameraScreenNail.recycle();
+        }
         mAppBridge = new MyAppBridge();
         data.putParcelable(PhotoPage.KEY_APP_BRIDGE, mAppBridge);
         if (getStateManager().getStateCount() == 0) {
