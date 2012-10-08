@@ -915,8 +915,9 @@ public class PhotoModule
             Log.v(TAG, "mPictureDisplayedToJpegCallbackTime = "
                     + mPictureDisplayedToJpegCallbackTime + "ms");
 
-            if (mSceneMode == Util.SCENE_MODE_HDR) {
-                playCaptureAnimation();
+            if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent) {
+                // Finish capture animation
+                ((CameraScreenNail) mActivity.mCameraScreenNail).animateSlide();
             }
             mFocusManager.updateFocusUI(); // Ensure focus indicator is hidden.
             if (!mIsImageCaptureIntent) {
@@ -1243,6 +1244,11 @@ public class PhotoModule
         mPostViewPictureCallbackTime = 0;
         mJpegImageData = null;
 
+        if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent) {
+            // Start capture animation.
+            ((CameraScreenNail) mActivity.mCameraScreenNail).animateCapture(getCameraRotation());
+        }
+
         // Set rotation and gps data.
         mJpegRotation = Util.getJpegRotation(mCameraId, mOrientation);
         mParameters.setRotation(mJpegRotation);
@@ -1258,21 +1264,9 @@ public class PhotoModule
         mImageNamer.prepareUri(mContentResolver, mCaptureStartTime,
                 size.width, size.height, mJpegRotation);
 
-        // As SCENE_MODE_HDR is significantly slower, delay the capture animation
-        // until JpegPictureCallback.onPicture
-        if (mSceneMode != Util.SCENE_MODE_HDR) {
-            playCaptureAnimation();
-        }
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
         return true;
-    }
-
-    private void playCaptureAnimation() {
-        if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent) {
-            // Start capture animation.
-            ((CameraScreenNail) mActivity.mCameraScreenNail).animateCapture(getCameraRotation());
-        }
     }
 
     private int getCameraRotation() {
