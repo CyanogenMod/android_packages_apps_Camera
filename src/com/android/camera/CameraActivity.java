@@ -186,6 +186,11 @@ public class CameraActivity extends ActivityBase
         }
     }
 
+    @Override
+    public void onShowSwitcherPopup() {
+        mCurrentModule.onShowSwitcherPopup();
+    }
+
     private void openModule(CameraModule module, boolean wasPanorama) {
         module.init(this, mFrame, !(wasPanorama || isPanoramaActivity()));
         mPaused = false;
