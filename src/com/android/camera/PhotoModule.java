@@ -1918,6 +1918,10 @@ public class PhotoModule
 
     @Override
     public boolean onBackPressed() {
+        if (mPieRenderer != null && mPieRenderer.showsItems()) {
+            mPieRenderer.hide();
+            return true;
+        }
         // In image capture mode, back button should:
         // 1) if there is any popup, dismiss them, 2) otherwise, get out of image capture
         if (mIsImageCaptureIntent) {
