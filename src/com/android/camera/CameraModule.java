@@ -70,4 +70,6 @@ public interface CameraModule {
 
     public void onOrientationChanged(int orientation);
 
+    public void onShowSwitcherPopup();
+
 }

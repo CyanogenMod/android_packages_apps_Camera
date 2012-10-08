@@ -2508,4 +2508,11 @@ public class PhotoModule
         mPhotoControl.popupDismissed(topOnly);
     }
 
+    @Override
+    public void onShowSwitcherPopup() {
+        if (mPieRenderer.showsItems()) {
+            mPieRenderer.hide();
+        }
+    }
+
 }

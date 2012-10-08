@@ -2794,5 +2794,10 @@ public class VideoModule implements CameraModule,
         mVideoControl.popupDismissed(topLevelPopupOnly);
     }
 
-
+    @Override
+    public void onShowSwitcherPopup() {
+        if (mPieRenderer.showsItems()) {
+            mPieRenderer.hide();
+        }
+    }
 }
