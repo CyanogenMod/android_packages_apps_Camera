@@ -230,6 +230,10 @@ public class CameraActivity extends ActivityBase
         }
     }
 
+    public boolean isInCameraApp() {
+        return mShowCameraAppView;
+    }
+
     @Override
     public void onConfigurationChanged(Configuration config) {
         super.onConfigurationChanged(config);
