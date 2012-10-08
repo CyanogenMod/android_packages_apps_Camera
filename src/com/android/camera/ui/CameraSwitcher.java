@@ -128,7 +128,7 @@ public class CameraSwitcher extends RotateImageView
                     break;
                 case com.android.gallery3d.R.drawable.ic_menu_photosphere:
                     item.setContentDescription(getContext().getResources().getString(
-                            R.string.accessibility_switch_to_lightcycle));
+                            R.string.accessibility_switch_to_photosphere));
                     break;
                 default:
                     break;
