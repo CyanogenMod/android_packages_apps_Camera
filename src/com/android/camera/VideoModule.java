@@ -1102,6 +1102,9 @@ public class VideoModule implements CameraModule,
         if (mMediaRecorderRecording) {
             onStopVideoRecording();
             return true;
+        } else if (mPieRenderer != null && mPieRenderer.showsItems()) {
+            mPieRenderer.hide();
+            return true;
         } else {
             return removeTopLevelPopup();
         }
