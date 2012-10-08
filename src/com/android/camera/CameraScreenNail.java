@@ -95,6 +95,16 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         mFullScreen = full;
     }
 
+    // return the actual rendered width
+    public int getRenderWidth() {
+        return (mRenderWidth > 0) ? mRenderWidth : getWidth();
+    }
+
+    // return the actual rendered height
+    public int getRenderHeight() {
+        return (mRenderWidth > 0) ? mRenderHeight : getWidth();
+    }
+
     @Override
     public void setSize(int w, int h) {
         super.setSize(w,  h);
@@ -107,6 +117,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     }
 
     private void setPreviewLayoutSize(int w, int h) {
+        Log.i(TAG, "preview layout size: "+w+"/"+h);
         mPreviewWidth = w;
         mPreviewHeight = h;
         updateRenderSize();
