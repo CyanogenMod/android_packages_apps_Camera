@@ -113,6 +113,26 @@ public class CameraSwitcher extends RotateImageView
                     onCameraSelected(index);
                 }
             });
+            switch (mDrawIds[i]) {
+                case R.drawable.ic_switch_camera:
+                    item.setContentDescription(getContext().getResources().getString(
+                            R.string.accessibility_switch_to_camera));
+                    break;
+                case R.drawable.ic_switch_video:
+                    item.setContentDescription(getContext().getResources().getString(
+                            R.string.accessibility_switch_to_video));
+                    break;
+                case R.drawable.ic_switch_pan:
+                    item.setContentDescription(getContext().getResources().getString(
+                            R.string.accessibility_switch_to_panorama));
+                    break;
+                case com.android.gallery3d.R.drawable.ic_menu_photosphere:
+                    item.setContentDescription(getContext().getResources().getString(
+                            R.string.accessibility_switch_to_lightcycle));
+                    break;
+                default:
+                    break;
+            }
             content.addView(item, new LinearLayout.LayoutParams(mItemSize, mItemSize));
         }
     }
