@@ -163,10 +163,6 @@ public class PhotoModule
     // The orientation compensation for icons and dialogs. Ex: if the value
     // is 90, the UI components should be rotated 90 degrees counter-clockwise.
     private int mOrientationCompensation = 0;
-    // If mOrientationResetNeeded is set to be true, onOrientationChanged will reset
-    // the orientation of the on screen indicators to the current orientation compensation
-    // regardless of whether it's the same as the most recent orientation compensation
-    private boolean mOrientationResetNeeded;
     private ComboPreferences mPreferences;
 
     private static final String sTempCropFilename = "crop-temp";
@@ -477,9 +473,6 @@ public class PhotoModule
         mLocationManager = new LocationManager(mActivity, this);
         initOnScreenIndicator();
 
-        // Initialize to true to ensure that the on-screen indicators get their
-        // orientation set in onOrientationChanged.
-        mOrientationResetNeeded = true;
         // Make sure all views are disabled before camera is open.
 //        enableCameraControls(false);
         locationFirstRun();
@@ -1418,40 +1411,14 @@ public class PhotoModule
         // calculate the up-to-date orientationCompensation.
         int orientationCompensation =
                 (mOrientation + Util.getDisplayRotation(mActivity)) % 360;
-        if (mOrientationCompensation != orientationCompensation || mOrientationResetNeeded) {
+        if (mOrientationCompensation != orientationCompensation) {
             mOrientationCompensation = orientationCompensation;
-            setOrientationIndicator(mOrientationCompensation, true);
-            mOrientationResetNeeded = false;
         }
 
         // Show the toast after getting the first orientation changed.
         if (mHandler.hasMessages(SHOW_TAP_TO_FOCUS_TOAST)) {
             mHandler.removeMessages(SHOW_TAP_TO_FOCUS_TOAST);
             showTapToFocusToast();
-        }
-    }
-
-    private void setOrientationIndicator(int orientation, boolean animation) {
-        Rotatable[] indicators = {
-                mRenderOverlay, mFaceView,
-                mReviewDoneButton,
-                mOnScreenIndicators };
-        for (Rotatable indicator : indicators) {
-            if (indicator != null) indicator.setOrientation(orientation, animation);
-        }
-
-        // We change the orientation of the review cancel button only for tablet
-        // UI because there's a label along with the X icon. For phone UI, we
-        // don't change the orientation because there's only a symmetrical X
-        // icon.
-        if (mReviewCancelButton instanceof RotateLayout) {
-            mReviewCancelButton.setOrientation(orientation, animation);
-        }
-        if (mPopup != null) {
-            mPopup.setOrientation(orientation, animation);
-        }
-        if (mGestures != null) {
-            mGestures.setOrientation(orientation);
         }
     }
 
@@ -2414,8 +2381,6 @@ public class PhotoModule
         loadCameraPreferences();
         initializePhotoControl();
 
-        // from onResume
-        setOrientationIndicator(mOrientationCompensation, false);
         // from initializeFirstTime
         initializeZoom();
         updateOnScreenIndicators();
