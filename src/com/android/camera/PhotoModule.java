@@ -1314,6 +1314,9 @@ public class PhotoModule
         if (mPieRenderer != null) {
             mPieRenderer.setBlockFocus(!full);
         }
+        if (mOnScreenIndicators != null) {
+            mOnScreenIndicators.setVisibility(full ? View.VISIBLE : View.GONE);
+        }
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
             if (mActivity.mCameraScreenNail != null) {
                 ((CameraScreenNail) mActivity.mCameraScreenNail).setFullScreen(full);
@@ -1839,6 +1842,7 @@ public class PhotoModule
             mFocusManager.setFaceView(mFaceView);
         }
         initializeRenderOverlay();
+        onFullScreenChanged(mActivity.isInCameraApp());
     }
 
     @Override
