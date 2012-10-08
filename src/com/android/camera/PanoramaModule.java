@@ -1216,4 +1216,8 @@ public class PanoramaModule implements CameraModule,
     public boolean needsSwitcher() {
         return true;
     }
+
+    @Override
+    public void onShowSwitcherPopup() {
+    }
 }
