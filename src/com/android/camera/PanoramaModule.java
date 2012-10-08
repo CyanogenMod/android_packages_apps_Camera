@@ -99,8 +99,8 @@ public class PanoramaModule implements CameraModule,
     private static final String GPS_TIME_FORMAT_STR = "kk/1,mm/1,ss/1";
     private static final String DATETIME_FORMAT_STR = "yyyy:MM:dd kk:mm:ss";
 
-    // Speed is in unit of deg/sec
-    private static final float PANNING_SPEED_THRESHOLD = 25f;
+    // The unit of speed is degrees per frame.
+    private static final float PANNING_SPEED_THRESHOLD = 2.5f;
 
     private ContentResolver mContentResolver;
 
@@ -582,9 +582,6 @@ public class PanoramaModule implements CameraModule,
             float progressHorizontalAngle, float progressVerticalAngle) {
         mGLRootView.requestRender();
 
-        // TODO: Now we just display warning message by the panning speed.
-        // Since we only support horizontal panning, we should display a warning message
-        // in UI when there're significant vertical movements.
         if ((Math.abs(panningRateXInDegree) > PANNING_SPEED_THRESHOLD)
             || (Math.abs(panningRateYInDegree) > PANNING_SPEED_THRESHOLD)) {
             showTooFastIndication();
