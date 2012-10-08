@@ -83,7 +83,6 @@ public class CameraActivity extends ActivityBase
             mDrawables[i] = getResources().getDrawable(DRAW_IDS[i]);
         }
         init();
-        mSwitcher.setSwitchListener(this);
         if (MediaStore.INTENT_ACTION_VIDEO_CAMERA.equals(getIntent().getAction())
                 || MediaStore.ACTION_VIDEO_CAPTURE.equals(getIntent().getAction())) {
             mCurrentModule = new VideoModule();
@@ -122,6 +121,8 @@ public class CameraActivity extends ActivityBase
             drawids[ix++] = DRAW_IDS[i];
         }
         mSwitcher.setDrawIds(drawids);
+        mSwitcher.setSwitchListener(this);
+        mSwitcher.setCurrentIndex(mCurrentModuleIndex);
     }
 
     public void setMenuListener(MenuListener listener) {
@@ -151,9 +152,6 @@ public class CameraActivity extends ActivityBase
             // Rotate camera mode icons in the switcher
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
-                if (mSwitcher != null) {
-                    mSwitcher.setOrientation(mOrientationCompensation, true);
-                }
             }
             mCurrentModule.onOrientationChanged(orientation);
         }
@@ -249,8 +247,6 @@ public class CameraActivity extends ActivityBase
         inflater.inflate(R.layout.camera_shutter_switcher, appRoot);
         init();
 
-        mSwitcher.setImageResource(DRAW_IDS[mCurrentModuleIndex]);
-        mSwitcher.setSwitchListener(this);
         if (mShowCameraAppView) {
             showUI();
         } else {
