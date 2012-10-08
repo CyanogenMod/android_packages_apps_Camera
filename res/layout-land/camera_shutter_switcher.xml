@@ -43,11 +43,13 @@
         style="@style/SwitcherButton"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="2dip" />
+        android:layout_marginRight="2dip" 
+        android:contentDescription="@string/accessibility_mode_picker"/>
 
     <FrameLayout
         android:id="@+id/menu"
         style="@style/SwitcherButton"
+        android:contentDescription="@string/accessibility_menu_button"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="2dip" />
