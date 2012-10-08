@@ -517,6 +517,7 @@ public class PanoramaModule implements CameraModule,
         mPanoProgressBar.setVisibility(View.VISIBLE);
         mDeviceOrientationAtCapture = mDeviceOrientation;
         keepScreenOn();
+        mActivity.getOrientationManager().lockOrientation();
     }
 
     private void stopCapture(boolean aborted) {
@@ -553,6 +554,7 @@ public class PanoramaModule implements CameraModule,
             });
         }
         keepScreenOnAwhile();
+        mActivity.getOrientationManager().unlockOrientation();
     }
 
     private void showTooFastIndication() {
