@@ -227,6 +227,13 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                     // onFrameAvailable will not be called. Animation state
                     // relies on onFrameAvailable.
                     surfaceTexture.updateTexImage();
+                    if (mRenderWidth != 0) {
+                        // overscale image to make it fullscreen
+                        x = (x + width / 2) - mRenderWidth / 2;
+                        y = (y + height / 2) - mRenderHeight / 2;
+                        width = mRenderWidth;
+                        height = mRenderHeight;
+                    }
                     mSwitchAnimManager.drawDarkPreview(canvas, x, y, width,
                             height, mAnimTexture);
                     break;
@@ -254,6 +261,13 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                 if (mAnimState == ANIM_CAPTURE_RUNNING) {
                     drawn = mCaptureAnimManager.drawAnimation(canvas, this, mAnimTexture);
                 } else {
+                    if (mRenderWidth != 0) {
+                        // overscale image to make it fullscreen
+                        x = (x + width / 2) - mRenderWidth / 2;
+                        y = (y + height / 2) - mRenderHeight / 2;
+                        width = mRenderWidth;
+                        height = mRenderHeight;
+                    }
                     drawn = mSwitchAnimManager.drawAnimation(canvas, x, y,
                             width, height, this, mAnimTexture);
                 }
