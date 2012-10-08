@@ -2428,13 +2428,17 @@ public class PhotoModule
     public void onPieOpened(int centerX, int centerY) {
         mActivity.cancelActivityTouchHandling();
         mActivity.setSwipingEnabled(false);
-        stopFaceDetection();
+        if (mFaceView != null) {
+            mFaceView.setBlockDraw(true);
+        }
     }
 
     @Override
     public void onPieClosed() {
         mActivity.setSwipingEnabled(true);
-        startFaceDetection();
+        if (mFaceView != null) {
+            mFaceView.setBlockDraw(false);
+        }
     }
 
     // Preview texture has been copied. Now camera can be released and the

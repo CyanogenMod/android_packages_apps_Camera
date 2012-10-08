@@ -60,6 +60,7 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
     private final int mFocusedColor;
     private final int mFailColor;
     private Paint mPaint;
+    private volatile boolean mBlocked;
 
     private static final int MSG_SWITCH_FACES = 1;
     private static final int SWITCH_DELAY = 70;
@@ -169,9 +170,13 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
         mPause = false;
     }
 
+    public void setBlockDraw(boolean block) {
+        mBlocked = block;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mFaces != null && mFaces.length > 0) {
+        if (!mBlocked && (mFaces != null) && (mFaces.length > 0)) {
             // Prepare the matrix.
             Util.prepareMatrix(mMatrix, mMirror, mDisplayOrientation, getWidth(), getHeight());
 
