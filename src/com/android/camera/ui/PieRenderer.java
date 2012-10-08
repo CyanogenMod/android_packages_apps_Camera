@@ -248,6 +248,7 @@ public class PieRenderer extends OverlayRenderer
             fadeIn();
         } else {
             mState = STATE_IDLE;
+            mTapMode = false;
         }
         setVisible(show);
         mHandler.sendEmptyMessage(show ? MSG_OPEN : MSG_CLOSE);
