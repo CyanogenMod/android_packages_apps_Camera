@@ -110,6 +110,8 @@
     <string name="effect_silly_faces" msgid="8107732405347155777">"СМЕШНИ ЛИЦА"</string>
     <string name="effect_background" msgid="6579360207378171022">"ФОН"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Бутон на затвора"</string>
+    <!-- no translation found for accessibility_menu_button (7140794046259897328) -->
+    <skip />
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Най-скорошна снимка"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Превключване между предната и задната камера"</string>
     <string name="accessibility_mode_picker" msgid="3278002189966833100">"Избор между камера, видеокамера или панорама"</string>
@@ -122,11 +124,93 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Превключване към фотоапарат"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Превключване към видео"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Превключване към панорама"</string>
+    <!-- no translation found for accessibility_switch_to_photosphere (302799186108722016) -->
+    <skip />
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Анулиране на прегледа"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Прегледът приключи"</string>
     <string name="accessibility_review_retake" msgid="830348126446319954">"Повторно извършване на прегледа"</string>
     <string name="capital_on" msgid="5491353494964003567">"ВКЛЮЧЕНО"</string>
     <string name="capital_off" msgid="7231052688467970897">"ИЗКЛЮЧЕНО"</string>
+    <!-- no translation found for pref_video_time_lapse_frame_interval_off (3490489191038309496) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_500 (2949719376111679816) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_1000 (1672458758823855874) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_1500 (3415071702490624802) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_2000 (827813989647794389) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_2500 (5750464143606788153) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_3000 (2664846627499751396) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_4000 (7303255804306382651) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_5000 (6800566761690741841) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_6000 (8545447466540319539) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_10000 (3105568489694909852) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_12000 (6055574367392821047) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_15000 (2656164845371833761) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_24000 (2192628967233421512) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_30000 (5923393773260634461) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_60000 (4678581247918524850) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_90000 (1187029705069674152) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_120000 (145301938098991278) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_150000 (793707078196731912) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_180000 (1785467676466542095) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_240000 (3734507766184666356) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_300000 (7442765761995328639) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_360000 (6724596937972563920) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_600000 (6563665954471001352) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_720000 (8969801372893266408) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_900000 (5803172407245902896) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_1440000 (6286246349698492186) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_1800000 (5042628461448570758) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_3600000 (6366071632666482636) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_5400000 (536117788694519019) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_7200000 (6846617415182608533) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_9000000 (4242839574025261419) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_10800000 (2766886102170605302) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_14400000 (7497934659667867582) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_18000000 (8783643014853837140) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_21600000 (5005078879234015432) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_36000000 (69942198321578519) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_43200000 (285992046818504906) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_54000000 (5740227373848829515) -->
+    <skip />
+    <!-- no translation found for pref_video_time_lapse_frame_interval_86400000 (9040201678470052298) -->
+    <skip />
     <string name="time_lapse_seconds" msgid="2105521458391118041">"секунди"</string>
     <string name="time_lapse_minutes" msgid="7738520349259013762">"минути"</string>
     <string name="time_lapse_hours" msgid="1776453661704997476">"часа"</string>
