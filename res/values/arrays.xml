@@ -287,11 +287,11 @@
     </array>
 
     <array name="whitebalance_largeicons" translatable="false">
-        <item>@drawable/ic_white_balance_auto_holo_light</item>
-        <item>@drawable/ic_white_balance_incandescent_holo_light</item>
-        <item>@drawable/ic_white_balance_sunlight_holo_light</item>
-        <item>@drawable/ic_white_balance_fluorescent_holo_light</item>
-        <item>@drawable/ic_white_balance_cloudy_holo_light</item>
+        <item>@drawable/ic_wb_auto</item>
+        <item>@drawable/ic_wb_incandescent</item>
+        <item>@drawable/ic_wb_sunlight</item>
+        <item>@drawable/ic_wb_fluorescent</item>
+        <item>@drawable/ic_wb_cloudy</item>
     </array>
 
     <!-- Camera Preferences Scene Mode dialog box entries -->
