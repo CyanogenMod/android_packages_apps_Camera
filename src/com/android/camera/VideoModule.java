@@ -1653,6 +1653,7 @@ public class VideoModule implements CameraModule,
         enableCameraControls(false);
 
         mMediaRecorderRecording = true;
+        mActivity.getOrientationManager().lockOrientation();
         mRecordingStartTime = SystemClock.uptimeMillis();
         showRecordingUI(true);
 
@@ -1771,6 +1772,7 @@ public class VideoModule implements CameraModule,
                 fail = true;
             }
             mMediaRecorderRecording = false;
+            mActivity.getOrientationManager().unlockOrientation();
 
             // If the activity is paused, this means activity is interrupted
             // during recording. Release the camera as soon as possible because
