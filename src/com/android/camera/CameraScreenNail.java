@@ -174,6 +174,16 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         }
     }
 
+    public void animateSlide() {
+        synchronized (mLock) {
+            if (mAnimState != ANIM_CAPTURE_RUNNING) {
+                throw new IllegalStateException("Cannot animateSlide outside of animateCapture!");
+            }
+            mCaptureAnimManager.animateSlide();
+            mListener.requestRender();
+        }
+    }
+
     public void setInitialOrientation(int initialOrientation) {
         mRotation = initialOrientation;
     }
