@@ -1660,6 +1660,7 @@ public class VideoModule implements CameraModule,
     private void showRecordingUI(boolean recording) {
         if (recording) {
             mShutterButton.setImageResource(R.drawable.btn_shutter_video_recording);
+            mActivity.hideSwitcher();
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.GONE);
@@ -1679,6 +1680,7 @@ public class VideoModule implements CameraModule,
             }
         } else {
             mShutterButton.setImageResource(R.drawable.btn_new_shutter_video);
+            mActivity.showSwitcher();
             mRecordingTimeView.setVisibility(View.GONE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
             if (mCaptureTimeLapse) {
