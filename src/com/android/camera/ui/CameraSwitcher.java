@@ -38,8 +38,8 @@ public class CameraSwitcher extends RotateImageView
     private static final String TAG = "CAM_Switcher";
 
     public interface CameraSwitchListener {
-
         public void onCameraSelected(int i);
+        public void onShowSwitcherPopup();
     }
 
     private CameraSwitchListener mListener;
@@ -85,6 +85,7 @@ public class CameraSwitcher extends RotateImageView
     @Override
     public void onClick(View v) {
         showSwitcher();
+        mListener.onShowSwitcherPopup();
     }
 
     private void onCameraSelected(int ix) {
