@@ -2299,6 +2299,7 @@ public class PhotoModule
     private void showPostCaptureAlert() {
         if (mIsImageCaptureIntent) {
             Util.fadeOut(mShutterButton);
+            mOnScreenIndicators.setVisibility(View.GONE);
 
 //            Util.fadeIn(mReviewRetakeButton);
             Util.fadeIn((View) mReviewDoneButton);
@@ -2307,6 +2308,7 @@ public class PhotoModule
 
     private void hidePostCaptureAlert() {
         if (mIsImageCaptureIntent) {
+            mOnScreenIndicators.setVisibility(View.VISIBLE);
 //            Util.fadeOut(mReviewRetakeButton);
             Util.fadeOut((View) mReviewDoneButton);
 
