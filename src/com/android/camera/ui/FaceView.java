@@ -20,7 +20,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -32,13 +31,15 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import com.android.camera.CameraActivity;
+import com.android.camera.CameraScreenNail;
 import com.android.camera.R;
 import com.android.camera.Util;
 import com.android.gallery3d.common.ApiHelper;
 
 @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class FaceView extends View implements FocusIndicator, Rotatable {
-    private static final String TAG = "FaceView";
+    private static final String TAG = "CAM FaceView";
     private final boolean LOGV = false;
     // The value for android.hardware.Camera.setDisplayOrientation.
     private int mDisplayOrientation;
@@ -88,7 +89,7 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Style.STROKE);
-        mPaint.setStrokeWidth(res.getDimension(R.dimen.focus_outer_stroke));
+        mPaint.setStrokeWidth(res.getDimension(R.dimen.face_circle_stroke));
     }
 
     public void setFaces(Face[] faces) {
@@ -177,8 +178,18 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
     @Override
     protected void onDraw(Canvas canvas) {
         if (!mBlocked && (mFaces != null) && (mFaces.length > 0)) {
+            final CameraScreenNail sn = ((CameraActivity) getContext()).getCameraScreenNail();
+            int rw = sn.getRenderWidth();
+            int rh = sn.getRenderHeight();
             // Prepare the matrix.
-            Util.prepareMatrix(mMatrix, mMirror, mDisplayOrientation, getWidth(), getHeight());
+            if (mDisplayOrientation == 0 || mDisplayOrientation == 180) {
+                int temp = rw;
+                rw = rh;
+                rh = temp;
+            }
+            Util.prepareMatrix(mMatrix, mMirror, mDisplayOrientation, rw, rh);
+            int dx = (getWidth() - rw) / 2;
+            int dy = (getHeight() - rh) / 2;
 
             // Focus indicator is directional. Rotate the matrix and the canvas
             // so it looks correctly in all orientations.
@@ -195,6 +206,7 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
                 mMatrix.mapRect(mRect);
                 if (LOGV) Util.dumpRect(mRect, "Transformed rect");
                 mPaint.setColor(mColor);
+                mRect.offset(dx, dy);
                 canvas.drawOval(mRect, mPaint);
             }
             canvas.restore();
