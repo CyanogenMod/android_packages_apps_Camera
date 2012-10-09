@@ -1810,6 +1810,9 @@ public class PhotoModule
         }
         initializeRenderOverlay();
         onFullScreenChanged(mActivity.isInCameraApp());
+        if (mJpegImageData != null) {  // Jpeg data found, picture has been taken.
+            showPostCaptureAlert();
+        }
     }
 
     @Override
