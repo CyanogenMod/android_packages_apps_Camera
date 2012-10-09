@@ -22,6 +22,8 @@
     <include layout="@layout/menu_indicators"
         android:layout_width="80dip"
         android:layout_height="80dip"
+        android:layout_marginRight="-5dip"
+        android:layout_marginBottom="-2dip"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true" />
     <include layout="@layout/bg_replacement_training_message"/>
