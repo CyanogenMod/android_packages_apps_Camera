@@ -541,11 +541,6 @@ public class PhotoModule
     }
 
     private void initializeAfterCameraOpen() {
-        if (mRenderOverlay != null) {
-            // render overlay is not initialized when setOrientationIndicator is called
-            // the first time, so do it here in UI thread
-            mRenderOverlay.setOrientation(mOrientationCompensation, false);
-        }
         if (mPieRenderer == null) {
             mPieRenderer = new PieRenderer(mActivity);
             mPhotoControl = new PhotoController(mActivity, this, mPieRenderer);
@@ -1791,7 +1786,6 @@ public class PhotoModule
         initializeFocusManager();
         initializeMiscControls();
         loadCameraPreferences();
-        initializePhotoControl();
 
         // from initializeFirstTime()
         mShutterButton = mActivity.getShutterButton();
