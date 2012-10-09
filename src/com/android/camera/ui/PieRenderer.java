@@ -633,12 +633,16 @@ public class PieRenderer extends OverlayRenderer
             mFocusPaint.setColor(mFocused ? mSuccessColor : mFailColor);
         }
         mFocusPaint.setStrokeWidth(mInnerStroke);
-        canvas.drawArc(mDial, mDialAngle, 45, false, mFocusPaint);
-        canvas.drawArc(mDial, mDialAngle + 180, 45, false, mFocusPaint);
         drawLine(canvas, mDialAngle, mFocusPaint);
         drawLine(canvas, mDialAngle + 45, mFocusPaint);
         drawLine(canvas, mDialAngle + 180, mFocusPaint);
         drawLine(canvas, mDialAngle + 225, mFocusPaint);
+        canvas.save();
+        // rotate the arc instead of its offset to better use framework's shape caching
+        canvas.rotate(mDialAngle, mFocusX, mFocusY);
+        canvas.drawArc(mDial, 0, 45, false, mFocusPaint);
+        canvas.drawArc(mDial, 180, 45, false, mFocusPaint);
+        canvas.restore();
         mFocusPaint.setColor(color);
     }
 
