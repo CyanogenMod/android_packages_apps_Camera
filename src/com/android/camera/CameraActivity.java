@@ -428,4 +428,8 @@ public class CameraActivity extends ActivityBase
         return (mCurrentModule instanceof PhotoModule) ?
                 ((PhotoModule)mCurrentModule).mCaptureStartTime : -1;
     }
+
+    public CameraScreenNail getCameraScreenNail() {
+        return (CameraScreenNail) mCameraScreenNail;
+    }
 }

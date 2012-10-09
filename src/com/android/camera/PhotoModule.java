@@ -1292,6 +1292,9 @@ public class PhotoModule
 
     @Override
     public void onFullScreenChanged(boolean full) {
+        if (mFaceView != null) {
+            mFaceView.setBlockDraw(!full);
+        }
         if (mPopup != null) {
             dismissPopup(false, true);
         }
@@ -1407,6 +1410,9 @@ public class PhotoModule
                 (mOrientation + Util.getDisplayRotation(mActivity)) % 360;
         if (mOrientationCompensation != orientationCompensation) {
             mOrientationCompensation = orientationCompensation;
+            if (mFaceView != null) {
+                mFaceView.setOrientation(mOrientationCompensation, true);
+            }
         }
 
         // Show the toast after getting the first orientation changed.
