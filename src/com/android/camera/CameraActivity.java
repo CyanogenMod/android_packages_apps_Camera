@@ -27,7 +27,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -44,13 +43,10 @@ public class CameraActivity extends ActivityBase
     CameraModule mCurrentModule;
     private FrameLayout mFrame;
     private ShutterButton mShutter;
-    private FrameLayout mMenu;
     private CameraSwitcher mSwitcher;
     private View mShutterSwitcher;
-    private View mBlocker;
     private Drawable[] mDrawables;
     private int mCurrentModuleIndex;
-    private MenuListener mMenuListener;
     private MotionEvent mDown;
 
     private MyOrientationEventListener mOrientationListener;
@@ -68,10 +64,6 @@ public class CameraActivity extends ActivityBase
             R.drawable.ic_switch_pan,
             com.android.gallery3d.R.drawable.ic_menu_photosphere
     };
-
-    public interface MenuListener {
-        public void onMenuClicked();
-    }
 
     @Override
     public void onCreate(Bundle state) {
@@ -97,20 +89,10 @@ public class CameraActivity extends ActivityBase
     }
 
     public void init() {
-        mBlocker = findViewById(R.id.blocker);
         mShutterSwitcher = findViewById(R.id.camera_shutter_switcher);
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
-        mMenu = (FrameLayout) findViewById(R.id.menu);
         mSwitcher = (CameraSwitcher) findViewById(R.id.camera_switcher);
         mSwitcher.setDrawIds(DRAW_IDS);
-        mMenu.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mMenuListener != null) {
-                    mMenuListener.onMenuClicked();
-                }
-            }
-        });
         int[] drawids = new int[LightCycleHelper.hasLightCycleCapture(this)
                                 ? DRAW_IDS.length : DRAW_IDS.length - 1];
         int ix = 0;
@@ -123,13 +105,6 @@ public class CameraActivity extends ActivityBase
         mSwitcher.setDrawIds(drawids);
         mSwitcher.setSwitchListener(this);
         mSwitcher.setCurrentIndex(mCurrentModuleIndex);
-    }
-
-    public void setMenuListener(MenuListener listener) {
-        mMenuListener = listener;
-        if (mMenu != null) {
-            mMenu.setVisibility((listener != null) ? View.VISIBLE : View.GONE);
-        }
     }
 
     private class MyOrientationEventListener
@@ -165,7 +140,6 @@ public class CameraActivity extends ActivityBase
             CameraHolder.instance().keep();
             closeModule(mCurrentModule);
             mCurrentModuleIndex = i;
-            mMenuListener = null;
             switch (i) {
                 case VIDEO_MODULE_INDEX:
                     mCurrentModule = new VideoModule();
@@ -219,17 +193,11 @@ public class CameraActivity extends ActivityBase
 
     public void hideSwitcher() {
         mSwitcher.setVisibility(View.GONE);
-        mMenu.setVisibility(View.GONE);
-        mBlocker.setVisibility(View.GONE);
     }
 
     public void showSwitcher() {
         if (mCurrentModule.needsSwitcher()) {
             mSwitcher.setVisibility(View.VISIBLE);
-            mBlocker.setVisibility(View.VISIBLE);
-            if (mMenuListener != null) {
-                mMenu.setVisibility(View.VISIBLE);
-            }
         }
     }
 
