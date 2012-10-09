@@ -18,6 +18,7 @@
     android:id="@+id/camera_app_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <include layout="@layout/preview_module_frame"/>
     <include layout="@layout/menu_indicators"
         android:layout_width="80dip"
@@ -25,5 +26,21 @@
         android:layout_marginTop="-5dip"
         android:layout_marginRight="-2dip"
         android:layout_gravity="top|right"/>
+
+    <View
+        android:id="@+id/blocker"
+        android:layout_height="match_parent"
+        android:layout_width="@dimen/switcher_size"
+        android:clickable="true"
+        android:layout_gravity="right" />
+
     <include layout="@layout/review_module_control"/>
+
+    <View
+        android:id="@+id/menu"
+        style="@style/SwitcherButton"
+        android:contentDescription="@string/accessibility_menu_button"
+        android:layout_gravity="right|top"
+        android:layout_marginRight="2dip" />
+
 </FrameLayout>
