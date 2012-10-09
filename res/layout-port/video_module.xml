@@ -26,6 +26,23 @@
         android:layout_marginBottom="-2dip"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true" />
+
+    <View
+        android:id="@+id/blocker"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/switcher_size"
+        android:clickable="true"
+        android:layout_alignParentBottom="true" />
+
     <include layout="@layout/bg_replacement_training_message"/>
     <include layout="@layout/review_module_control"/>
+
+    <View
+        android:id="@+id/menu"
+        style="@style/SwitcherButton"
+        android:contentDescription="@string/accessibility_menu_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="2dip" />
+
 </RelativeLayout>

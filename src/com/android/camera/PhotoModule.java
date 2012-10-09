@@ -93,8 +93,7 @@ public class PhotoModule
     PreviewFrameLayout.OnSizeChangedListener,
     ShutterButton.OnShutterButtonListener,
     SurfaceHolder.Callback,
-    PieRenderer.PieListener,
-    CameraActivity.MenuListener {
+    PieRenderer.PieListener {
 
     private static final String TAG = "CAM_PhotoModule";
 
@@ -187,6 +186,9 @@ public class PhotoModule
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
     private Uri mSaveUri;
+
+    private View mMenu;
+    private View mBlocker;
 
     // Small indicators which show the camera settings in the viewfinder.
     private ImageView mExposureIndicator;
@@ -449,7 +451,6 @@ public class PhotoModule
         mCameraStartUpThread.start();
 
         mActivity.getLayoutInflater().inflate(R.layout.photo_module, (ViewGroup) mRootView);
-        mActivity.setMenuListener(this);
 
         // Surface texture is from camera screen nail and startPreview needs it.
         // This must be done before startPreview.
@@ -528,6 +529,9 @@ public class PhotoModule
         if (mGestures != null) {
             mGestures.clearTouchReceivers();
             mGestures.setRenderOverlay(mRenderOverlay);
+            mGestures.addTouchReceiver(mBlocker);
+            mGestures.addTouchReceiver(mMenu);
+
             if (isImageCaptureIntent()) {
                 if (mReviewCancelButton != null) {
                     mGestures.addTouchReceiver((View) mReviewCancelButton);
@@ -1296,11 +1300,21 @@ public class PhotoModule
         if (mGestures != null) {
             mGestures.setEnabled(full);
         }
+        if (mRenderOverlay != null) {
+            // this can not happen in capture mode
+            mRenderOverlay.setVisibility(full ? View.VISIBLE : View.GONE);
+        }
         if (mPieRenderer != null) {
             mPieRenderer.setBlockFocus(!full);
         }
         if (mOnScreenIndicators != null) {
             mOnScreenIndicators.setVisibility(full ? View.VISIBLE : View.GONE);
+        }
+        if (mMenu != null) {
+            mMenu.setVisibility(full ? View.VISIBLE : View.GONE);
+        }
+        if (mBlocker != null) {
+            mBlocker.setVisibility(full ? View.VISIBLE : View.GONE);
         }
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
             if (mActivity.mCameraScreenNail != null) {
@@ -1697,6 +1711,16 @@ public class PhotoModule
     }
 
     private void initializeControlByIntent() {
+        mBlocker = mRootView.findViewById(R.id.blocker);
+        mMenu = mRootView.findViewById(R.id.menu);
+        mMenu.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPieRenderer != null) {
+                    mPieRenderer.showInCenter();
+                }
+            }
+        });
         if (mIsImageCaptureIntent) {
 
             mActivity.hideSwitcher();
@@ -1848,13 +1872,6 @@ public class PhotoModule
         mCameraDevice.cancelAutoFocus();
         setCameraState(IDLE);
         setCameraParameters(UPDATE_PARAM_PREFERENCE);
-    }
-
-    @Override
-    public void onMenuClicked() {
-        if (mPieRenderer != null) {
-            mPieRenderer.showInCenter();
-        }
     }
 
     // Preview area is touched. Handle touch focus.
@@ -2297,6 +2314,7 @@ public class PhotoModule
         if (mIsImageCaptureIntent) {
             Util.fadeOut(mShutterButton);
             mOnScreenIndicators.setVisibility(View.GONE);
+            mMenu.setVisibility(View.GONE);
 
 //            Util.fadeIn(mReviewRetakeButton);
             Util.fadeIn((View) mReviewDoneButton);
@@ -2306,6 +2324,7 @@ public class PhotoModule
     private void hidePostCaptureAlert() {
         if (mIsImageCaptureIntent) {
             mOnScreenIndicators.setVisibility(View.VISIBLE);
+            mMenu.setVisibility(View.VISIBLE);
 //            Util.fadeOut(mReviewRetakeButton);
             Util.fadeOut((View) mReviewDoneButton);
 
