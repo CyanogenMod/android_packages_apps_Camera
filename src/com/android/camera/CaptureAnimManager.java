@@ -28,13 +28,15 @@ import com.android.gallery3d.ui.RawTexture;
  * Class to handle the capture animation.
  */
 public class CaptureAnimManager {
-    public static final int ANIM_FLASH = 1;
-    public static final int ANIM_SLIDE = 2;
-
     @SuppressWarnings("unused")
     private static final String TAG = "CAM_Capture";
     private static final int TIME_FLASH = 200;
+    private static final int TIME_HOLD = 400;
     private static final int TIME_SLIDE = 400;  // milliseconds.
+
+    private static final int ANIM_BOTH = 0;
+    private static final int ANIM_FLASH = 1;
+    private static final int ANIM_SLIDE = 2;
 
     private final Interpolator mSlideInterpolator = new DecelerateInterpolator();
 
@@ -65,10 +67,17 @@ public class CaptureAnimManager {
         mAnimStartTime = SystemClock.uptimeMillis();
     }
 
+    public void animateFlash() {
+        mAnimType = ANIM_FLASH;
+    }
+
+    public void animateFlashAndSlide() {
+        mAnimType = ANIM_BOTH;
+    }
+
     // x, y, w and h: the rectangle area where the animation takes place.
     public void startAnimation(int x, int y, int w, int h) {
         mAnimStartTime = SystemClock.uptimeMillis();
-        mAnimType = ANIM_FLASH;
         // Set the views to the initial positions.
         mDrawWidth = w;
         mDrawHeight = h;
@@ -96,15 +105,24 @@ public class CaptureAnimManager {
         long timeDiff = SystemClock.uptimeMillis() - mAnimStartTime;
         // Check if the animation is over
         if (mAnimType == ANIM_SLIDE && timeDiff > TIME_SLIDE) return false;
+        if (mAnimType == ANIM_BOTH && timeDiff > TIME_HOLD + TIME_SLIDE) return false;
 
-        if (mAnimType == ANIM_FLASH) {
+        int animStep = mAnimType;
+        if (mAnimType == ANIM_BOTH) {
+            animStep = (timeDiff < TIME_HOLD) ? ANIM_FLASH : ANIM_SLIDE;
+            if (animStep == ANIM_SLIDE) {
+                timeDiff -= TIME_HOLD;
+            }
+        }
+
+        if (animStep == ANIM_FLASH) {
             review.draw(canvas, (int) mX, (int) mY, mDrawWidth, mDrawHeight);
             if (timeDiff < TIME_FLASH) {
                 float f = 0.3f - 0.3f * timeDiff / TIME_FLASH;
                 int color = Color.argb((int) (255 * f), 255, 255, 255);
                 canvas.fillRect(mX, mY, mDrawWidth, mDrawHeight, color);
             }
-        } else if (mAnimType == ANIM_SLIDE) {
+        } else if (animStep == ANIM_SLIDE) {
             float fraction = (float) (timeDiff) / TIME_SLIDE;
             float x = mX;
             float y = mY;

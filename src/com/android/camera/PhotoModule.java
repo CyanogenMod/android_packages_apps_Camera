@@ -1246,7 +1246,7 @@ public class PhotoModule
 
         if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent) {
             // Start capture animation.
-            ((CameraScreenNail) mActivity.mCameraScreenNail).animateCapture(getCameraRotation());
+            ((CameraScreenNail) mActivity.mCameraScreenNail).animateFlash(getCameraRotation());
         }
 
         // Set rotation and gps data.
