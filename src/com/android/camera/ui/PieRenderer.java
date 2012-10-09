@@ -568,24 +568,8 @@ public class PieRenderer extends OverlayRenderer
     public void setFocus(int x, int y, boolean startImmediately) {
         mFocusFromTap = true;
         mTapMode = true;
-        switch(mOverlay.getOrientation()) {
-        case 0:
-            mFocusX = x;
-            mFocusY = y;
-            break;
-        case 180:
-            mFocusX = getWidth() - x;
-            mFocusY = getHeight() - y;
-            break;
-        case 90:
-            mFocusX = getWidth() - y;
-            mFocusY = x;
-            break;
-        case 270:
-            mFocusX = y ;
-            mFocusY = getHeight() - x;
-            break;
-        }
+        mFocusX = x;
+        mFocusY = y;
         setCircle(mFocusX, mFocusY);
         setupPie(mFocusX, mFocusY);
         if (startImmediately) {
