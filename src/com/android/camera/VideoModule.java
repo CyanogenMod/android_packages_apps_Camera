@@ -89,8 +89,7 @@ public class VideoModule implements CameraModule,
     MediaRecorder.OnErrorListener,
     MediaRecorder.OnInfoListener,
     EffectsRecorder.EffectsListener,
-    PieRenderer.PieListener,
-    CameraActivity.MenuListener {
+    PieRenderer.PieListener {
 
     private static final String TAG = "CAM_VideoModule";
 
@@ -221,6 +220,9 @@ public class VideoModule implements CameraModule,
     private ZoomRenderer mZoomRenderer;
 
     private PreviewGestures mGestures;
+    private View mMenu;
+    private View mBlocker;
+    private View mOnScreenIndicators;
 
     private final Handler mHandler = new MainHandler();
 
@@ -402,6 +404,9 @@ public class VideoModule implements CameraModule,
         }
         mGestures.setRenderOverlay(mRenderOverlay);
         mGestures.clearTouchReceivers();
+        mGestures.addTouchReceiver(mBlocker);
+        mGestures.addTouchReceiver(mMenu);
+
         if (isVideoCaptureIntent()) {
             if (mReviewCancelButton != null) {
                 mGestures.addTouchReceiver((View) mReviewCancelButton);
@@ -438,7 +443,6 @@ public class VideoModule implements CameraModule,
 
         mActivity.getLayoutInflater().inflate(R.layout.video_module, (ViewGroup) mRootView);
 
-        mActivity.setMenuListener(this);
         // Surface texture is from camera screen nail and startPreview needs it.
         // This must be done before startPreview.
         mIsVideoCaptureIntent = isVideoCaptureIntent();
@@ -1089,13 +1093,6 @@ public class VideoModule implements CameraModule,
     }
 
     @Override
-    public void onMenuClicked() {
-        if (mPieRenderer != null) {
-            mPieRenderer.showInCenter();
-        }
-    }
-
-    @Override
     public boolean onBackPressed() {
         if (mPaused) return true;
         if (mMediaRecorderRecording) {
@@ -1661,6 +1658,8 @@ public class VideoModule implements CameraModule,
     }
 
     private void showRecordingUI(boolean recording) {
+        mMenu.setVisibility(recording ? View.GONE : View.VISIBLE);
+        mOnScreenIndicators.setVisibility(recording ? View.GONE : View.VISIBLE);
         if (recording) {
             mShutterButton.setImageResource(R.drawable.btn_shutter_video_recording);
             mActivity.hideSwitcher();
@@ -1720,6 +1719,8 @@ public class VideoModule implements CameraModule,
 
         Util.fadeIn((View) mReviewDoneButton);
         Util.fadeIn(mReviewPlayButton);
+        mMenu.setVisibility(View.GONE);
+        mOnScreenIndicators.setVisibility(View.GONE);
         enableCameraControls(false);
 
         showTimeLapseUI(false);
@@ -1728,6 +1729,8 @@ public class VideoModule implements CameraModule,
     private void hideAlert() {
         mReviewImage.setVisibility(View.GONE);
         mShutterButton.setEnabled(true);
+        mMenu.setVisibility(View.VISIBLE);
+        mOnScreenIndicators.setVisibility(View.VISIBLE);
         enableCameraControls(true);
 
         Util.fadeOut((View) mReviewDoneButton);
@@ -2149,6 +2152,17 @@ public class VideoModule implements CameraModule,
     }
 
     private void initializeControlByIntent() {
+        mBlocker = mRootView.findViewById(R.id.blocker);
+        mMenu = mRootView.findViewById(R.id.menu);
+        mMenu.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPieRenderer != null) {
+                    mPieRenderer.showInCenter();
+                }
+            }
+        });
+        mOnScreenIndicators = mRootView.findViewById(R.id.on_screen_indicators);
         if (mIsVideoCaptureIntent) {
             mActivity.hideSwitcher();
             // Cannot use RotateImageView for "done" and "cancel" button because
@@ -2242,6 +2256,7 @@ public class VideoModule implements CameraModule,
         // from onResume()
         showVideoSnapshotUI(false);
         initializeZoom();
+        onFullScreenChanged(mActivity.isInCameraApp());
     }
 
     @Override
@@ -2526,6 +2541,22 @@ public class VideoModule implements CameraModule,
     public void onFullScreenChanged(boolean full) {
         if (mGestures != null) {
             mGestures.setEnabled(full);
+        }
+        if (mRenderOverlay != null) {
+            // this can not happen in capture mode
+            mRenderOverlay.setVisibility(full ? View.VISIBLE : View.GONE);
+        }
+        if (mMenu != null) {
+            // this can not happen in capture mode
+            mMenu.setVisibility(full ? View.VISIBLE : View.GONE);
+        }
+        if (mBlocker != null) {
+            // this can not happen in capture mode
+            mBlocker.setVisibility(full ? View.VISIBLE : View.GONE);
+        }
+        if (mOnScreenIndicators != null) {
+            // this can not happen in capture mode
+            mOnScreenIndicators.setVisibility(full ? View.VISIBLE : View.GONE);
         }
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
             if (mActivity.mCameraScreenNail != null) {
