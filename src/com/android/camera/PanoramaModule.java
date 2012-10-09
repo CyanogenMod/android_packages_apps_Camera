@@ -554,7 +554,6 @@ public class PanoramaModule implements CameraModule,
             });
         }
         keepScreenOnAwhile();
-        mActivity.getOrientationManager().unlockOrientation();
     }
 
     private void showTooFastIndication() {
@@ -795,6 +794,7 @@ public class PanoramaModule implements CameraModule,
     private void reset() {
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
 
+        mActivity.getOrientationManager().unlockOrientation();
         // We should set mGLRootView visible too. However, since there might be no
         // frame available yet, setting mGLRootView visible should be done right after
         // the first camera frame is available and therefore it is done by
