@@ -21,11 +21,12 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RenderOverlay extends RotateLayout {
+public class RenderOverlay extends FrameLayout {
 
     private static final String TAG = "CAM_Overlay";
 
@@ -62,11 +63,6 @@ public class RenderOverlay extends RotateLayout {
         if (renderer.handlesTouch()) {
             mTouchClients.add(0, renderer);
         }
-    }
-
-    @Override
-    public void setOrientation(int orientation, boolean animation) {
-        super.setOrientation(orientation, animation);
     }
 
     public void addRenderer(int pos, Renderer renderer) {

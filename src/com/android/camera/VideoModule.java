@@ -612,7 +612,6 @@ public class VideoModule implements CameraModule,
 
     private void setOrientationIndicator(int orientation, boolean animation) {
         Rotatable[] indicators = {
-                mRenderOverlay,
                 mBgLearningMessageRotater,
                 mReviewDoneButton, mReviewPlayButton};
         for (Rotatable indicator : indicators) {
@@ -2239,7 +2238,6 @@ public class VideoModule implements CameraModule,
         showTimeLapseUI(mCaptureTimeLapse);
         initializeVideoSnapshot();
         resizeForPreviewAspectRatio();
-        initializeVideoControl();
 
         // from onResume()
         showVideoSnapshotUI(false);
