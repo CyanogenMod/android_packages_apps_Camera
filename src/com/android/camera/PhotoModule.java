@@ -410,6 +410,7 @@ public class PhotoModule
                         mCameraDevice.setPreviewDisplayAsync(mCameraSurfaceHolder);
                     }
                     startFaceDetection();
+                    locationFirstRun();
                     break;
                 }
 
@@ -475,7 +476,6 @@ public class PhotoModule
 
         // Make sure all views are disabled before camera is open.
 //        enableCameraControls(false);
-        locationFirstRun();
     }
 
     // Prompt the user to pick to record location for the very first run of
