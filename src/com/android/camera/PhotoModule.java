@@ -914,7 +914,11 @@ public class PhotoModule
             Log.v(TAG, "mPictureDisplayedToJpegCallbackTime = "
                     + mPictureDisplayedToJpegCallbackTime + "ms");
 
-            if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent) {
+            // Only animate when in full screen capture mode
+            // i.e. If monkey/a user swipes to the gallery during picture taking,
+            // don't show animation
+            if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent
+                    && mActivity.mShowCameraAppView) {
                 // Finish capture animation
                 ((CameraScreenNail) mActivity.mCameraScreenNail).animateSlide();
             }
@@ -1246,7 +1250,11 @@ public class PhotoModule
         mPostViewPictureCallbackTime = 0;
         mJpegImageData = null;
 
-        if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent) {
+        // Only animate when in full screen capture mode
+        // i.e. If monkey/a user swipes to the gallery during picture taking,
+        // don't show animation
+        if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent
+                && mActivity.mShowCameraAppView) {
             // Start capture animation.
             ((CameraScreenNail) mActivity.mCameraScreenNail).animateFlash(getCameraRotation());
         }
