@@ -24,11 +24,13 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.ImageFormat;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.graphics.YuvImage;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
@@ -730,6 +732,24 @@ public class PanoramaModule implements CameraModule,
         t.start();
     }
 
+    private int getCaptureOrientation() {
+        // The panorama image returned from the library is oriented based on the
+        // natural orientation of a camera. We need to set an orientation for the image
+        // in its EXIF header, so the image can be displayed correctly.
+        // The orientation is calculated from compensating the
+        // device orientation at capture and the camera orientation respective to
+        // the natural orientation of the device.
+        int orientation;
+        if (mUsingFrontCamera) {
+            // mCameraOrientation is negative with respect to the front facing camera.
+            // See document of android.hardware.Camera.Parameters.setRotation.
+            orientation = (mDeviceOrientationAtCapture - mCameraOrientation + 360) % 360;
+        } else {
+            orientation = (mDeviceOrientationAtCapture + mCameraOrientation) % 360;
+        }
+        return orientation;
+    }
+
     public void saveHighResMosaic() {
         runBackgroundThread(new Thread() {
             @Override
@@ -747,20 +767,7 @@ public class PanoramaModule implements CameraModule,
                 } else if (!jpeg.isValid) {  // Error when generating mosaic.
                     mMainHandler.sendEmptyMessage(MSG_GENERATE_FINAL_MOSAIC_ERROR);
                 } else {
-                    // The panorama image returned from the library is oriented based on the
-                    // natural orientation of a camera. We need to set an orientation for the image
-                    // in its EXIF header, so the image can be displayed correctly.
-                    // The orientation is calculated from compensating the
-                    // device orientation at capture and the camera orientation respective to
-                    // the natural orientation of the device.
-                    int orientation;
-                    if (mUsingFrontCamera) {
-                        // mCameraOrientation is negative with respect to the front facing camera.
-                        // See document of android.hardware.Camera.Parameters.setRotation.
-                        orientation = (mDeviceOrientationAtCapture - mCameraOrientation + 360) % 360;
-                    } else {
-                        orientation = (mDeviceOrientationAtCapture + mCameraOrientation) % 360;
-                    }
+                    int orientation = getCaptureOrientation();
                     Uri uri = savePanorama(jpeg.data, jpeg.width, jpeg.height, orientation);
                     if (uri != null) {
                         mActivity.addSecureAlbumItemIfNeeded(false, uri);
@@ -818,9 +825,34 @@ public class PanoramaModule implements CameraModule,
         if (!mPaused) startCameraPreview();
     }
 
+    private static class FlipBitmapDrawable extends BitmapDrawable {
+
+        public FlipBitmapDrawable(Resources res, Bitmap bitmap) {
+            super(res, bitmap);
+        }
+
+        @Override
+        public void draw(Canvas canvas) {
+            Rect bounds = getBounds();
+            int cx = bounds.centerX();
+            int cy = bounds.centerY();
+            canvas.save(Canvas.MATRIX_SAVE_FLAG);
+            canvas.rotate(180, cx, cy);
+            super.draw(canvas);
+            canvas.restore();
+        }
+    }
+
     private void showFinalMosaic(Bitmap bitmap) {
         if (bitmap != null) {
-            mReview.setImageBitmap(bitmap);
+            int orientation = getCaptureOrientation();
+            if (orientation >= 180) {
+                // We need to flip the drawable to compensate
+                mReview.setImageDrawable(new FlipBitmapDrawable(
+                        mActivity.getResources(), bitmap));
+            } else {
+                mReview.setImageBitmap(bitmap);
+            }
         }
 
         mGLRootView.setVisibility(View.GONE);
