@@ -1227,7 +1227,10 @@ public class PhotoModule
                 if (mGestures != null) mGestures.setEnabled(false);
                 break;
             case IDLE:
-                if (mGestures != null) mGestures.setEnabled(true);
+                if (mGestures != null && mActivity.mShowCameraAppView) {
+                    // Enable gestures only when the camera app view is visible
+                    mGestures.setEnabled(true);
+                }
                 break;
         }
     }
