@@ -73,7 +73,6 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     private int mPreviewWidth;
     private int mPreviewHeight;
     private boolean mFullScreen;
-    private int mRotation;
 
     public interface Listener {
         void requestRender();
@@ -155,7 +154,6 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         synchronized (mLock) {
             super.releaseSurfaceTexture();
             mAnimState = ANIM_NONE; // stop the animation
-            mRotation = 0;
         }
     }
 
@@ -205,10 +203,6 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         }
     }
 
-    public void setInitialOrientation(int initialOrientation) {
-        mRotation = initialOrientation;
-    }
-
     private void callbackIfNeeded() {
         if (mOneTimeFrameDrawnListener != null) {
             mOneTimeFrameDrawnListener.onFrameDrawn(this);
@@ -217,14 +211,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     }
 
     public void directDraw(GLCanvas canvas, int x, int y, int width, int height) {
-        if (mRotation != 0) {
-            canvas.save(GLCanvas.SAVE_FLAG_MATRIX);
-            canvas.rotate(mRotation, 0f, 0f, 1.0f);
-        }
         super.draw(canvas, x, y, width, height);
-        if (mRotation != 0) {
-            canvas.restore();
-        }
     }
 
     @Override
