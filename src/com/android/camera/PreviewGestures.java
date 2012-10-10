@@ -307,6 +307,7 @@ public class PreviewGestures
     public boolean onScaleBegin(ScaleGestureDetector detector) {
         if (mMode != MODE_ZOOM) {
             mMode = MODE_ZOOM;
+            cancelActivityTouchHandling(mCurrent);
         }
         if (mCurrent.getActionMasked() != MotionEvent.ACTION_MOVE) {
             return mZoom.onScaleBegin(detector);
