@@ -16,13 +16,13 @@
 
 package com.android.camera.stress;
 
-import com.android.camera.Camera;
-import com.android.camera.VideoCamera;
+import com.android.camera.CameraActivity;
 
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
@@ -46,7 +46,7 @@ public class CameraStartUp extends InstrumentationTestCase {
         long startupTime = 0;
         try {
             Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.setClass(getInstrumentation().getTargetContext(), Camera.class);
+            intent.setClass(getInstrumentation().getTargetContext(), CameraActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             long beforeStart = System.currentTimeMillis();
             Instrumentation inst = getInstrumentation();
@@ -67,8 +67,8 @@ public class CameraStartUp extends InstrumentationTestCase {
         long startupTime = 0;
 
         try {
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.setClass(getInstrumentation().getTargetContext(), VideoCamera.class);
+            Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
+            intent.setClass(getInstrumentation().getTargetContext(), CameraActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             long beforeStart = System.currentTimeMillis();
             Instrumentation inst = getInstrumentation();
