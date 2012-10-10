@@ -123,8 +123,7 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Skakel oor na foto"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Skakel oor na video"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Skakel oor na panorama"</string>
-    <!-- no translation found for accessibility_switch_to_photosphere (302799186108722016) -->
-    <skip />
+    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"Wissel na fotosfeer-panorama"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Kanselleer hersiening"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Voltooi hersiening"</string>
     <string name="accessibility_review_retake" msgid="830348126446319954">"Neem weer hersiening"</string>
