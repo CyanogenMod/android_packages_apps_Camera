@@ -657,6 +657,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         Rect frame = new Rect(l, t, r, b);
         Log.d(TAG, "set CameraRelativeFrame as " + frame);
         mAppBridge.setCameraRelativeFrame(frame);
+        getGLRoot().requestLayoutContentPane();
     }
 
     protected void setSingleTapUpListener(View singleTapArea) {
