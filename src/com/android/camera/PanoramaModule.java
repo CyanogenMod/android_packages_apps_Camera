@@ -210,6 +210,7 @@ public class PanoramaModule implements CameraModule,
                     + Util.getDisplayRotation(mActivity) % 360;
             if (mOrientationCompensation != orientationCompensation) {
                 mOrientationCompensation = orientationCompensation;
+                mActivity.getGLRoot().requestLayoutContentPane();
             }
         }
     }
