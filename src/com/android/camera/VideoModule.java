@@ -600,6 +600,7 @@ public class VideoModule implements CameraModule,
                 setOrientationIndicator(mOrientationCompensation, true);
                 mOrientationResetNeeded = false;
             }
+            setDisplayOrientation();
         }
 
         // Show the toast after getting the first orientation changed.
@@ -925,6 +926,8 @@ public class VideoModule implements CameraModule,
             // We need to consider display rotation ourselves.
             mCameraDisplayOrientation = Util.getDisplayOrientation(mDisplayRotation, mCameraId);
         }
+        // GLRoot also uses the DisplayRotation, and needs to be told to layout to update
+        mActivity.getGLRoot().requestLayoutContentPane();
     }
 
     private void startPreview() {
