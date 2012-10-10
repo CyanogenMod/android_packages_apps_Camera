@@ -123,8 +123,7 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Przełącz na zdjęcia"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Przełącz na wideo"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Przełącz na panoramę"</string>
-    <!-- no translation found for accessibility_switch_to_photosphere (302799186108722016) -->
-    <skip />
+    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"Przełącz na panoramę fotosferyczną"</string>
     <!-- no translation found for accessibility_review_cancel (9070531914908644686) -->
     <skip />
     <!-- no translation found for accessibility_review_ok (7793302834271343168) -->
