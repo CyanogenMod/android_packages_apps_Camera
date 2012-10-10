@@ -123,8 +123,7 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Badilisha hadi kwa picha"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Badilisha hadi kwa video"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Badilisha hadi kwa panorama"</string>
-    <!-- no translation found for accessibility_switch_to_photosphere (302799186108722016) -->
-    <skip />
+    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"Badili hadi kwenye panorama ya tufe ya picha"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Ukaguzi umeghairiwa"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Ukaguzi umekamilika"</string>
     <string name="accessibility_review_retake" msgid="830348126446319954">"Ukaguzi wa kufanya tena"</string>
