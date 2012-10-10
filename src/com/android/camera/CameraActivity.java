@@ -136,7 +136,7 @@ public class CameraActivity extends ActivityBase
     public void onCameraSelected(int i) {
         if (i != mCurrentModuleIndex) {
             mPaused = true;
-            boolean wasPanorama = isPanoramaActivity();
+            boolean canReuse = canReuseScreenNail();
             CameraHolder.instance().keep();
             closeModule(mCurrentModule);
             mCurrentModuleIndex = i;
@@ -154,7 +154,7 @@ public class CameraActivity extends ActivityBase
                     mCurrentModule = LightCycleHelper.createPanoramaModule();
                     break;
             }
-            openModule(mCurrentModule, wasPanorama);
+            openModule(mCurrentModule, canReuse);
             mCurrentModule.onOrientationChanged(mOrientation);
         }
     }
@@ -164,8 +164,8 @@ public class CameraActivity extends ActivityBase
         mCurrentModule.onShowSwitcherPopup();
     }
 
-    private void openModule(CameraModule module, boolean wasPanorama) {
-        module.init(this, mFrame, !(wasPanorama || isPanoramaActivity()));
+    private void openModule(CameraModule module, boolean canReuse) {
+        module.init(this, mFrame, canReuse && canReuseScreenNail());
         mPaused = false;
         module.onResumeBeforeSuper();
         module.onResumeAfterSuper();
@@ -360,10 +360,14 @@ public class CameraActivity extends ActivityBase
         mCurrentModule.updateCameraAppView();
     }
 
+    private boolean canReuseScreenNail() {
+        return mCurrentModuleIndex == PHOTO_MODULE_INDEX
+                || mCurrentModuleIndex == VIDEO_MODULE_INDEX;
+    }
+
     @Override
     public boolean isPanoramaActivity() {
-        return (mCurrentModuleIndex == PANORAMA_MODULE_INDEX)
-                || (mCurrentModuleIndex == LIGHTCYCLE_MODULE_INDEX);
+        return (mCurrentModuleIndex == PANORAMA_MODULE_INDEX);
     }
 
     // Accessor methods for getting latency times used in performance testing
