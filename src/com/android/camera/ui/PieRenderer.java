@@ -31,6 +31,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
@@ -62,20 +63,18 @@ public class PieRenderer extends OverlayRenderer
     private static final int DISAPPEAR_TIMEOUT = 200;
     private static final int DIAL_HORIZONTAL = 157;
 
-    private static final long PIE_OPEN_DELAY = 200;
+    private static final long PIE_FADE_IN_DURATION = 200;
     private static final long FOCUS_TAP_TIMEOUT = 500;
-    private static final long PIE_SLECECT_FADE_DURATION = 300;
+    private static final long PIE_SELECT_FADE_DURATION = 300;
 
     private static final int MSG_OPEN = 2;
     private static final int MSG_CLOSE = 3;
-    private static final int MSG_SUBMENU = 4;
-    private static final int MSG_FOCUS_TAP = 5;
+    private static final int MSG_FOCUS_TAP = 4;
     private static final float PIE_SWEEP = (float)(Math.PI * 2 / 3);
     // geometry
     private Point mCenter;
     private int mRadius;
     private int mRadiusInc;
-    private int mSlop;
 
     // the detection if touch is inside a slice is offset
     // inbounds by this amount to allow the selection to show before the
@@ -115,6 +114,10 @@ public class PieRenderer extends OverlayRenderer
     private boolean mFocusFromTap;
     private boolean mTapMode;
     private boolean mBlockFocus;
+    private int mTouchSlopSquared;
+    private Point mDown;
+    private boolean mOpening;
+
 
 
     private Handler mHandler = new Handler() {
@@ -129,9 +132,6 @@ public class PieRenderer extends OverlayRenderer
                 if (mListener != null) {
                     mListener.onPieClosed();
                 }
-                break;
-            case MSG_SUBMENU:
-                openCurrentItem();
                 break;
             case MSG_FOCUS_TAP:
                 // reset flag
@@ -158,6 +158,7 @@ public class PieRenderer extends OverlayRenderer
     public PieRenderer(Context context) {
         init(context);
     }
+
     private void init(Context ctx) {
         setVisible(false);
         mItems = new ArrayList<PieItem>();
@@ -165,7 +166,6 @@ public class PieRenderer extends OverlayRenderer
         mRadius = (int) res.getDimensionPixelSize(R.dimen.pie_radius_start);
         mCircleSize = mRadius - res.getDimensionPixelSize(R.dimen.focus_radius_offset);
         mRadiusInc =  (int) res.getDimensionPixelSize(R.dimen.pie_radius_increment);
-        mSlop = (int) res.getDimensionPixelSize(R.dimen.pie_touch_slop);
         mTouchOffset = (int) res.getDimensionPixelSize(R.dimen.pie_touch_offset);
         mCenter = new Point(0,0);
         mNormalPaint = new Paint();
@@ -192,6 +192,9 @@ public class PieRenderer extends OverlayRenderer
         mInnerStroke = res.getDimensionPixelSize(R.dimen.focus_inner_stroke);
         mState = STATE_IDLE;
         mBlockFocus = false;
+        mTouchSlopSquared = ViewConfiguration.get(ctx).getScaledTouchSlop();
+        mTouchSlopSquared = mTouchSlopSquared * mTouchSlopSquared;
+        mDown = new Point();
     }
 
     public boolean showsItems() {
@@ -257,7 +260,7 @@ public class PieRenderer extends OverlayRenderer
     private void fadeIn() {
         if (!ApiHelper.HAS_VIEW_PROPERTY_ANIMATOR) return;
         mOverlay.setAlpha(0);
-        mOverlay.animate().alpha(1f).setDuration(PIE_OPEN_DELAY).setListener(
+        mOverlay.animate().alpha(1f).setDuration(PIE_FADE_IN_DURATION).setListener(
                 new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -371,7 +374,7 @@ public class PieRenderer extends OverlayRenderer
                     mOverlay.setAlpha(1);
                     super.onAnimationEnd(animation);
                 }
-            }).setDuration(PIE_SLECECT_FADE_DURATION);
+            }).setDuration(PIE_SELECT_FADE_DURATION);
         } else {
             deselect();
             show(false);
@@ -413,8 +416,6 @@ public class PieRenderer extends OverlayRenderer
         }
     }
 
-    // touch handling for pie
-
     @Override
     public boolean onTouchEvent(MotionEvent evt) {
         float x = evt.getX();
@@ -422,6 +423,9 @@ public class PieRenderer extends OverlayRenderer
         int action = evt.getActionMasked();
         PointF polar = getPolar(x, y, !(mTapMode));
         if (MotionEvent.ACTION_DOWN == action) {
+            mDown.x = (int) evt.getX();
+            mDown.y = (int) evt.getY();
+            mOpening = false;
             if (mTapMode) {
                 PieItem item = findItem(polar);
                 if ((item != null) && (mCurrentItem != item)) {
@@ -439,12 +443,16 @@ public class PieRenderer extends OverlayRenderer
                 PieItem item = mCurrentItem;
                 if (mTapMode) {
                     item = findItem(polar);
+                    if (item != null && mOpening) {
+                        mOpening = false;
+                        return true;
+                    }
                 }
                 if (item == null) {
                     mTapMode = false;
-                    mHandler.removeMessages(MSG_SUBMENU);
                     show(false);
-                } else if (!item.hasItems() && item.getView() != null) {
+                } else if (!mOpening
+                        && !item.hasItems() && item.getView() != null) {
                     item.getView().performClick();
                     startFadeOut();
                     mTapMode = false;
@@ -467,11 +475,23 @@ public class PieRenderer extends OverlayRenderer
                 return false;
             }
             PieItem item = findItem(polar);
-            if ((item != null) && (mCurrentItem != item)) {
+            boolean moved = hasMoved(evt);
+            if ((item != null) && (mCurrentItem != item) && (!mOpening || moved)) {
+                // only select if we didn't just open or have moved past slop
+                mOpening = false;
+                if (moved) {
+                    // switch back to swipe mode
+                    mTapMode = false;
+                }
                 onEnter(item);
             }
         }
         return false;
+    }
+
+    private boolean hasMoved(MotionEvent e) {
+        return mTouchSlopSquared < (e.getX() - mDown.x) * (e.getX() - mDown.x)
+                + (e.getY() - mDown.y) * (e.getY() - mDown.y);
     }
 
     /**
@@ -487,7 +507,7 @@ public class PieRenderer extends OverlayRenderer
             item.setSelected(true);
             mCurrentItem = item;
             if ((mCurrentItem != mOpenItem) && mCurrentItem.hasItems()) {
-                mHandler.sendEmptyMessageDelayed(MSG_SUBMENU, PIE_OPEN_DELAY);
+                openCurrentItem();
             }
         } else {
             mCurrentItem = null;
@@ -497,7 +517,6 @@ public class PieRenderer extends OverlayRenderer
     private void deselect() {
         if (mCurrentItem != null) {
             mCurrentItem.setSelected(false);
-            mHandler.removeMessages(MSG_SUBMENU);
         }
         if (mOpenItem != null) {
             mOpenItem = null;
@@ -509,6 +528,7 @@ public class PieRenderer extends OverlayRenderer
         if ((mCurrentItem != null) && mCurrentItem.hasItems()) {
             mCurrentItem.setSelected(false);
             mOpenItem = mCurrentItem;
+            mOpening = true;
         }
     }
 
