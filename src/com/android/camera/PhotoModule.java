@@ -1422,6 +1422,7 @@ public class PhotoModule
             if (mFaceView != null) {
                 mFaceView.setOrientation(mOrientationCompensation, true);
             }
+            setDisplayOrientation();
         }
 
         // Show the toast after getting the first orientation changed.
@@ -1989,6 +1990,8 @@ public class PhotoModule
             mFaceView.setDisplayOrientation(mDisplayOrientation);
         }
         mFocusManager.setDisplayOrientation(mDisplayOrientation);
+        // GLRoot also uses the DisplayRotation, and needs to be told to layout to update
+        mActivity.getGLRoot().requestLayoutContentPane();
     }
 
     // Only called by UI thread.
