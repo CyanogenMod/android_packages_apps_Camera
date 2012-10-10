@@ -197,27 +197,27 @@
 
     <!-- Camera Preferences flash mode dialog box entries -->
     <string-array name="pref_camera_flashmode_entries" translatable="false">
+        <item>@string/pref_camera_flashmode_entry_off</item>
         <item>@string/pref_camera_flashmode_entry_auto</item>
         <item>@string/pref_camera_flashmode_entry_on</item>
-        <item>@string/pref_camera_flashmode_entry_off</item>
     </string-array>
 
     <string-array name="pref_camera_flashmode_entryvalues" translatable="false">
+        <item>off</item>
         <item>auto</item>
         <item>on</item>
-        <item>off</item>
     </string-array>
 
     <array name="camera_flashmode_icons" translatable="false">
+        <item>@drawable/ic_flash_off_holo_light</item>
         <item>@drawable/ic_flash_auto_holo_light</item>
         <item>@drawable/ic_flash_on_holo_light</item>
-        <item>@drawable/ic_flash_off_holo_light</item>
     </array>
 
     <array name="camera_flashmode_largeicons" translatable="false">
+        <item>@drawable/ic_flash_off_holo_light</item>
         <item>@drawable/ic_flash_auto_holo_light</item>
         <item>@drawable/ic_flash_on_holo_light</item>
-        <item>@drawable/ic_flash_off_holo_light</item>
     </array>
 
     <!-- Videocamera Preferences flash mode dialog box entries -->
@@ -263,34 +263,34 @@
 
     <!-- Camera Preferences White Balance dialog box entries -->
     <string-array name="pref_camera_whitebalance_entries" translatable="false">
-        <item>@string/pref_camera_whitebalance_entry_auto</item>
         <item>@string/pref_camera_whitebalance_entry_incandescent</item>
-        <item>@string/pref_camera_whitebalance_entry_daylight</item>
         <item>@string/pref_camera_whitebalance_entry_fluorescent</item>
+        <item>@string/pref_camera_whitebalance_entry_auto</item>
+        <item>@string/pref_camera_whitebalance_entry_daylight</item>
         <item>@string/pref_camera_whitebalance_entry_cloudy</item>
     </string-array>
 
     <string-array name="pref_camera_whitebalance_entryvalues" translatable="false">
-        <item>auto</item>
         <item>incandescent</item>
-        <item>daylight</item>
         <item>fluorescent</item>
+        <item>auto</item>
+        <item>daylight</item>
         <item>cloudy-daylight</item>
     </string-array>
 
     <array name="whitebalance_icons" translatable="false">
-        <item>@drawable/ic_wb_auto</item>
         <item>@drawable/ic_wb_incandescent</item>
-        <item>@drawable/ic_wb_sunlight</item>
         <item>@drawable/ic_wb_fluorescent</item>
+        <item>@drawable/ic_wb_auto</item>
+        <item>@drawable/ic_wb_sunlight</item>
         <item>@drawable/ic_wb_cloudy</item>
     </array>
 
     <array name="whitebalance_largeicons" translatable="false">
-        <item>@drawable/ic_wb_auto</item>
         <item>@drawable/ic_wb_incandescent</item>
-        <item>@drawable/ic_wb_sunlight</item>
         <item>@drawable/ic_wb_fluorescent</item>
+        <item>@drawable/ic_wb_auto</item>
+        <item>@drawable/ic_wb_sunlight</item>
         <item>@drawable/ic_wb_cloudy</item>
     </array>
 
