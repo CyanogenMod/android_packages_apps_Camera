@@ -1678,6 +1678,11 @@ public class PhotoModule
             ActivityBase.resetFirstStartAfterScreenOn();
             CameraHolder.instance().keep(KEEP_CAMERA_TIMEOUT);
         }
+        // Reset the focus first. Camera CTS does not guarantee that
+        // cancelAutoFocus is allowed after preview stops.
+        if (mCameraDevice != null && mCameraState != PREVIEW_STOPPED) {
+            mCameraDevice.cancelAutoFocus();
+        }
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
@@ -2020,8 +2025,9 @@ public class PhotoModule
     private void startPreview() {
         mCameraDevice.setErrorCallback(mErrorCallback);
 
-        // If we're previewing already, stop the preview first (this will blank
-        // the screen).
+        // ICS camera frameworks has a bug. Face detection state is not cleared
+        // after taking a picture. Stop the preview to work around it. The bug
+        // was fixed in JB.
         if (mCameraState != PREVIEW_STOPPED) stopPreview();
 
         setDisplayOrientation();
@@ -2069,7 +2075,6 @@ public class PhotoModule
     private void stopPreview() {
         if (mCameraDevice != null && mCameraState != PREVIEW_STOPPED) {
             Log.v(TAG, "stopPreview");
-            mCameraDevice.cancelAutoFocus(); // Reset the focus.
             mCameraDevice.stopPreview();
             mFaceDetectionStarted = false;
         }
