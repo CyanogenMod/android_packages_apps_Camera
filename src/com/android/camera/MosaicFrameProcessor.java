@@ -34,28 +34,25 @@ public class MosaicFrameProcessor {
 
     private Mosaic mMosaicer;
     private boolean mIsMosaicMemoryAllocated = false;
-    private final long [] mFrameTimestamp = new long[NUM_FRAMES_IN_BUFFER];
     private float mTranslationLastX;
     private float mTranslationLastY;
 
     private int mFillIn = 0;
     private int mTotalFrameCount = 0;
-    private long mLastProcessedFrameTimestamp = 0;
     private int mLastProcessFrameIdx = -1;
     private int mCurrProcessFrameIdx = -1;
+    private boolean mFirstRun;
 
-    // Panning rate is in unit of percentage of image content translation / second.
-    // Use the moving average to calculate the panning rate.
+    // Panning rate is in unit of percentage of image content translation per
+    // frame. Use moving average to calculate the panning rate.
     private float mPanningRateX;
     private float mPanningRateY;
 
     private float[] mDeltaX = new float[WINDOW_SIZE];
     private float[] mDeltaY = new float[WINDOW_SIZE];
-    private float[] mDeltaTime = new float[WINDOW_SIZE];
     private int mOldestIdx = 0;
     private float mTotalTranslationX = 0f;
     private float mTotalTranslationY = 0f;
-    private float mTotalDeltaTime = 0f;
 
     private ProgressListener mProgressListener;
 
@@ -127,14 +124,13 @@ public class MosaicFrameProcessor {
     public void reset() {
         // reset() can be called even if MosaicFrameProcessor is not initialized.
         // Only counters will be changed.
+        mFirstRun = true;
         mTotalFrameCount = 0;
         mFillIn = 0;
-        mLastProcessedFrameTimestamp = 0;
         mTotalTranslationX = 0;
         mTranslationLastX = 0;
         mTotalTranslationY = 0;
         mTranslationLastY = 0;
-        mTotalDeltaTime = 0;
         mPanningRateX = 0;
         mPanningRateY = 0;
         mLastProcessFrameIdx = -1;
@@ -142,7 +138,6 @@ public class MosaicFrameProcessor {
         for (int i = 0; i < WINDOW_SIZE; ++i) {
             mDeltaX[i] = 0f;
             mDeltaY[i] = 0f;
-            mDeltaTime[i] = 0f;
         }
         mMosaicer.reset();
     }
@@ -165,8 +160,6 @@ public class MosaicFrameProcessor {
             // are not processed yet and thus the callback may be invoked.
             return;
         }
-        long t1 = System.currentTimeMillis();
-        mFrameTimestamp[mFillIn] = t1;
 
         mCurrProcessFrameIdx = mFillIn;
         mFillIn = ((mFillIn + 1) % NUM_FRAMES_IN_BUFFER);
@@ -176,15 +169,12 @@ public class MosaicFrameProcessor {
         if (mCurrProcessFrameIdx != mLastProcessFrameIdx) {
             mLastProcessFrameIdx = mCurrProcessFrameIdx;
 
-            // Access the timestamp associated with it...
-            long timestamp = mFrameTimestamp[mCurrProcessFrameIdx];
-
             // TODO: make the termination condition regarding reaching
             // MAX_NUMBER_OF_FRAMES solely determined in the library.
             if (mTotalFrameCount < MAX_NUMBER_OF_FRAMES) {
                 // If we are still collecting new frames for the current mosaic,
                 // process the new frame.
-                calculateTranslationRate(timestamp);
+                calculateTranslationRate();
 
                 // Publish progress of the ongoing processing
                 if (mProgressListener != null) {
@@ -202,18 +192,18 @@ public class MosaicFrameProcessor {
         }
     }
 
-    public void calculateTranslationRate(long now) {
+    public void calculateTranslationRate() {
         float[] frameData = mMosaicer.setSourceImageFromGPU();
         int ret_code = (int) frameData[MOSAIC_RET_CODE_INDEX];
         mTotalFrameCount  = (int) frameData[FRAME_COUNT_INDEX];
         float translationCurrX = frameData[X_COORD_INDEX];
         float translationCurrY = frameData[Y_COORD_INDEX];
 
-        if (mLastProcessedFrameTimestamp == 0f) {
+        if (mFirstRun) {
             // First time: no need to update delta values.
             mTranslationLastX = translationCurrX;
             mTranslationLastY = translationCurrY;
-            mLastProcessedFrameTimestamp = now;
+            mFirstRun = false;
             return;
         }
 
@@ -222,28 +212,25 @@ public class MosaicFrameProcessor {
         int idx = mOldestIdx;
         mTotalTranslationX -= mDeltaX[idx];
         mTotalTranslationY -= mDeltaY[idx];
-        mTotalDeltaTime -= mDeltaTime[idx];
         mDeltaX[idx] = Math.abs(translationCurrX - mTranslationLastX);
         mDeltaY[idx] = Math.abs(translationCurrY - mTranslationLastY);
-        mDeltaTime[idx] = (now - mLastProcessedFrameTimestamp) / 1000.0f;
         mTotalTranslationX += mDeltaX[idx];
         mTotalTranslationY += mDeltaY[idx];
-        mTotalDeltaTime += mDeltaTime[idx];
 
         // The panning rate is measured as the rate of the translation percentage in
         // image width/height. Take the horizontal panning rate for example, the image width
         // used in finding the translation is (PreviewWidth / HR_TO_LR_DOWNSAMPLE_FACTOR).
         // To get the horizontal translation percentage, the horizontal translation,
         // (translationCurrX - mTranslationLastX), is divided by the
-        // image width. We then get the rate by dividing the translation percentage with deltaTime.
+        // image width. We then get the rate by dividing the translation percentage with the
+        // number of frames.
         mPanningRateX = mTotalTranslationX /
-                (mPreviewWidth / HR_TO_LR_DOWNSAMPLE_FACTOR) / mTotalDeltaTime;
+                (mPreviewWidth / HR_TO_LR_DOWNSAMPLE_FACTOR) / WINDOW_SIZE;
         mPanningRateY = mTotalTranslationY /
-                (mPreviewHeight / HR_TO_LR_DOWNSAMPLE_FACTOR) / mTotalDeltaTime;
+                (mPreviewHeight / HR_TO_LR_DOWNSAMPLE_FACTOR) / WINDOW_SIZE;
 
         mTranslationLastX = translationCurrX;
         mTranslationLastY = translationCurrY;
-        mLastProcessedFrameTimestamp = now;
         mOldestIdx = (mOldestIdx + 1) % WINDOW_SIZE;
     }
 }
