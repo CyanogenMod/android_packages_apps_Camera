@@ -1775,15 +1775,15 @@ public class PhotoModule
     private void initializeFocusManager() {
         // Create FocusManager object. startPreview needs it.
         mRenderOverlay = (RenderOverlay) mRootView.findViewById(R.id.render_overlay);
-        CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-        boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
-        String[] defaultFocusModes = mActivity.getResources().getStringArray(
-                R.array.pref_camera_focusmode_default_array);
         // if mFocusManager not null, reuse it
         // otherwise create a new instance
         if (mFocusManager != null) {
             mFocusManager.removeMessages();
         } else {
+            CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
+            boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
+            String[] defaultFocusModes = mActivity.getResources().getStringArray(
+                    R.array.pref_camera_focusmode_default_array);
             mFocusManager = new FocusOverlayManager(mPreferences, defaultFocusModes,
                     mInitialParams, this, mirror,
                     mActivity.getMainLooper());
@@ -2000,7 +2000,9 @@ public class PhotoModule
         if (mFaceView != null) {
             mFaceView.setDisplayOrientation(mDisplayOrientation);
         }
-        mFocusManager.setDisplayOrientation(mDisplayOrientation);
+        if (mFocusManager != null) {
+            mFocusManager.setDisplayOrientation(mDisplayOrientation);
+        }
         // GLRoot also uses the DisplayRotation, and needs to be told to layout to update
         mActivity.getGLRoot().requestLayoutContentPane();
     }
