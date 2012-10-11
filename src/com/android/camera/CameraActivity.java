@@ -62,7 +62,7 @@ public class CameraActivity extends ActivityBase
             R.drawable.ic_switch_camera,
             R.drawable.ic_switch_video,
             R.drawable.ic_switch_pan,
-            com.android.gallery3d.R.drawable.ic_menu_photosphere
+            R.drawable.ic_switch_photosphere
     };
 
     @Override
