@@ -123,7 +123,7 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Cambiar al modo Cámara"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Cambiar al modo Video"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Cambiar al modo Panorama"</string>
-    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"Cambiar a panorámica esférica"</string>
+    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"Cambiar a panorama de fotosfera"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Cancelar"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Listo"</string>
     <string name="accessibility_review_retake" msgid="830348126446319954">"Volver a tomar"</string>
