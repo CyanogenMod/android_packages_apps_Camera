@@ -33,6 +33,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
 
 import com.android.camera.R;
@@ -117,8 +119,7 @@ public class PieRenderer extends OverlayRenderer
     private int mTouchSlopSquared;
     private Point mDown;
     private boolean mOpening;
-
-
+    private LinearAnimation mXFade;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -252,6 +253,9 @@ public class PieRenderer extends OverlayRenderer
         } else {
             mState = STATE_IDLE;
             mTapMode = false;
+            if (mXFade != null) {
+                mXFade.cancel();
+            }
         }
         setVisible(show);
         mHandler.sendEmptyMessage(show ? MSG_OPEN : MSG_CLOSE);
@@ -385,19 +389,21 @@ public class PieRenderer extends OverlayRenderer
     public void onDraw(Canvas canvas) {
         drawFocus(canvas);
         if (mState == STATE_FINISHING) return;
-        if (mOpenItem == null) {
+        float alpha = (mXFade != null) ? mXFade.getValue() : 1;
+        if ((mOpenItem == null) || (mXFade != null)) {
             // draw base menu
             for (PieItem item : mItems) {
-                drawItem(canvas, item);
+                drawItem(canvas, item, alpha);
             }
-        } else {
+        }
+        if (mOpenItem != null) {
             for (PieItem inner : mOpenItem.getItems()) {
-                drawItem(canvas, inner);
+                drawItem(canvas, inner, (mXFade != null) ? (1 - 0.5f * alpha) : 1);
             }
         }
     }
 
-    private void drawItem(Canvas canvas, PieItem item) {
+    private void drawItem(Canvas canvas, PieItem item, float alpha) {
         if ((mState == STATE_PIE) && (item.getView() != null)) {
             if (item.getPath() != null) {
                 Paint p = item.isSelected() ? mSelectedPaint : mNormalPaint;
@@ -410,7 +416,9 @@ public class PieRenderer extends OverlayRenderer
                 View view = item.getView();
                 state = canvas.save();
                 canvas.translate(view.getX(), view.getY());
+                canvas.saveLayerAlpha(0, 0, getWidth(), getHeight(), (int)(255 * alpha), 0);
                 view.draw(canvas);
+                canvas.restore();
                 canvas.restoreToCount(state);
             }
         }
@@ -529,6 +537,24 @@ public class PieRenderer extends OverlayRenderer
             mCurrentItem.setSelected(false);
             mOpenItem = mCurrentItem;
             mOpening = true;
+            mXFade = new LinearAnimation(1, 0);
+            mXFade.setDuration(200);
+            mXFade.setAnimationListener(new AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mXFade = null;
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+            });
+            mXFade.startNow();
+            mOverlay.startAnimation(mXFade);
         }
     }
 
@@ -798,6 +824,29 @@ public class PieRenderer extends OverlayRenderer
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             mDialAngle = (int)(mFrom + (mTo - mFrom) * interpolatedTime);
+        }
+    }
+
+
+    private class LinearAnimation extends Animation {
+        private float mFrom;
+        private float mTo;
+        private float mValue;
+
+        public LinearAnimation(float from, float to) {
+            setFillAfter(true);
+            setInterpolator(new LinearInterpolator());
+            mFrom = from;
+            mTo = to;
+        }
+
+        public float getValue() {
+            return mValue;
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            mValue = (mFrom + (mTo - mFrom) * interpolatedTime);
         }
     }
 
