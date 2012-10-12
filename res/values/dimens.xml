@@ -93,4 +93,5 @@
     <dimen name="zoom_ring_min">48dp</dimen>
     <dimen name="switcher_size">72dp</dimen>
     <dimen name="face_circle_stroke">2dip</dimen>
+    <dimen name="zoom_font_size">14pt</dimen>
 </resources>
