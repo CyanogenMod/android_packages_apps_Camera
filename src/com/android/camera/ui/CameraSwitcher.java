@@ -20,6 +20,8 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -50,6 +52,7 @@ public class CameraSwitcher extends RotateImageView
     private View mParent;
     private boolean mShowingPopup;
     private boolean mNeedsAnimationSetup;
+    private Drawable mIndicator;
 
     private AnimatorListener mHideAnimationListener;
     private AnimatorListener mShowAnimationListener;
@@ -67,6 +70,7 @@ public class CameraSwitcher extends RotateImageView
     private void init(Context context) {
         mItemSize = context.getResources().getDimensionPixelSize(R.dimen.switcher_size);
         setOnClickListener(this);
+        mIndicator = context.getResources().getDrawable(R.drawable.ic_switcher_menu_indicator);
     }
 
     public void setDrawIds(int[] drawids) {
@@ -94,6 +98,13 @@ public class CameraSwitcher extends RotateImageView
             setCurrentIndex(ix);
             mListener.onCameraSelected(ix);
         }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        mIndicator.setBounds(getDrawable().getBounds());
+        mIndicator.draw(canvas);
     }
 
     private void initPopup() {
