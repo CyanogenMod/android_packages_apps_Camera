@@ -246,7 +246,7 @@ public class PanoramaModule implements CameraModule,
                     if (mCaptureState == CAPTURE_STATE_VIEWFINDER) {
                         mMosaicPreviewRenderer.showPreviewFrame();
                     } else {
-                        mMosaicPreviewRenderer.alignFrame();
+                        mMosaicPreviewRenderer.alignFrameSync();
                         mMosaicFrameProcessor.processFrame();
                     }
                 }
