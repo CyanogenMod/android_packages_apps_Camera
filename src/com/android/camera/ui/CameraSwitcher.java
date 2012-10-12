@@ -138,7 +138,7 @@ public class CameraSwitcher extends RotateImageView
                     item.setContentDescription(getContext().getResources().getString(
                             R.string.accessibility_switch_to_panorama));
                     break;
-                case com.android.gallery3d.R.drawable.ic_menu_photosphere:
+                case R.drawable.ic_switch_photosphere:
                     item.setContentDescription(getContext().getResources().getString(
                             R.string.accessibility_switch_to_photosphere));
                     break;
