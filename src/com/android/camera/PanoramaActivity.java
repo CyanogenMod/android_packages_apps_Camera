@@ -256,7 +256,7 @@ public class PanoramaActivity extends ActivityBase implements
                     if (mCaptureState == CAPTURE_STATE_VIEWFINDER) {
                         mMosaicPreviewRenderer.showPreviewFrame();
                     } else {
-                        mMosaicPreviewRenderer.alignFrame();
+                        mMosaicPreviewRenderer.alignFrameSync();
                         mMosaicFrameProcessor.processFrame();
                     }
                 }
