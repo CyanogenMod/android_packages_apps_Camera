@@ -149,6 +149,7 @@ public class PhotoModule
 
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
+    private List<Integer> mZoomRatios;
 
     private Parameters mInitialParams;
     private boolean mFocusAreaSupported;
@@ -679,6 +680,10 @@ public class PhotoModule
             // Set zoom parameters asynchronously
             mParameters.setZoom(mZoomValue);
             mCameraDevice.setParametersAsync(mParameters);
+            if (mZoomRenderer != null) {
+                Parameters p = mCameraDevice.getParameters();
+                mZoomRenderer.setZoomValue(mZoomRatios.get(p.getZoom()));
+            }
         }
 
         @Override
@@ -699,11 +704,12 @@ public class PhotoModule
     private void initializeZoom() {
         if (!mParameters.isZoomSupported() || (mZoomRenderer == null)) return;
         mZoomMax = mParameters.getMaxZoom();
+        mZoomRatios = mParameters.getZoomRatios();
         // Currently we use immediate zoom for fast zooming to get better UX and
         // there is no plan to take advantage of the smooth zoom.
         if (mZoomRenderer != null) {
             mZoomRenderer.setZoomMax(mZoomMax);
-            mZoomRenderer.setZoomIndex(mParameters.getZoom());
+            mZoomRenderer.setZoomValue(mZoomRatios.get(mParameters.getZoom()));
             mZoomRenderer.setOnZoomChangeListener(new ZoomChangeListener());
         }
     }
