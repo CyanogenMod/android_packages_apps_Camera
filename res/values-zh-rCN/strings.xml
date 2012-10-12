@@ -123,7 +123,7 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"切换到拍照模式"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"切换到视频模式"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"切换到全景模式"</string>
-    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"切换到光球 (Photosphere) 全景模式"</string>
+    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"切换到光球全景模式"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"取消"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"完成"</string>
     <string name="accessibility_review_retake" msgid="830348126446319954">"重拍"</string>
