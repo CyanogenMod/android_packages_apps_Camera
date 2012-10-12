@@ -1989,6 +1989,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (!mShowCameraAppView) {
+            return false;
+        }
         switch (keyCode) {
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
@@ -2050,6 +2053,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (!mShowCameraAppView) {
+            return false;
+        }
         switch (keyCode) {
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized) {
