@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.ScaleGestureDetector;
 
 import com.android.camera.R;
@@ -31,21 +32,22 @@ public class ZoomRenderer extends OverlayRenderer
     private static final String TAG = "CAM_Zoom";
 
     private int mMaxZoom;
-    private int mZoom;
+    private int mMinZoom;
     private OnZoomChangedListener mListener;
 
     private ScaleGestureDetector mDetector;
     private Paint mPaint;
+    private Paint mTextPaint;
     private int mCircleSize;
     private int mCenterX;
     private int mCenterY;
     private float mMaxCircle;
     private float mMinCircle;
-    private float mScale = 1f;
-    private float mMinScale = 1f;
-    private float mMaxScale = 3f;
     private int mInnerStroke;
     private int mOuterStroke;
+    private int mZoomSig;
+    private int mZoomFraction;
+    private Rect mTextBounds;
 
     public interface OnZoomChangedListener {
         void onZoomStart();
@@ -59,22 +61,29 @@ public class ZoomRenderer extends OverlayRenderer
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.WHITE);
         mPaint.setStyle(Paint.Style.STROKE);
+        mTextPaint = new Paint(mPaint);
+        mTextPaint.setStyle(Paint.Style.FILL);
+        mTextPaint.setTextSize(res.getDimensionPixelSize(R.dimen.zoom_font_size));
+        mTextPaint.setTextAlign(Paint.Align.LEFT);
+        mTextPaint.setAlpha(192);
         mInnerStroke = res.getDimensionPixelSize(R.dimen.focus_inner_stroke);
         mOuterStroke = res.getDimensionPixelSize(R.dimen.focus_outer_stroke);
         mDetector = new ScaleGestureDetector(ctx, this);
         mMinCircle = res.getDimensionPixelSize(R.dimen.zoom_ring_min);
+        mTextBounds = new Rect();
         setVisible(false);
     }
 
     // set from module
-    public void setZoomMax(int zoomMax) {
-        mMaxZoom = zoomMax;
+    public void setZoomMax(int zoomMaxIndex) {
+        mMaxZoom = zoomMaxIndex;
+        mMinZoom = 0;
     }
 
-    // set from module
-    public void setZoomIndex(int index) {
-        mScale = (mMaxScale - mMinScale) * index / mMaxZoom + mMinScale;
-        mZoom = index;
+    public void setZoomValue(int value) {
+        value = value / 10;
+        mZoomSig = value / 10;
+        mZoomFraction = value % 10;
     }
 
     public void setOnZoomChangeListener(OnZoomChangedListener listener) {
@@ -104,22 +113,22 @@ public class ZoomRenderer extends OverlayRenderer
         mPaint.setStrokeWidth(mOuterStroke);
         canvas.drawCircle((float) mCenterX, (float) mCenterY,
                 (float) mCircleSize, mPaint);
+        String txt = mZoomSig+"."+mZoomFraction+"x";
+        mTextPaint.getTextBounds(txt, 0, txt.length(), mTextBounds);
+        canvas.drawText(txt, mCenterX - mTextBounds.centerX(), mCenterY - mTextBounds.centerY(),
+                mTextPaint);
     }
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
-        mScale = mScale * detector.getScaleFactor();
-        if (mScale < 1) mScale = 1;
-        if (mScale > mMaxScale) mScale = mMaxScale;
-        int newzoom = (int) ((mScale - mMinScale) * mMaxZoom / (mMaxScale - mMinScale));
-        if (newzoom > mMaxZoom) newzoom = mMaxZoom;
-        if (newzoom < 0) newzoom = 0;
-        if (mListener != null && newzoom != mZoom) {
-            mListener.onZoomValueChanged(newzoom);
-            mZoom = newzoom;
+        float circle = (int) (mCircleSize * detector.getScaleFactor());
+        circle = Math.max(mMinCircle, circle);
+        circle = Math.min(mMaxCircle, circle);
+        if (mListener != null && (int) circle != mCircleSize) {
+            mCircleSize = (int) circle;
+            int zoom = mMinZoom + (int) ((mCircleSize - mMinCircle) * (mMaxZoom - mMinZoom) / (mMaxCircle - mMinCircle));
+            mListener.onZoomValueChanged(zoom);
         }
-        mCircleSize = (int) (mMinCircle + (mScale - mMinScale) * (mMaxCircle - mMinCircle)
-                / (mMaxScale - mMinScale));
         return true;
     }
 
