@@ -176,7 +176,7 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Setha umkhawulo wesikhathi"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Isici sesikhathi esidlulile sicimile. Sikhanyise ukuze usethe umkhawulo wesikhathi."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Khumbula izindawo zezithombe?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Chasisa izithombe namavidiyo wakho ngezindawo lapho zithathwe khona."\n\n"Ezinye izinhlelo zokusebenza zingafinyelela lolu lwazi nezithombe zakho ezilondoloziwe."</string>
+    <string name="remember_location_prompt" msgid="9107532965604174377">"Chasisa izithombe namavidiyo wakho ngezindawo lapho zithathwe khona."\n\n"Ezinye izinhlelo zokusebenza zingafinyelela kulolu lwazi nezithombe zakho ezilondoloziwe."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Cha ngiyabonga"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Yebo"</string>
 </resources>
