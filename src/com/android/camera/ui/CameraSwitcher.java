@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -38,6 +39,7 @@ public class CameraSwitcher extends RotateImageView
         implements OnClickListener, OnTouchListener {
 
     private static final String TAG = "CAM_Switcher";
+    private static final int SWITCHER_POPUP_ANIM_DURATION = 200;
 
     public interface CameraSwitchListener {
         public void onCameraSelected(int i);
@@ -53,6 +55,9 @@ public class CameraSwitcher extends RotateImageView
     private boolean mShowingPopup;
     private boolean mNeedsAnimationSetup;
     private Drawable mIndicator;
+
+    private float mTranslationX = 0;
+    private float mTranslationY = 0;
 
     private AnimatorListener mHideAnimationListener;
     private AnimatorListener mShowAnimationListener;
@@ -201,14 +206,25 @@ public class CameraSwitcher extends RotateImageView
         }
     }
 
+    private void updateInitialTranslations() {
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT) {
+            mTranslationX = -getWidth() / 2 ;
+            mTranslationY = getHeight();
+        } else {
+            mTranslationX = getWidth();
+            mTranslationY = getHeight() / 2;
+        }
+    }
     private void popupAnimationSetup() {
         if (!ApiHelper.HAS_VIEW_PROPERTY_ANIMATOR) {
             return;
         }
+        updateInitialTranslations();
         mPopup.setScaleX(0.3f);
         mPopup.setScaleY(0.3f);
-        mPopup.setTranslationX(-getWidth() / 2);
-        mPopup.setTranslationY(getHeight());
+        mPopup.setTranslationX(mTranslationX);
+        mPopup.setTranslationY(mTranslationY);
         mNeedsAnimationSetup = false;
     }
 
@@ -230,10 +246,12 @@ public class CameraSwitcher extends RotateImageView
         mPopup.animate()
                 .alpha(0f)
                 .scaleX(0.3f).scaleY(0.3f)
-                .translationX(-getWidth() / 2)
-                .translationY(getHeight())
+                .translationX(mTranslationX)
+                .translationY(mTranslationY)
+                .setDuration(SWITCHER_POPUP_ANIM_DURATION)
                 .setListener(mHideAnimationListener);
-        animate().alpha(1f).setListener(null);
+        animate().alpha(1f).setDuration(SWITCHER_POPUP_ANIM_DURATION)
+                .setListener(null);
         return true;
     }
 
@@ -260,8 +278,9 @@ public class CameraSwitcher extends RotateImageView
                 .scaleX(1f).scaleY(1f)
                 .translationX(0)
                 .translationY(0)
+                .setDuration(SWITCHER_POPUP_ANIM_DURATION)
                 .setListener(null);
-        animate().alpha(0f)
+        animate().alpha(0f).setDuration(SWITCHER_POPUP_ANIM_DURATION)
                 .setListener(mShowAnimationListener);
         return true;
     }
