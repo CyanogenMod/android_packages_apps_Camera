@@ -63,7 +63,7 @@ public class MosaicPreviewRenderer {
         public static final int MSG_INIT_EGL_SYNC = 0;
         public static final int MSG_SHOW_PREVIEW_FRAME_SYNC = 1;
         public static final int MSG_SHOW_PREVIEW_FRAME = 2;
-        public static final int MSG_ALIGN_FRAME = 3;
+        public static final int MSG_ALIGN_FRAME_SYNC = 3;
         public static final int MSG_RELEASE = 4;
 
         public EGLHandler(Looper looper) {
@@ -84,8 +84,9 @@ public class MosaicPreviewRenderer {
                 case MSG_SHOW_PREVIEW_FRAME:
                     doShowPreviewFrame();
                     break;
-                case MSG_ALIGN_FRAME:
+                case MSG_ALIGN_FRAME_SYNC:
                     doAlignFrame();
+                    mEglThreadBlockVar.open();
                     break;
                 case MSG_RELEASE:
                     doRelease();
@@ -213,8 +214,8 @@ public class MosaicPreviewRenderer {
         mEglHandler.sendEmptyMessage(EGLHandler.MSG_SHOW_PREVIEW_FRAME);
     }
 
-    public void alignFrame() {
-        mEglHandler.sendEmptyMessage(EGLHandler.MSG_ALIGN_FRAME);
+    public void alignFrameSync() {
+        mEglHandler.sendMessageSync(EGLHandler.MSG_ALIGN_FRAME_SYNC);
     }
 
     public SurfaceTexture getInputSurfaceTexture() {
