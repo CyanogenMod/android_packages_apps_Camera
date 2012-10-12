@@ -195,8 +195,14 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
     public void animateSlide() {
         synchronized (mLock) {
+            // Ignore the case where animateFlash is skipped but animateSlide is called
+            // e.g. Double tap shutter and immediately swipe to gallery, and quickly swipe back
+            // to camera. This case only happens in monkey tests, not applicable to normal
+            // human beings.
             if (mAnimState != ANIM_CAPTURE_RUNNING) {
-                throw new IllegalStateException("Cannot animateSlide outside of animateCapture!");
+                Log.v(TAG, "Cannot animateSlide outside of animateCapture!"
+                        + " Animation state = " + mAnimState);
+                return;
             }
             mCaptureAnimManager.animateSlide();
             mListener.requestRender();
