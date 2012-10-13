@@ -91,7 +91,9 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     }
 
     public void setFullScreen(boolean full) {
-        mFullScreen = full;
+        synchronized (mLock) {
+            mFullScreen = full;
+        }
     }
 
     // return the actual rendered width
@@ -283,7 +285,12 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
             if (mAnimState == ANIM_CAPTURE_RUNNING || mAnimState == ANIM_SWITCH_RUNNING) {
                 boolean drawn;
                 if (mAnimState == ANIM_CAPTURE_RUNNING) {
-                    drawn = mCaptureAnimManager.drawAnimation(canvas, this, mAnimTexture);
+                    if (!mFullScreen) {
+                        // Skip the animation if no longer in full screen mode
+                        drawn = false;
+                    } else {
+                        drawn = mCaptureAnimManager.drawAnimation(canvas, this, mAnimTexture);
+                    }
                 } else {
                     if (mRenderWidth != 0) {
                         // overscale image to make it fullscreen
