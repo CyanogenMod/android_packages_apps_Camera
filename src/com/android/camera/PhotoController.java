@@ -19,13 +19,12 @@ package com.android.camera;
 import android.content.Context;
 import android.hardware.Camera.Parameters;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
 
 import com.android.camera.ui.AbstractSettingPopup;
 import com.android.camera.ui.ListPrefSettingPopup;
 import com.android.camera.ui.MoreSettingPopup;
 import com.android.camera.ui.PieItem;
+import com.android.camera.ui.PieItem.OnClickListener;
 import com.android.camera.ui.PieRenderer;
 
 public class PhotoController extends PieController
@@ -58,10 +57,10 @@ public class PhotoController extends PieController
         addItem(CameraSettings.KEY_WHITE_BALANCE, 3 * FLOAT_PI_DIVIDED_BY_TWO + sweep, sweep);
         PieItem item = makeItem(R.drawable.ic_switch_photo_facing_holo_light);
         item.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO + sweep,  sweep);
-        item.getView().setOnClickListener(new OnClickListener() {
+        item.setOnClickListener(new OnClickListener() {
 
             @Override
-            public void onClick(View v) {
+            public void onClick(PieItem item) {
                 // Find the index of next camera.
                 ListPreference pref = mPreferenceGroup.findPreference(CameraSettings.KEY_CAMERA_ID);
                 if (pref != null) {
@@ -77,9 +76,9 @@ public class PhotoController extends PieController
         if (group.findPreference(CameraSettings.KEY_CAMERA_HDR) != null) {
             PieItem hdr = makeItem(R.drawable.ic_hdr);
             hdr.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO, sweep);
-            hdr.getView().setOnClickListener(new OnClickListener() {
+            hdr.setOnClickListener(new OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(PieItem item) {
                     // Find the index of next camera.
                     ListPreference pref = mPreferenceGroup
                             .findPreference(CameraSettings.KEY_CAMERA_HDR);
@@ -100,9 +99,9 @@ public class PhotoController extends PieController
                 CameraSettings.KEY_FOCUS_MODE};
         item = makeItem(R.drawable.ic_settings_holo_light);
         item.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO * 3, sweep);
-        item.getView().setOnClickListener(new OnClickListener() {
+        item.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(PieItem item) {
                 if (mPopup == null) {
                     initializePopup();
                 }
