@@ -16,9 +16,11 @@
 
 package com.android.camera.ui;
 
+import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Path;
-import android.view.View;
-import android.widget.ImageView;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,11 @@ import java.util.List;
  */
 public class PieItem {
 
-    private View mView;
+    public static interface OnClickListener {
+        void onClick(PieItem item);
+    }
+
+    private Drawable mDrawable;
     private int level;
     private float mCenter;
     private float start;
@@ -40,18 +46,20 @@ public class PieItem {
     private boolean mEnabled;
     private List<PieItem> mItems;
     private Path mPath;
+    private OnClickListener mOnClickListener;
+    private float mAlpha;
 
     // Gray out the view when disabled
     private static final float ENABLED_ALPHA = 1;
     private static final float DISABLED_ALPHA = (float) 0.3;
     private boolean mChangeAlphaWhenDisabled = true;
 
-    public PieItem(View view, int level) {
-        mView = view;
+    public PieItem(Drawable drawable, int level) {
+        mDrawable = drawable;
         this.level = level;
+        setAlpha(1f);
         mEnabled = true;
         setAnimationAngle(getAnimationAngle());
-        setAlpha(getAlpha());
         start = -1;
         mCenter = -1;
     }
@@ -84,22 +92,8 @@ public class PieItem {
     }
 
     public void setAlpha(float alpha) {
-        if (mView != null) {
-            if (mView instanceof ImageView) {
-                // Here use deprecated ImageView.setAlpha(int alpha)
-                // for backward compatibility
-                ((ImageView) mView).setAlpha((int) (255.0 * alpha));
-            } else {
-                mView.setAlpha(alpha);
-            }
-        }
-    }
-
-    public float getAlpha() {
-        if (mView != null) {
-            return mView.getAlpha();
-        }
-        return 1;
+        mAlpha = alpha;
+        mDrawable.setAlpha((int) (255 * alpha));
     }
 
     public void setAnimationAngle(float a) {
@@ -127,9 +121,6 @@ public class PieItem {
 
     public void setSelected(boolean s) {
         mSelected = s;
-        if (mView != null) {
-            mView.setSelected(s);
-        }
     }
 
     public boolean isSelected() {
@@ -176,8 +167,37 @@ public class PieItem {
         return outer;
     }
 
-    public View getView() {
-        return mView;
+    public void setOnClickListener(OnClickListener listener) {
+        mOnClickListener = listener;
+    }
+
+    public void performClick() {
+        if (mOnClickListener != null) {
+            mOnClickListener.onClick(this);
+        }
+    }
+
+    public int getIntrinsicWidth() {
+        return mDrawable.getIntrinsicWidth();
+    }
+
+    public int getIntrinsicHeight() {
+        return mDrawable.getIntrinsicHeight();
+    }
+
+    public void setBounds(int left, int top, int right, int bottom) {
+        mDrawable.setBounds(left, top, right, bottom);
+    }
+
+    public void draw(Canvas canvas) {
+        mDrawable.draw(canvas);
+    }
+
+    public void setImageResource(Context context, int resId) {
+        Drawable d = context.getResources().getDrawable(resId).mutate();
+        d.setBounds(mDrawable.getBounds());
+        mDrawable = d;
+        setAlpha(mAlpha);
     }
 
 }
