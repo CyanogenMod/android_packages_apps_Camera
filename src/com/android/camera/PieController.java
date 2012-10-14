@@ -16,18 +16,13 @@
 
 package com.android.camera;
 
-import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
-import android.widget.TextView;
 
 import com.android.camera.CameraPreference.OnPreferenceChangedListener;
+import com.android.camera.drawable.TextDrawable;
 import com.android.camera.ui.PieItem;
+import com.android.camera.ui.PieItem.OnClickListener;
 import com.android.camera.ui.PieRenderer;
 
 import java.util.ArrayList;
@@ -49,7 +44,6 @@ public class PieController {
     private List<IconListPreference> mPreferences;
     private Map<IconListPreference, PieItem> mPreferenceMap;
     private Map<IconListPreference, String> mOverrides;
-    private int mItemSize;
 
     public void setListener(OnPreferenceChangedListener listener) {
         mListener = listener;
@@ -61,7 +55,6 @@ public class PieController {
         mPreferences = new ArrayList<IconListPreference>();
         mPreferenceMap = new HashMap<IconListPreference, PieItem>();
         mOverrides = new HashMap<IconListPreference, String>();
-        mItemSize = activity.getResources().getDimensionPixelSize(R.dimen.pie_view_size);
     }
 
     public void initialize(PreferenceGroup group) {
@@ -81,26 +74,14 @@ public class PieController {
     }
 
     protected PieItem makeItem(int resId) {
-        ImageView view = new ImageView(mActivity);
-        view.setImageResource(resId);
-        view.setMinimumWidth(mItemSize);
-        view.setMinimumHeight(mItemSize);
-        view.setScaleType(ScaleType.CENTER);
-        LayoutParams lp = new LayoutParams(mItemSize, mItemSize);
-        view.setLayoutParams(lp);
-        return new PieItem(view, 0);
+        // We need a mutable version as we change the alpha
+        Drawable d = mActivity.getResources().getDrawable(resId).mutate();
+        return new PieItem(d, 0);
     }
 
     protected PieItem makeItem(CharSequence value) {
-        TextView view = new TextView(mActivity);
-        view.setText(value);
-        view.setMinimumWidth(mItemSize);
-        view.setMinimumHeight(mItemSize);
-        view.setGravity(Gravity.CENTER);
-        view.setTextColor(Color.WHITE);
-        LayoutParams lp = new LayoutParams(mItemSize, mItemSize);
-        view.setLayoutParams(lp);
-        return new PieItem(view, 0);
+        TextDrawable drawable = new TextDrawable(mActivity.getResources(), value);
+        return new PieItem(drawable, 0);
     }
 
     public void addItem(String prefKey, float center, float sweep) {
@@ -134,9 +115,9 @@ public class PieController {
                 }
                 item.addItem(inner);
                 final int index = i;
-                inner.getView().setOnClickListener(new OnClickListener() {
+                inner.setOnClickListener(new OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(PieItem item) {
                         pref.setValueIndex(index);
                         reloadPreference(pref);
                         onSettingChanged(pref);
@@ -175,10 +156,10 @@ public class PieController {
                     return;
                 }
             }
-            ((ImageView) item.getView()).setImageResource(iconIds[index]);
+            item.setImageResource(mActivity, iconIds[index]);
         } else {
             // The preference only has a single icon to represent it.
-            ((ImageView) item.getView()).setImageResource(pref.getSingleIcon());
+            item.setImageResource(mActivity, pref.getSingleIcon());
         }
     }
 
