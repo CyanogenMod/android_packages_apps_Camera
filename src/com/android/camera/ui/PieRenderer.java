@@ -30,7 +30,6 @@ import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -66,6 +65,7 @@ public class PieRenderer extends OverlayRenderer
     private static final int DIAL_HORIZONTAL = 157;
 
     private static final long PIE_FADE_IN_DURATION = 200;
+    private static final long PIE_XFADE_DURATION = 200;
     private static final long FOCUS_TAP_TIMEOUT = 500;
     private static final long PIE_SELECT_FADE_DURATION = 300;
 
@@ -325,22 +325,17 @@ public class PieRenderer extends OverlayRenderer
         for (PieItem item : items) {
             // shared between items
             item.setPath(path);
-            View view = item.getView();
             if (item.getCenter() >= 0) {
                 angle = item.getCenter();
             }
-            if (view != null) {
-                view.measure(view.getLayoutParams().width,
-                        view.getLayoutParams().height);
-                int w = view.getMeasuredWidth();
-                int h = view.getMeasuredHeight();
-                // move views to outer border
-                int r = inner + (outer - inner) * 2 / 3;
-                int x = (int) (r * Math.cos(angle));
-                int y = mCenter.y - (int) (r * Math.sin(angle)) - h / 2;
-                x = mCenter.x + x - w / 2;
-                view.layout(x, y, x + w, y + h);
-            }
+            int w = item.getIntrinsicWidth();
+            int h = item.getIntrinsicHeight();
+            // move views to outer border
+            int r = inner + (outer - inner) * 2 / 3;
+            int x = (int) (r * Math.cos(angle));
+            int y = mCenter.y - (int) (r * Math.sin(angle)) - h / 2;
+            x = mCenter.x + x - w / 2;
+            item.setBounds(x, y, x + w, y + h);
             float itemstart = angle - sweep / 2;
             item.setGeometry(itemstart, sweep, inner, outer);
             if (item.hasItems()) {
@@ -415,7 +410,7 @@ public class PieRenderer extends OverlayRenderer
     }
 
     private void drawItem(Canvas canvas, PieItem item, float alpha) {
-        if ((mState == STATE_PIE) && (item.getView() != null)) {
+        if (mState == STATE_PIE) {
             if (item.getPath() != null) {
                 int state = -1;
                 if (item.isSelected()) {
@@ -427,20 +422,15 @@ public class PieRenderer extends OverlayRenderer
                     canvas.restoreToCount(state);
                 }
                 // draw the item view
-                View view = item.getView();
                 state = canvas.save();
                 if (mFadeIn != null) {
                     float sf = 0.9f + alpha * 0.1f;
                     canvas.scale(sf, sf, mCenter.x, mCenter.y);
                 }
-                canvas.translate(view.getX(), view.getY());
-                if (alpha < 1) {
-                    canvas.saveLayerAlpha(0, 0, getWidth(), getHeight(), (int)(255 * alpha), 0);
+                if (((mFadeIn != null) || (mXFade != null)) && (alpha < 1)) {
+                    item.setAlpha(alpha);
                 }
-                view.draw(canvas);
-                if (alpha < 1) {
-                    canvas.restore();
-                }
+                item.draw(canvas);
                 canvas.restoreToCount(state);
             }
         }
@@ -482,8 +472,8 @@ public class PieRenderer extends OverlayRenderer
                     mTapMode = false;
                     show(false);
                 } else if (!mOpening
-                        && !item.hasItems() && item.getView() != null) {
-                    item.getView().performClick();
+                        && !item.hasItems()) {
+                    item.performClick();
                     startFadeOut();
                     mTapMode = false;
                 }
@@ -560,7 +550,7 @@ public class PieRenderer extends OverlayRenderer
             mOpenItem = mCurrentItem;
             mOpening = true;
             mXFade = new LinearAnimation(1, 0);
-            mXFade.setDuration(200);
+            mXFade.setDuration(PIE_XFADE_DURATION);
             mXFade.setAnimationListener(new AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
