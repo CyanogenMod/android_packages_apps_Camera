@@ -41,8 +41,7 @@ import java.io.IOException;
  * called soon after, we can avoid the cost of {@code open()} in {@code
  * android.hardware.Camera}.
  *
- * <p>This is used in switching between {@code Camera} and {@code VideoCamera}
- * activities.
+ * <p>This is used in switching between different modules.
  */
 public class CameraHolder {
     private static final String TAG = "CameraHolder";
@@ -61,8 +60,8 @@ public class CameraHolder {
 
     // We store the camera parameters when we actually open the device,
     // so we can restore them in the subsequent open() requests by the user.
-    // This prevents the parameters set by the Camera activity used by
-    // the VideoCamera activity inadvertently.
+    // This prevents the parameters set by PhotoModule used by VideoModule
+    // inadvertently.
     private Parameters mParameters;
 
     // Use a singleton.

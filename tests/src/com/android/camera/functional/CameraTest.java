@@ -16,8 +16,7 @@
 
 package com.android.camera.functional;
 
-import com.android.camera.Camera;
-import com.android.camera.VideoCamera;
+import com.android.camera.CameraActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -36,7 +35,7 @@ public class CameraTest extends InstrumentationTestCase {
     @LargeTest
     public void testVideoCaptureIntentFdLeak() throws Exception {
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        intent.setClass(getInstrumentation().getTargetContext(), VideoCamera.class);
+        intent.setClass(getInstrumentation().getTargetContext(), CameraActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.parse("file://"
                 + Environment.getExternalStorageDirectory().toString()
@@ -50,15 +49,16 @@ public class CameraTest extends InstrumentationTestCase {
 
     @LargeTest
     public void testActivityLeak() throws Exception {
-        checkActivityLeak(Camera.class);
-        checkActivityLeak(VideoCamera.class);
+        checkActivityLeak(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+        checkActivityLeak(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
     }
 
-    private void checkActivityLeak(Class<?> cls) throws Exception {
+    private void checkActivityLeak(String action) throws Exception {
         final int TEST_COUNT = 5;
-        Intent intent = new Intent();
+        Intent intent = new Intent(action);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setClass(getInstrumentation().getTargetContext(), cls);
+        intent.setClass(getInstrumentation().getTargetContext(),
+                CameraActivity.class);
         ArrayList<WeakReference<Activity>> refs =
                 new ArrayList<WeakReference<Activity>>();
         for (int i = 0; i < TEST_COUNT; i++) {

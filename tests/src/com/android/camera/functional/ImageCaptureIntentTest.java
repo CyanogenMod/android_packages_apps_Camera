@@ -16,7 +16,7 @@
 
 package com.android.camera.functional;
 
-import com.android.camera.Camera;
+import com.android.camera.CameraActivity;
 import com.android.camera.R;
 
 import android.app.Activity;
@@ -34,11 +34,11 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
-public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <Camera> {
+public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <CameraActivity> {
     private Intent mIntent;
 
     public ImageCaptureIntentTest() {
-        super(Camera.class);
+        super(CameraActivity.class);
     }
 
     @Override
@@ -99,25 +99,6 @@ public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <Ca
     }
 
     @LargeTest
-    public void testRetake() throws Exception {
-        setActivityIntent(mIntent);
-        getActivity();
-
-        takePicture();
-        pressRetake();
-        takePicture();
-        pressDone();
-
-        assertTrue(getActivity().isFinishing());
-        assertEquals(Activity.RESULT_OK, getActivity().getResultCode());
-        Intent resultData = getActivity().getResultData();
-        Bitmap bitmap = (Bitmap) resultData.getParcelableExtra("data");
-        assertNotNull(bitmap);
-        assertTrue(bitmap.getWidth() > 0);
-        assertTrue(bitmap.getHeight() > 0);
-    }
-
-    @LargeTest
     public void testCancel() throws Exception {
         setActivityIntent(mIntent);
         getActivity();
@@ -152,15 +133,6 @@ public class ImageCaptureIntentTest extends ActivityInstrumentationTestCase2 <Ca
             @Override
             public void run() {
                 getActivity().findViewById(R.id.btn_done).performClick();
-            }
-        });
-    }
-
-    private void pressRetake() {
-        getInstrumentation().runOnMainSync(new Runnable() {
-            @Override
-            public void run() {
-                getActivity().findViewById(R.id.btn_retake).performClick();
             }
         });
     }
