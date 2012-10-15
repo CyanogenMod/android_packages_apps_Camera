@@ -623,22 +623,13 @@ public class PieRenderer extends OverlayRenderer
         }
     }
 
-    public void setFocus(int x, int y, boolean startImmediately) {
+    public void setFocus(int x, int y) {
         mFocusFromTap = true;
         mTapMode = true;
         mFocusX = x;
         mFocusY = y;
         setCircle(mFocusX, mFocusY);
         setupPie(mFocusX, mFocusY);
-        if (startImmediately) {
-            // cameras that don't support focus still need to show menu
-            setVisible(true);
-            mState = STATE_PIE;
-            mHandler.removeMessages(MSG_FOCUS_TAP);
-            mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_FOCUS_TAP),
-                    FOCUS_TAP_TIMEOUT);
-            update();
-        }
     }
 
     public void alignFocus(int x, int y) {
