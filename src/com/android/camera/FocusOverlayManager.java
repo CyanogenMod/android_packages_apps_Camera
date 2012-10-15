@@ -346,7 +346,7 @@ public class FocusOverlayManager {
         }
 
         // Use margin to set the focus indicator to the touched area.
-        mPieRenderer.setFocus(x, y, false);
+        mPieRenderer.setFocus(x, y);
 
         // Stop face detection because we want to specify focus and metering area.
         mListener.stopFaceDetection();

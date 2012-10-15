@@ -2501,8 +2501,6 @@ public class VideoModule implements CameraModule,
             // check for dismissing popup
             if (mPopup != null) {
                 dismissPopup(true);
-            } else if (mPieRenderer != null) {
-                mPieRenderer.setFocus(x, y, true);
             }
             return;
         }
