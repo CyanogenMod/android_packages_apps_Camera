@@ -80,6 +80,10 @@ public class ZoomRenderer extends OverlayRenderer
         mMinZoom = 0;
     }
 
+    public void setZoom(int index) {
+        mCircleSize = (int) (mMinCircle + index * (mMaxCircle - mMinCircle) / (mMaxZoom - mMinZoom));
+    }
+
     public void setZoomValue(int value) {
         value = value / 10;
         mZoomSig = value / 10;
