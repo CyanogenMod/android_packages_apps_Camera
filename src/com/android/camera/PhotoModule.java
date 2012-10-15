@@ -1306,6 +1306,14 @@ public class PhotoModule
         }
     }
 
+    private void setShowMenu(boolean show) {
+        if (mOnScreenIndicators != null) {
+            mOnScreenIndicators.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+        if (mMenu != null) {
+            mMenu.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
 
     @Override
     public void onFullScreenChanged(boolean full) {
@@ -1313,7 +1321,7 @@ public class PhotoModule
             mFaceView.setBlockDraw(!full);
         }
         if (mPopup != null) {
-            dismissPopup(false, true);
+            dismissPopup(false, full);
         }
         if (mGestures != null) {
             mGestures.setEnabled(full);
@@ -1325,12 +1333,7 @@ public class PhotoModule
         if (mPieRenderer != null) {
             mPieRenderer.setBlockFocus(!full);
         }
-        if (mOnScreenIndicators != null) {
-            mOnScreenIndicators.setVisibility(full ? View.VISIBLE : View.GONE);
-        }
-        if (mMenu != null) {
-            mMenu.setVisibility(full ? View.VISIBLE : View.GONE);
-        }
+        setShowMenu(full);
         if (mBlocker != null) {
             mBlocker.setVisibility(full ? View.VISIBLE : View.GONE);
         }
@@ -2535,6 +2538,7 @@ public class PhotoModule
 
     public void showPopup(AbstractSettingPopup popup) {
         mActivity.hideUI();
+        setShowMenu(false);
         mPopup = popup;
         // Make sure popup is brought up with the right orientation
         mPopup.setOrientation(mOrientationCompensation, false);
@@ -2546,13 +2550,14 @@ public class PhotoModule
     }
 
     public void dismissPopup(boolean topPopupOnly) {
-        dismissPopup(topPopupOnly, false);
+        dismissPopup(topPopupOnly, true);
     }
 
     private void dismissPopup(boolean topOnly, boolean fullScreen) {
-        if (!fullScreen) {
+        if (fullScreen) {
             mActivity.showUI();
         }
+        setShowMenu(fullScreen);
         if (mPopup != null) {
             ((FrameLayout) mRootView).removeView(mPopup);
             mPopup = null;
