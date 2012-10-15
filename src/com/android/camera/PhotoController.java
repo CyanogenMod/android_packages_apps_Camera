@@ -55,24 +55,27 @@ public class PhotoController extends PieController
         addItem(CameraSettings.KEY_FLASH_MODE, FLOAT_PI_DIVIDED_BY_TWO - sweep, sweep);
         addItem(CameraSettings.KEY_EXPOSURE, 3 * FLOAT_PI_DIVIDED_BY_TWO - sweep, sweep);
         addItem(CameraSettings.KEY_WHITE_BALANCE, 3 * FLOAT_PI_DIVIDED_BY_TWO + sweep, sweep);
-        PieItem item = makeItem(R.drawable.ic_switch_photo_facing_holo_light);
-        item.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO + sweep,  sweep);
-        item.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(PieItem item) {
-                // Find the index of next camera.
-                ListPreference pref = mPreferenceGroup.findPreference(CameraSettings.KEY_CAMERA_ID);
-                if (pref != null) {
-                    int index = pref.findIndexOfValue(pref.getValue());
-                    CharSequence[] values = pref.getEntryValues();
-                    index = (index + 1) % values.length;
-                    int newCameraId = Integer.parseInt((String) values[index]);
-                    mListener.onCameraPickerClicked(newCameraId);
+        if (group.findPreference(CameraSettings.KEY_CAMERA_ID) != null) {
+            PieItem item = makeItem(R.drawable.ic_switch_photo_facing_holo_light);
+            item.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO + sweep, sweep);
+            item.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(PieItem item) {
+                    // Find the index of next camera.
+                    ListPreference camPref = mPreferenceGroup
+                            .findPreference(CameraSettings.KEY_CAMERA_ID);
+                    if (camPref != null) {
+                        int index = camPref.findIndexOfValue(camPref.getValue());
+                        CharSequence[] values = camPref.getEntryValues();
+                        index = (index + 1) % values.length;
+                        int newCameraId = Integer
+                                .parseInt((String) values[index]);
+                        mListener.onCameraPickerClicked(newCameraId);
+                    }
                 }
-            }
-        });
-        mRenderer.addItem(item);
+            });
+            mRenderer.addItem(item);
+        }
         if (group.findPreference(CameraSettings.KEY_CAMERA_HDR) != null) {
             PieItem hdr = makeItem(R.drawable.ic_hdr);
             hdr.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO, sweep);
@@ -97,7 +100,7 @@ public class PhotoController extends PieController
                 CameraSettings.KEY_RECORD_LOCATION,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_FOCUS_MODE};
-        item = makeItem(R.drawable.ic_settings_holo_light);
+        PieItem item = makeItem(R.drawable.ic_settings_holo_light);
         item.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO * 3, sweep);
         item.setOnClickListener(new OnClickListener() {
             @Override
