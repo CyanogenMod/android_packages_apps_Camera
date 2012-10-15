@@ -1246,6 +1246,17 @@ public class PhotoModule
         }
     }
 
+    private void animateFlash() {
+        // Only animate when in full screen capture mode
+        // i.e. If monkey/a user swipes to the gallery during picture taking,
+        // don't show animation
+        if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent
+                && mActivity.mShowCameraAppView) {
+            // Start capture animation.
+            ((CameraScreenNail) mActivity.mCameraScreenNail).animateFlash(getCameraRotation());
+        }
+    }
+
     @Override
     public boolean capture() {
         // If we are already in the middle of taking a snapshot then ignore.
@@ -1257,13 +1268,10 @@ public class PhotoModule
         mPostViewPictureCallbackTime = 0;
         mJpegImageData = null;
 
-        // Only animate when in full screen capture mode
-        // i.e. If monkey/a user swipes to the gallery during picture taking,
-        // don't show animation
-        if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent
-                && mActivity.mShowCameraAppView) {
-            // Start capture animation.
-            ((CameraScreenNail) mActivity.mCameraScreenNail).animateFlash(getCameraRotation());
+        final boolean animateBefore = (mSceneMode == Util.SCENE_MODE_HDR);
+
+        if (animateBefore) {
+            animateFlash();
         }
 
         // Set rotation and gps data.
@@ -1276,6 +1284,10 @@ public class PhotoModule
         mCameraDevice.takePicture2(mShutterCallback, mRawPictureCallback,
                 mPostViewPictureCallback, new JpegPictureCallback(loc),
                 mCameraState, mFocusManager.getFocusState());
+
+        if (!animateBefore) {
+            animateFlash();
+        }
 
         Size size = mParameters.getPictureSize();
         mImageNamer.prepareUri(mContentResolver, mCaptureStartTime,
