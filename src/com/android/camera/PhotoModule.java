@@ -709,6 +709,7 @@ public class PhotoModule
         // there is no plan to take advantage of the smooth zoom.
         if (mZoomRenderer != null) {
             mZoomRenderer.setZoomMax(mZoomMax);
+            mZoomRenderer.setZoom(mParameters.getZoom());
             mZoomRenderer.setZoomValue(mZoomRatios.get(mParameters.getZoom()));
             mZoomRenderer.setOnZoomChangeListener(new ZoomChangeListener());
         }
