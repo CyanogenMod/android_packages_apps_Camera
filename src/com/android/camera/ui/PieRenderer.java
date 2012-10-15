@@ -388,13 +388,21 @@ public class PieRenderer extends OverlayRenderer
 
     @Override
     public void onDraw(Canvas canvas) {
-        drawFocus(canvas);
-        if (mState == STATE_FINISHING) return;
         float alpha = 1;
         if (mXFade != null) {
             alpha = mXFade.getValue();
         } else if (mFadeIn != null) {
             alpha = mFadeIn.getValue();
+        }
+        int state = canvas.save();
+        if (mFadeIn != null) {
+            float sf = 0.9f + alpha * 0.1f;
+            canvas.scale(sf, sf, mCenter.x, mCenter.y);
+        }
+        drawFocus(canvas);
+        if (mState == STATE_FINISHING) {
+            canvas.restoreToCount(state);
+            return;
         }
         if ((mOpenItem == null) || (mXFade != null)) {
             // draw base menu
@@ -407,29 +415,23 @@ public class PieRenderer extends OverlayRenderer
                 drawItem(canvas, inner, (mXFade != null) ? (1 - 0.5f * alpha) : 1);
             }
         }
+        canvas.restoreToCount(state);
     }
 
     private void drawItem(Canvas canvas, PieItem item, float alpha) {
         if (mState == STATE_PIE) {
             if (item.getPath() != null) {
-                int state = -1;
                 if (item.isSelected()) {
                     Paint p = mSelectedPaint;
-                    state = canvas.save();
+                    int state = canvas.save();
                     float r = getDegrees(item.getStartAngle());
                     canvas.rotate(r, mCenter.x, mCenter.y);
                     canvas.drawPath(item.getPath(), p);
                     canvas.restoreToCount(state);
                 }
                 // draw the item view
-                state = canvas.save();
-                if (mFadeIn != null) {
-                    float sf = 0.9f + alpha * 0.1f;
-                    canvas.scale(sf, sf, mCenter.x, mCenter.y);
-                }
                 item.setAlpha(alpha);
                 item.draw(canvas);
-                canvas.restoreToCount(state);
             }
         }
     }
@@ -682,15 +684,7 @@ public class PieRenderer extends OverlayRenderer
     public void drawFocus(Canvas canvas) {
         if (mBlockFocus) return;
         mFocusPaint.setStrokeWidth(mOuterStroke);
-        if (mState == STATE_PIE && mFadeIn != null) {
-            canvas.save();
-            float sf = 0.9f + mFadeIn.getValue() * 0.1f;
-            canvas.scale(sf, sf, mCenterX, mCenterY);
-        }
         canvas.drawCircle((float) mFocusX, (float) mFocusY, (float) mCircleSize, mFocusPaint);
-        if (mState == STATE_PIE && mFadeIn != null) {
-            canvas.restore();
-        }
         if (mState == STATE_PIE) return;
         int color = mFocusPaint.getColor();
         if (mState == STATE_FINISHING) {
