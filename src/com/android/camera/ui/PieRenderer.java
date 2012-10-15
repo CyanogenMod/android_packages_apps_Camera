@@ -427,9 +427,7 @@ public class PieRenderer extends OverlayRenderer
                     float sf = 0.9f + alpha * 0.1f;
                     canvas.scale(sf, sf, mCenter.x, mCenter.y);
                 }
-                if (((mFadeIn != null) || (mXFade != null)) && (alpha < 1)) {
-                    item.setAlpha(alpha);
-                }
+                item.setAlpha(alpha);
                 item.draw(canvas);
                 canvas.restoreToCount(state);
             }
