@@ -2453,6 +2453,7 @@ public class VideoModule implements CameraModule,
         // Currently we use immediate zoom for fast zooming to get better UX and
         // there is no plan to take advantage of the smooth zoom.
         mZoomRenderer.setZoomMax(mZoomMax);
+        mZoomRenderer.setZoom(mParameters.getZoom());
         mZoomRenderer.setZoomValue(mZoomRatios.get(mParameters.getZoom()));
         mZoomRenderer.setOnZoomChangeListener(new ZoomChangeListener());
     }
