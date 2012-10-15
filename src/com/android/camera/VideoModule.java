@@ -2538,26 +2538,31 @@ public class VideoModule implements CameraModule,
         }
     }
 
+    private void setShowMenu(boolean show) {
+        if (mOnScreenIndicators != null) {
+            mOnScreenIndicators.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+        if (mMenu != null) {
+            mMenu.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+
     @Override
     public void onFullScreenChanged(boolean full) {
         if (mGestures != null) {
             mGestures.setEnabled(full);
         }
+        if (mPopup != null) {
+            dismissPopup(false, full);
+        }
         if (mRenderOverlay != null) {
             // this can not happen in capture mode
             mRenderOverlay.setVisibility(full ? View.VISIBLE : View.GONE);
         }
-        if (mMenu != null) {
-            // this can not happen in capture mode
-            mMenu.setVisibility(full ? View.VISIBLE : View.GONE);
-        }
+        setShowMenu(full);
         if (mBlocker != null) {
             // this can not happen in capture mode
             mBlocker.setVisibility(full ? View.VISIBLE : View.GONE);
-        }
-        if (mOnScreenIndicators != null) {
-            // this can not happen in capture mode
-            mOnScreenIndicators.setVisibility(full ? View.VISIBLE : View.GONE);
         }
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
             if (mActivity.mCameraScreenNail != null) {
@@ -2805,6 +2810,7 @@ public class VideoModule implements CameraModule,
 
     public void showPopup(AbstractSettingPopup popup) {
         mActivity.hideUI();
+        setShowMenu(false);
         mPopup = popup;
         // Make sure popup is brought up with the right orientation
         mPopup.setOrientation(mOrientationCompensation, false);
@@ -2815,8 +2821,15 @@ public class VideoModule implements CameraModule,
         ((FrameLayout) mRootView).addView(mPopup, lp);
     }
 
-    public void dismissPopup(boolean topLevelPopupOnly) {
-        mActivity.showUI();
+    public void dismissPopup(boolean topLevelOnly) {
+        dismissPopup(topLevelOnly, true);
+    }
+
+    public void dismissPopup(boolean topLevelPopupOnly, boolean fullScreen) {
+        if (fullScreen) {
+            mActivity.showUI();
+        }
+        setShowMenu(fullScreen);
         if (mPopup != null) {
             ((FrameLayout) mRootView).removeView(mPopup);
             mPopup = null;
