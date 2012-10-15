@@ -139,6 +139,11 @@ public class FocusOverlayManager {
     }
 
     public void setParameters(Parameters parameters) {
+        // parameters can only be null when onConfigurationChanged is called
+        // before camera is open. We will just return in this case, because
+        // parameters will be set again later with the right parameters after
+        // camera is open.
+        if (parameters == null) return;
         mParameters = parameters;
         mFocusAreaSupported = Util.isFocusAreaSupported(parameters);
         mMeteringAreaSupported = Util.isMeteringAreaSupported(parameters);
