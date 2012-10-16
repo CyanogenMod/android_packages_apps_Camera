@@ -440,7 +440,7 @@
     <!-- Title for first run dialog asking if the user wants to remember photo locations [CHAR LIMIT = 50] -->
     <string name="remember_location_title">Remember photo locations?</string>
     <!-- Message for first run dialog asking if the user wants to remember photo locations [CHAR LIMIT = None] -->
-    <string name="remember_location_prompt">Annotate your photos and videos with the places where they are taken.\n\nOther apps can access this information along with your saved images.</string>
+    <string name="remember_location_prompt">Tag your photos and videos with the locations where they are taken.\n\nOther apps can access this information along with your saved images.</string>
     <!-- Negative answer for first run dialog asking if the user wants to remember photo locations [CHAR LIMIT = 20] -->
     <string name="remember_location_no">No thanks</string>
     <!-- Positive answer for first run dialog asking if the user wants to remember photo locations [CHAR LIMIT = 20] -->
