@@ -641,23 +641,6 @@ public abstract class ActivityBase extends AbstractGalleryActivity
                 screenNail.setPreviewFrameLayoutSize(height, width);
             }
         }
-
-        // Find out the coordinates of the preview frame relative to GL
-        // root view.
-        View root = (View) getGLRoot();
-        int[] rootLocation = new int[2];
-        int[] viewLocation = new int[2];
-        root.getLocationInWindow(rootLocation);
-        v.getLocationInWindow(viewLocation);
-
-        int l = viewLocation[0] - rootLocation[0];
-        int t = viewLocation[1] - rootLocation[1];
-        int r = l + width;
-        int b = t + height;
-        Rect frame = new Rect(l, t, r, b);
-        Log.d(TAG, "set CameraRelativeFrame as " + frame);
-        mAppBridge.setCameraRelativeFrame(frame);
-        getGLRoot().requestLayoutContentPane();
     }
 
     protected void setSingleTapUpListener(View singleTapArea) {
