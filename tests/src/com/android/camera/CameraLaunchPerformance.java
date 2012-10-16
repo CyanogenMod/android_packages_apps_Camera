@@ -30,7 +30,8 @@ public class CameraLaunchPerformance extends LaunchPerformanceBase {
     @Override
     public void onCreate(Bundle arguments) {
         super.onCreate(arguments);
-        mIntent.setClassName(getTargetContext(), "com.android.camera.Camera");
+        mIntent.setClassName(getTargetContext(),
+                "com.android.camera.CameraActivity");
         start();
     }
 
