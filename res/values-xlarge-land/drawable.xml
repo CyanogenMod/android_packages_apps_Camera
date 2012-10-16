@@ -17,17 +17,6 @@
      the resources listed in this file wouldn't be reloaded when device
      orientation changes. -->
 <resources>
-    <item name="btn_camera_shutter_holo" type="drawable">@drawable/btn_camera_shutter_holo_xlarge</item>
-    <item name="btn_camera_shutter_pressed_holo" type="drawable">@drawable/btn_camera_shutter_pressed_holo_xlarge</item>
-    <item name="btn_pan_shutter_holo" type="drawable">@drawable/btn_pan_shutter_holo_xlarge</item>
-    <item name="btn_pan_shutter_pressed_holo" type="drawable">@drawable/btn_pan_shutter_pressed_holo_xlarge</item>
-    <item name="btn_pan_shutter_recording_holo" type="drawable">@drawable/btn_pan_shutter_recording_holo_xlarge</item>
-    <item name="btn_pan_shutter_recording_pressed_holo" type="drawable">@drawable/btn_pan_shutter_recording_pressed_holo_xlarge</item>
-    <item name="btn_retake_shutter_holo" type="drawable">@drawable/btn_retake_shutter_holo_xlarge</item>
-    <item name="btn_retake_shutter_pressed_holo" type="drawable">@drawable/btn_retake_shutter_pressed_holo_xlarge</item>
-    <item name="btn_video_shutter_holo" type="drawable">@drawable/btn_video_shutter_holo_xlarge</item>
-    <item name="btn_video_shutter_pressed_holo" type="drawable">@drawable/btn_video_shutter_pressed_holo_xlarge</item>
     <item name="btn_video_shutter_recording_holo" type="drawable">@drawable/btn_video_shutter_recording_holo_xlarge</item>
     <item name="btn_video_shutter_recording_pressed_holo" type="drawable">@drawable/btn_video_shutter_recording_pressed_holo_xlarge</item>
-    <item name="btn_wheel_close_settings" type="drawable">@drawable/btn_wheel_close_settings_xlarge</item>
 </resources>

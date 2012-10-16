@@ -147,7 +147,6 @@ public class VideoModule implements CameraModule,
     private Rotatable mReviewCancelButton;
     private Rotatable mReviewDoneButton;
     private RotateImageView mReviewPlayButton;
-    private View mReviewRetakeButton;
     private ShutterButton mShutterButton;
     private TextView mRecordingTimeView;
     private RotateLayout mBgLearningMessageRotater;
@@ -655,12 +654,6 @@ public class VideoModule implements CameraModule,
         } catch (ActivityNotFoundException ex) {
             Log.e(TAG, "Couldn't view video " + mCurrentVideoUri, ex);
         }
-    }
-
-    @OnClickAttr
-    public void onReviewRetakeClicked(View v) {
-        deleteCurrentVideo();
-        hideAlert();
     }
 
     @OnClickAttr

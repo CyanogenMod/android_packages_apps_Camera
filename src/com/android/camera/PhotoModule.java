@@ -1475,15 +1475,6 @@ public class PhotoModule
         }
     }
 
-    // onClick handler for R.id.btn_retake
-    @OnClickAttr
-    public void onReviewRetakeClicked(View v) {
-        if (mPaused) return;
-
-        hidePostCaptureAlert();
-        setupPreview();
-    }
-
     // onClick handler for R.id.btn_done
     @OnClickAttr
     public void onReviewDoneClicked(View v) {
