@@ -19,17 +19,6 @@
     <item name="ic_flash_auto_holo_light" type="drawable">@drawable/ic_flash_auto_holo_light_xlarge</item>
     <item name="ic_flash_off_holo_light" type="drawable">@drawable/ic_flash_off_holo_light_xlarge</item>
     <item name="ic_flash_on_holo_light" type="drawable">@drawable/ic_flash_on_holo_light_xlarge</item>
-    <item name="ic_gallery" type="drawable">@drawable/ic_gallery_xlarge</item>
-    <item name="ic_indicators_cloudy" type="drawable">@drawable/ic_indicators_cloudy_xlarge</item>
-    <item name="ic_indicators_fluorescent" type="drawable">@drawable/ic_indicators_fluorescent_xlarge</item>
-    <item name="ic_indicators_incandescent" type="drawable">@drawable/ic_indicators_incandescent_xlarge</item>
-    <item name="ic_indicators_landscape_flash_auto" type="drawable">@drawable/ic_indicators_landscape_flash_auto_xlarge</item>
-    <item name="ic_indicators_landscape_flash_on" type="drawable">@drawable/ic_indicators_landscape_flash_on_xlarge</item>
-    <item name="ic_indicators_landscape" type="drawable">@drawable/ic_indicators_landscape_xlarge</item>
-    <item name="ic_indicators_macro" type="drawable">@drawable/ic_indicators_macro_xlarge</item>
-    <item name="ic_indicators_scn" type="drawable">@drawable/ic_indicators_scn_xlarge</item>
-    <item name="ic_indicators_sunlight" type="drawable">@drawable/ic_indicators_sunlight_xlarge</item>
-    <item name="ic_menu_overflow" type="drawable">@drawable/ic_menu_overflow_xlarge</item>
     <item name="ic_pan_border_fast" type="drawable">@drawable/ic_pan_border_fast_xlarge</item>
     <item name="ic_pan_left_indicator_fast" type="drawable">@drawable/ic_pan_left_indicator_fast_xlarge</item>
     <item name="ic_pan_left_indicator" type="drawable">@drawable/ic_pan_left_indicator_xlarge</item>
@@ -38,25 +27,8 @@
     <item name="ic_pan_right_indicator" type="drawable">@drawable/ic_pan_right_indicator_xlarge</item>
     <item name="ic_scn_holo_light" type="drawable">@drawable/ic_scn_holo_light_xlarge</item>
     <item name="ic_settings_holo_light" type="drawable">@drawable/ic_settings_holo_light_xlarge</item>
-    <item name="ic_shot_border" type="drawable">@drawable/ic_shot_border_xlarge</item>
     <item name="ic_snapshot_border" type="drawable">@drawable/ic_snapshot_border_xlarge</item>
     <item name="ic_switch_photo_facing_holo_light" type="drawable">@drawable/ic_switch_photo_facing_holo_light_xlarge</item>
     <item name="ic_switch_video_facing_holo_light" type="drawable">@drawable/ic_switch_video_facing_holo_light_xlarge</item>
-    <item name="ic_timelapse_10" type="drawable">@drawable/ic_timelapse_10_xlarge</item>
-    <item name="ic_timelapse_1_5" type="drawable">@drawable/ic_timelapse_1_5_xlarge</item>
-    <item name="ic_timelapse_1" type="drawable">@drawable/ic_timelapse_1_xlarge</item>
-    <item name="ic_timelapse_2_5" type="drawable">@drawable/ic_timelapse_2_5_xlarge</item>
-    <item name="ic_timelapse_2" type="drawable">@drawable/ic_timelapse_2_xlarge</item>
-    <item name="ic_timelapse_3" type="drawable">@drawable/ic_timelapse_3_xlarge</item>
-    <item name="ic_timelapse_5" type="drawable">@drawable/ic_timelapse_5_xlarge</item>
     <item name="ic_timelapse_none" type="drawable">@drawable/ic_timelapse_none_xlarge</item>
-    <item name="ic_white_balance_auto_holo_light" type="drawable">@drawable/ic_white_balance_auto_holo_light_xlarge</item>
-    <item name="ic_white_balance_cloudy_holo_light" type="drawable">@drawable/ic_white_balance_cloudy_holo_light_xlarge</item>
-    <item name="ic_white_balance_fluorescent_holo_light" type="drawable">@drawable/ic_white_balance_fluorescent_holo_light_xlarge</item>
-    <item name="ic_white_balance_incandescent_holo_light" type="drawable">@drawable/ic_white_balance_incandescent_holo_light_xlarge</item>
-    <item name="ic_white_balance_sunlight_holo_light" type="drawable">@drawable/ic_white_balance_sunlight_holo_light_xlarge</item>
-    <item name="ic_zoom_in_holo_dark" type="drawable">@drawable/ic_zoom_in_holo_dark_xlarge</item>
-    <item name="ic_zoom_in_holo_light" type="drawable">@drawable/ic_zoom_in_holo_light_xlarge</item>
-    <item name="ic_zoom_out_holo_dark" type="drawable">@drawable/ic_zoom_out_holo_dark_xlarge</item>
-    <item name="ic_zoom_out_holo_light" type="drawable">@drawable/ic_zoom_out_holo_light_xlarge</item>
 </resources>
