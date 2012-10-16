@@ -182,7 +182,8 @@ public class FaceView extends View implements FocusIndicator, Rotatable {
             int rw = sn.getRenderWidth();
             int rh = sn.getRenderHeight();
             // Prepare the matrix.
-            if (mDisplayOrientation == 0 || mDisplayOrientation == 180) {
+            if (((rh > rw) && ((mDisplayOrientation == 0) || (mDisplayOrientation == 180)))
+                    || ((rw > rh) && ((mDisplayOrientation == 90) || (mDisplayOrientation == 270)))) {
                 int temp = rw;
                 rw = rh;
                 rh = temp;
