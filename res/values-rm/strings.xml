@@ -35,12 +35,9 @@
     <skip />
     <!-- no translation found for access_sd_fail (1584968646870054352) -->
     <skip />
-    <!-- no translation found for confirm_restore_message (4726518572923160939) -->
-    <skip />
     <string name="review_cancel" msgid="8188009385853399254">"INTERRUMPER"</string>
     <!-- no translation found for review_ok (1156261588693116433) -->
     <skip />
-    <string name="review_retake" msgid="7804864054896088338">"AUTRA FOTO"</string>
     <!-- no translation found for time_lapse_title (4360632427760662691) -->
     <skip />
     <!-- no translation found for pref_camera_id_title (4040791582294635851) -->
@@ -102,8 +99,6 @@
     <!-- no translation found for pref_camera_scenemode_entry_party (907053529286788253) -->
     <skip />
     <!-- no translation found for not_selectable_in_scene_mode (2970291701448555126) -->
-    <skip />
-    <!-- no translation found for pref_restore_detail (5732490002291044791) -->
     <skip />
     <string name="pref_exposure_title" msgid="1229093066434614811">"Exposiziun"</string>
     <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
@@ -198,8 +193,6 @@
     <!-- no translation found for accessibility_review_cancel (9070531914908644686) -->
     <skip />
     <!-- no translation found for accessibility_review_ok (7793302834271343168) -->
-    <skip />
-    <!-- no translation found for accessibility_review_retake (830348126446319954) -->
     <skip />
     <!-- no translation found for capital_on (5491353494964003567) -->
     <skip />

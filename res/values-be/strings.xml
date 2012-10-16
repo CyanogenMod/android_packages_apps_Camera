@@ -28,10 +28,8 @@
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"Падрыхтоўка SD-карты..."</string>
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Немагчыма атрымаць доступ да USB-назапашвальніка."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Немагчыма атрымаць доступ да SD-карты."</string>
-    <string name="confirm_restore_message" msgid="4726518572923160939">"Аднавіць налады камеры па змаўчанні?"</string>
     <string name="review_cancel" msgid="8188009385853399254">"АДМЯНІЦЬ"</string>
     <string name="review_ok" msgid="1156261588693116433">"ГАТОВА"</string>
-    <string name="review_retake" msgid="7804864054896088338">"ЗРАБІЦЬ ЗНОЎ"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Запіс на працягу доўгага часу"</string>
     <string name="pref_camera_id_title" msgid="4040791582294635851">"Выбраць камеру"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Назад"</string>
@@ -76,7 +74,6 @@
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Заход"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Вечарына"</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Немагчыма выбраць у рэжыме здымкi."</string>
-    <string name="pref_restore_detail" msgid="5732490002291044791">"Усталяваць налады па змаўчанні"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Экспазіцыя"</string>
     <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
     <skip />
@@ -126,7 +123,6 @@
     <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"Пераключыць на панараму фотасферы"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Адмена агляда"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Агляд зроблены"</string>
-    <string name="accessibility_review_retake" msgid="830348126446319954">"Паўторны агляд"</string>
     <string name="capital_on" msgid="5491353494964003567">"УКЛ."</string>
     <string name="capital_off" msgid="7231052688467970897">"АДКЛ."</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Адключана"</string>
