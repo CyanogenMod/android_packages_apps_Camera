@@ -486,6 +486,13 @@ public class PhotoModule
         if (RecordLocationPreference.isSet(mPreferences)) {
             return;
         }
+        // Check if the back camera exists
+        int backCameraId = CameraHolder.instance().getBackCameraId();
+        if (backCameraId == -1) {
+            // If there is no back camera, do not show the prompt.
+            return;
+        }
+
         new AlertDialog.Builder(mActivity)
             .setTitle(R.string.remember_location_title)
             .setMessage(R.string.remember_location_prompt)
