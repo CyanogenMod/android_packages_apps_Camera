@@ -41,7 +41,6 @@ import java.util.Map;
 // shown in text.
 public class ListPrefSettingPopup extends AbstractSettingPopup implements
         AdapterView.OnItemClickListener {
-    // TODO: Remove BasicSettingsPopup
     private static final String TAG = "ListPrefSettingPopup";
     private ListPreference mPreference;
     private Listener mListener;

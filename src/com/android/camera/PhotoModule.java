@@ -182,7 +182,6 @@ public class PhotoModule
     private RenderOverlay mRenderOverlay;
     private Rotatable mReviewCancelButton;
     private Rotatable mReviewDoneButton;
-//    private View mReviewRetakeButton;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -475,9 +474,6 @@ public class PhotoModule
         initializeMiscControls();
         mLocationManager = new LocationManager(mActivity, this);
         initOnScreenIndicator();
-
-        // Make sure all views are disabled before camera is open.
-//        enableCameraControls(false);
     }
 
     // Prompt the user to pick to record location for the very first run of
@@ -585,7 +581,6 @@ public class PhotoModule
             mPhotoControl.initialize(mPreferenceGroup);
         }
         updateSceneModeUI();
-//        mIndicatorControlContainer.setListener(this);
     }
 
 
@@ -2361,7 +2356,6 @@ public class PhotoModule
             mOnScreenIndicators.setVisibility(View.GONE);
             mMenu.setVisibility(View.GONE);
 
-//            Util.fadeIn(mReviewRetakeButton);
             Util.fadeIn((View) mReviewDoneButton);
         }
     }
@@ -2370,7 +2364,6 @@ public class PhotoModule
         if (mIsImageCaptureIntent) {
             mOnScreenIndicators.setVisibility(View.VISIBLE);
             mMenu.setVisibility(View.VISIBLE);
-//            Util.fadeOut(mReviewRetakeButton);
             Util.fadeOut((View) mReviewDoneButton);
 
             Util.fadeIn(mShutterButton);

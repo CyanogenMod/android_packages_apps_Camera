@@ -36,7 +36,5 @@
     <dimen name="effect_setting_type_text_left_padding">@dimen/effect_setting_type_text_left_padding_xlarge</dimen>
     <dimen name="onscreen_indicators_height">@dimen/onscreen_indicators_height_xlarge</dimen>
     <dimen name="onscreen_exposure_indicator_text_size">@dimen/onscreen_exposure_indicator_text_size_xlarge</dimen>
-    <dimen name="mode_picker_margin">@dimen/mode_picker_margin_xlarge</dimen>
-    <dimen name="control_panel_min_length">@dimen/control_panel_min_length_xlarge</dimen>
 </resources>
 
