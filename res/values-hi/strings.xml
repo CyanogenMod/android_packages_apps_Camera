@@ -176,7 +176,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"समय अंतराल सेट करें"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"समय अंतराल सुविधा बंद है. समय अंतराल सेट करने के लिए इसे चालू करें."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"फ़ोटो के स्थान याद हैं?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"अपने फ़ोटो और वीडियो पर उन्हें लेने का स्थान जोड़ें."\n\n"अन्य एप्लिकेशन आपके सहेजे गए चित्रों के साथ इस जानकारी तक पहुंच सकते हैं."</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"नहीं, धन्‍यवाद"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"हां"</string>
 </resources>

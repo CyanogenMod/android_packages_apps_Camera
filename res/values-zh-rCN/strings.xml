@@ -176,7 +176,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"设置时间间隔"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"延时拍摄功能已关闭，要设置时间间隔，请先开启该功能。"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"是否记住照片拍摄地点？"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"为您的照片和视频添加拍摄地点的注释。"\n\n"其他应用可以在查看您保存的图片时获得这些信息。"</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"不用了"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"是"</string>
 </resources>
