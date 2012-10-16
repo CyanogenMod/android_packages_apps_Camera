@@ -29,6 +29,7 @@ public class IconListPreference extends ListPreference {
     private int mIconIds[];
     private int mLargeIconIds[];
     private int mImageIds[];
+    private boolean mUseSingleIcon;
 
     public IconListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -62,12 +63,20 @@ public class IconListPreference extends ListPreference {
         return mImageIds;
     }
 
+    public boolean getUseSingleIcon() {
+        return mUseSingleIcon;
+    }
+
     public void setIconIds(int[] iconIds) {
         mIconIds = iconIds;
     }
 
     public void setLargeIconIds(int[] largeIconIds) {
         mLargeIconIds = largeIconIds;
+    }
+
+    public void setUseSingleIcon(boolean useSingle) {
+        mUseSingleIcon = useSingle;
     }
 
     private int[] getIds(Resources res, int iconsRes) {

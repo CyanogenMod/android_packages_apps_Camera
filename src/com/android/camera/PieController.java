@@ -90,7 +90,7 @@ public class PieController {
         if (pref == null) return;
         int[] iconIds = pref.getLargeIconIds();
         int resid = -1;
-        if (iconIds != null) {
+        if (!pref.getUseSingleIcon() && iconIds != null) {
             // Each entry has a corresponding icon.
             int index = pref.findIndexOfValue(pref.getValue());
             resid = iconIds[index];
@@ -139,6 +139,7 @@ public class PieController {
     }
 
     private void reloadPreference(IconListPreference pref) {
+        if (pref.getUseSingleIcon()) return;
         PieItem item = mPreferenceMap.get(pref);
         String overrideValue = mOverrides.get(pref);
         int[] iconIds = pref.getLargeIconIds();
