@@ -40,12 +40,6 @@
         <item name="android:textColor">@color/popup_title_color</item>
         <item name="android:layout_marginLeft">10dp</item>
     </style>
-    <style name="OnScreenIndicators">
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginBottom">@dimen/indicator_bar_width</item>
-        <item name="android:layout_marginLeft">8dp</item>
-        <item name="android:layout_marginRight">8dp</item>
-    </style>
     <style name="ViewfinderLabelLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
@@ -61,32 +55,11 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">0.5</item>
     </style>
-    <style name="ReviewThumbnail">
-        <!-- Thumbnail size calculation relies on the layout width. If this is
-             changed to wrap_content or match_parent, the code should be changed
-             as well. -->
-        <item name="android:layout_width">@dimen/thumbnail_size</item>
-        <item name="android:layout_height">@dimen/thumbnail_size</item>
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_marginRight">8dp</item>
-    </style>
     <style name="ReviewControlIcon_xlarge">
         <item name="android:layout_height">32dp</item>
         <item name="android:layout_width">32dp</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_centerVertical">true</item>
-    </style>
-    <style name="ReviewThumbnail_xlarge">
-        <!-- Thumbnail size calculation relies on the layout width. If this is
-             changed to wrap_content or match_parent, the code should be changed
-             as well. -->
-        <item name="android:layout_width">130dp</item>
-        <item name="android:layout_height">130dp</item>
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:layout_alignParentBottom">true</item>
-        <item name="android:layout_marginRight">20dp</item>
-        <item name="android:layout_marginBottom">20dp</item>
     </style>
     <style name="SettingPopupWindow_xlarge">
         <item name="android:layout_width">wrap_content</item>

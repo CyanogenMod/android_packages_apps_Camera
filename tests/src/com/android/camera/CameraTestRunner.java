@@ -20,8 +20,6 @@ import android.test.InstrumentationTestRunner;
 import android.test.InstrumentationTestSuite;
 
 import com.android.camera.activity.CameraActivityTest;
-import com.android.camera.activity.PanoramaActivityTest;
-import com.android.camera.activity.VideoCameraActivityTest;
 import com.android.camera.functional.CameraTest;
 import com.android.camera.functional.ImageCaptureIntentTest;
 import com.android.camera.functional.VideoCaptureIntentTest;
@@ -36,8 +34,6 @@ public class CameraTestRunner extends InstrumentationTestRunner {
     public TestSuite getAllTests() {
         TestSuite suite = new InstrumentationTestSuite(this);
         suite.addTestSuite(CameraActivityTest.class);
-        suite.addTestSuite(PanoramaActivityTest.class);
-        suite.addTestSuite(VideoCameraActivityTest.class);
         suite.addTestSuite(CameraTest.class);
         suite.addTestSuite(ImageCaptureIntentTest.class);
         suite.addTestSuite(VideoCaptureIntentTest.class);

@@ -779,21 +779,8 @@ public class VideoModule implements CameraModule,
             if (profile.videoFrameHeight > 480) {
                 quality = getLowVideoQuality();
             }
-            // On initial startup, can get here before indicator control is
-            // enabled. In that case, UI quality override handled in
-            // initializeIndicatorControl.
-//            if (mIndicatorControlContainer != null) {
-//                mIndicatorControlContainer.overrideSettings(
-//                        CameraSettings.KEY_VIDEO_QUALITY,
-//                        Integer.toString(getLowVideoQuality()));
-//            }
         } else {
             mEffectParameter = null;
-//            if (mIndicatorControlContainer != null) {
-//                mIndicatorControlContainer.overrideSettings(
-//                        CameraSettings.KEY_VIDEO_QUALITY,
-//                        null);
-//            }
         }
         // Read time lapse recording interval.
         if (ApiHelper.HAS_TIME_LAPSE_RECORDING) {
@@ -882,7 +869,6 @@ public class VideoModule implements CameraModule,
         if (!mPreviewing) {
             if (resetEffect()) {
                 mBgLearningMessageFrame.setVisibility(View.GONE);
-//                mIndicatorControlContainer.reloadPreferences();
             }
             openCamera();
             if (mActivity.mOpenCameraFail) {
@@ -1670,11 +1656,6 @@ public class VideoModule implements CameraModule,
             mRecordingTimeView.setText("");
             mRecordingTimeView.setVisibility(View.VISIBLE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.GONE);
-            if (mCaptureTimeLapse) {
-//                mIndicatorControlContainer.startTimeLapseAnimation(
-//                        mTimeBetweenTimeLapseFrameCaptureMs,
-//                        mRecordingStartTime);
-            }
             // The camera is not allowed to be accessed in older api levels during
             // recording. It is therefore necessary to hide the zoom UI on older
             // platforms.
@@ -1682,19 +1663,16 @@ public class VideoModule implements CameraModule,
             // further explanation.
             if (!ApiHelper.HAS_ZOOM_WHEN_RECORDING
                     && mParameters.isZoomSupported()) {
-//                mZoomControl.setVisibility(View.GONE);
+                // TODO: disable zoom UI here.
             }
         } else {
             mShutterButton.setImageResource(R.drawable.btn_new_shutter_video);
             mActivity.showSwitcher();
             mRecordingTimeView.setVisibility(View.GONE);
             if (mReviewControl != null) mReviewControl.setVisibility(View.VISIBLE);
-            if (mCaptureTimeLapse) {
-//                mIndicatorControlContainer.stopTimeLapseAnimation();
-            }
             if (!ApiHelper.HAS_ZOOM_WHEN_RECORDING
                     && mParameters.isZoomSupported()) {
-//                mZoomControl.setVisibility(View.VISIBLE);
+                // TODO: enable zoom UI here.
             }
         }
     }
@@ -1761,7 +1739,7 @@ public class VideoModule implements CameraModule,
                     // This is asynchronous, so we can't add to media store now because thumbnail
                     // may not be ready. In such case addVideoToMediaStore is called later
                     // through a callback from the MediaEncoderFilter to EffectsRecorder,
-                    // and then to the VideoCamera.
+                    // and then to the VideoModule.
                     mEffectsRecorder.stopRecording();
                 } else {
                     mMediaRecorder.setOnErrorListener(null);
@@ -2130,8 +2108,6 @@ public class VideoModule implements CameraModule,
         mBgLearningMessageFrame.setVisibility(View.GONE);
         // Write default effect out to shared prefs
         writeDefaultEffectToPrefs();
-        // Tell the indicator controller to redraw based on new shared pref values
-//        mIndicatorControlContainer.reloadPreferences();
         // Tell VideoCamer to re-init based on new shared pref values.
         onSharedPreferenceChanged();
     }
@@ -2479,7 +2455,6 @@ public class VideoModule implements CameraModule,
             } else {
                 mPreviewFrameLayout.showBorder(enabled);
             }
-//            mIndicatorControlContainer.enableZoom(!enabled);
             mShutterButton.setEnabled(!enabled);
         }
     }

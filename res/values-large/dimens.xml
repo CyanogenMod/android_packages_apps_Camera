@@ -17,11 +17,6 @@
     <dimen name="setting_popup_right_margin">@dimen/setting_popup_right_margin_large</dimen>
     <dimen name="setting_row_height">@dimen/setting_row_height_large</dimen>
     <dimen name="setting_popup_window_width">@dimen/setting_popup_window_width_large</dimen>
-    <dimen name="indicator_bar_width">@dimen/indicator_bar_width_large</dimen>
     <dimen name="setting_item_icon_width">@dimen/setting_item_icon_width_large</dimen>
     <dimen name="onscreen_indicators_height">@dimen/onscreen_indicators_height_large</dimen>
-    <dimen name="mode_picker_margin">@dimen/mode_picker_margin_large</dimen>
-    <dimen name="indicator_bar_padding">@dimen/indicator_bar_padding_large</dimen>
-    <dimen name="control_panel_min_length">@dimen/control_panel_min_length_large</dimen>
-    <dimen name="thumbnail_size">@dimen/thumbnail_size_large</dimen>
 </resources>

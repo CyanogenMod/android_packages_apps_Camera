@@ -16,10 +16,10 @@
 
 package com.android.camera.power;
 
-import com.android.camera.Camera;
-import com.android.camera.VideoCamera;
+import com.android.camera.CameraActivity;
 
 import android.app.Instrumentation;
+import android.provider.MediaStore;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
@@ -36,7 +36,7 @@ import android.content.Intent;
  *
  */
 
-public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <Camera> {
+public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <CameraActivity> {
     private String TAG = "ImageAndVideoCapture";
     private static final int TOTAL_NUMBER_OF_IMAGECAPTURE = 5;
     private static final int TOTAL_NUMBER_OF_VIDEOCAPTURE = 5;
@@ -46,7 +46,7 @@ public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <Came
     private static final long WAIT_FOR_STABLE_STATE = 2000; //2 seconds
 
     public ImageAndVideoCapture() {
-        super(Camera.class);
+        super(CameraActivity.class);
     }
 
     @Override
@@ -95,9 +95,9 @@ public class ImageAndVideoCapture extends ActivityInstrumentationTestCase2 <Came
         Instrumentation inst = getInstrumentation();
         try {
             // Switch to the video mode
-            Intent intent = new Intent();
+            Intent intent = new Intent(MediaStore.INTENT_ACTION_VIDEO_CAMERA);
             intent.setClass(getInstrumentation().getTargetContext(),
-                    VideoCamera.class);
+                    CameraActivity.class);
             getActivity().startActivity(intent);
             for (int i = 0; i < TOTAL_NUMBER_OF_VIDEOCAPTURE; i++) {
                 Thread.sleep(WAIT_FOR_PREVIEW);
