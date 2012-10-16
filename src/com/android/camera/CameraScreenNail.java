@@ -103,7 +103,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
     // return the actual rendered height
     public int getRenderHeight() {
-        return (mRenderWidth > 0) ? mRenderHeight : getWidth();
+        return (mRenderWidth > 0) ? mRenderHeight : getHeight();
     }
 
     @Override
