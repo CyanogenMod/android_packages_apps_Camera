@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.TypedArray;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
@@ -148,7 +149,8 @@ public class CameraSettings {
         ListPreference sceneMode = group.findPreference(KEY_SCENE_MODE);
         ListPreference flashMode = group.findPreference(KEY_FLASH_MODE);
         ListPreference focusMode = group.findPreference(KEY_FOCUS_MODE);
-        ListPreference exposure = group.findPreference(KEY_EXPOSURE);
+        IconListPreference exposure =
+                (IconListPreference) group.findPreference(KEY_EXPOSURE);
         IconListPreference cameraIdPref =
                 (IconListPreference) group.findPreference(KEY_CAMERA_ID);
         ListPreference videoFlashMode =
@@ -217,7 +219,7 @@ public class CameraSettings {
     }
 
     private void buildExposureCompensation(
-            PreferenceGroup group, ListPreference exposure) {
+            PreferenceGroup group, IconListPreference exposure) {
         int max = mParameters.getMaxExposureCompensation();
         int min = mParameters.getMinExposureCompensation();
         if (max == 0 && min == 0) {
@@ -231,14 +233,20 @@ public class CameraSettings {
         int minValue = (int) FloatMath.ceil(min * step);
         CharSequence entries[] = new CharSequence[maxValue - minValue + 1];
         CharSequence entryValues[] = new CharSequence[maxValue - minValue + 1];
+        int[] icons = new int[maxValue - minValue + 1];
+        TypedArray iconIds = mContext.getResources().obtainTypedArray(
+                R.array.pref_camera_exposure_icons);
         for (int i = minValue; i <= maxValue; ++i) {
             entryValues[maxValue - i] = Integer.toString(Math.round(i / step));
             StringBuilder builder = new StringBuilder();
             if (i > 0) builder.append('+');
             entries[maxValue - i] = builder.append(i).toString();
+            icons[maxValue - i] = iconIds.getResourceId(3 + i, 0);
         }
+        exposure.setUseSingleIcon(true);
         exposure.setEntries(entries);
         exposure.setEntryValues(entryValues);
+        exposure.setLargeIconIds(icons);
     }
 
     private void buildCameraId(
