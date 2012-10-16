@@ -176,7 +176,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Tetapkan Selang Masa"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Ciri selang masa dimatikan. Hidupkannya untuk menetapkan selang masa."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Ingat lokasi foto?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Menganotasi foto dan video anda dengan tempat rakaman itu diambil."\n\n"Apl lain boleh mengakses maklumat ini bersama-sama dengan imej disimpan anda."</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"Tidak, terima kasih"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ya"</string>
 </resources>

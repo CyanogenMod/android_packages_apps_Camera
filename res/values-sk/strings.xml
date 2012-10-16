@@ -176,7 +176,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Nastaviť časový interval"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Funkcia časozberného videa je vypnutá. Zapnite ju a a nastavte časový interval."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Zapamätať si, kde boli fotografie vytvorené?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Pripojte ku svojim fotografiám a videám informácie o miestach, kde boli vytvorené."\n\n"K uloženým obrázkom aj k týmto informáciám môžu pristupovať ďalšie aplikácie."</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"Nie, ďakujem"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Áno"</string>
 </resources>
