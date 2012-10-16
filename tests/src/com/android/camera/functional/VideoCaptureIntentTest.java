@@ -16,7 +16,7 @@
 
 package com.android.camera.functional;
 
-import com.android.camera.VideoCamera;
+import com.android.camera.CameraActivity;
 import com.android.camera.R;
 
 import android.app.Activity;
@@ -35,14 +35,14 @@ import android.view.KeyEvent;
 
 import java.io.File;
 
-public class VideoCaptureIntentTest extends ActivityInstrumentationTestCase2 <VideoCamera> {
+public class VideoCaptureIntentTest extends ActivityInstrumentationTestCase2 <CameraActivity> {
     private static final String TAG = "VideoCaptureIntentTest";
     private Intent mIntent;
     private Uri mVideoUri;
     private File mFile, mFile2;
 
     public VideoCaptureIntentTest() {
-        super(VideoCamera.class);
+        super(CameraActivity.class);
     }
 
     @Override
@@ -102,22 +102,6 @@ public class VideoCaptureIntentTest extends ActivityInstrumentationTestCase2 <Vi
         pressDone();
 
         verify(getActivity(), uri);
-    }
-
-    @LargeTest
-    public void testRetake() throws Exception {
-        setActivityIntent(mIntent);
-        getActivity();
-
-        recordVideo();
-        pressRetake();
-        recordVideo();
-        pressDone();
-
-        Intent resultData = getActivity().getResultData();
-        mVideoUri = resultData.getData();
-        assertNotNull(mVideoUri);
-        verify(getActivity(), mVideoUri);
     }
 
     @LargeTest
@@ -218,7 +202,7 @@ public class VideoCaptureIntentTest extends ActivityInstrumentationTestCase2 <Vi
     }
 
     // Verify result code, result data, and the duration.
-    private int verify(VideoCamera activity, Uri uri) throws Exception {
+    private int verify(CameraActivity activity, Uri uri) throws Exception {
         assertTrue(activity.isFinishing());
         assertEquals(Activity.RESULT_OK, activity.getResultCode());
 
@@ -242,8 +226,9 @@ public class VideoCaptureIntentTest extends ActivityInstrumentationTestCase2 <Vi
             public void run() {
                 // If recording is in progress, stop it. Run these atomically in
                 // UI thread.
-                if (getActivity().isRecording()) {
-                    getActivity().findViewById(R.id.shutter_button).performClick();
+                CameraActivity activity = getActivity();
+                if (activity.isRecording()) {
+                    activity.findViewById(R.id.shutter_button).performClick();
                 }
             }
         });
@@ -258,15 +243,6 @@ public class VideoCaptureIntentTest extends ActivityInstrumentationTestCase2 <Vi
             @Override
             public void run() {
                 getActivity().findViewById(R.id.btn_done).performClick();
-            }
-        });
-    }
-
-    private void pressRetake() {
-        getInstrumentation().runOnMainSync(new Runnable() {
-            @Override
-            public void run() {
-                getActivity().findViewById(R.id.btn_retake).performClick();
             }
         });
     }

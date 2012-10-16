@@ -878,7 +878,7 @@ public class EffectsRecorder {
     }
 
     private void invokeOnRecordingDone() {
-        // Forward the callback to the VideoCamera object (as an asynchronous event).
+        // Forward the callback to the VideoModule object (as an asynchronous event).
         if (mLogVerbose) Log.v(TAG, "Recording done callback triggered");
         sendMessage(EFFECT_NONE, EFFECT_MSG_RECORDING_DONE);
     }
@@ -972,7 +972,7 @@ public class EffectsRecorder {
                 invoke(mGraphEnv, sGraphEnvironmentGetContext)});
     }
 
-    // The VideoCamera will call this to notify that the camera is being
+    // The VideoModule will call this to notify that the camera is being
     // released to the outside world. This call should happen after the
     // stopRecording call. Else, the effects may throw an exception.
     // With the recording stopped, the stopPreview call will not try to

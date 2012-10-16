@@ -401,6 +401,11 @@ public class CameraActivity extends ActivityBase
                 ((PhotoModule)mCurrentModule).mCaptureStartTime : -1;
     }
 
+    public boolean isRecording() {
+        return (mCurrentModule instanceof VideoModule) ?
+                ((VideoModule) mCurrentModule).isRecording() : false;
+    }
+
     public CameraScreenNail getCameraScreenNail() {
         return (CameraScreenNail) mCameraScreenNail;
     }

@@ -181,33 +181,6 @@ public class CameraTestCase<T extends Activity> extends ActivityInstrumentationT
         inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_CENTER); // close dialog
     }
 
-    protected void internalTestRestoreDefault() throws Exception {
-        CameraHolder.injectMockCamera(mCameraInfo, mMockCamera);
-
-        getActivity();
-        getInstrumentation().waitForIdleSync();
-        performClick(R.id.second_level_indicator);
-        performClick(R.id.other_setting_indicator);
-        performClick(R.id.restore_default);
-        performClick(R.id.rotate_dialog_button1);
-    }
-
-    protected void internalTestOneCamera() throws Exception {
-        CameraHolder.injectMockCamera(mOneCameraInfo, mOneMockCamera);
-
-        getActivity();
-        getInstrumentation().waitForIdleSync();
-        assertViewNotExist(R.id.camera_picker);
-    }
-
-    protected void internalTestSwitchCamera() throws Exception {
-        CameraHolder.injectMockCamera(mCameraInfo, mMockCamera);
-
-        getActivity();
-        getInstrumentation().waitForIdleSync();
-        performClick(R.id.camera_picker);
-    }
-
     protected void performClick(final int id) {
         Activity activity = getActivity();
         getInstrumentation().waitForIdleSync();
