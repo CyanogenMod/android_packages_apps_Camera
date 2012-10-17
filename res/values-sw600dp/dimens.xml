@@ -19,4 +19,5 @@
     <dimen name="setting_popup_window_width">@dimen/setting_popup_window_width_large</dimen>
     <dimen name="setting_item_icon_width">@dimen/setting_item_icon_width_large</dimen>
     <dimen name="onscreen_indicators_height">@dimen/onscreen_indicators_height_large</dimen>
+    <dimen name="shutter_offset">-33dp</dimen>
 </resources>
