@@ -497,6 +497,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
                 // natural orientation, not the view system orientation.
                 screenNail.setPreviewFrameLayoutSize(height, width);
             }
+            notifyScreenNailChanged();
         }
     }
 
