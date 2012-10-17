@@ -172,7 +172,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Задаць iнтэрвал часу"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Функцыя \"Часавы інтэрвал\" выключана. Уключыце яе."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Запамiнаць месца, дзе зроблена фота?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Каменцiраваць вашы фатаграфіі і відэа з месца, дзе яны зроблены. "\n" "\n" Іншыя прыкладаннi могуць атрымлiваць доступ да гэтай інфармацыі разам з захаванымi малюнкамi."</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"Не, дзякуй"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Так"</string>
 </resources>

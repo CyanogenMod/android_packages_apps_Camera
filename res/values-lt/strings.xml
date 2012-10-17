@@ -172,7 +172,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Nustatyti laiko intervalą"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Laiko intervalo funkcija išjungta. Įjunkite ją, kad nustatytumėte laiko intervalą."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Atsiminti nuotraukų vietas?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Komentuokite nuotraukas ir vaizdo įrašus nurodydami vietas, kur jos nufotografuotos."\n\n"Kitos programos gali pasiekti šią informaciją kartu su išsaugotais vaizdais."</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"Ne, ačiū"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Taip"</string>
 </resources>
