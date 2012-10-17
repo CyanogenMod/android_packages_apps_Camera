@@ -18,13 +18,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <View
+        android:id="@+id/controls"
+        style="@style/CameraControls"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
     <com.android.camera.ShutterButton
         android:id="@+id/shutter_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="-22dip"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/shutter_offset"
         android:clickable="true"
         android:contentDescription="@string/accessibility_shutter_button"
         android:focusable="true"
@@ -34,9 +40,8 @@
     <com.android.camera.ui.CameraSwitcher
         android:id="@+id/camera_switcher"
         style="@style/SwitcherButton"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@id/controls"
         android:layout_marginBottom="2dip"
         android:contentDescription="@string/accessibility_mode_picker" />
-
 </RelativeLayout>
