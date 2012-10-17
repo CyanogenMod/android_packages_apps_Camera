@@ -45,6 +45,7 @@ public class CameraActivity extends ActivityBase
     private ShutterButton mShutter;
     private CameraSwitcher mSwitcher;
     private View mShutterSwitcher;
+    private View mControlsBackground;
     private Drawable[] mDrawables;
     private int mCurrentModuleIndex;
     private MotionEvent mDown;
@@ -89,6 +90,7 @@ public class CameraActivity extends ActivityBase
     }
 
     public void init() {
+        mControlsBackground = findViewById(R.id.controls);
         mShutterSwitcher = findViewById(R.id.camera_shutter_switcher);
         mShutter = (ShutterButton) findViewById(R.id.shutter_button);
         mSwitcher = (CameraSwitcher) findViewById(R.id.camera_switcher);
@@ -182,11 +184,13 @@ public class CameraActivity extends ActivityBase
     }
 
     public void hideUI() {
+        mControlsBackground.setVisibility(View.INVISIBLE);
         hideSwitcher();
         mShutter.setVisibility(View.GONE);
     }
 
     public void showUI() {
+        mControlsBackground.setVisibility(View.VISIBLE);
         showSwitcher();
         mShutter.setVisibility(View.VISIBLE);
     }
