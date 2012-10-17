@@ -172,7 +172,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Đặt khoảng thời gian"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Tính năng thời gian trôi bị tắt. Bật tính năng này để đặt khoảng thời gian."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Nhớ vị trí chụp ảnh?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Chú thích ảnh và video của bạn với địa điểm chúng được chụp hoặc quay."\n\n"Ứng dụng khác có thể truy cập vào thông tin này cùng với các ảnh đã lưu của bạn."</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"Không, cảm ơn"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Có"</string>
 </resources>

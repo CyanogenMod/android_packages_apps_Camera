@@ -172,7 +172,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Setaţi intervalul de timp"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Funcţia Filmare lentă este dezactivată. Activaţi-o pentru a seta intervalul de timp."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Doriţi să vă amintiţi locaţiile fotografiilor?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Adnotaţi fotografiile şi videoclipurile cu locaţiile în care acestea au fost realizate."\n\n"Alte aplicaţii pot accesa aceste informaţii, împreună cu imaginile salvate."</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"Nu, mulţumesc"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Da"</string>
 </resources>
