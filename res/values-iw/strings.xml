@@ -172,7 +172,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"הגדר מרווח זמן"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"תכונת ההילוך המהיר כבויה. הפעל אותה כדי להגדיר מרווח זמן."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"האם לזכור מיקומי תמונות?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"הוספת כיתובים בתמונות ובסרטונים המציינים את המקומות שבהם צולמו."\n\n"יישומים אחרים יכולים לגשת למידע זה, יחד עם תמונות שנשמרו."</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"לא, תודה"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"כן"</string>
 </resources>
