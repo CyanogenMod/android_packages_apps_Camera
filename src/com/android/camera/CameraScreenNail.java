@@ -231,18 +231,18 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         }
     }
 
-    public void animateCapture(int animOrientation) {
+    public void animateCapture(int displayRotation) {
         synchronized (mLock) {
-            mCaptureAnimManager.setOrientation(animOrientation);
+            mCaptureAnimManager.setOrientation(displayRotation);
             mCaptureAnimManager.animateFlashAndSlide();
             mListener.requestRender();
             mAnimState = ANIM_CAPTURE_START;
         }
     }
 
-    public void animateFlash(int animOrientation) {
+    public void animateFlash(int displayRotation) {
         synchronized (mLock) {
-            mCaptureAnimManager.setOrientation(animOrientation);
+            mCaptureAnimManager.setOrientation(displayRotation);
             mCaptureAnimManager.animateFlash();
             mListener.requestRender();
             mAnimState = ANIM_CAPTURE_START;
