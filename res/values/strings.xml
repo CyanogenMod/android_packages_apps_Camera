@@ -49,17 +49,11 @@
     <!-- alert to the user that the camera fails to read or write the SD card. -->
     <string name="access_sd_fail" product="default">Couldn\'t access SD card.</string>
 
-    <!-- Confirmation dialog when restoring settings -->
-    <string name="confirm_restore_message">Do you want to restore camera default settings?</string>
-
     <!-- button in review mode indicating that the photo taking, video recording, and panorama saving session should be canceled [CHAR LIMIT=10] -->
     <string name="review_cancel">CANCEL</string>
 
     <!-- button in review mode indicating that the taken photo/video is OK to be attached/uploaded [CHAR LIMIT=10] -->
     <string name="review_ok">DONE</string>
-
-    <!-- button in review mode indicate the user want to retake another photo/video for attachment [CHAR LIMIT=10] -->
-    <string name="review_retake">RETAKE</string>
 
     <!-- A label that overlays on top of the preview frame to indicate the camcorder is in time lapse mode [CHAR LIMIT=35] -->
     <string name="time_lapse_title">Time lapse recording</string>
@@ -195,9 +189,6 @@
     <!-- Toast after trying to select a setting that is not allowed to change in scene mode [CHAR LIMIT=NONE] -->
     <string name="not_selectable_in_scene_mode">Not selectable in scene mode.</string>
 
-    <!-- Restore settings item in preference -->
-    <string name="pref_restore_detail">Restore defaults</string>
-
     <!-- Exposure settings in preference -->
     <string name="pref_exposure_title">Exposure</string>
     <string name="pref_exposure_default" translatable="false">0</string>
@@ -224,9 +215,6 @@
 
     <!-- The message shown when video record reaches size limit. -->
     <string name="video_reach_size_limit">Size limit reached.</string>
-
-    <string name="setting_increment" translatable="false">&gt;</string>
-    <string name="setting_decrement" translatable="false">&lt;</string>
 
     <!-- The text shown when the panorama panning speed is to fast [CHAR LIMIT=12] -->
     <string name="pano_too_fast_prompt">Too fast</string>
@@ -332,8 +320,6 @@
     <string name="accessibility_review_cancel">Review cancel</string>
     <!-- The button in review mode indicating that the taken photo/video is OK to be attached/uploaded [CHAR LIMIT = NONE] -->
     <string name="accessibility_review_ok">Review done</string>
-    <!-- button in review mode indicate the user want to retake another photo/video for attachment [CHAR LIMIT = NONE] -->
-    <string name="accessibility_review_retake">Review rekate</string>
     <!-- TODO: remove the string as it is a work-around solution to bypass the default speak of the element type. -->
     <string name="empty" translatable="false">" "</string>
 
