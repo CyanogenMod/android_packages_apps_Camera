@@ -40,7 +40,8 @@
             android:layout_marginBottom="-2dip"
             android:layout_marginRight="-5dip" />
 
-        <include layout="@layout/review_module_control" />
+        <include layout="@layout/review_module_control"
+            android:layout_marginBottom="2dip" />
 
         <View
             android:id="@+id/menu"
