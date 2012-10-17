@@ -172,7 +172,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"시간 간격 설정"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"시간 경과 기능을 사용하지 않고 있습니다. 시간 간격을 설정하려면 \'사용\'으로 변경해 주세요."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"사진 위치를 기록하시겠습니까?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"사진 및 동영상에 촬영 장소를 표시합니다."\n\n"다른 앱이 이 정보 및 저장된 이미지에 액세스할 수 있습니다."</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"아니요"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"예"</string>
 </resources>

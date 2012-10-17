@@ -172,7 +172,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Definir Intervalo de Tempo"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"A funcionalidade de intervalo de tempo está desativada. Ative-a para definir o intervalo de tempo."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Memorizar localizações das fotografias?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Anote nas suas fotografias e vídeos os locais onde estes são tirados."\n\n"Outras aplicações podem aceder a essas informações, juntamente com as suas imagens guardadas."</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"Não, obrigado"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Sim"</string>
 </resources>
