@@ -172,7 +172,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Establecer intervalo de tiempo"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"El intervalo de tiempo está desactivado. Activa esta función para establecer un intervalo."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"¿Recordar ubicaciones de las fotos?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Incluye en tus fotos y vídeos los sitios en los que se han hecho."\n\n"Otras aplicaciones pueden acceder a esta información y a tus imágenes guardadas."</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"No, gracias"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Sí"</string>
 </resources>

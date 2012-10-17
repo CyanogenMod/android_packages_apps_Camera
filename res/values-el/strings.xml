@@ -172,7 +172,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Ορισμός χρονικού διαστήματος"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Η λειτουργία παρέλευσης χρόνου έχει απενεργοποιηθεί. Ενεργοποιήστε την για να ορίσετε το χρονικό διάστημα."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Απομνημόνευση τοποθεσίας φωτογραφιών;"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Προσθήκη στις φωτογραφίες και στα βίντεό σας της τοποθεσίας στην οποία τα τραβήξατε."\n\n"Οι άλλες εφαρμογές έχουν δυνατότητα πρόσβασης σε αυτές τις πληροφορίες καθώς και στις αποθηκευμένες εικόνες σας."</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"Όχι ευχαριστώ"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ναι"</string>
 </resources>
