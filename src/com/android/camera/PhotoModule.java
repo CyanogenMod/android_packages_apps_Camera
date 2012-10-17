@@ -2533,6 +2533,7 @@ public class PhotoModule
 
     public void showPopup(AbstractSettingPopup popup) {
         mActivity.hideUI();
+        mBlocker.setVisibility(View.INVISIBLE);
         setShowMenu(false);
         mPopup = popup;
         // Make sure popup is brought up with the right orientation
@@ -2551,6 +2552,7 @@ public class PhotoModule
     private void dismissPopup(boolean topOnly, boolean fullScreen) {
         if (fullScreen) {
             mActivity.showUI();
+            mBlocker.setVisibility(View.VISIBLE);
         }
         setShowMenu(fullScreen);
         if (mPopup != null) {
