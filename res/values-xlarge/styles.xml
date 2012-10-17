@@ -18,7 +18,6 @@
     <style name="PopupTitleText" parent="@style/PopupTitleText_xlarge" />
     <style name="PanoCustomDialogText" parent="@style/PanoCustomDialogText_xlarge" />
     <style name="ViewfinderLabelLayout" parent="@style/ViewfinderLabelLayout_xlarge" />
-    <style name="ReviewControlIcon" parent="@style/ReviewControlIcon_xlarge" />
     <style name="SettingPopupWindow" parent="@style/SettingPopupWindow_xlarge" />
     <style name="PanoViewHorizontalBar" parent="@style/PanoViewHorizontalBar_xlarge" />
 </resources>
