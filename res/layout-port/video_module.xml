@@ -41,7 +41,9 @@
             android:layout_alignParentRight="true" />
 
         <include layout="@layout/bg_replacement_training_message"/>
-        <include layout="@layout/review_module_control"/>
+
+        <include layout="@layout/review_module_control"
+            android:layout_marginBottom="2dip" />
 
         <View
             android:id="@+id/menu"
