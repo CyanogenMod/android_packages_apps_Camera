@@ -1255,7 +1255,7 @@ public class PhotoModule
         if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent
                 && mActivity.mShowCameraAppView) {
             // Start capture animation.
-            ((CameraScreenNail) mActivity.mCameraScreenNail).animateFlash(getCameraRotation());
+            ((CameraScreenNail) mActivity.mCameraScreenNail).animateFlash(mDisplayRotation);
         }
     }
 
@@ -1298,10 +1298,6 @@ public class PhotoModule
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
         return true;
-    }
-
-    private int getCameraRotation() {
-        return (mOrientationCompensation - mDisplayRotation + 360) % 360;
     }
 
     @Override
