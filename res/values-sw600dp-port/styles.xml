@@ -13,17 +13,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/content"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignBottom="@id/camera_switcher"
-    android:layout_alignLeft="@id/camera_switcher"
-    android:layout_marginLeft="8dip"
-    android:layout_marginBottom="8dip"
-    android:paddingLeft="16dip"
-    android:paddingRight="16dip"
-    android:paddingTop="8dip"
-    android:paddingBottom="8dip"
-    android:background="#80000000" />
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="CameraControls">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">600dp</item>
+    </style>
+</resources>

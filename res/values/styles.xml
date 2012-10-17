@@ -213,4 +213,8 @@
         <item name="android:enabled">false</item>
         <item name="android:scaleType">center</item>
     </style>
+        <style name="CameraControls">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
 </resources>

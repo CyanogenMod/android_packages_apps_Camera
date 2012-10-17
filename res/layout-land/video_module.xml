@@ -19,30 +19,38 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
     <include layout="@layout/preview_module_frame_video"/>
-    <include layout="@layout/menu_indicators"
-        android:layout_width="80dip"
-        android:layout_height="80dip"
-        android:layout_marginTop="-5dip"
-        android:layout_marginRight="-2dip"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true" />
 
-    <View
-        android:id="@+id/blocker"
-        android:layout_height="match_parent"
-        android:layout_width="@dimen/switcher_size"
-        android:clickable="true"
-        android:layout_alignParentRight="true" />
+    <RelativeLayout
+        style="@style/CameraControls"
+        android:layout_centerVertical="true" >
 
-    <include layout="@layout/bg_replacement_training_message"/>
-    <include layout="@layout/review_module_control"/>
+        <include layout="@layout/menu_indicators"
+            android:layout_width="80dip"
+            android:layout_height="80dip"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="-2dip"
+            android:layout_marginTop="-5dip" />
 
-    <View
-        android:id="@+id/menu"
-        style="@style/SwitcherButton"
-        android:contentDescription="@string/accessibility_menu_button"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="2dip" />
+        <View
+            android:id="@+id/blocker"
+            android:layout_width="@dimen/switcher_size"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:clickable="true" />
+
+        <include layout="@layout/bg_replacement_training_message" />
+
+        <include layout="@layout/review_module_control" />
+
+        <View
+            android:id="@+id/menu"
+            style="@style/SwitcherButton"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="2dip"
+            android:contentDescription="@string/accessibility_menu_button" />
+
+    </RelativeLayout>
 
 </RelativeLayout>
