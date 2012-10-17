@@ -70,6 +70,10 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     private OnFrameDrawnListener mOneTimeFrameDrawnListener;
     private int mRenderWidth;
     private int mRenderHeight;
+    // This represents the scaled, uncropped size of the texture
+    // Needed for FaceView
+    private int mUncroppedRenderWidth;
+    private int mUncroppedRenderHeight;
     private float mScaleX = 1f, mScaleY = 1f;
     private boolean mFullScreen;
     private boolean mEnableAspectRatioClamping = false;
@@ -96,14 +100,18 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         }
     }
 
-    // return the actual rendered width
-    public int getRenderWidth() {
-        return getWidth();
+    /**
+     * returns the uncropped, but scaled, width of the rendered texture
+     */
+    public int getUncroppedRenderWidth() {
+        return mUncroppedRenderWidth;
     }
 
-    // return the actual rendered height
-    public int getRenderHeight() {
-        return getHeight();
+    /**
+     * returns the uncropped, but scaled, width of the rendered texture
+     */
+    public int getUncroppedRenderHeight() {
+        return mUncroppedRenderHeight;
     }
 
     @Override
@@ -157,6 +165,8 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     private void updateRenderSize() {
         if (!mEnableAspectRatioClamping) {
             mScaleX = mScaleY = 1f;
+            mUncroppedRenderWidth = getTextureWidth();
+            mUncroppedRenderHeight = getTextureHeight();
             Log.i(TAG, "aspect ratio clamping disabled");
             return;
         }
@@ -181,6 +191,8 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         }
         mScaleX = mRenderWidth / scaledTextureWidth;
         mScaleY = mRenderHeight / scaledTextureHeight;
+        mUncroppedRenderWidth = Math.round(scaledTextureWidth);
+        mUncroppedRenderHeight = Math.round(scaledTextureHeight);
         Log.i(TAG, "aspect ratio clamping enabled, surfaceTexture scale: " + mScaleX + ", " + mScaleY);
     }
 
