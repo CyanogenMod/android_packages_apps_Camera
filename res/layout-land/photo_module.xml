@@ -25,6 +25,14 @@
         style="@style/CameraControls"
         android:layout_gravity="center" >
 
+        <View
+            android:id="@+id/blocker"
+            android:layout_height="match_parent"
+            android:layout_width="@dimen/switcher_size"
+            android:background="@drawable/switcher_bg"
+            android:clickable="true"
+            android:layout_gravity="right" />
+
         <include layout="@layout/menu_indicators"
             android:layout_width="80dip"
             android:layout_height="80dip"
@@ -32,12 +40,6 @@
              android:layout_marginRight="-2dip"
             android:layout_gravity="top|right"/>
 
-        <View
-            android:id="@+id/blocker"
-            android:layout_height="match_parent"
-            android:layout_width="@dimen/switcher_size"
-            android:clickable="true"
-            android:layout_gravity="right" />
 
         <include layout="@layout/review_module_control"/>
 
