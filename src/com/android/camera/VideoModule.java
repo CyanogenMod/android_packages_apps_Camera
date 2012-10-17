@@ -2773,6 +2773,7 @@ public class VideoModule implements CameraModule,
 
     public void showPopup(AbstractSettingPopup popup) {
         mActivity.hideUI();
+        mBlocker.setVisibility(View.INVISIBLE);
         setShowMenu(false);
         mPopup = popup;
         // Make sure popup is brought up with the right orientation
@@ -2791,6 +2792,7 @@ public class VideoModule implements CameraModule,
     public void dismissPopup(boolean topLevelPopupOnly, boolean fullScreen) {
         if (fullScreen) {
             mActivity.showUI();
+            mBlocker.setVisibility(View.VISIBLE);
         }
         setShowMenu(fullScreen);
         if (mPopup != null) {
