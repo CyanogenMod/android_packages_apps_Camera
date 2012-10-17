@@ -2021,6 +2021,7 @@ public class VideoModule implements CameraModule,
 
         if (oldWidth != width || oldHeight != height) {
             screenNail.setSize(width, height);
+            screenNail.enableAspectRatioClamping();
             mActivity.notifyScreenNailChanged();
         }
 
