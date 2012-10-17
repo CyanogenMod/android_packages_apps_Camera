@@ -222,6 +222,7 @@ public class VideoModule implements CameraModule,
     private View mMenu;
     private View mBlocker;
     private View mOnScreenIndicators;
+    private ImageView mFlashIndicator;
 
     private final Handler mHandler = new MainHandler();
 
@@ -507,6 +508,7 @@ public class VideoModule implements CameraModule,
 
         initializeVideoControl();
         mPendingSwitchCameraId = -1;
+        updateOnScreenIndicators();
     }
 
     @Override
@@ -2133,6 +2135,7 @@ public class VideoModule implements CameraModule,
             }
         });
         mOnScreenIndicators = mRootView.findViewById(R.id.on_screen_indicators);
+        mFlashIndicator = (ImageView) mRootView.findViewById(R.id.menu_flash_indicator);
         if (mIsVideoCaptureIntent) {
             mActivity.hideSwitcher();
             // Cannot use RotateImageView for "done" and "cancel" button because
@@ -2227,6 +2230,7 @@ public class VideoModule implements CameraModule,
         showVideoSnapshotUI(false);
         initializeZoom();
         onFullScreenChanged(mActivity.isInCameraApp());
+        updateOnScreenIndicators();
     }
 
     @Override
@@ -2275,6 +2279,29 @@ public class VideoModule implements CameraModule,
             } else {
                 setCameraParameters();
             }
+            updateOnScreenIndicators();
+        }
+    }
+
+    private void updateOnScreenIndicators() {
+        updateFlashOnScreenIndicator(mParameters.getFlashMode());
+    }
+
+    private void updateFlashOnScreenIndicator(String value) {
+        if (mFlashIndicator == null) {
+            return;
+        }
+        if (value == null || Parameters.FLASH_MODE_OFF.equals(value)) {
+            mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_off);
+        } else {
+            if (Parameters.FLASH_MODE_AUTO.equals(value)) {
+                mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_auto);
+            } else if (Parameters.FLASH_MODE_ON.equals(value) ||
+                    Parameters.FLASH_MODE_TORCH.equals(value)) {
+                mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_on);
+            } else {
+                mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_off);
+            }
         }
     }
 
@@ -2307,6 +2334,7 @@ public class VideoModule implements CameraModule,
             // onFrameAvailable from the old camera may already exist.
             mHandler.sendEmptyMessage(SWITCH_CAMERA_START_ANIMATION);
         }
+        updateOnScreenIndicators();
     }
 
     // Preview texture has been copied. Now camera can be released and the
