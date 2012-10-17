@@ -30,8 +30,6 @@ import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.R;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
 /* A popup window that contains several camera settings. */
@@ -43,7 +41,6 @@ public class OtherSettingsPopup extends AbstractSettingPopup
 
     private Listener mListener;
     private ArrayList<ListPreference> mListItem = new ArrayList<ListPreference>();
-    public static boolean bDoOnce = true;
 
     static public interface Listener {
         public void onSettingChanged();
@@ -66,8 +63,7 @@ public class OtherSettingsPopup extends AbstractSettingPopup
             // Currently, the RecordLocationPreference is the only setting
             // which applies the on/off switch.
             if (CameraSettings.KEY_POWER_SHUTTER.equals(pref.getKey()) ||
-                    CameraSettings.KEY_RECORD_LOCATION.equals(pref.getKey()) ||
-                CameraSettings.KEY_STABILIZATION.equals(pref.getKey()) ) {
+                    CameraSettings.KEY_RECORD_LOCATION.equals(pref.getKey())) {
                 return R.layout.in_line_setting_switch;
             }
             return R.layout.in_line_setting_knob;

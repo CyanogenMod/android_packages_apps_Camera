@@ -139,7 +139,9 @@
     <string name="pref_camera_picturesize_title">Picture size</string>
 
     <!-- Settings screen, Picture size dialog radio button choices -->
+    <string name="pref_camera_picturesize_entry_4128x3096">13MP</string>
     <string name="pref_camera_picturesize_entry_4000x3000">12MP</string>
+    <string name="pref_camera_picturesize_entry_4128x2322">10MP</string>
     <string name="pref_camera_picturesize_entry_4000x2250">9MP</string>
     <string name="pref_camera_picturesize_entry_3264x2448">8MP</string>
     <string name="pref_camera_picturesize_entry_3264x1968">6.5MP(W)</string>
