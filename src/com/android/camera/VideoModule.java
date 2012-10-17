@@ -691,13 +691,9 @@ public class VideoModule implements CameraModule,
                 // back to use SurfaceTexture for preview and we need to stop then start
                 // the preview. This will cause the preview flicker since the preview
                 // will not be continuous for a short period of time.
-                ((CameraScreenNail) mActivity.mCameraScreenNail).animateCapture(getCameraRotation());
+                ((CameraScreenNail) mActivity.mCameraScreenNail).animateCapture(mDisplayRotation);
             }
         }
-    }
-
-    private int getCameraRotation() {
-        return (mOrientationCompensation - mDisplayRotation + 360) % 360;
     }
 
     public void onProtectiveCurtainClick(View v) {
@@ -2445,7 +2441,7 @@ public class VideoModule implements CameraModule,
     void showVideoSnapshotUI(boolean enabled) {
         if (Util.isVideoSnapshotSupported(mParameters) && !mIsVideoCaptureIntent) {
             if (ApiHelper.HAS_SURFACE_TEXTURE && enabled) {
-                ((CameraScreenNail) mActivity.mCameraScreenNail).animateCapture(getCameraRotation());
+                ((CameraScreenNail) mActivity.mCameraScreenNail).animateCapture(mDisplayRotation);
             } else {
                 mPreviewFrameLayout.showBorder(enabled);
             }
