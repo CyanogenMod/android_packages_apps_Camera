@@ -55,8 +55,8 @@ public class CaptureAnimManager {
     public CaptureAnimManager() {
     }
 
-    public void setOrientation(int animOrientation) {
-        mAnimOrientation = animOrientation;
+    public void setOrientation(int displayRotation) {
+        mAnimOrientation = (360 - displayRotation) % 360;
     }
 
     public void animateSlide() {
