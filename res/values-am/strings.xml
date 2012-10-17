@@ -172,7 +172,8 @@
     <string name="set_time_interval" msgid="2970567717633813771">"የጊዜ ክፍተት ያዘጋጁ"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"የአላፊ ጊዜ ባህሪ ጠፍቷል። የጊዜ ክፍተቱን ለማዘጋጀት ያብሩት።"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"የፎቶ አካባቢዎች ይታወሱ?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"ፎቶዎችዎን እና ቪዲዮዎችዎን በተነሱባቸው ቦታዎች ያብራሯቸው።"\n\n"ሌሎች መተግበሪያዎች ይህን መረጃ ከተቀመጡ ምስሎችዎ ጋር አብሮ ሊደርሱባቸው ይችላሉ።"</string>
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
+    <skip />
     <string name="remember_location_no" msgid="7541394381714894896">"አይ፣ አመሰግናለሁ"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"አዎ"</string>
 </resources>
