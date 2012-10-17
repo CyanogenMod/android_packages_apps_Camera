@@ -2061,6 +2061,7 @@ public class PhotoModule
                 } else {
                     screenNail.setSize(size.height, size.width);
                 }
+                screenNail.enableAspectRatioClamping();
                 mActivity.notifyScreenNailChanged();
                 screenNail.acquireSurfaceTexture();
                 mSurfaceTexture = screenNail.getSurfaceTexture();
