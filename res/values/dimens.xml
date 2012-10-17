@@ -85,4 +85,5 @@
     <dimen name="switcher_size">72dp</dimen>
     <dimen name="face_circle_stroke">2dip</dimen>
     <dimen name="zoom_font_size">14pt</dimen>
+    <dimen name="shutter_offset">-22dp</dimen>
 </resources>
