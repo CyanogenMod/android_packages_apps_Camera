@@ -59,6 +59,8 @@ public class PreviewGestures
     private boolean mEnabled;
     private boolean mZoomOnly;
     private int mOrientation;
+    private int[] mLocation;
+
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == MSG_PIE) {
@@ -80,6 +82,7 @@ public class PreviewGestures
         mSlop = (int) ctx.getResources().getDimension(R.dimen.pie_touch_slop);
         mTapTimeout = ViewConfiguration.getTapTimeout();
         mEnabled = true;
+        mLocation = new int[2];
     }
 
     public void setRenderOverlay(RenderOverlay overlay) {
@@ -267,9 +270,10 @@ public class PreviewGestures
     }
 
     private boolean isInside(MotionEvent evt, View v) {
+        v.getLocationInWindow(mLocation);
         return (v.getVisibility() == View.VISIBLE
-                && evt.getX() >= v.getLeft() && evt.getX() < v.getRight()
-                && evt.getY() >= v.getTop() && evt.getY() < v.getBottom());
+                && evt.getX() >= mLocation[0] && evt.getX() < mLocation[0] + v.getWidth()
+                && evt.getY() >= mLocation[1] && evt.getY() < mLocation[1] + v.getHeight());
     }
 
     public void cancelActivityTouchHandling(MotionEvent m) {
