@@ -63,6 +63,7 @@ import com.android.gallery3d.common.ApiHelper;
 import com.android.gallery3d.ui.GLRootView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -861,28 +862,28 @@ public class PanoramaModule implements CameraModule,
         if (jpegData != null) {
             String filename = PanoUtil.createName(
                     mActivity.getResources().getString(R.string.pano_file_name_format), mTimeTaken);
-            Uri uri = Storage.addImage(mContentResolver, filename, mTimeTaken, null,
-                    orientation, jpegData, width, height);
-            if (uri != null) {
-                String filepath = Storage.generateFilepath(filename);
-                try {
-                    ExifInterface exif = new ExifInterface(filepath);
+            String filepath = Storage.generateFilepath(filename);
+            Storage.writeFile(filepath, jpegData);
 
-                    exif.setAttribute(ExifInterface.TAG_GPS_DATESTAMP,
-                            mGPSDateStampFormat.format(mTimeTaken));
-                    exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP,
-                            mGPSTimeStampFormat.format(mTimeTaken));
-                    exif.setAttribute(ExifInterface.TAG_DATETIME,
-                            mDateTimeStampFormat.format(mTimeTaken));
-                    exif.setAttribute(ExifInterface.TAG_ORIENTATION,
-                            getExifOrientation(orientation));
-
-                    exif.saveAttributes();
-                } catch (IOException e) {
-                    Log.e(TAG, "Cannot set EXIF for " + filepath, e);
-                }
+            // Add Exif tags.
+            try {
+                ExifInterface exif = new ExifInterface(filepath);
+                exif.setAttribute(ExifInterface.TAG_GPS_DATESTAMP,
+                        mGPSDateStampFormat.format(mTimeTaken));
+                exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP,
+                        mGPSTimeStampFormat.format(mTimeTaken));
+                exif.setAttribute(ExifInterface.TAG_DATETIME,
+                        mDateTimeStampFormat.format(mTimeTaken));
+                exif.setAttribute(ExifInterface.TAG_ORIENTATION,
+                        getExifOrientation(orientation));
+                exif.saveAttributes();
+            } catch (IOException e) {
+                Log.e(TAG, "Cannot set EXIF for " + filepath, e);
             }
-            return uri;
+
+            int jpegLength = (int) (new File(filepath).length());
+            return Storage.addImage(mContentResolver, filename, mTimeTaken,
+                    null, orientation, jpegLength, filepath, width, height);
         }
         return null;
     }
