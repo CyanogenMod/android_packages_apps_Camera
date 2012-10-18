@@ -60,24 +60,36 @@ public class Storage {
         }
     }
 
-    public static Uri addImage(ContentResolver resolver, String title, long date,
-                Location location, int orientation, byte[] jpeg, int width, int height) {
-        // Save the image.
-        String path = generateFilepath(title);
+    public static void writeFile(String path, byte[] data) {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(path);
-            out.write(jpeg);
+            out.write(data);
         } catch (Exception e) {
-            Log.e(TAG, "Failed to write image", e);
-            return null;
+            Log.e(TAG, "Failed to write data", e);
         } finally {
             try {
                 out.close();
             } catch (Exception e) {
             }
         }
+    }
 
+    // Save the image and add it to media store.
+    public static Uri addImage(ContentResolver resolver, String title,
+            long date, Location location, int orientation, byte[] jpeg,
+            int width, int height) {
+        // Save the image.
+        String path = generateFilepath(title);
+        writeFile(path, jpeg);
+        return addImage(resolver, title, date, location, orientation,
+                jpeg.length, path, width, height);
+    }
+
+    // Add the image to media store.
+    public static Uri addImage(ContentResolver resolver, String title,
+            long date, Location location, int orientation, int jpegLength,
+            String path, int width, int height) {
         // Insert into MediaStore.
         ContentValues values = new ContentValues(9);
         values.put(ImageColumns.TITLE, title);
@@ -87,7 +99,7 @@ public class Storage {
         // Clockwise rotation in degrees. 0, 90, 180, or 270.
         values.put(ImageColumns.ORIENTATION, orientation);
         values.put(ImageColumns.DATA, path);
-        values.put(ImageColumns.SIZE, jpeg.length);
+        values.put(ImageColumns.SIZE, jpegLength);
 
         setImageSize(values, width, height);
 
