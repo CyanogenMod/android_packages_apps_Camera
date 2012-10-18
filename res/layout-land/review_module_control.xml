@@ -23,6 +23,17 @@
             android:layout_gravity="top|right"
             android:background="@drawable/bg_pressed"
             android:src="@drawable/ic_menu_done_holo_light" />
+
+    <ImageView android:id="@+id/btn_retake"
+        style="@style/ReviewControlIcon"
+        android:contentDescription="@string/accessibility_review_retake"
+        android:layout_gravity="right|center_vertical"
+        android:scaleType="center"
+        android:focusable="true"
+        android:visibility="gone"
+        android:background="@drawable/bg_pressed"
+        android:src="@drawable/ic_btn_shutter_retake" />
+
     <com.android.camera.ui.RotateImageView android:id="@+id/btn_cancel"
             style="@style/ReviewControlIcon"
             android:contentDescription="@string/accessibility_review_cancel"
