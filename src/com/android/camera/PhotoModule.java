@@ -182,6 +182,7 @@ public class PhotoModule
     private RenderOverlay mRenderOverlay;
     private Rotatable mReviewCancelButton;
     private Rotatable mReviewDoneButton;
+    private View mReviewRetakeButton;
 
     // mCropValue and mSaveUri are used only if isImageCaptureIntent() is true.
     private String mCropValue;
@@ -1483,6 +1484,16 @@ public class PhotoModule
         doCancel();
     }
 
+    // onClick handler for R.id.btn_retake
+    @OnClickAttr
+    public void onReviewRetakeClicked(View v) {
+        if (mPaused)
+            return;
+
+        hidePostCaptureAlert();
+        setupPreview();
+    }
+
     private void doAttach() {
         if (mPaused) {
             return;
@@ -1757,7 +1768,7 @@ public class PhotoModule
             // RotateImageView.
             mReviewDoneButton = (Rotatable) mRootView.findViewById(R.id.btn_done);
             mReviewCancelButton = (Rotatable) mRootView.findViewById(R.id.btn_cancel);
-
+            mReviewRetakeButton = mRootView.findViewById(R.id.btn_retake);
             ((View) mReviewCancelButton).setVisibility(View.VISIBLE);
 
             ((View) mReviewDoneButton).setOnClickListener(new OnClickListener() {
@@ -1770,6 +1781,13 @@ public class PhotoModule
                 @Override
                 public void onClick(View v) {
                     onReviewCancelClicked(v);
+                }
+            });
+
+            mReviewRetakeButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onReviewRetakeClicked(v);
                 }
             });
 
@@ -2340,11 +2358,11 @@ public class PhotoModule
 
     private void showPostCaptureAlert() {
         if (mIsImageCaptureIntent) {
-            Util.fadeOut(mShutterButton);
             mOnScreenIndicators.setVisibility(View.GONE);
             mMenu.setVisibility(View.GONE);
-
             Util.fadeIn((View) mReviewDoneButton);
+            mShutterButton.setVisibility(View.INVISIBLE);
+            Util.fadeIn(mReviewRetakeButton);
         }
     }
 
@@ -2353,8 +2371,8 @@ public class PhotoModule
             mOnScreenIndicators.setVisibility(View.VISIBLE);
             mMenu.setVisibility(View.VISIBLE);
             Util.fadeOut((View) mReviewDoneButton);
-
-            Util.fadeIn(mShutterButton);
+            mShutterButton.setVisibility(View.VISIBLE);
+            Util.fadeOut(mReviewRetakeButton);
         }
     }
 
