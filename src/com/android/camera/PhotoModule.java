@@ -534,8 +534,8 @@ public class PhotoModule
         if (mGestures != null) {
             mGestures.clearTouchReceivers();
             mGestures.setRenderOverlay(mRenderOverlay);
-            mGestures.addTouchReceiver(mBlocker);
             mGestures.addTouchReceiver(mMenu);
+            mGestures.addTouchReceiver(mBlocker);
 
             if (isImageCaptureIntent()) {
                 if (mReviewCancelButton != null) {

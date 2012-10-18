@@ -405,8 +405,8 @@ public class VideoModule implements CameraModule,
         }
         mGestures.setRenderOverlay(mRenderOverlay);
         mGestures.clearTouchReceivers();
-        mGestures.addTouchReceiver(mBlocker);
         mGestures.addTouchReceiver(mMenu);
+        mGestures.addTouchReceiver(mBlocker);
 
         if (isVideoCaptureIntent()) {
             if (mReviewCancelButton != null) {
