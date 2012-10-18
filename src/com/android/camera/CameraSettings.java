@@ -85,7 +85,7 @@ public class CameraSettings {
         PreferenceInflater inflater = new PreferenceInflater(mContext);
         PreferenceGroup group =
                 (PreferenceGroup) inflater.inflate(preferenceRes);
-        initPreference(group);
+        if (mParameters != null) initPreference(group);
         return group;
     }
 
