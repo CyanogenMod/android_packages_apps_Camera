@@ -905,6 +905,9 @@ public class PhotoModule
             if (mPaused) {
                 return;
             }
+            if (mSceneMode == Util.SCENE_MODE_HDR) {
+                mActivity.showSwitcher();
+            }
 
             mJpegPictureCallbackTime = System.currentTimeMillis();
             // If postview callback has arrived, the captured image is displayed
@@ -1275,6 +1278,7 @@ public class PhotoModule
 
         if (animateBefore) {
             animateFlash();
+            mActivity.hideSwitcher();
         }
 
         // Set rotation and gps data.
