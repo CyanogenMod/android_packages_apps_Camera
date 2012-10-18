@@ -2586,7 +2586,7 @@ public class PhotoModule
 
     @Override
     public void onShowSwitcherPopup() {
-        if (mPieRenderer.showsItems()) {
+        if (mPieRenderer != null && mPieRenderer.showsItems()) {
             mPieRenderer.hide();
         }
     }
