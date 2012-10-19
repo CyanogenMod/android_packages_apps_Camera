@@ -16,6 +16,7 @@
 <resources>
     <dimen name="pano_mosaic_surface_height">@dimen/pano_mosaic_surface_height_xlarge</dimen>
     <dimen name="pano_review_button_width">@dimen/pano_review_button_width_xlarge</dimen>
+    <dimen name="pano_review_button_height">@dimen/pano_review_button_height_xlarge</dimen>
     <dimen name="setting_row_height">@dimen/setting_row_height_xlarge</dimen>
     <dimen name="setting_item_text_size">@dimen/setting_item_text_size_xlarge</dimen>
     <dimen name="setting_knob_width">@dimen/setting_knob_width_xlarge</dimen>
