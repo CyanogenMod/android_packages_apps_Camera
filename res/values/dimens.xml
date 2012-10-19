@@ -17,6 +17,7 @@
     <dimen name="hint_y_offset">64dp</dimen>
     <dimen name="pano_mosaic_surface_height">240dp</dimen>
     <dimen name="pano_review_button_width">70dp</dimen>
+    <dimen name="pano_review_button_height">45dp</dimen>
     <dimen name="setting_popup_right_margin">5dp</dimen>
     <dimen name="setting_row_height">50dp</dimen>
     <dimen name="setting_item_text_size">18sp</dimen>
@@ -52,6 +53,7 @@
     <dimen name="onscreen_indicators_height_large">36dp</dimen>
     <dimen name="pano_mosaic_surface_height_xlarge">480dp</dimen>
     <dimen name="pano_review_button_width_xlarge">180dp</dimen>
+    <dimen name="pano_review_button_height_xlarge">115dp</dimen>
     <dimen name="setting_row_height_xlarge">50dp</dimen>
     <dimen name="setting_item_text_size_xlarge">21dp</dimen>
     <dimen name="setting_knob_width_xlarge">50dp</dimen>
