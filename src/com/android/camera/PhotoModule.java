@@ -679,7 +679,7 @@ public class PhotoModule
             // Not useful to change zoom value when the activity is paused.
             if (mPaused) return;
             mZoomValue = index;
-            if (mParameters == null || mCameraDevice != null) return;
+            if (mParameters == null || mCameraDevice == null) return;
             // Set zoom parameters asynchronously
             mParameters.setZoom(mZoomValue);
             mCameraDevice.setParametersAsync(mParameters);
