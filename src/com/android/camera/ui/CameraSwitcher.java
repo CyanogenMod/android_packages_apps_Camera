@@ -189,10 +189,14 @@ public class CameraSwitcher extends RotateImageView
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        closePopup();
+        return true;
+    }
+
+    public void closePopup() {
         if (showsPopup()) {
             hidePopup();
         }
-        return true;
     }
 
     @Override
