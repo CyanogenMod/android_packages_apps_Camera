@@ -1732,7 +1732,6 @@ public class PhotoModule
         }
 
         if (mLocationManager != null) mLocationManager.recordLocation(false);
-        updateExposureOnScreenIndicator(0);
 
         // If we are in an image capture intent and has taken
         // a picture, we just clear it in onPause.
