@@ -646,23 +646,14 @@ public class PanoramaModule implements CameraModule,
 
         if (mActivity.getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_PORTRAIT) {
-            Rotatable[] rotateLayout = {
-                    (Rotatable) mRootView.findViewById(R.id.pano_pan_progress_bar_layout),
-                    (Rotatable) mRootView.findViewById(R.id.pano_capture_too_fast_textview_layout),
-                    (Rotatable) mRootView.findViewById(R.id.pano_review_saving_indication_layout),
-                    (Rotatable) mRootView.findViewById(R.id.pano_saving_progress_bar_layout),
-                    (Rotatable) mRootView.findViewById(R.id.pano_review_cancel_button_layout),
-                    (Rotatable) mRootView.findViewById(R.id.pano_rotate_reviewarea),
-                    mRotateDialog,
-                    mCaptureIndicator,
-                    };
-            for (Rotatable r : rotateLayout) {
-                r.setOrientation(270, false);
+            final int[] ids = {
+                    R.id.pano_pan_progress_bar_layout,
+                    R.id.pano_saving_progress_bar_layout,
+                    R.id.pano_rotate_reviewarea};
+            for (int i = 0; i < ids.length; i++) {
+                Rotatable view = (Rotatable) mRootView.findViewById(ids[i]);
+                view.setOrientation(270, false);
             }
-        } else {
-            // Even if the orientation is 0, we still need to set because it might be previously
-            // set when the configuration is portrait.
-            mRotateDialog.setOrientation(0, false);
         }
     }
 
