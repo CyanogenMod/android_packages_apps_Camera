@@ -196,7 +196,8 @@ public class CameraActivity extends ActivityBase
     }
 
     public void hideSwitcher() {
-        mSwitcher.setVisibility(View.GONE);
+        mSwitcher.closePopup();
+        mSwitcher.setVisibility(View.INVISIBLE);
     }
 
     public void showSwitcher() {
