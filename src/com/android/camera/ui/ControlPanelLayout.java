@@ -16,6 +16,8 @@
 
 package com.android.camera.ui;
 
+import com.android.camera.Util;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -62,6 +64,11 @@ public class ControlPanelLayout extends RelativeLayout {
             // Calculate how big 4:3 preview occupies. Then deduct it from the
             // width of the parent.
             measuredSize = (int) (longSideSize - shortSideSize / 3.0 * 4.0);
+            int minWidth = Util.isTabletUI() ? 260 : 76;
+            if (measuredSize < minWidth) {
+                Log.e(TAG, "the measuredSize (" + measuredSize + ") is too small, resizing to " + minWidth);
+                measuredSize = minWidth;
+            }
         } else {
             Log.e(TAG, "layout_xxx of ControlPanelLayout should be wrap_content");
         }
