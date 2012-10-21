@@ -43,5 +43,7 @@
     <bool name="enableZSL">false</bool>
     <!-- The camera HAL does its own preview state management during snaps -->
     <bool name="previewStopsDuringSnapshot">false</bool>
+    <!-- The camera HAL needs to be released and restarted after mode change -->
+    <bool name="closeCameraOnModeChange">false</bool>
 </resources>
 

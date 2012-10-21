@@ -103,6 +103,9 @@ public class Util {
     private static boolean sNoFaceDetectOnFrontCamera;
     private static boolean sNoFaceDetectOnRearCamera;
     
+    // Workaround for cameras which hal requires restart on mode change
+    private static boolean sCloseCameraOnModeChange;
+
     private Util() {
     }
 
@@ -125,6 +128,7 @@ public class Util {
         sEnableZSL = context.getResources().getBoolean(R.bool.enableZSL);
         sNoFaceDetectOnFrontCamera = context.getResources().getBoolean(R.bool.noFaceDetectOnFrontCamera);
         sNoFaceDetectOnRearCamera = context.getResources().getBoolean(R.bool.noFaceDetectOnRearCamera);
+        sCloseCameraOnModeChange = context.getResources().getBoolean(R.bool.closeCameraOnModeChange);
     }
 
     public static boolean needsEarlyVideoSize() {
@@ -153,6 +157,10 @@ public class Util {
     
     public static boolean noFaceDetectOnRearCamera() {
         return sNoFaceDetectOnRearCamera;
+    }
+
+    public static boolean closeCameraOnModeChange() {
+        return sCloseCameraOnModeChange;
     }
 
     public static boolean isTabletUI() {

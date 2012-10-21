@@ -18,6 +18,8 @@ package com.android.camera;
 
 import static com.android.camera.Util.Assert;
 
+import com.android.camera.Util;
+
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.os.Build;
@@ -197,7 +199,7 @@ public class CameraHolder {
         // choose the menu item to switch to another activity.
         Assert(mUsers == 1 || mUsers == 0);
         // Keep the camera instance for 3 seconds.
-        mKeepBeforeTime = System.currentTimeMillis() + 3000;
+        mKeepBeforeTime = System.currentTimeMillis() + (Util.closeCameraOnModeChange() ? 0 : 3000);
     }
 
     public int getBackCameraId() {
