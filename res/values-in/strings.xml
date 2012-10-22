@@ -120,9 +120,12 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Alihkan ke foto"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Alihkan ke video"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Alihkan ke panorama"</string>
-    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"Beralih ke panorama photosphere"</string>
+    <!-- no translation found for accessibility_switch_to_new_panorama (8116783308051524188) -->
+    <skip />
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Tinjauan dibatalkan"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Tinjauan selesai"</string>
+    <!-- no translation found for accessibility_review_retake (659300290054705484) -->
+    <skip />
     <string name="capital_on" msgid="5491353494964003567">"NYALA"</string>
     <string name="capital_off" msgid="7231052688467970897">"MATI"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Nonaktif"</string>
@@ -172,7 +175,7 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Setel Interval Waktu"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Fitur selang waktu tidak aktif. Aktifkan untuk menyetel interval waktu."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Ingat lokasi foto?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Beri anotasi pada foto dan video Anda dengan tempat foto dan video tersebut diambil."\n\n"Aplikasi lainnya dapat mengakses informasi ini serta gambar yang tersimpan."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"Beri tag foto dan video Anda dengan lokasi tempat pengambilannya."\n\n"Aplikasi lain dapat mengakses informasi ini beserta gambar Anda yang tersimpan."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Tidak, terima kasih"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ya"</string>
 </resources>

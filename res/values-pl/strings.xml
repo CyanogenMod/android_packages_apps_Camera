@@ -120,10 +120,13 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Przełącz na zdjęcia"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Przełącz na wideo"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Przełącz na panoramę"</string>
-    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"Przełącz na panoramę fotosferyczną"</string>
+    <!-- no translation found for accessibility_switch_to_new_panorama (8116783308051524188) -->
+    <skip />
     <!-- no translation found for accessibility_review_cancel (9070531914908644686) -->
     <skip />
     <!-- no translation found for accessibility_review_ok (7793302834271343168) -->
+    <skip />
+    <!-- no translation found for accessibility_review_retake (659300290054705484) -->
     <skip />
     <string name="capital_on" msgid="5491353494964003567">"WŁĄCZONY"</string>
     <string name="capital_off" msgid="7231052688467970897">"WYŁĄCZONY"</string>
@@ -174,7 +177,7 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Ustaw interwał czasu"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Funkcja filmu poklatkowego jest wyłączona. Włącz ją, by ustawić interwał czasu."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Zapamiętywać lokalizacje zdjęć?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Dodawaj do zdjęć i filmów adnotacje o miejscach, w których zostały zrobione/nagrane."\n\n"Inne aplikacje mogą odczytywać te informacje wraz z zapisanymi zdjęciami."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"Oznacz zdjęcia i filmy informacją, gdzie zostały zrobione."\n\n"Inne aplikacje mają dostęp do tych informacji wraz z zapisanymi zdjęciami."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Nie, dziękuję"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Tak"</string>
 </resources>

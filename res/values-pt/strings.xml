@@ -120,9 +120,10 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Alternar para foto"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Alternar para vídeo"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Alterar para panorama"</string>
-    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"Alterar para panorama polar"</string>
+    <string name="accessibility_switch_to_new_panorama" msgid="8116783308051524188">"Alterar para panorama novo"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Cancelar"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Revisão concluída"</string>
+    <string name="accessibility_review_retake" msgid="659300290054705484">"Repetir anexo"</string>
     <string name="capital_on" msgid="5491353494964003567">"LIGADO"</string>
     <string name="capital_off" msgid="7231052688467970897">"DESLIGADO"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Desligado"</string>
@@ -172,7 +173,7 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Definir intervalo de tempo"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"O recurso de passagem de tempo está desativado. Ative-o para definir o intervalo de tempo."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Memorizar locais de fotos?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Anote nas fotos e vídeos os locais onde foram criados."\n\n"Outros aplicativos podem acessar essa informação juntamente com as imagens salvas."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"Marque seus vídeos e fotos com os locais onde foram gerados."\n\n"Outros aplicativos podem acessar essas informações juntamente com suas imagens salvas."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Não, obrigado"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Sim"</string>
 </resources>

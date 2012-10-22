@@ -120,9 +120,10 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Vaihda kuvatilaan"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Vaihda videotilaan"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Vaihda panoraamatilaan"</string>
-    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"Vaihda photosphere-panoraamaan"</string>
+    <string name="accessibility_switch_to_new_panorama" msgid="8116783308051524188">"Vaihda uuteen panoraamaan"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Peruuta"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Tarkistus valmis"</string>
+    <string name="accessibility_review_retake" msgid="659300290054705484">"Kuvaa uudelleen"</string>
     <string name="capital_on" msgid="5491353494964003567">"KÄYTÖSSÄ"</string>
     <string name="capital_off" msgid="7231052688467970897">"POIS KÄYTÖSTÄ"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Pois käytöstä"</string>
@@ -172,7 +173,7 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Aseta aikaväli"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Intervallikuvaus ei ole käytössä. Ota ominaisuus käyttöön, jos haluat määrittää aikavälin."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Muistetaanko valokuvien sijainnit?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"Merkise valokuviin ja videoihin paikat, joissa ne on kuvattu."\n\n"Muut sovellukset voivat käyttää näitä tietoja tallennettujen kuviesi yhteydessä."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"Merkitse valokuviin ja videoihin niiden kuvauspaikat."\n\n"Muut sovellukset voivat käyttää näitä tietoja tallennettujen kuviesi yhteydessä."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Ei kiitos"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Kyllä"</string>
 </resources>

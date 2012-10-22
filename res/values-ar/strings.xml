@@ -120,9 +120,10 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"تبديل إلى وضع الصور"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"تبديل إلى الفيديو"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"تبديل إلى بانوراما"</string>
-    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"تبديل إلى بانوراما الغلاف الضوئي"</string>
+    <string name="accessibility_switch_to_new_panorama" msgid="8116783308051524188">"تبديل إلى بانوراما جديدة"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"مراجعة الإلغاء"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"تمت المراجعة"</string>
+    <string name="accessibility_review_retake" msgid="659300290054705484">"إعادة التقاط للإرفاق بالتعليق"</string>
     <string name="capital_on" msgid="5491353494964003567">"تشغيل"</string>
     <string name="capital_off" msgid="7231052688467970897">"إيقاف"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"تم الإيقاف"</string>
@@ -172,7 +173,7 @@
     <string name="set_time_interval" msgid="2970567717633813771">"تعيين المهلة الزمنية"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"ميزة اللقطات المتتابعة مغلقة. يمكنك تشغيلها لتعيين المهلة الزمنية."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"هل تتذكر مواقع الصور؟"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"يمكنك إضافة تعليقات توضيحية إلى صورك ومقاطع الفيديو للإشارة إلى الأماكن التي تم التقاطها فيها."\n\n"ويمكن لتطبيقات أخرى الوصول إلى هذه المعلومات مع صورك المحفوظة."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"ضع علامة على الصور ومقاطع الفيديو التابعة لك تشير إلى المواقع التي تم التقاطها منها."\n\n"يمكن لتطبيقات أخرى الدخول إلى هذه المعلومات إلى جانب صورك المحفوظة."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"لا، شكرًا"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"نعم"</string>
 </resources>

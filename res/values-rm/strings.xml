@@ -188,11 +188,13 @@
     <skip />
     <!-- no translation found for accessibility_switch_to_panorama (604756878371875836) -->
     <skip />
-    <!-- no translation found for accessibility_switch_to_photosphere (302799186108722016) -->
+    <!-- no translation found for accessibility_switch_to_new_panorama (8116783308051524188) -->
     <skip />
     <!-- no translation found for accessibility_review_cancel (9070531914908644686) -->
     <skip />
     <!-- no translation found for accessibility_review_ok (7793302834271343168) -->
+    <skip />
+    <!-- no translation found for accessibility_review_retake (659300290054705484) -->
     <skip />
     <!-- no translation found for capital_on (5491353494964003567) -->
     <skip />
@@ -292,7 +294,7 @@
     <skip />
     <!-- no translation found for remember_location_title (9060472929006917810) -->
     <skip />
-    <!-- no translation found for remember_location_prompt (9107532965604174377) -->
+    <!-- no translation found for remember_location_prompt (724592331305808098) -->
     <skip />
     <!-- no translation found for remember_location_no (7541394381714894896) -->
     <skip />

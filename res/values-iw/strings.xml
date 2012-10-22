@@ -120,9 +120,10 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"עבור לצילום תמונות"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"עבור לווידאו"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"עבור לפנורמה"</string>
-    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"עבור לפנורמת Photosphere"</string>
+    <string name="accessibility_switch_to_new_panorama" msgid="8116783308051524188">"עבור לפנורמה חדשה"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"ביטול בדיקה"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"בדיקה בוצעה"</string>
+    <string name="accessibility_review_retake" msgid="659300290054705484">"הצג צילום חוזר"</string>
     <string name="capital_on" msgid="5491353494964003567">"פועל"</string>
     <string name="capital_off" msgid="7231052688467970897">"כבוי"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"כבוי"</string>
@@ -172,7 +173,7 @@
     <string name="set_time_interval" msgid="2970567717633813771">"הגדר מרווח זמן"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"תכונת ההילוך המהיר כבויה. הפעל אותה כדי להגדיר מרווח זמן."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"האם לזכור מיקומי תמונות?"</string>
-    <string name="remember_location_prompt" msgid="9107532965604174377">"הוספת כיתובים בתמונות ובסרטונים המציינים את המקומות שבהם צולמו."\n\n"יישומים אחרים יכולים לגשת למידע זה, יחד עם תמונות שנשמרו."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"מתייג את התמונות והסרטונים שלך לציון המקומות שבהם צולמו."\n\n"יישומים אחרים יכולים לגשת למידע זה, כולל תמונות שנשמרו."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"לא, תודה"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"כן"</string>
 </resources>
