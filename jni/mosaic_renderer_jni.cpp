@@ -775,6 +775,12 @@ JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_setWarping(
 
         db_Identity3x3(gThisH1t);
         db_Identity3x3(gLastH1t);
+        // Make sure g_dAffinetransGL and g_dAffinetransPanGL are updated.
+        // Otherwise, the first frame after setting the flag to true will be
+        // incorrectly drawn.
+        if ((bool) flag) {
+            UpdateWarpTransformation(g_dIdent3x3);
+        }
     }
 
     gWarpImage = (bool)flag;
