@@ -120,9 +120,12 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Přepnout na fotoaparát"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Přepnout na video"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Přepnout do panoramatického režimu"</string>
-    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"Přepnout do režimu sférického panoramatu"</string>
+    <!-- no translation found for accessibility_switch_to_new_panorama (8116783308051524188) -->
+    <skip />
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Zrušit"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Hotovo"</string>
+    <!-- no translation found for accessibility_review_retake (659300290054705484) -->
+    <skip />
     <string name="capital_on" msgid="5491353494964003567">"ZAPNUTO"</string>
     <string name="capital_off" msgid="7231052688467970897">"VYPNUTO"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Vypnuto"</string>
@@ -172,8 +175,7 @@
     <string name="set_time_interval" msgid="2970567717633813771">"Nastavit časový interval"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Funkce časosběr je vypnutá. Zapněte ji a nastavte časový interval."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Pamatovat, kde byly fotky pořízeny?"</string>
-    <!-- no translation found for remember_location_prompt (724592331305808098) -->
-    <skip />
+    <string name="remember_location_prompt" msgid="724592331305808098">"Přidejte do fotek a videí označení míst, kde jste je pořídili."\n\n"Ostatní aplikace budou mít k těmto informacím přístup společně s přístupem k uloženým obrázkům."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Ne, děkuji"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ano"</string>
 </resources>

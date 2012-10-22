@@ -120,9 +120,12 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"사진으로 전환"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"동영상으로 전환"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"파노라마로 전환"</string>
-    <string name="accessibility_switch_to_photosphere" msgid="302799186108722016">"구면 파노라마로 전환"</string>
+    <!-- no translation found for accessibility_switch_to_new_panorama (8116783308051524188) -->
+    <skip />
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"리뷰 취소"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"리뷰 완료"</string>
+    <!-- no translation found for accessibility_review_retake (659300290054705484) -->
+    <skip />
     <string name="capital_on" msgid="5491353494964003567">"사용"</string>
     <string name="capital_off" msgid="7231052688467970897">"사용 안함"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"사용 안함"</string>
@@ -172,8 +175,7 @@
     <string name="set_time_interval" msgid="2970567717633813771">"시간 간격 설정"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"시간 경과 기능을 사용하지 않고 있습니다. 시간 간격을 설정하려면 \'사용\'으로 변경해 주세요."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"사진 위치를 기록하시겠습니까?"</string>
-    <!-- no translation found for remember_location_prompt (724592331305808098) -->
-    <skip />
+    <string name="remember_location_prompt" msgid="724592331305808098">"촬영한 위치로 사진과 동영상에 태그를 지정하세요."\n\n"다른 앱이 저장된 이미지와 더불어 이 정보에 액세스할 수 있습니다."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"아니요"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"예"</string>
 </resources>
