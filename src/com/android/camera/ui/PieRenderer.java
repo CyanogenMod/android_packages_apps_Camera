@@ -429,6 +429,7 @@ public class PieRenderer extends OverlayRenderer
                     canvas.drawPath(item.getPath(), p);
                     canvas.restoreToCount(state);
                 }
+                alpha = alpha * (item.isEnabled() ? 1 : 0.3f);
                 // draw the item view
                 item.setAlpha(alpha);
                 item.draw(canvas);
