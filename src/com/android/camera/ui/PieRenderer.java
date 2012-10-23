@@ -761,7 +761,7 @@ public class PieRenderer extends OverlayRenderer
         mFocused = false;
         mFocusFromTap = false;
         mOverlay.removeCallbacks(mDisappear);
-        mDisappear.run();
+        mOverlay.post(mDisappear);
     }
 
     private void startAnimation(long duration, boolean timeout,
