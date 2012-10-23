@@ -120,12 +120,10 @@
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Пераключыцца на фота"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Пераключыцца ў рэжым відэа"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Пераключыцца ў рэжым панарамы"</string>
-    <!-- no translation found for accessibility_switch_to_new_panorama (8116783308051524188) -->
-    <skip />
+    <string name="accessibility_switch_to_new_panorama" msgid="8116783308051524188">"Пераключыцца на новую панараму"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Адмена агляда"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Агляд зроблены"</string>
-    <!-- no translation found for accessibility_review_retake (659300290054705484) -->
-    <skip />
+    <string name="accessibility_review_retake" msgid="659300290054705484">"Пераробка агляда"</string>
     <string name="capital_on" msgid="5491353494964003567">"УКЛ."</string>
     <string name="capital_off" msgid="7231052688467970897">"АДКЛ."</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Адключана"</string>
