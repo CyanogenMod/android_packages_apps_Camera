@@ -705,7 +705,8 @@ public class PhotoModule
     }
 
     private void initializeZoom() {
-        if (!mParameters.isZoomSupported() || (mZoomRenderer == null)) return;
+        if ((mParameters == null) || !mParameters.isZoomSupported()
+                || (mZoomRenderer == null)) return;
         mZoomMax = mParameters.getMaxZoom();
         mZoomRatios = mParameters.getZoomRatios();
         // Currently we use immediate zoom for fast zooming to get better UX and
