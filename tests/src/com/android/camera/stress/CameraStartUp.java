@@ -52,6 +52,7 @@ public class CameraStartUp extends InstrumentationTestCase {
             Instrumentation inst = getInstrumentation();
             Activity cameraActivity = inst.startActivitySync(intent);
             long cameraStarted = System.currentTimeMillis();
+            Thread.sleep(WAIT_TIME_FOR_PREVIEW);
             cameraActivity.finish();
             startupTime = cameraStarted - beforeStart;
             Thread.sleep(1000);
