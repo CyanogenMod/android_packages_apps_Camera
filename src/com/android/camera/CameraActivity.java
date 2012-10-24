@@ -265,6 +265,7 @@ public class CameraActivity extends ActivityBase
     protected void onStop() {
         super.onStop();
         mCurrentModule.onStop();
+        getStateManager().clearTasks();
     }
 
     @Override
