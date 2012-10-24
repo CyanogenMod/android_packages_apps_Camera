@@ -173,7 +173,7 @@
     <string name="set_time_interval" msgid="2970567717633813771">"تنظیم فاصله زمانی"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"ویژگی زمان سپری شده خاموش است. برای تنظیم فاصله زمانی آن را روشن کنید."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"موقعیت مکانی عکس به‌خاطر سپرده شود؟"</string>
-    <string name="remember_location_prompt" msgid="724592331305808098">"محل گرفتن عکس‌ها و ویدیوها را به آنها برچسب کنید."\n\n" سایر برنامه‌ها می‌توانند به این اطلاعات به همراه تصاویر ذخیره شده شما دسترسی پیدا کنند."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"محل گرفتن عکس‌ها و ویدیوها را به آنها برچسب کنید."\n\n" سایر برنامه‌ها می‌توانند به این اطلاعات در کنار تصاویر ذخیره شده شما دسترسی پیدا کنند."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"نه متشکرم"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"بله"</string>
 </resources>
