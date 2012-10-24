@@ -26,6 +26,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
@@ -113,6 +114,8 @@ public class PanoramaModule implements CameraModule,
     private RotateLayout mCaptureIndicator;
     private PanoProgressBar mPanoProgressBar;
     private PanoProgressBar mSavingProgressBar;
+    private Matrix mProgressDirectionMatrix = new Matrix();
+    private float[] mProgressAngle = new float[2];
     private LayoutNotifyView mPreviewArea;
     private View mLeftIndicator;
     private View mRightIndicator;
@@ -522,6 +525,15 @@ public class PanoramaModule implements CameraModule,
         mDeviceOrientationAtCapture = mDeviceOrientation;
         keepScreenOn();
         mActivity.getOrientationManager().lockOrientation();
+        setupProgressDirectionMatrix();
+    }
+
+    void setupProgressDirectionMatrix() {
+        int degrees = Util.getDisplayRotation(mActivity);
+        int cameraId = CameraHolder.instance().getBackCameraId();
+        int orientation = Util.getDisplayOrientation(degrees, cameraId);
+        mProgressDirectionMatrix.reset();
+        mProgressDirectionMatrix.postRotate(orientation);
     }
 
     private void stopCapture(boolean aborted) {
@@ -589,10 +601,17 @@ public class PanoramaModule implements CameraModule,
         } else {
             hideTooFastIndication();
         }
+
+        // progressHorizontalAngle and progressVerticalAngle are relative to the
+        // camera. Convert them to UI direction.
+        mProgressAngle[0] = progressHorizontalAngle;
+        mProgressAngle[1] = progressVerticalAngle;
+        mProgressDirectionMatrix.mapPoints(mProgressAngle);
+
         int angleInMajorDirection =
-                (Math.abs(progressHorizontalAngle) > Math.abs(progressVerticalAngle))
-                ? (int) progressHorizontalAngle
-                : (int) progressVerticalAngle;
+                (Math.abs(mProgressAngle[0]) > Math.abs(mProgressAngle[1]))
+                ? (int) mProgressAngle[0]
+                : (int) mProgressAngle[1];
         mPanoProgressBar.setProgress((angleInMajorDirection));
     }
 
