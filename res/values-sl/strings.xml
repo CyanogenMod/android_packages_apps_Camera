@@ -123,7 +123,7 @@
     <string name="accessibility_switch_to_new_panorama" msgid="8116783308051524188">"Preklopi v novo panoramo"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Preklic pregleda"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Pregled opravljen"</string>
-    <string name="accessibility_review_retake" msgid="659300290054705484">"Predogled vnovičnega posnetka"</string>
+    <string name="accessibility_review_retake" msgid="659300290054705484">"Vnovični pregled posnetka"</string>
     <string name="capital_on" msgid="5491353494964003567">"VKLOPLJENO"</string>
     <string name="capital_off" msgid="7231052688467970897">"IZKLOPLJENO"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Izklopljeno"</string>
