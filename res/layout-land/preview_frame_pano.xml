@@ -30,17 +30,14 @@
             <com.android.camera.ui.RotateLayout
                     android:id="@+id/pano_capture_indicator"
                     android:visibility="gone"
-                    android:layout_gravity="top|left"
+                    android:layout_gravity="top|center"
                     android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                 <TextView
                         android:text="@string/pano_capture_indication"
                         android:textAppearance="?android:textAppearanceMedium"
                         android:paddingLeft="0dp"
-                        android:drawablePadding="5sp"
-                        android:drawableLeft="@drawable/ic_pan_recording_indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
             </com.android.camera.ui.RotateLayout>
