@@ -30,6 +30,9 @@ import android.util.Log;
 import com.android.camera.CameraManager.CameraProxy;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * The class is used to hold an {@code android.hardware.Camera} instance.
@@ -57,6 +60,55 @@ public class CameraHolder {
     private final CameraInfo[] mInfo;
     private static CameraProxy mMockCamera[];
     private static CameraInfo mMockCameraInfo[];
+
+    /* Debug double-open issue */
+    private static final boolean DEBUG_OPEN_RELEASE = true;
+    private static class OpenReleaseState {
+        long time;
+        int id;
+        String device;
+        String[] stack;
+    }
+    private static ArrayList<OpenReleaseState> sOpenReleaseStates =
+            new ArrayList<OpenReleaseState>();
+    private static SimpleDateFormat sDateFormat = new SimpleDateFormat(
+            "yyyy-MM-dd HH:mm:ss.SSS");
+
+    private static synchronized void collectState(int id, CameraProxy device) {
+        OpenReleaseState s = new OpenReleaseState();
+        s.time = System.currentTimeMillis();
+        s.id = id;
+        if (device == null) {
+            s.device = "(null)";
+        } else {
+            s.device = device.toString();
+        }
+
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        String[] lines = new String[stack.length];
+        for (int i = 0; i < stack.length; i++) {
+            lines[i] = stack[i].toString();
+        }
+        s.stack = lines;
+
+        if (sOpenReleaseStates.size() > 10) {
+            sOpenReleaseStates.remove(0);
+        }
+        sOpenReleaseStates.add(s);
+    }
+
+    private static synchronized void dumpStates() {
+        for (int i = sOpenReleaseStates.size() - 1; i >= 0; i--) {
+            OpenReleaseState s = sOpenReleaseStates.get(i);
+            String date = sDateFormat.format(new Date(s.time));
+            Log.d(TAG, "State " + i + " at " + date);
+            Log.d(TAG, "mCameraId = " + s.id + ", mCameraDevice = " + s.device);
+            Log.d(TAG, "Stack:");
+            for (int j = 0; j < s.stack.length; j++) {
+                Log.d(TAG, "  " + s.stack[j]);
+            }
+        }
+    }
 
     // We store the camera parameters when we actually open the device,
     // so we can restore them in the subsequent open() requests by the user.
@@ -138,6 +190,13 @@ public class CameraHolder {
 
     public synchronized CameraProxy open(int cameraId)
             throws CameraHardwareException {
+        if (DEBUG_OPEN_RELEASE) {
+            collectState(cameraId, mCameraDevice);
+            if (mCameraOpened) {
+                Log.e(TAG, "double open");
+                dumpStates();
+            }
+        }
         Assert(!mCameraOpened);
         if (mCameraDevice != null && mCameraId != cameraId) {
             mCameraDevice.release();
@@ -193,6 +252,10 @@ public class CameraHolder {
     }
 
     public synchronized void release() {
+        if (DEBUG_OPEN_RELEASE) {
+            collectState(mCameraId, mCameraDevice);
+        }
+
         if (mCameraDevice == null) return;
 
         long now = System.currentTimeMillis();

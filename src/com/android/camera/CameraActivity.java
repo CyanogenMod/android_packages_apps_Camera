@@ -136,6 +136,7 @@ public class CameraActivity extends ActivityBase
 
     @Override
     public void onCameraSelected(int i) {
+        if (mPaused) return;
         if (i != mCurrentModuleIndex) {
             mPaused = true;
             boolean canReuse = canReuseScreenNail();
