@@ -50,12 +50,12 @@ public class PieRenderer extends OverlayRenderer
     // Sometimes continuous autofocus starts and stops several times quickly.
     // These states are used to make sure the animation is run for at least some
     // time.
-    private int mState;
+    private volatile int mState;
     private ScaleAnimation mAnimation = new ScaleAnimation();
     private static final int STATE_IDLE = 0;
     private static final int STATE_FOCUSING = 1;
     private static final int STATE_FINISHING = 2;
-    private static final int STATE_PIE = 3;
+    private static final int STATE_PIE = 8;
 
     private Runnable mDisappear = new Disappear();
     private Animation.AnimationListener mEndAction = new EndAction();
@@ -66,12 +66,10 @@ public class PieRenderer extends OverlayRenderer
 
     private static final long PIE_FADE_IN_DURATION = 200;
     private static final long PIE_XFADE_DURATION = 200;
-    private static final long FOCUS_TAP_TIMEOUT = 500;
     private static final long PIE_SELECT_FADE_DURATION = 300;
 
-    private static final int MSG_OPEN = 2;
-    private static final int MSG_CLOSE = 3;
-    private static final int MSG_FOCUS_TAP = 4;
+    private static final int MSG_OPEN = 0;
+    private static final int MSG_CLOSE = 1;
     private static final float PIE_SWEEP = (float)(Math.PI * 2 / 3);
     // geometry
     private Point mCenter;
@@ -112,7 +110,6 @@ public class PieRenderer extends OverlayRenderer
     private int mInnerOffset;
     private int mOuterStroke;
     private int mInnerStroke;
-    private boolean mFocusFromTap;
     private boolean mTapMode;
     private boolean mBlockFocus;
     private int mTouchSlopSquared;
@@ -120,6 +117,7 @@ public class PieRenderer extends OverlayRenderer
     private boolean mOpening;
     private LinearAnimation mXFade;
     private LinearAnimation mFadeIn;
+    private volatile boolean mFocusCancelled;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -132,13 +130,6 @@ public class PieRenderer extends OverlayRenderer
             case MSG_CLOSE:
                 if (mListener != null) {
                     mListener.onPieClosed();
-                }
-                break;
-            case MSG_FOCUS_TAP:
-                // reset flag
-                mTapMode = false;
-                if (mState == STATE_PIE) {
-                    show(false);
                 }
                 break;
             }
@@ -218,7 +209,6 @@ public class PieRenderer extends OverlayRenderer
             show(false);
         } else {
             if (mState != STATE_IDLE) {
-                mHandler.removeMessages(MSG_FOCUS_TAP);
                 cancelFocus();
             }
             mState = STATE_PIE;
@@ -284,18 +274,6 @@ public class PieRenderer extends OverlayRenderer
         mCenter.y = y;
         // when using the pie menu, align the focus ring
         alignFocus(x, y);
-    }
-
-    private void setupPie(int x, int y) {
-        // when using the focus ring, align pie items
-        mCenter.x = x;
-        mCenter.y = y;
-        mCurrentItem = null;
-        mOpenItem = null;
-        for (PieItem item : mItems) {
-            item.setSelected(false);
-        }
-        layoutPie();
     }
 
     private void layoutPie() {
@@ -450,7 +428,6 @@ public class PieRenderer extends OverlayRenderer
             if (mTapMode) {
                 PieItem item = findItem(polar);
                 if ((item != null) && (mCurrentItem != item)) {
-                    mHandler.removeMessages(MSG_FOCUS_TAP);
                     mState = STATE_PIE;
                     onEnter(item);
                 }
@@ -625,12 +602,9 @@ public class PieRenderer extends OverlayRenderer
     }
 
     public void setFocus(int x, int y) {
-        mFocusFromTap = true;
-        mTapMode = true;
         mFocusX = x;
         mFocusY = y;
         setCircle(mFocusX, mFocusY);
-        setupPie(mFocusX, mFocusY);
     }
 
     public void alignFocus(int x, int y) {
@@ -711,18 +685,13 @@ public class PieRenderer extends OverlayRenderer
 
     @Override
     public void showStart() {
-        if (mState == STATE_IDLE) {
-            if (mFocusFromTap) {
-                mHandler.removeMessages(MSG_FOCUS_TAP);
-                mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_FOCUS_TAP),
-                        FOCUS_TAP_TIMEOUT);
-            }
-            mStartAnimationAngle = 67;
-            int range = getRandomRange();
-            startAnimation(SCALING_UP_TIME,
-                    false, mStartAnimationAngle, mStartAnimationAngle + range);
-            mState = STATE_FOCUSING;
-        }
+        if (mState == STATE_PIE) return;
+        cancelFocus();
+        mStartAnimationAngle = 67;
+        int range = getRandomRange();
+        startAnimation(SCALING_UP_TIME,
+                false, mStartAnimationAngle, mStartAnimationAngle + range);
+        mState = STATE_FOCUSING;
     }
 
     @Override
@@ -746,21 +715,20 @@ public class PieRenderer extends OverlayRenderer
     }
 
     private void cancelFocus() {
+        mFocusCancelled = true;
+        mOverlay.removeCallbacks(mDisappear);
         if (mAnimation != null) {
             mAnimation.cancel();
         }
-        mOverlay.removeCallbacks(mDisappear);
+        mFocusCancelled = false;
         mFocused = false;
-        mFocusFromTap = false;
+        mState = STATE_IDLE;
     }
 
     @Override
     public void clear() {
         if (mState == STATE_PIE) return;
-        mAnimation.cancel();
-        mFocused = false;
-        mFocusFromTap = false;
-        mOverlay.removeCallbacks(mDisappear);
+        cancelFocus();
         mOverlay.post(mDisappear);
     }
 
@@ -773,7 +741,6 @@ public class PieRenderer extends OverlayRenderer
     private void startAnimation(long duration, boolean timeout,
             float fromScale, float toScale) {
         setVisible(true);
-        mAnimation.cancel();
         mAnimation.reset();
         mAnimation.setDuration(duration);
         mAnimation.setScale(fromScale, toScale);
@@ -786,7 +753,9 @@ public class PieRenderer extends OverlayRenderer
         @Override
         public void onAnimationEnd(Animation animation) {
             // Keep the focus indicator for some time.
-            mOverlay.postDelayed(mDisappear, DISAPPEAR_TIMEOUT);
+            if (!mFocusCancelled) {
+                mOverlay.postDelayed(mDisappear, DISAPPEAR_TIMEOUT);
+            }
         }
 
         @Override
@@ -807,7 +776,6 @@ public class PieRenderer extends OverlayRenderer
             mFocusY = mCenterY;
             mState = STATE_IDLE;
             setCircle(mFocusX, mFocusY);
-            setupPie(mFocusX, mFocusY);
             mFocused = false;
         }
     }
