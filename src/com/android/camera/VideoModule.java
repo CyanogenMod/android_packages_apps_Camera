@@ -1978,14 +1978,19 @@ public class VideoModule implements CameraModule,
             mParameters.set("video-stabilization", "true");
         }
 
-        String defaultSize = mActivity.getResources().getStringArray(
-                R.array.pref_camera_picturesize_entryvalues)[0];
-
-        // set picture size to the camera preference
-        String pictureSize = mPreferences.getString(CameraSettings.KEY_PICTURE_SIZE, defaultSize);
-        CameraSettings.setCameraPictureSize(pictureSize,
-                mParameters.getSupportedPictureSizes(), mParameters);
-        Log.v(TAG, "Video snapshot size is " + pictureSize);
+        // Set picture size.
+        // The logic here is different from the logic in still-mode camera.
+        // There we determine the preview size based on the picture size, but
+        // here we determine the picture size based on the preview size.
+        List<Size> supported = mParameters.getSupportedPictureSizes();
+        Size optimalSize = Util.getOptimalVideoSnapshotPictureSize(supported,
+                (double) mDesiredPreviewWidth / mDesiredPreviewHeight);
+        Size original = mParameters.getPictureSize();
+        if (!original.equals(optimalSize)) {
+            mParameters.setPictureSize(optimalSize.width, optimalSize.height);
+        }
+        Log.v(TAG, "Video snapshot size is " + optimalSize.width + "x" +
+                optimalSize.height);
 
         // Set JPEG quality.
         int jpegQuality = CameraProfile.getJpegEncodingQualityParameter(mCameraId,
