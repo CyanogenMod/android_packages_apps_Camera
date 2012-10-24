@@ -40,8 +40,8 @@ public class MosaicPreviewRenderer {
     private static final int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
     private static final boolean DEBUG = false;
 
-    private int mWidth;
-    private int mHeight;
+    private int mWidth; // width of the view in UI
+    private int mHeight; // height of the view in UI
 
     private boolean mIsLandscape = true;
     private final float[] mTransformMatrix = new float[16];
