@@ -17,7 +17,6 @@
 package com.android.camera;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -26,12 +25,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.hardware.Camera.Parameters;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -42,7 +38,6 @@ import android.view.animation.DecelerateInterpolator;
 
 import com.android.camera.ui.LayoutChangeNotifier;
 import com.android.camera.ui.PopupManager;
-import com.android.camera.ui.RotateImageView;
 import com.android.gallery3d.app.AbstractGalleryActivity;
 import com.android.gallery3d.app.AppBridge;
 import com.android.gallery3d.app.GalleryActionBar;
@@ -50,8 +45,6 @@ import com.android.gallery3d.app.PhotoPage;
 import com.android.gallery3d.common.ApiHelper;
 import com.android.gallery3d.ui.ScreenNail;
 import com.android.gallery3d.util.MediaSetUtils;
-
-import java.io.File;
 
 /**
  * Superclass of camera activity.
@@ -222,7 +215,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         super.onResume();
 
         installIntentFilter();
-        if(updateStorageHintOnResume()) {
+        if (updateStorageHintOnResume()) {
             updateStorageSpace();
             mHandler.sendEmptyMessageDelayed(UPDATE_STORAGE_HINT, 200);
         }
@@ -597,7 +590,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
 
         @Override
         public void requestRender() {
-            getGLRoot().requestRender();
+            getGLRoot().requestRenderForced();
         }
 
         @Override
