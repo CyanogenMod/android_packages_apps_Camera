@@ -5,7 +5,7 @@
 // frame dimensions (gPreviewImageWidth, gPreviewImageHeight)
 // using the scale factors below.
 const int PREVIEW_FBO_WIDTH_SCALE = 2;
-const int PREVIEW_FBO_HEIGHT_SCALE = 1;
+const int PREVIEW_FBO_HEIGHT_SCALE = 2;
 
 // The factor below determines the (horizontal) speed at which the viewfinder
 // will pan across the UI during capture. A value of 0.0 will keep the viewfinder
