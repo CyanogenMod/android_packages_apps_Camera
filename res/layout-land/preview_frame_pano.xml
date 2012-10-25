@@ -24,23 +24,14 @@
             android:orientation="vertical">
 
         <!-- The top bar with capture indication -->
-        <FrameLayout style="@style/PanoViewHorizontalBar"
-                android:padding="5dp">
-
-            <com.android.camera.ui.RotateLayout
-                    android:id="@+id/pano_capture_indicator"
+        <FrameLayout style="@style/PanoViewHorizontalBar">
+            <TextView android:id="@+id/pano_capture_indicator"
+                    android:text="@string/pano_capture_indication"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:layout_gravity="center"
                     android:visibility="gone"
-                    android:layout_gravity="top|center"
-                    android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                <TextView
-                        android:text="@string/pano_capture_indication"
-                        android:textAppearance="?android:textAppearanceMedium"
-                        android:paddingLeft="0dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-            </com.android.camera.ui.RotateLayout>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
         </FrameLayout>
 
         <com.android.camera.ui.LayoutNotifyView
