@@ -111,7 +111,7 @@ public class PanoramaModule implements CameraModule,
     private LinearLayout mCaptureLayout;
     private View mReviewLayout;
     private ImageView mReview;
-    private RotateLayout mCaptureIndicator;
+    private View mCaptureIndicator;
     private PanoProgressBar mPanoProgressBar;
     private PanoProgressBar mSavingProgressBar;
     private Matrix mProgressDirectionMatrix = new Matrix();
@@ -646,7 +646,7 @@ public class PanoramaModule implements CameraModule,
         mSavingProgressBar.setBackgroundColor(appRes.getColor(R.color.pano_progress_empty));
         mSavingProgressBar.setDoneColor(appRes.getColor(R.color.pano_progress_indication));
 
-        mCaptureIndicator = (RotateLayout) mRootView.findViewById(R.id.pano_capture_indicator);
+        mCaptureIndicator = mRootView.findViewById(R.id.pano_capture_indicator);
 
         mReviewLayout = mRootView.findViewById(R.id.pano_review_layout);
         mReview = (ImageView) mRootView.findViewById(R.id.pano_reviewarea);
@@ -665,14 +665,8 @@ public class PanoramaModule implements CameraModule,
 
         if (mActivity.getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_PORTRAIT) {
-            final int[] ids = {
-                    R.id.pano_pan_progress_bar_layout,
-                    R.id.pano_saving_progress_bar_layout,
-                    R.id.pano_rotate_reviewarea};
-            for (int i = 0; i < ids.length; i++) {
-                Rotatable view = (Rotatable) mRootView.findViewById(ids[i]);
-                view.setOrientation(270, false);
-            }
+            Rotatable view = (Rotatable) mRootView.findViewById(R.id.pano_rotate_reviewarea);
+            view.setOrientation(270, false);
         }
     }
 
