@@ -22,45 +22,16 @@
     <LinearLayout android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:baselineAligned="false"
-            android:orientation="horizontal">
-
-        <!-- The bottom bar with progress bar and direction indicators -->
-        <RelativeLayout style="@style/PanoViewHorizontalBar">
-
-            <com.android.camera.ui.RotateLayout
-                    android:id="@+id/pano_pan_progress_bar_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true">
-                <com.android.camera.PanoProgressBar
-                        android:id="@+id/pano_pan_progress_bar"
-                        android:visibility="gone"
-                        android:src="@drawable/ic_pan_progression"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-            </com.android.camera.ui.RotateLayout>
-            <ImageView
-                    android:id="@+id/pano_pan_left_indicator"
-                    android:src="@drawable/pano_direction_left_indicator"
-                    android:rotation="90"
+            android:orientation="vertical">
+        <FrameLayout style="@style/PanoViewHorizontalBar">
+            <TextView android:id="@+id/pano_capture_indicator"
+                    android:text="@string/pano_capture_indication"
+                    android:textAppearance="?android:textAppearanceMedium"
                     android:visibility="gone"
-                    android:layout_marginBottom="5dp"
-                    android:layout_above="@id/pano_pan_progress_bar_layout"
-                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
-
-            <ImageView
-                    android:id="@+id/pano_pan_right_indicator"
-                    android:src="@drawable/pano_direction_right_indicator"
-                    android:rotation="90"
-                    android:visibility="gone"
-                    android:layout_marginTop="5dp"
-                    android:layout_below="@id/pano_pan_progress_bar_layout"
-                    android:layout_centerHorizontal="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-        </RelativeLayout>
+        </FrameLayout>
 
         <com.android.camera.ui.LayoutNotifyView
                 android:id="@+id/pano_preview_area"
@@ -68,29 +39,11 @@
                 android:background="@drawable/ic_pan_border_fast"
                 android:layout_gravity="center"
                 android:layout_weight="1.67"
-                android:layout_width="0dp"
-                android:layout_height="match_parent" />
+                android:layout_width="match_parent"
+                android:layout_height="0dp" />
 
-        <!-- The top bar -->
         <View style="@style/PanoViewHorizontalBar"/>
-
     </LinearLayout>
-
-    <com.android.camera.ui.RotateLayout
-            android:id="@+id/pano_capture_indicator"
-            android:visibility="gone"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        <TextView
-                android:text="@string/pano_capture_indication"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:paddingTop="0dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-    </com.android.camera.ui.RotateLayout>
 
     <!-- The hint for "Too fast" text view -->
     <com.android.camera.ui.RotateLayout
@@ -105,4 +58,53 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
     </com.android.camera.ui.RotateLayout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/placeholder">
+        <com.android.camera.ui.RotateLayout
+                android:id="@+id/pano_pan_progress_bar_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+            <com.android.camera.PanoProgressBar
+                    android:id="@+id/pano_pan_progress_bar"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_pan_progression"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+        </com.android.camera.ui.RotateLayout>
+
+        <ImageView
+                android:id="@+id/pano_pan_left_indicator"
+                android:src="@drawable/pano_direction_left_indicator"
+                android:visibility="gone"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@id/pano_pan_progress_bar_layout"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        <ImageView
+                android:id="@+id/pano_pan_right_indicator"
+                android:src="@drawable/pano_direction_right_indicator"
+                android:visibility="gone"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/pano_pan_progress_bar_layout"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <ImageView
+            android:id="@id/placeholder"
+            android:visibility="invisible"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/shutter_offset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_shutter_default" />
+
 </RelativeLayout>
