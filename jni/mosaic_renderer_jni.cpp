@@ -49,7 +49,7 @@ int gPreviewImageHeight[NR];
 sem_t gPreviewImage_semaphore;
 
 // Off-screen preview FBO width (large enough to store the entire
-// preview mosaic).
+// preview mosaic). FBO is frame buffer object.
 int gPreviewFBOWidth;
 // Off-screen preview FBO height (large enough to store the entire
 // preview mosaic).
@@ -534,12 +534,17 @@ JNIEXPORT jint JNICALL Java_com_android_camera_MosaicRenderer_init(
     return (jint) gSurfaceTextureID[0];
 }
 
-
+// width: the width of the view
+// height: the height of the view
+// isLandscape: whether the device is in landscape or portrait. Android
+//     Compatibility Definition Document specifies that the long side of the
+//     camera aligns with the long side of the screen.
 void calculateUILayoutScaling(int width, int height, bool isLandscape) {
     if (isLandscape) {
-        //  __________        ______
-        // |__________|  =>  |______|
-        // (Preview FBO)      (View)
+        //  __________        ________
+        // |          |  =>  |________|
+        // |__________|  =>    (View)
+        // (Preview FBO)
         //
         // Scale the preview FBO's height to the height of view and
         // maintain the aspect ratio of the current frame on the screen.
@@ -548,27 +553,28 @@ void calculateUILayoutScaling(int width, int height, bool isLandscape) {
         // Note that OpenGL scales a texture to view's width and height automatically.
         // The "width / height" inverts the scaling, so as to maintain the aspect ratio
         // of the current frame.
-        gUILayoutScalingX = ((float) (PREVIEW_FBO_WIDTH_SCALE * gPreviewImageWidth[LR])
-                / (PREVIEW_FBO_HEIGHT_SCALE * gPreviewImageHeight[LR]) *  PREVIEW_FBO_HEIGHT_SCALE)
-                / ((float) width / height);
+        gUILayoutScalingX = ((float) gPreviewFBOWidth / gPreviewFBOHeight)
+                / ((float) width / height) * PREVIEW_FBO_HEIGHT_SCALE;
     } else {
-        //                     __
-        //  __________        |  |
-        // |__________|  =>   |  |
-        // (Preview FBO)      |  |
-        //                    |__|
-        //                   (View)
+        //                   ___
+        //  __________      |   |     ______
+        // |          |  => |   | => |______|
+        // |__________|  => |   | =>  (View)
+        // (Preview FBO)    |   |
+        //                  |___|
+        //
         // Scale the preview FBO's height to the width of view and
         // maintain the aspect ratio of the current frame on the screen.
-        gUILayoutScalingX = PREVIEW_FBO_HEIGHT_SCALE;
+        // In preview, Java_com_android_camera_MosaicRenderer_step rotates the
+        // preview FBO by 90 degrees. In capture, UpdateWarpTransformation
+        // rotates the preview FBO.
+        gUILayoutScalingY = PREVIEW_FBO_WIDTH_SCALE;
 
         // Note that OpenGL scales a texture to view's width and height automatically.
         // The "height / width" inverts the scaling, so as to maintain the aspect ratio
         // of the current frame.
-        gUILayoutScalingY = ((float) (PREVIEW_FBO_WIDTH_SCALE * gPreviewImageWidth[LR])
-                / (PREVIEW_FBO_HEIGHT_SCALE * gPreviewImageHeight[LR]) *  PREVIEW_FBO_HEIGHT_SCALE)
-                / ((float) height / width);
-
+        gUILayoutScalingX = ((float) gPreviewFBOHeight / gPreviewFBOWidth)
+                / ((float) width / height) * PREVIEW_FBO_WIDTH_SCALE;
     }
 }
 
