@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.android.camera.ui.CameraSwitcher;
+import com.android.gallery3d.app.PhotoPage;
 import com.android.gallery3d.util.LightCycleHelper;
 
 public class CameraActivity extends ActivityBase
@@ -284,7 +285,16 @@ public class CameraActivity extends ActivityBase
     @Override
     protected void onActivityResult(
             int requestCode, int resultCode, Intent data) {
+        // Only PhotoPage understands ProxyLauncher.RESULT_USER_CANCELED
+        if (resultCode == ProxyLauncher.RESULT_USER_CANCELED
+                && !(getStateManager().getTopState() instanceof PhotoPage)) {
+            resultCode = RESULT_CANCELED;
+        }
         super.onActivityResult(requestCode, resultCode, data);
+        // Unmap cancel vs. reset
+        if (resultCode == ProxyLauncher.RESULT_USER_CANCELED) {
+            resultCode = RESULT_CANCELED;
+        }
         mCurrentModule.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -332,6 +342,14 @@ public class CameraActivity extends ActivityBase
             return mShutterSwitcher.dispatchTouchEvent(m)
                     || mCurrentModule.dispatchTouchEvent(m);
         }
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        Intent proxyIntent = new Intent(this, ProxyLauncher.class);
+        proxyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        proxyIntent.putExtra(Intent.EXTRA_INTENT, intent);
+        super.startActivityForResult(proxyIntent, requestCode);
     }
 
     public boolean superDispatchTouchEvent(MotionEvent m) {
