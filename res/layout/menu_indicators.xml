@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.camera.ui.RotateLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/on_screen_indicators"
     android:layout_width="80dip"
     android:layout_height="80dip" >
@@ -52,4 +52,4 @@
             android:src="@drawable/ic_indicator_sce_off" />
     </RelativeLayout>
 
-</com.android.camera.ui.RotateLayout>
+</FrameLayout>
