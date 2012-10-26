@@ -197,7 +197,7 @@ public class PhotoModule
     private ImageView mSceneIndicator;
     private ImageView mHdrIndicator;
     // A view group that contains all the small indicators.
-    private RotateLayout mOnScreenIndicators;
+    private View mOnScreenIndicators;
 
     // We use a thread in ImageSaver to do the work of saving images. This
     // reduces the shot-to-shot time.
@@ -768,7 +768,7 @@ public class PhotoModule
     }
 
     private void initOnScreenIndicator() {
-        mOnScreenIndicators = (RotateLayout) mRootView.findViewById(R.id.on_screen_indicators);
+        mOnScreenIndicators = mRootView.findViewById(R.id.on_screen_indicators);
         mExposureIndicator = (ImageView) mOnScreenIndicators.findViewById(R.id.menu_exposure_indicator);
         mFlashIndicator = (ImageView) mOnScreenIndicators.findViewById(R.id.menu_flash_indicator);
         mSceneIndicator = (ImageView) mOnScreenIndicators.findViewById(R.id.menu_scenemode_indicator);
