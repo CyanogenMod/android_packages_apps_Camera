@@ -24,7 +24,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true">
 
-        <include layout="@layout/menu_indicators"
+        <include layout="@layout/menu_indicators_keyguard"
             android:layout_width="80dip"
             android:layout_height="80dip"
             android:layout_gravity="bottom|right"
