@@ -333,7 +333,7 @@ public class VideoCamera extends ActivityBase
         mPreferences = new ComboPreferences(this);
         CameraSettings.upgradeGlobalPreferences(mPreferences.getGlobal());
         mCameraId = getPreferredCameraId(mPreferences);
-        powerShutter(mPreferences);
+        initPowerShutter(mPreferences);
         mPreferences.setLocalId(this, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
@@ -1020,7 +1020,9 @@ public class VideoCamera extends ActivityBase
         if (mPaused) {
             return true;
         }
-
+        if (!mShowCameraAppView) {
+            return super.onKeyDown(keyCode, event);
+        }
         switch (keyCode) {
             case KeyEvent.KEYCODE_CAMERA:
                 if (event.getRepeatCount() == 0) {
@@ -1066,12 +1068,15 @@ public class VideoCamera extends ActivityBase
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (!mShowCameraAppView) {
+            return super.onKeyUp(keyCode, event);
+        }
         switch (keyCode) {
             case KeyEvent.KEYCODE_CAMERA:
                 mShutterButton.setPressed(false);
                 return true;
             case KeyEvent.KEYCODE_POWER:
-                if (powerShutter(mPreferences)) {
+                if (mPowerShutter) {
                     onShutterButtonClick();
                 }
                 return true;
@@ -2246,6 +2251,7 @@ public class VideoCamera extends ActivityBase
             } else {
                 setCameraParameters();
             }
+            initPowerShutter(mPreferences);
         }
     }
 
@@ -2474,7 +2480,7 @@ public class VideoCamera extends ActivityBase
     @Override
     protected void updateCameraAppView() {
         super.updateCameraAppView();
-
+        initPowerShutter(mPreferences);
         if (!mPreviewing || mParameters.getFlashMode() == null) return;
 
         // When going to and back from gallery, we need to turn off/on the flash.

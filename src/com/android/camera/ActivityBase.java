@@ -81,6 +81,9 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     protected boolean mPaused;
     protected GalleryActionBar mActionBar;
 
+    // Keep track of powershutter state
+    protected boolean mPowerShutter = false;
+
     // Set time after touchtofocus
     public static int mFocusTime;
 
@@ -150,16 +153,15 @@ abstract public class ActivityBase extends AbstractGalleryActivity
         return false;
     }
 
-    protected boolean powerShutter(ComboPreferences prefs) {
+    protected void initPowerShutter(ComboPreferences prefs) {
         prefs.setLocalId(getApplicationContext(), 0);
         String val = prefs.getString(CameraSettings.KEY_POWER_SHUTTER,
                 getResources().getString(R.string.pref_camera_power_shutter_default));
-        if (val.equals(CameraSettings.VALUE_ON)){
+        mPowerShutter = val.equals(CameraSettings.VALUE_ON);
+        if (mPowerShutter && mShowCameraAppView) {
             getWindow().addFlags(WindowManager.LayoutParams.PREVENT_POWER_KEY);
-            return true;
-        }else{
+        } else {
             getWindow().clearFlags(WindowManager.LayoutParams.PREVENT_POWER_KEY);
-            return false;
         }
     }
 
