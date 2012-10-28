@@ -88,6 +88,7 @@
     <string name="pano_capture_indication" msgid="8248825828264374507">"گرفتن عکس پانوراما"</string>
     <string name="pano_dialog_waiting_previous" msgid="7800325815031423516">"در حال انتظار برای پانورامای قبلی"</string>
     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"در حال ذخیره..."</string>
+    <string name="pano_review_rendering" msgid="2887552964129301902">"در حال تولید تصویر پانوراما"</string>
     <string name="tap_to_focus" msgid="8863427645591903760">"برای فوکوس لمس کنید."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"جلوه‌ها"</string>
     <string name="effect_none" msgid="3601545724573307541">"هیچکدام"</string>
@@ -173,7 +174,7 @@
     <string name="set_time_interval" msgid="2970567717633813771">"تنظیم فاصله زمانی"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"ویژگی زمان سپری شده خاموش است. برای تنظیم فاصله زمانی آن را روشن کنید."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"موقعیت مکانی عکس به‌خاطر سپرده شود؟"</string>
-    <string name="remember_location_prompt" msgid="724592331305808098">"محل گرفتن عکس‌ها و ویدیوها را به آنها برچسب کنید."\n\n" سایر برنامه‌ها می‌توانند به این اطلاعات به همراه تصاویر ذخیره شده شما دسترسی پیدا کنند."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"محل گرفتن عکس‌ها و ویدیوها را به آنها برچسب کنید."\n\n" سایر برنامه‌ها می‌توانند به این اطلاعات در کنار تصاویر ذخیره شده شما دسترسی پیدا کنند."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"نه متشکرم"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"بله"</string>
 </resources>
