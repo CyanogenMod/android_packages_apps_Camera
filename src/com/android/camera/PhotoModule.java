@@ -908,6 +908,7 @@ public class PhotoModule
             }
             if (mSceneMode == Util.SCENE_MODE_HDR) {
                 mActivity.showSwitcher();
+                mActivity.setSwipingEnabled(true);
             }
 
             mJpegPictureCallbackTime = System.currentTimeMillis();
@@ -1594,6 +1595,7 @@ public class PhotoModule
         if (pressed) {
             if (mSceneMode == Util.SCENE_MODE_HDR) {
                 mActivity.hideSwitcher();
+                mActivity.setSwipingEnabled(false);
             }
             mFocusManager.onShutterDown();
         } else {
