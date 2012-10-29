@@ -1279,7 +1279,6 @@ public class PhotoModule
 
         if (animateBefore) {
             animateFlash();
-            mActivity.hideSwitcher();
         }
 
         // Set rotation and gps data.
@@ -1593,6 +1592,9 @@ public class PhotoModule
         if (pressed && !canTakePicture()) return;
 
         if (pressed) {
+            if (mSceneMode == Util.SCENE_MODE_HDR) {
+                mActivity.hideSwitcher();
+            }
             mFocusManager.onShutterDown();
         } else {
             mFocusManager.onShutterUp();
