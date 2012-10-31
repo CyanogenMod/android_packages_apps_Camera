@@ -999,7 +999,7 @@ public class PhotoModule
             mAutoFocusTime = System.currentTimeMillis() - mFocusStartTime;
             Log.v(TAG, "mAutoFocusTime = " + mAutoFocusTime + "ms");
             setCameraState(IDLE);
-            mFocusManager.onAutoFocus(focused);
+            mFocusManager.onAutoFocus(focused, mShutterButton.isPressed());
         }
     }
 
