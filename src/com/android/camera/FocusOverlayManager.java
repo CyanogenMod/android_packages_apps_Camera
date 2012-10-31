@@ -186,21 +186,33 @@ public class FocusOverlayManager {
         }
     }
 
-    public void onShutterDown() {
-        if (!mInitialized) return;
-
-        // Lock AE and AWB so users can half-press shutter and recompose.
+    private void lockAeAwbIfNeeded() {
         if (mLockAeAwbNeeded && !mAeAwbLock) {
             mAeAwbLock = true;
             mListener.setFocusParameters();
         }
+    }
 
+    private void unlockAeAwbIfNeeded() {
+        if (mLockAeAwbNeeded && mAeAwbLock && (mState != STATE_FOCUSING_SNAP_ON_FINISH)) {
+            mAeAwbLock = false;
+            mListener.setFocusParameters();
+        }
+    }
+
+    public void onShutterDown() {
+        if (!mInitialized) return;
+
+        boolean autoFocusCalled = false;
         if (needAutoFocusCall()) {
             // Do not focus if touch focus has been triggered.
             if (mState != STATE_SUCCESS && mState != STATE_FAIL) {
                 autoFocus();
+                autoFocusCalled = true;
             }
         }
+
+        if (!autoFocusCalled) lockAeAwbIfNeeded();
     }
 
     public void onShutterUp() {
@@ -216,10 +228,7 @@ public class FocusOverlayManager {
 
         // Unlock AE and AWB after cancelAutoFocus. Camera API does not
         // guarantee setParameters can be called during autofocus.
-        if (mLockAeAwbNeeded && mAeAwbLock && (mState != STATE_FOCUSING_SNAP_ON_FINISH)) {
-            mAeAwbLock = false;
-            mListener.setFocusParameters();
-        }
+        unlockAeAwbIfNeeded();
     }
 
     public void doSnap() {
@@ -244,7 +253,7 @@ public class FocusOverlayManager {
         }
     }
 
-    public void onAutoFocus(boolean focused) {
+    public void onAutoFocus(boolean focused, boolean shutterButtonPressed) {
         if (mState == STATE_FOCUSING_SNAP_ON_FINISH) {
             // Take the picture no matter focus succeeds or fails. No need
             // to play the AF sound if we're about to play the shutter
@@ -270,6 +279,10 @@ public class FocusOverlayManager {
             // while.
             if (mFocusArea != null) {
                 mHandler.sendEmptyMessageDelayed(RESET_TOUCH_FOCUS, RESET_TOUCH_FOCUS_DELAY);
+            }
+            if (shutterButtonPressed) {
+                // Lock AE & AWB so users can half-press shutter and recompose.
+                lockAeAwbIfNeeded();
             }
         } else if (mState == STATE_IDLE) {
             // User has released the focus key before focus completes.
