@@ -136,9 +136,9 @@ public class RenderOverlay extends FrameLayout {
         }
 
         @Override
-        public void layout(int left, int top, int right, int bottom) {
+        public void onLayout(boolean changed, int left, int top, int right, int bottom) {
             adjustPosition();
-            super.layout(left,  top, right, bottom);
+            super.onLayout(changed, left,  top, right, bottom);
             if (mClients == null) return;
             for (Renderer renderer : mClients) {
                 renderer.layout(left, top, right, bottom);
