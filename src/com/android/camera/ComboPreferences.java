@@ -16,10 +16,10 @@
 
 package com.android.camera;
 
+import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.preference.PreferenceManager;
 
 import java.util.Map;
 import java.util.Set;
@@ -29,16 +29,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ComboPreferences implements SharedPreferences, OnSharedPreferenceChangeListener {
     private SharedPreferences mPrefGlobal;  // global preferences
     private SharedPreferences mPrefLocal;  // per-camera preferences
+    private BackupManager mBackupManager;
     private CopyOnWriteArrayList<OnSharedPreferenceChangeListener> mListeners;
     private static WeakHashMap<Context, ComboPreferences> sMap =
             new WeakHashMap<Context, ComboPreferences>();
 
     public ComboPreferences(Context context) {
-        mPrefGlobal = PreferenceManager.getDefaultSharedPreferences(context);
+        mPrefGlobal = context.getSharedPreferences(
+                getGlobalSharedPreferencesName(context), Context.MODE_PRIVATE);
         mPrefGlobal.registerOnSharedPreferenceChangeListener(this);
         synchronized (sMap) {
             sMap.put(context, this);
         }
+        mBackupManager = new BackupManager(context);
         mListeners = new CopyOnWriteArrayList<OnSharedPreferenceChangeListener>();
     }
 
@@ -48,10 +51,29 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         }
     }
 
+    private static String getLocalSharedPreferencesName(
+            Context context, int cameraId) {
+        return context.getPackageName() + "_preferences_" + cameraId;
+    }
+
+    private static String getGlobalSharedPreferencesName(Context context) {
+        return context.getPackageName() + "_preferences";
+    }
+
+    public static String[] getSharedPreferencesNames(Context context) {
+        int numOfCameras = CameraHolder.instance().getNumberOfCameras();
+        String prefNames[] = new String[numOfCameras + 1];
+        prefNames[0] = getGlobalSharedPreferencesName(context);
+        for (int i = 0; i < numOfCameras; i++) {
+            prefNames[i + 1] = getLocalSharedPreferencesName(context, i);
+        }
+        return prefNames;
+    }
+
     // Sets the camera id and reads its preferences. Each camera has its own
     // preferences.
     public void setLocalId(Context context, int cameraId) {
-        String prefName = context.getPackageName() + "_preferences_" + cameraId;
+        String prefName = getLocalSharedPreferencesName(context, cameraId);
         if (mPrefLocal != null) {
             mPrefLocal.unregisterOnSharedPreferenceChangeListener(this);
         }
@@ -259,5 +281,6 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         for (OnSharedPreferenceChangeListener listener : mListeners) {
             listener.onSharedPreferenceChanged(this, key);
         }
+        mBackupManager.dataChanged();
     }
 }
