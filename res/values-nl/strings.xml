@@ -143,4 +143,86 @@
     <string name="pref_camera_jpeg_entry_medium">Normaal</string>
     <string name="pref_camera_jpeg_entry_low">Laag</string>
 
+    <!-- Settings screen, Select auto exposure title -->
+    <string name="pref_camera_autoexposure_title">Lichtmeting</string>
+
+    <!-- Settings screen, auto exposure dialog radio button choices -->
+    <string name="pref_camera_autoexposure_entry_frameaverage">Frame-gemiddelde</string>
+    <string name="pref_camera_autoexposure_entry_centerweighted">Centrum gewogen</string>
+    <string name="pref_camera_autoexposure_entry_spotmetering">Spotmeting</string>
+    <string name="pref_camera_autoexposure_entry_matrix">Meervlaksmeting</string>
+
+    <!-- Settings screen, Select Redeye Reduction -->
+    <string name="pref_camera_redeyereduction_title">Rode-ogenreductie</string>
+
+    <!-- Settings menu, redeye reduction choices -->
+    <string name="pref_camera_redeyereduction_entry_enable">Inschakelen</string>
+    <string name="pref_camera_redeyereduction_entry_disable">Uitschakelen</string>
+
+    <!-- Settings screen, Anti Banding title -->
+    <string name="pref_camera_antibanding_title">Anti-strepen</string>
+
+    <!-- Settings screen, Anti Banding entries -->
+    <string name="pref_camera_antibanding_entry_0">Uit</string>
+    <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+    <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+    <string name="pref_camera_antibanding_entry_3">Automatisch</string>
+
+    <!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">Kleureffect</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">Geen</string>
+    <string name="pref_camera_coloreffect_entry_mono">Monochroom</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negatief</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Solarisatie</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Posterisatie</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Turquoise</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Reliëf</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Schets</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mozaïek</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Rode tint</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Blauwe tint</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Groene tint</string>
+
+    <string name="pref_camera_scenemode_entry_asd">Automatisch</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portret</string>
+    <string name="pref_camera_scenemode_entry_landscape">Landschap</string>
+    <string name="pref_camera_scenemode_entry_night_portrait">Nacht</string>
+    <string name="pref_camera_scenemode_entry_theatre">Theater</string>
+    <string name="pref_camera_scenemode_entry_beach">Strand</string>
+    <string name="pref_camera_scenemode_entry_snow">Sneeuw</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Stabiel</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Vuurwerk</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Kaarslicht</string>
+    <string name="pref_camera_scenemode_entry_flowers">Bloemen</string>
+    <string name="pref_camera_scenemode_entry_ar">AR</string>
+
+    <!-- Other settings -->
+    <string name="pref_camera_focus_title">Duur aanraakfocus</string>
+    <string name="pref_camera_focus_summary">Kies duur voor aanraakfocus</string>
+    <string name="pref_camera_focus_entry_10">10 sec.</string>
+    <string name="pref_camera_focus_entry_15">15 sec.</string>
+    <string name="pref_camera_focus_entry_20">20 sec.</string>
+    <string name="pref_camera_focus_entry_30">30 sec.</string>
+    <string name="pref_camera_focus_entry_40">40 sec.</string>
+    <string name="pref_camera_focus_entry_infinit">Oneindig</string>
+
+    <!-- Settings screen, Timer mode -->
+    <string name="pref_camera_timer_title">Zelfontspanner</string>
+    <string name="pref_camera_timer_entry_0">Uit</string>
+    <string name="pref_camera_timer_entry_10">10 sec.</string>
+    <string name="pref_camera_timer_entry_20">20 sec.</string>
+    <string name="pref_camera_timer_entry_30">30 sec.</string>
+    <string name="pref_camera_timer_entry_40">40 sec.</string>
+    <string name="pref_camera_timer_entry_50">50 sec.</string>
+    <string name="pref_camera_timer_entry_60">60 sec.</string>
+
+    <!-- More Settings screen, power button -->
+    <string name="pref_camera_power_shutter_title">Aan/uit-knop</string>
+
 </resources>
