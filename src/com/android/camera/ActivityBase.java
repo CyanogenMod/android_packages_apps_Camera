@@ -76,6 +76,7 @@ abstract public class ActivityBase extends AbstractGalleryActivity
     protected boolean mOpenCameraFail;
     protected boolean mCameraDisabled;
     protected CameraManager.CameraProxy mCameraDevice;
+    protected String mCaptureMode;
     protected Parameters mParameters;
     // The activity is paused. The classes that extend this class should set
     // mPaused the first thing in onResume/onPause.
