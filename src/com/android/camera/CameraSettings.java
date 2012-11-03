@@ -24,6 +24,9 @@ import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
+import android.os.Environment;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.util.FloatMath;
 import android.util.Log;
 
@@ -60,6 +63,7 @@ public class CameraSettings {
     public static final String KEY_CAMERA_FIRST_USE_HINT_SHOWN = "pref_camera_first_use_hint_shown_key";
     public static final String KEY_VIDEO_FIRST_USE_HINT_SHOWN = "pref_video_first_use_hint_shown_key";
     public static final String KEY_POWER_SHUTTER = "pref_power_shutter";
+    public static final String KEY_STORAGE = "pref_camera_storage_key";
 
     public static final String KEY_POWER_MODE = "pref_camera_powermode_key";
     public static final String KEY_PICTURE_FORMAT = "pref_camera_pictureformat_key";
@@ -192,6 +196,7 @@ public class CameraSettings {
         ListPreference videoFlashMode =
                 group.findPreference(KEY_VIDEOCAMERA_FLASH_MODE);
         ListPreference videoEffect = group.findPreference(KEY_VIDEO_EFFECT);
+        ListPreference storage = group.findPreference(KEY_STORAGE);
         ListPreference iso = group.findPreference(KEY_ISO);
         ListPreference burstMode = group.findPreference(KEY_BURST_MODE);
         ListPreference jpeg = group.findPreference(KEY_JPEG);
@@ -239,6 +244,7 @@ public class CameraSettings {
                     iso, mParameters.getSupportedIsoValues());
         }
         if (burstMode != null) burstMode.setValueIndex(4);
+        if (storage != null) buildStorage(group, storage);
         qcomInitPreferences(group);
     }
 
@@ -287,6 +293,33 @@ public class CameraSettings {
             }
         }
         preference.setEntryValues(entryValues);
+    }
+
+    private void buildStorage(PreferenceGroup group, ListPreference storage) {
+        StorageManager sm = (StorageManager) mContext.getSystemService(Context.STORAGE_SERVICE);
+        StorageVolume[] volumes = sm.getVolumeList();
+        String[] entries = new String[volumes.length];
+        String[] entryValues = new String[volumes.length];
+
+        if (volumes.length < 2) {
+           //No need for storage setting
+           removePreference(group, storage.getKey());
+           return;
+        }
+
+        for (int i = 0; i < volumes.length; i++) {
+            StorageVolume v = volumes[i];
+            entries[i] = v.getDescription(mContext);
+            entryValues[i] = v.getPath();
+        }
+        storage.setEntries(entries);
+        storage.setEntryValues(entryValues);
+
+        // Filter saved invalid value
+        if (storage.findIndexOfValue(storage.getValue()) < 0) {
+            // Default to the primary storage
+            storage.setValueIndex(0);
+        }
     }
 
     private static boolean removePreference(PreferenceGroup group, String key) {
@@ -493,6 +526,10 @@ public class CameraSettings {
         return null;
     }
 
+    public static String readStorage(SharedPreferences pref) {
+        return pref.getString(KEY_STORAGE,
+            Environment.getExternalStorageDirectory().toString());
+    }
 
     public static void restorePreferences(Context context,
             ComboPreferences preferences, Parameters parameters) {

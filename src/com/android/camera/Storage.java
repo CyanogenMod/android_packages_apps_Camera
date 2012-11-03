@@ -32,24 +32,17 @@ import java.io.FileOutputStream;
 public class Storage {
     private static final String TAG = "CameraStorage";
 
-    public static final String DCIM =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
-
-    public static final String DIRECTORY = DCIM + "/Camera";
-
-    // Match the code in MediaProvider.computeBucketValues().
-    public static final String BUCKET_ID =
-            String.valueOf(DIRECTORY.toLowerCase().hashCode());
+    public static String mStorage;
 
     public static final long UNAVAILABLE = -1L;
     public static final long PREPARING = -2L;
     public static final long UNKNOWN_SIZE = -3L;
     public static final long LOW_STORAGE_THRESHOLD= 50000000;
 
-    public static Uri addImage(ContentResolver resolver, String title, long date,
+    public static Uri addImage(ContentResolver resolver, String storage, String title, long date,
                 Location location, int orientation, byte[] jpeg, int width, int height) {
         // Save the image.
-        String path = generateFilepath(title);
+        String path = generateFilepath(storage, title);
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(path);
@@ -102,9 +95,9 @@ public class Storage {
     //
     // We also insert hint values for the WIDTH and HEIGHT fields to give
     // correct aspect ratio before the real values are updated in updateImage().
-    public static Uri newImage(ContentResolver resolver, String title,
+    public static Uri newImage(ContentResolver resolver, String storage, String title,
             long date, int width, int height) {
-        String path = generateFilepath(title);
+        String path = generateFilepath(storage, title);
 
         // Insert into MediaStore.
         ContentValues values = new ContentValues(4);
@@ -133,10 +126,10 @@ public class Storage {
     //
     // Returns true if the update is successful.
     public static boolean updateImage(ContentResolver resolver, Uri uri,
-            String title, Location location, int orientation, byte[] jpeg,
+            String storage, String title, Location location, int orientation, byte[] jpeg,
             int width, int height) {
         // Save the image.
-        String path = generateFilepath(title);
+        String path = generateFilepath(storage, title);
         String tmpPath = path + ".tmp";
         FileOutputStream out = null;
         try {
@@ -190,11 +183,29 @@ public class Storage {
         }
     }
 
-    public static String generateFilepath(String title) {
-        return DIRECTORY + '/' + title + ".jpg";
+    public static String generateDCIM(String storage) {
+        return new File(storage, Environment.DIRECTORY_DCIM).toString();
     }
 
-    public static long getAvailableSpace() {
+    public static String generateDirectory(String storage) {
+        return generateDCIM(storage) + "/Camera";
+    }
+
+    public static String generateFilepath(String storage, String title) {
+        return generateDirectory(storage) + '/' + title + ".jpg";
+    }
+
+    public static String generateBucketId(String storage) {
+        // Match the code in MediaProvider.computeBucketValues().
+        return String.valueOf(generateDirectory(storage).toLowerCase().hashCode());
+    }
+
+    public static String generateBucketIdInt(String storage) {
+        // Match the code in ediaProvider.computeBucketValues()
+        return String.valueOf(generateDirectory(storage).toLowerCase().hashCode());
+    }
+
+    public static long getAvailableSpace(String storage) {
         String state = Environment.getExternalStorageState();
         Log.d(TAG, "External storage state=" + state);
         if (Environment.MEDIA_CHECKING.equals(state)) {
@@ -204,14 +215,15 @@ public class Storage {
             return UNAVAILABLE;
         }
 
-        File dir = new File(DIRECTORY);
+        String directory = generateDirectory(storage);
+        File dir = new File(directory);
         dir.mkdirs();
         if (!dir.isDirectory() || !dir.canWrite()) {
             return UNAVAILABLE;
         }
 
         try {
-            StatFs stat = new StatFs(DIRECTORY);
+            StatFs stat = new StatFs(directory);
             return stat.getAvailableBlocks() * (long) stat.getBlockSize();
         } catch (Exception e) {
             Log.i(TAG, "Fail to access external storage", e);
@@ -223,8 +235,8 @@ public class Storage {
      * OSX requires plugged-in USB storage to have path /DCIM/NNNAAAAA to be
      * imported. This is a temporary fix for bug#1655552.
      */
-    public static void ensureOSXCompatible() {
-        File nnnAAAAA = new File(DCIM, "100ANDRO");
+    public static void ensureOSXCompatible(String storage) {
+        File nnnAAAAA = new File(generateDCIM(storage), "100ANDRO");
         if (!(nnnAAAAA.exists() || nnnAAAAA.mkdirs())) {
             Log.e(TAG, "Failed to create " + nnnAAAAA.getPath());
         }
