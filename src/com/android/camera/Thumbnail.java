@@ -162,9 +162,9 @@ public class Thumbnail {
     // The media is deleted while we are getting its thumbnail from media provider.
     public static final int THUMBNAIL_DELETED = 2;
 
-    public static int getLastThumbnailFromContentResolver(ContentResolver resolver, Thumbnail[] result) {
-        Media image = getLastImageThumbnail(resolver);
-        Media video = getLastVideoThumbnail(resolver);
+    public static int getLastThumbnailFromContentResolver(ContentResolver resolver, Thumbnail[] result, String bucketId) {
+        Media image = getLastImageThumbnail(resolver, bucketId);
+        Media video = getLastVideoThumbnail(resolver, bucketId);
         if (image == null && video == null) return THUMBNAIL_NOT_FOUND;
 
         Bitmap bitmap = null;
@@ -203,14 +203,14 @@ public class Thumbnail {
         public final Uri uri;
     }
 
-    private static Media getLastImageThumbnail(ContentResolver resolver) {
+    private static Media getLastImageThumbnail(ContentResolver resolver, String bucketId) {
         Uri baseUri = Images.Media.EXTERNAL_CONTENT_URI;
 
         Uri query = baseUri.buildUpon().appendQueryParameter("limit", "1").build();
         String[] projection = new String[] {ImageColumns._ID, ImageColumns.ORIENTATION,
                 ImageColumns.DATE_TAKEN};
         String selection = ImageColumns.MIME_TYPE + "='image/jpeg' AND " +
-                ImageColumns.BUCKET_ID + '=' + Storage.BUCKET_ID;
+                ImageColumns.BUCKET_ID + '=' + bucketId;
         String order = ImageColumns.DATE_TAKEN + " DESC," + ImageColumns._ID + " DESC";
 
         Cursor cursor = null;
@@ -229,13 +229,13 @@ public class Thumbnail {
         return null;
     }
 
-    private static Media getLastVideoThumbnail(ContentResolver resolver) {
+    private static Media getLastVideoThumbnail(ContentResolver resolver, String bucketId) {
         Uri baseUri = Video.Media.EXTERNAL_CONTENT_URI;
 
         Uri query = baseUri.buildUpon().appendQueryParameter("limit", "1").build();
         String[] projection = new String[] {VideoColumns._ID, MediaColumns.DATA,
                 VideoColumns.DATE_TAKEN};
-        String selection = VideoColumns.BUCKET_ID + '=' + Storage.BUCKET_ID;
+        String selection = VideoColumns.BUCKET_ID + '=' + bucketId;
         String order = VideoColumns.DATE_TAKEN + " DESC," + VideoColumns._ID + " DESC";
 
         Cursor cursor = null;
