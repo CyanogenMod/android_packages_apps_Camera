@@ -75,6 +75,7 @@ import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomRenderer;
 import com.android.gallery3d.common.ApiHelper;
+import com.android.gallery3d.util.AccessibilityUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -1619,6 +1620,11 @@ public class VideoModule implements CameraModule,
             }
         }
 
+        // Make sure the video recording has started before announcing
+        // this in accessibility.
+        AccessibilityUtils.makeAnnouncement(mShutterButton,
+                mActivity.getString(R.string.video_recording_started));
+
         // The parameters may have been changed by MediaRecorder upon starting
         // recording. We need to alter the parameters if we support camcorder
         // zoom. To reduce latency when setting the parameters during zoom, we
@@ -1741,6 +1747,8 @@ public class VideoModule implements CameraModule,
                 mCurrentVideoFilename = mVideoFilename;
                 Log.v(TAG, "stopVideoRecording: Setting current video filename: "
                         + mCurrentVideoFilename);
+                AccessibilityUtils.makeAnnouncement(mShutterButton,
+                        mActivity.getString(R.string.video_recording_stopped));
             } catch (RuntimeException e) {
                 Log.e(TAG, "stop fail",  e);
                 if (mVideoFilename != null) deleteVideoFile(mVideoFilename);

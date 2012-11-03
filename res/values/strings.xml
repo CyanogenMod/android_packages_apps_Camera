@@ -277,6 +277,11 @@
     <!-- Toast telling users tapping on the viewfinder will take a picture [CHAR LIMIT=54] -->
     <string name="video_snapshot_hint">Touch to take photo while recording.</string>
 
+    <!-- Announcement telling users video recording has just started [CHAR LIMIT=NONE] -->
+    <string name="video_recording_started">Video recording has started.</string>
+    <!-- Announcement telling users video recording has just stopped [CHAR LIMIT=NONE] -->
+    <string name="video_recording_stopped">Video recording has stopped.</string>
+
     <!-- Toast telling users video snapshot is disabled when the effects are on and a user tries to tap on the viewfinder [CHAR LIMIT=65] -->
     <string name="disable_video_snapshot_hint">Video snapshot is disabled when special effects are on.</string>
 
