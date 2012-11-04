@@ -163,7 +163,9 @@ public class ModePicker extends RelativeLayout implements View.OnClickListener,
             // Set the selected mode as the current one and switch to it.
             for (int i = 0; i < MODE_NUM; ++i) {
                 if (view == mModeSelectionIcon[i] && (mCurrentMode != i)) {
-                    setCurrentMode(i);
+                    /* Disallow switching to panorama mode when device has no back camera */
+                    if (i != MODE_PANORAMA || CameraHolder.instance().getBackCameraId() != -1)
+                        setCurrentMode(i);
                     break;
                 }
             }
