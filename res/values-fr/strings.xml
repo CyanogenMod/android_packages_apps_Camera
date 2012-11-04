@@ -153,4 +153,26 @@
     <!-- Settings screen, Anti Banding entries -->
     <string name="pref_camera_antibanding_entry_0">Arrêt</string>
     <string name="pref_camera_antibanding_entry_3">Automatique</string>
+
+    <!-- Settings screen, Timer mode title -->
+    <string name="pref_camera_timer_title">Retardateur</string>
+
+    <!-- Settings screen, Burst mode title -->
+    <string name="pref_camera_burst_title">Mode rafale</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_off">Off</string>
+    <string name="pref_camera_burst_entry_5">5 prises</string>
+    <string name="pref_camera_burst_entry_10">10 prises</string>
+    <string name="pref_camera_burst_entry_15">15 prises</string>
+    <string name="pref_camera_burst_entry_20">20 prises</string>
+
+    <!-- Settings screen, JPEG -->
+    <string name="pref_camera_jpeg_title">Qualité JPEG</string>
+
+    <!-- Settings screen, JPEG dialog radio button choices -->
+    <string name="pref_camera_jpeg_entry_super">Super</string>
+    <string name="pref_camera_jpeg_entry_high">Haute</string>
+    <string name="pref_camera_jpeg_entry_medium">Moyenne</string>
+    <string name="pref_camera_jpeg_entry_low">Basse</string>
 </resources>
