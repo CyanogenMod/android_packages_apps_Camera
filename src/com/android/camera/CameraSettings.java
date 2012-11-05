@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
@@ -58,8 +59,6 @@ public class CameraSettings {
 
     public static final int CURRENT_VERSION = 5;
     public static final int CURRENT_LOCAL_VERSION = 2;
-
-    public static final int DEFAULT_VIDEO_DURATION = 0; // no limit
 
     private static final String TAG = "CameraSettings";
 
@@ -131,6 +130,15 @@ public class CameraSettings {
             }
         }
         return false;
+    }
+
+    public static int getMaxVideoDuration(Context context) {
+        int duration = 0;  // in milliseconds, 0 means unlimited.
+        try {
+            duration = context.getResources().getInteger(R.integer.max_video_recording_length);
+        } catch (Resources.NotFoundException ex) {
+        }
+        return duration;
     }
 
     private void initPreference(PreferenceGroup group) {
@@ -443,7 +451,6 @@ public class CameraSettings {
         Log.e(TAG, "Invalid effect selection: " + effectSelection);
         return null;
     }
-
 
     public static void restorePreferences(Context context,
             ComboPreferences preferences, Parameters parameters) {
