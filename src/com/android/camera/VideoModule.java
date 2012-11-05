@@ -758,7 +758,7 @@ public class VideoModule implements CameraModule,
                     intent.getIntExtra(MediaStore.EXTRA_DURATION_LIMIT, 0);
             mMaxVideoDurationInMs = 1000 * seconds;
         } else {
-            mMaxVideoDurationInMs = CameraSettings.DEFAULT_VIDEO_DURATION;
+            mMaxVideoDurationInMs = CameraSettings.getMaxVideoDuration(mActivity);
         }
 
         // Set effect
