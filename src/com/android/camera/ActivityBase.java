@@ -40,6 +40,7 @@ import com.android.camera.ui.LayoutChangeNotifier;
 import com.android.camera.ui.PopupManager;
 import com.android.gallery3d.app.AbstractGalleryActivity;
 import com.android.gallery3d.app.AppBridge;
+import com.android.gallery3d.app.FilmstripPage;
 import com.android.gallery3d.app.GalleryActionBar;
 import com.android.gallery3d.app.PhotoPage;
 import com.android.gallery3d.common.ApiHelper;
@@ -381,10 +382,10 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         mAppBridge = new MyAppBridge();
         data.putParcelable(PhotoPage.KEY_APP_BRIDGE, mAppBridge);
         if (getStateManager().getStateCount() == 0) {
-            getStateManager().startState(PhotoPage.class, data);
+            getStateManager().startState(FilmstripPage.class, data);
         } else {
             getStateManager().switchState(getStateManager().getTopState(),
-                    PhotoPage.class, data);
+                    FilmstripPage.class, data);
         }
         mCameraScreenNail = mAppBridge.getCameraScreenNail();
         return mCameraScreenNail;
@@ -414,7 +415,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         }
         data.putParcelable(PhotoPage.KEY_APP_BRIDGE, mAppBridge);
         if (getStateManager().getStateCount() == 0) {
-            getStateManager().startState(PhotoPage.class, data);
+            getStateManager().startState(FilmstripPage.class, data);
         }
         mCameraScreenNail = mAppBridge.getCameraScreenNail();
         return mCameraScreenNail;
