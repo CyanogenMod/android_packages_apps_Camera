@@ -103,6 +103,10 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"あなたの動画"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"端末をセッティングします。"\n"少しの間フレームの外に出ます。"</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"録画中にタップして静止画を撮影できます。"</string>
+    <!-- no translation found for video_recording_started (4132915454417193503) -->
+    <skip />
+    <!-- no translation found for video_recording_stopped (5086919511555808580) -->
+    <skip />
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"動画スナップショットは特殊効果がONのときは無効です。"</string>
     <string name="clear_effects" msgid="5485339175014139481">"効果設定をクリア"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"変な顔"</string>

@@ -103,6 +103,10 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"El teu vídeo"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Deixa el dispositiu."\n"Surt un moment de la visualització."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Toca per fer una foto mentre enregistres."</string>
+    <!-- no translation found for video_recording_started (4132915454417193503) -->
+    <skip />
+    <!-- no translation found for video_recording_stopped (5086919511555808580) -->
+    <skip />
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Les instantànies del vídeo es desactiven quan hi ha els efectes especials activats."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Esborra efectes"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"GANYOTES"</string>

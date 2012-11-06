@@ -103,6 +103,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Din video"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Sett enheten ned."\n"Gå ut av syne et øyeblikk."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Trykk for å ta et bilde mens du filmer."</string>
+    <string name="video_recording_started" msgid="4132915454417193503">"Videoopptaket har startet."</string>
+    <string name="video_recording_stopped" msgid="5086919511555808580">"Videoopptaket har stoppet."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Øyeblikksbilder er deaktivert når spesialeffekter er aktivert."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Fjern effekter"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"MORSOMME ANSIKTER"</string>

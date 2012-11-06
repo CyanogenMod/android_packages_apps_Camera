@@ -82,13 +82,13 @@
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Lo spazio della scheda SD si sta esaurendo. Cambia l\'impostazione di qualità o elimina alcune immagini o altri file."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Limite di dimensione raggiunto."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Troppo veloce"</string>
-    <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Preparazione panoramica"</string>
-    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Salvataggio panoramica non riuscito."</string>
+    <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Preparazione panorama"</string>
+    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Salvataggio panorama non riuscito."</string>
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panoramica"</string>
-    <string name="pano_capture_indication" msgid="8248825828264374507">"Acquisizione panoramica"</string>
-    <string name="pano_dialog_waiting_previous" msgid="7800325815031423516">"In attesa di panoramica precedente"</string>
+    <string name="pano_capture_indication" msgid="8248825828264374507">"Acquisizione panorama"</string>
+    <string name="pano_dialog_waiting_previous" msgid="7800325815031423516">"In attesa di panorama precedente"</string>
     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Salvataggio..."</string>
-    <string name="pano_review_rendering" msgid="2887552964129301902">"Creazione panoramica"</string>
+    <string name="pano_review_rendering" msgid="2887552964129301902">"Creazione panorama"</string>
     <string name="tap_to_focus" msgid="8863427645591903760">"Tocca per mettere a fuoco."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Effetti"</string>
     <string name="effect_none" msgid="3601545724573307541">"Nessuno"</string>
@@ -103,6 +103,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Il tuo video"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Posa il tuo dispositivo."\n"Esci dalla visualizzazione per un attimo."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Tocca per scattare foto durante la registrazione."</string>
+    <string name="video_recording_started" msgid="4132915454417193503">"La registrazione video è stata avviata."</string>
+    <string name="video_recording_stopped" msgid="5086919511555808580">"La registrazione video è stata interrotta."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Istantanea video disabilitata se gli effetti speciali sono attivi."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Cancella effetti"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"FACCINE"</string>
@@ -111,7 +113,7 @@
     <string name="accessibility_menu_button" msgid="7140794046259897328">"Pulsante Menu"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Foto più recente"</string>
     <string name="accessibility_camera_picker" msgid="8807945470215734566">"Interruttore fotocamera anteriore e posteriore"</string>
-    <string name="accessibility_mode_picker" msgid="3278002189966833100">"Selettore fotocamera, video o panoramica"</string>
+    <string name="accessibility_mode_picker" msgid="3278002189966833100">"Selettore fotocamera, video o panorama"</string>
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Altri controlli"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Chiudi controlli"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Controllo zoom"</string>

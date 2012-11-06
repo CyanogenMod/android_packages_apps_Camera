@@ -103,6 +103,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Din video"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Lägg ned enheten"\n"Ställ dig utom synhåll för ett ögonblick."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Tryck om du vill ta ett foto medan du spelar in."</string>
+    <string name="video_recording_started" msgid="4132915454417193503">"Videoinspelningen har börjat."</string>
+    <string name="video_recording_stopped" msgid="5086919511555808580">"Videoinspelningen har stoppats."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Ögonblicksbilden av en video inaktiveras när specialeffekter är aktiverade."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Ta bort effekter"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"ROLIGA GRIMASER"</string>

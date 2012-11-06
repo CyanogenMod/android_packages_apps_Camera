@@ -103,6 +103,10 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Video của bạn"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Dừng thiết bị của bạn."\n"Thoát khỏi chế độ xem trong giây lát."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Chạm để chụp ảnh trong khi quay."</string>
+    <!-- no translation found for video_recording_started (4132915454417193503) -->
+    <skip />
+    <!-- no translation found for video_recording_stopped (5086919511555808580) -->
+    <skip />
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Chụp nhanh video bị vô hiệu khi các hiệu ứng đặc biệt được bật."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Xóa hiệu ứng"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"MẶT XẤU"</string>

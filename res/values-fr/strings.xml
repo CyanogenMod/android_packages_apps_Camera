@@ -103,6 +103,10 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Votre vidéo"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Posez votre appareil."\n"Sortez du cadre quelques instants."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Appuyez pour prendre une photo pendant l\'enregistrement"</string>
+    <!-- no translation found for video_recording_started (4132915454417193503) -->
+    <skip />
+    <!-- no translation found for video_recording_stopped (5086919511555808580) -->
+    <skip />
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Instantané vidéo désactivé en cas d\'activation des effets spéciaux."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Effacer les effets"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"DRÔLES DE TÊTES"</string>
