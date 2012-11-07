@@ -35,7 +35,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -59,15 +58,20 @@ import com.android.camera.ui.LayoutChangeNotifier;
 import com.android.camera.ui.LayoutNotifyView;
 import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.Rotatable;
-import com.android.camera.ui.RotateLayout;
 import com.android.gallery3d.common.ApiHelper;
+import com.android.gallery3d.exif.ExifData;
+import com.android.gallery3d.exif.ExifInvalidFormatException;
+import com.android.gallery3d.exif.ExifOutputStream;
+import com.android.gallery3d.exif.ExifReader;
+import com.android.gallery3d.exif.ExifTag;
 import com.android.gallery3d.ui.GLRootView;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.io.InputStream;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -96,11 +100,6 @@ public class PanoramaModule implements CameraModule,
     private static final int PREVIEW_ACTIVE = 1;
     private static final int CAPTURE_STATE_VIEWFINDER = 0;
     private static final int CAPTURE_STATE_MOSAIC = 1;
-
-    private static final String GPS_DATE_FORMAT_STR = "yyyy:MM:dd";
-    private static final String GPS_TIME_FORMAT_STR = "kk/1,mm/1,ss/1";
-    private static final String DATETIME_FORMAT_STR = "yyyy:MM:dd kk:mm:ss";
-
     // The unit of speed is degrees per frame.
     private static final float PANNING_SPEED_THRESHOLD = 2.5f;
 
@@ -123,10 +122,6 @@ public class PanoramaModule implements CameraModule,
     private TextView mTooFastPrompt;
     private ShutterButton mShutterButton;
     private Object mWaitObject = new Object();
-
-    private DateFormat mGPSDateStampFormat;
-    private DateFormat mGPSTimeStampFormat;
-    private DateFormat mDateTimeStampFormat;
 
     private String mPreparePreviewString;
     private String mDialogTitle;
@@ -224,7 +219,7 @@ public class PanoramaModule implements CameraModule,
     @Override
     public void init(CameraActivity activity, View parent, boolean reuseScreenNail) {
         mActivity = activity;
-        mRootView = (ViewGroup) parent;
+        mRootView = parent;
 
         createContentView();
 
@@ -256,13 +251,6 @@ public class PanoramaModule implements CameraModule,
                 }
             }
         };
-
-        mGPSDateStampFormat = new SimpleDateFormat(GPS_DATE_FORMAT_STR);
-        mGPSTimeStampFormat = new SimpleDateFormat(GPS_TIME_FORMAT_STR);
-        mDateTimeStampFormat = new SimpleDateFormat(DATETIME_FORMAT_STR);
-        TimeZone tzUTC = TimeZone.getTimeZone("UTC");
-        mGPSDateStampFormat.setTimeZone(tzUTC);
-        mGPSTimeStampFormat.setTimeZone(tzUTC);
 
         PowerManager pm = (PowerManager) mActivity.getSystemService(Context.POWER_SERVICE);
         mPartialWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Panorama");
@@ -867,22 +855,32 @@ public class PanoramaModule implements CameraModule,
             String filename = PanoUtil.createName(
                     mActivity.getResources().getString(R.string.pano_file_name_format), mTimeTaken);
             String filepath = Storage.generateFilepath(filename);
-            Storage.writeFile(filepath, jpegData);
 
-            // Add Exif tags.
+            ExifOutputStream out = null;
+            InputStream is = null;
             try {
-                ExifInterface exif = new ExifInterface(filepath);
-                exif.setAttribute(ExifInterface.TAG_GPS_DATESTAMP,
-                        mGPSDateStampFormat.format(mTimeTaken));
-                exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP,
-                        mGPSTimeStampFormat.format(mTimeTaken));
-                exif.setAttribute(ExifInterface.TAG_DATETIME,
-                        mDateTimeStampFormat.format(mTimeTaken));
-                exif.setAttribute(ExifInterface.TAG_ORIENTATION,
-                        getExifOrientation(orientation));
-                exif.saveAttributes();
+                is = new ByteArrayInputStream(jpegData);
+                ExifReader reader = new ExifReader();
+                ExifData data = reader.read(is);
+
+                // Add Exif tags.
+                data.addGpsDateTimeStampTag(mTimeTaken);
+                data.addDateTimeStampTag(ExifTag.TAG_DATE_TIME, mTimeTaken, TimeZone.getDefault());
+                data.addTag(ExifTag.TAG_ORIENTATION).
+                        setValue(getExifOrientation(orientation));
+
+                out = new ExifOutputStream(new FileOutputStream(filepath));
+                out.setExifData(data);
+                out.write(jpegData);
             } catch (IOException e) {
                 Log.e(TAG, "Cannot set EXIF for " + filepath, e);
+                Storage.writeFile(filepath, jpegData);
+            } catch (ExifInvalidFormatException e) {
+                Log.e(TAG, "Cannot set EXIF for " + filepath, e);
+                Storage.writeFile(filepath, jpegData);
+            } finally {
+                Util.closeSilently(out);
+                Util.closeSilently(is);
             }
 
             int jpegLength = (int) (new File(filepath).length());
@@ -892,16 +890,16 @@ public class PanoramaModule implements CameraModule,
         return null;
     }
 
-    private static String getExifOrientation(int orientation) {
+    private static int getExifOrientation(int orientation) {
         switch (orientation) {
             case 0:
-                return String.valueOf(ExifInterface.ORIENTATION_NORMAL);
+                return ExifTag.Orientation.TOP_LEFT;
             case 90:
-                return String.valueOf(ExifInterface.ORIENTATION_ROTATE_90);
+                return ExifTag.Orientation.RIGHT_TOP;
             case 180:
-                return String.valueOf(ExifInterface.ORIENTATION_ROTATE_180);
+                return ExifTag.Orientation.BOTTOM_LEFT;
             case 270:
-                return String.valueOf(ExifInterface.ORIENTATION_ROTATE_270);
+                return ExifTag.Orientation.RIGHT_BOTTOM;
             default:
                 throw new AssertionError("invalid: " + orientation);
         }
