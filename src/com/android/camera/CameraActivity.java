@@ -16,9 +16,6 @@
 
 package com.android.camera;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -138,78 +135,33 @@ public class CameraActivity extends ActivityBase
         }
     }
 
-    private ObjectAnimator mCameraSwitchAnimator;
-
     @Override
-    public void onCameraSelected(final int i) {
+    public void onCameraSelected(int i) {
         if (mPaused) return;
         if (i != mCurrentModuleIndex) {
             mPaused = true;
-            CameraScreenNail screenNail = getCameraScreenNail();
-            if (screenNail != null) {
-                if (mCameraSwitchAnimator != null && mCameraSwitchAnimator.isRunning()) {
-                    mCameraSwitchAnimator.cancel();
-                }
-                mCameraSwitchAnimator = ObjectAnimator.ofFloat(
-                        screenNail, "alpha", screenNail.getAlpha(), 0f);
-                mCameraSwitchAnimator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        doChangeCamera(i);
-                    }
-                });
-                mCameraSwitchAnimator.start();
-            } else {
-                doChangeCamera(i);
+            boolean canReuse = canReuseScreenNail();
+            CameraHolder.instance().keep();
+            closeModule(mCurrentModule);
+            mCurrentModuleIndex = i;
+            switch (i) {
+                case VIDEO_MODULE_INDEX:
+                    mCurrentModule = new VideoModule();
+                    break;
+                case PHOTO_MODULE_INDEX:
+                    mCurrentModule = new PhotoModule();
+                    break;
+                case PANORAMA_MODULE_INDEX:
+                    mCurrentModule = new PanoramaModule();
+                    break;
+                case LIGHTCYCLE_MODULE_INDEX:
+                    mCurrentModule = LightCycleHelper.createPanoramaModule();
+                    break;
             }
-
+            openModule(mCurrentModule, canReuse);
+            mCurrentModule.onOrientationChanged(mOrientation);
         }
     }
-
-    private void doChangeCamera(int i) {
-        boolean canReuse = canReuseScreenNail();
-        CameraHolder.instance().keep();
-        closeModule(mCurrentModule);
-        mCurrentModuleIndex = i;
-        switch (i) {
-            case VIDEO_MODULE_INDEX:
-                mCurrentModule = new VideoModule();
-                break;
-            case PHOTO_MODULE_INDEX:
-                mCurrentModule = new PhotoModule();
-                break;
-            case PANORAMA_MODULE_INDEX:
-                mCurrentModule = new PanoramaModule();
-                break;
-            case LIGHTCYCLE_MODULE_INDEX:
-                mCurrentModule = LightCycleHelper.createPanoramaModule();
-                break;
-        }
-        openModule(mCurrentModule, canReuse);
-        mCurrentModule.onOrientationChanged(mOrientation);
-        getCameraScreenNail().setAlpha(0f);
-        getCameraScreenNail().setOnFrameDrawnOneShot(mOnFrameDrawn);
-    }
-
-    private Runnable mOnFrameDrawn = new Runnable() {
-
-        @Override
-        public void run() {
-            runOnUiThread(mFadeInCameraScreenNail);
-        }
-    };
-
-    private Runnable mFadeInCameraScreenNail = new Runnable() {
-
-        @Override
-        public void run() {
-            mCameraSwitchAnimator = ObjectAnimator.ofFloat(
-                    getCameraScreenNail(), "alpha", 0f, 1f);
-            mCameraSwitchAnimator.setStartDelay(50);
-            mCameraSwitchAnimator.start();
-        }
-    };
 
     @Override
     public void onShowSwitcherPopup() {
