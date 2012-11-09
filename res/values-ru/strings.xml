@@ -91,8 +91,8 @@
     <string name="pano_review_rendering" msgid="2887552964129301902">"Создание панорамы…"</string>
     <string name="tap_to_focus" msgid="8863427645591903760">"Нажмите для фокусировки."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Эффекты"</string>
-    <string name="effect_none" msgid="3601545724573307541">"Без эффектов"</string>
-    <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Сжатие"</string>
+    <string name="effect_none" msgid="3601545724573307541">"Оригинал"</string>
+    <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Узкое лицо"</string>
     <string name="effect_goofy_face_big_eyes" msgid="3945182409691408412">"Большие глаза"</string>
     <string name="effect_goofy_face_big_mouth" msgid="7528748779754643144">"Большой рот"</string>
     <string name="effect_goofy_face_small_mouth" msgid="3848209817806932565">"Маленький рот"</string>
@@ -103,10 +103,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Мои видео"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Установите устройство на твердой поверхности."\n"Затем отойдите, чтобы вас было видно в камеру."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Нажмите, чтобы сделать фотографию во время записи."</string>
-    <!-- no translation found for video_recording_started (4132915454417193503) -->
-    <skip />
-    <!-- no translation found for video_recording_stopped (5086919511555808580) -->
-    <skip />
+    <string name="video_recording_started" msgid="4132915454417193503">"Запись начата"</string>
+    <string name="video_recording_stopped" msgid="5086919511555808580">"Запись остановлена"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Невозможно сделать снимок при включенных спецэффектах."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Убрать эффекты"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"СМЕШНЫЕ РОЖИЦЫ"</string>

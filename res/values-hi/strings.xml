@@ -103,10 +103,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"आपका वीडियो"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"अपने उपकरण को सेट करें."\n"कुछ समय के लिए दृश्य से बाहर निकलें."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"रिकॉर्डिंग के दौरान फ़ोटो लेने के लिए स्‍पर्श करें."</string>
-    <!-- no translation found for video_recording_started (4132915454417193503) -->
-    <skip />
-    <!-- no translation found for video_recording_stopped (5086919511555808580) -->
-    <skip />
+    <string name="video_recording_started" msgid="4132915454417193503">"वीडियो रिकॉर्डिंग प्रारंभ हो गई है."</string>
+    <string name="video_recording_stopped" msgid="5086919511555808580">"वीडियो रिकॉर्डिंग रुक गई है."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"विशेष प्रभावों के चालू होने पर वीडियो स्‍नेपशॉट अक्षम हो जाता है."</string>
     <string name="clear_effects" msgid="5485339175014139481">"प्रभाव साफ़ करें"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"मज़ाकिया चेहरे"</string>

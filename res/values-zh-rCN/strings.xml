@@ -103,10 +103,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"您的视频"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"把设备放好。"\n"离开镜头前片刻。"</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"在录制视频过程中，轻触一下即可拍一张照片。"</string>
-    <!-- no translation found for video_recording_started (4132915454417193503) -->
-    <skip />
-    <!-- no translation found for video_recording_stopped (5086919511555808580) -->
-    <skip />
+    <string name="video_recording_started" msgid="4132915454417193503">"已开始录制视频。"</string>
+    <string name="video_recording_stopped" msgid="5086919511555808580">"已停止录制视频。"</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"启用特殊效果时停用视频快照。"</string>
     <string name="clear_effects" msgid="5485339175014139481">"清除效果"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"趣味表情"</string>
