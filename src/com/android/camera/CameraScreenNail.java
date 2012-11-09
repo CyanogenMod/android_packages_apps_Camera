@@ -77,6 +77,8 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     private float mScaleX = 1f, mScaleY = 1f;
     private boolean mFullScreen;
     private boolean mEnableAspectRatioClamping = false;
+    private float mAlpha = 1f;
+    private Runnable mOnFrameDrawnListener;
 
     public interface Listener {
         void requestRender();
@@ -147,7 +149,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
      * Tells the ScreenNail to override the default aspect ratio scaling
      * and instead perform custom scaling to basically do a centerCrop instead
      * of the default centerInside
-     * 
+     *
      * Note that calls to setSize will disable this
      */
     public void enableAspectRatioClamping() {
@@ -290,6 +292,12 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
             if (!mVisible) mVisible = true;
             SurfaceTexture surfaceTexture = getSurfaceTexture();
             if (surfaceTexture == null || !mFirstFrameArrived) return;
+            if (mOnFrameDrawnListener != null) {
+                mOnFrameDrawnListener.run();
+                mOnFrameDrawnListener = null;
+            }
+            float oldAlpha = canvas.getAlpha();
+            canvas.setAlpha(mAlpha);
 
             switch (mAnimState) {
                 case ANIM_NONE:
@@ -345,6 +353,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                     super.draw(canvas, x, y, width, height);
                 }
             }
+            canvas.setAlpha(oldAlpha);
             callbackIfNeeded();
         } // mLock
     }
@@ -411,6 +420,25 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         synchronized (mLock) {
             mFirstFrameArrived = false;
             mOneTimeFrameDrawnListener = l;
+        }
+    }
+
+    public void setOnFrameDrawnOneShot(Runnable run) {
+        synchronized (mLock) {
+            mOnFrameDrawnListener = run;
+        }
+    }
+
+    public float getAlpha() {
+        synchronized (mLock) {
+            return mAlpha;
+        }
+    }
+
+    public void setAlpha(float alpha) {
+        synchronized (mLock) {
+            mAlpha = alpha;
+            mListener.requestRender();
         }
     }
 }
