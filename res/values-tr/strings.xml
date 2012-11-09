@@ -103,10 +103,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Videonuz"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Cihazınızı yerleştirin."\n"Kısa bir süre için görüntüden çıkın."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Kayıt sırasında fotoğraf çekmek için dokunun."</string>
-    <!-- no translation found for video_recording_started (4132915454417193503) -->
-    <skip />
-    <!-- no translation found for video_recording_stopped (5086919511555808580) -->
-    <skip />
+    <string name="video_recording_started" msgid="4132915454417193503">"Video kaydı başladı."</string>
+    <string name="video_recording_stopped" msgid="5086919511555808580">"Video kaydı durdu."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Özel efektler açıkken video anlık görüntü yakalama devre dışıdır."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Efektleri temizle"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"KOMİK SURATLAR"</string>

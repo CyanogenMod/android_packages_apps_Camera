@@ -103,10 +103,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Tu vídeo"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Desactiva el dispositivo."\n"Deja de usarlo durante unos minutos."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Toca para hacer una foto mientras grabas un vídeo."</string>
-    <!-- no translation found for video_recording_started (4132915454417193503) -->
-    <skip />
-    <!-- no translation found for video_recording_stopped (5086919511555808580) -->
-    <skip />
+    <string name="video_recording_started" msgid="4132915454417193503">"Se ha iniciado la grabación de vídeo."</string>
+    <string name="video_recording_stopped" msgid="5086919511555808580">"La grabación de vídeo se ha detenido."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"La instantánea de vídeo se inhabilita al activar efectos especiales."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Borrar efectos"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"CARAS GRACIOSAS"</string>

@@ -103,10 +103,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"내 동영상"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"기기를 내려놓습니다."\n"잠시 동안 시야를 벗어납니다."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"녹화 중에 사진을 찍으려면 터치하세요."</string>
-    <!-- no translation found for video_recording_started (4132915454417193503) -->
-    <skip />
-    <!-- no translation found for video_recording_stopped (5086919511555808580) -->
-    <skip />
+    <string name="video_recording_started" msgid="4132915454417193503">"동영상 녹화가 시작되었습니다."</string>
+    <string name="video_recording_stopped" msgid="5086919511555808580">"동영상 녹화가 중지되었습니다."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"특수 효과가 설정되어 있으면 동영상 스냅샷이 사용 중지됩니다."</string>
     <string name="clear_effects" msgid="5485339175014139481">"효과 제거"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"웃긴 얼굴"</string>
