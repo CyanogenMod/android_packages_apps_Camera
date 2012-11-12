@@ -1921,7 +1921,7 @@ public class VideoCamera extends ActivityBase
         // The logic here is different from the logic in still-mode camera.
         // There we determine the preview size based on the picture size, but
         // here we determine the picture size based on the preview size.
-        List<Size> supported = mParameters.getSupportedPictureSizes();
+        List<Size> supported = mParameters.getSupportedPreviewSizes();
         Size optimalSize = Util.getOptimalVideoSnapshotPictureSize(supported,
                 (double) mDesiredPreviewWidth / mDesiredPreviewHeight);
         Size original = mParameters.getPictureSize();
