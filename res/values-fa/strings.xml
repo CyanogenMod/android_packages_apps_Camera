@@ -103,8 +103,8 @@
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"ویدئوی شما"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"دستگاه خود را کنار بگذارید."\n"برای یک لحظه از دید خارج شوید."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"برای گرفتن عکس در هنگام ضبط لمس کنید."</string>
-    <string name="video_recording_started" msgid="4132915454417193503">"ضبط ویدیو شروع شده است."</string>
-    <string name="video_recording_stopped" msgid="5086919511555808580">"ضبط ویدیو متوقف شده است."</string>
+    <string name="video_recording_started" msgid="4132915454417193503">"ضبط ویدیو شروع شد."</string>
+    <string name="video_recording_stopped" msgid="5086919511555808580">"ضبط ویدیو متوقف شد."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"هنگام فعال بودن جلوه‌های ویژه، عکس فوری از ویدئو غیرفعال است."</string>
     <string name="clear_effects" msgid="5485339175014139481">"پاک کردن جلوه‌ها"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"چهره‌های احمقانه"</string>
