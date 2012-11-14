@@ -43,7 +43,7 @@ public class Exif {
                     ExifTag tag = parser.getTag();
                     if (tag.getTagId() == ExifTag.TAG_ORIENTATION &&
                             tag.hasValue()) {
-                        int orient = tag.getUnsignedShort(0);
+                        int orient = (int) tag.getValueAt(0);
                         switch (orient) {
                             case ExifTag.Orientation.TOP_LEFT:
                                 return 0;
