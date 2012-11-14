@@ -52,7 +52,6 @@
 
     <!-- More Settings screen, power button title -->
     <string name="pref_camera_power_shutter_title">电源键快门</string>
-    <string name="pref_camera_power_shutter_default">关闭</string>
 
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"照片大小"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"对焦方式"</string>
