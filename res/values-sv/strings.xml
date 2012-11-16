@@ -69,7 +69,7 @@
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Scenläge"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Automatiskt"</string>
     <string name="pref_camera_scenemode_entry_hdr" msgid="2923388802899511784">"HDR"</string>
-    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Åtgärd"</string>
+    <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Action"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Natt"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Solnedgång"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Fest"</string>
