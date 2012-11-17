@@ -159,9 +159,6 @@
 <!-- Settings screen, Select Color effect title -->
     <string name="pref_camera_coloreffect_title">Efekti</string>
 
-    <!-- Default color effect setting. -->
-    <string name="pref_camera_coloreffect_default" translatable="false">Nijedan</string>
-
     <!-- Settings screen, Color effect dialog radio button choices -->
     <string name="pref_camera_coloreffect_entry_none">Nijedan</string>
     <string name="pref_camera_coloreffect_entry_mono">Mono</string>
