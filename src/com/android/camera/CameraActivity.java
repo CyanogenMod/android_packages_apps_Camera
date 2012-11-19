@@ -243,6 +243,8 @@ public class CameraActivity extends ActivityBase
         mControlsBackground.setVisibility(View.VISIBLE);
         showSwitcher();
         mShutter.setVisibility(View.VISIBLE);
+        // Force a layout change to show shutter button
+        mShutter.requestLayout();
     }
 
     public void hideSwitcher() {
