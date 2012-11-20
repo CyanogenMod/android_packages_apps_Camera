@@ -415,6 +415,9 @@ public class VideoModule implements CameraModule,
             if (mReviewDoneButton != null) {
                 mGestures.addTouchReceiver((View) mReviewDoneButton);
             }
+            if (mReviewPlayButton != null) {
+                mGestures.addTouchReceiver((View) mReviewPlayButton);
+            }
         }
     }
 
