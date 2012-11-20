@@ -1959,33 +1959,38 @@ public class PhotoModule
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
-            case KeyEvent.KEYCODE_FOCUS:
-                if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
+        case KeyEvent.KEYCODE_VOLUME_UP:
+        case KeyEvent.KEYCODE_VOLUME_DOWN:
+        case KeyEvent.KEYCODE_FOCUS:
+            if (mActivity.isInCameraApp() && mFirstTimeInitialized) {
+                if (event.getRepeatCount() == 0) {
                     onShutterButtonFocus(true);
                 }
                 return true;
-            case KeyEvent.KEYCODE_CAMERA:
-                if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                    onShutterButtonClick();
+            }
+            return false;
+        case KeyEvent.KEYCODE_CAMERA:
+            if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
+                onShutterButtonClick();
+            }
+            return true;
+        case KeyEvent.KEYCODE_DPAD_CENTER:
+            // If we get a dpad center event without any focused view, move
+            // the focus to the shutter button and press it.
+            if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
+                // Start auto-focus immediately to reduce shutter lag. After
+                // the shutter button gets the focus, onShutterButtonFocus()
+                // will be called again but it is fine.
+                if (removeTopLevelPopup()) return true;
+                onShutterButtonFocus(true);
+                if (mShutterButton.isInTouchMode()) {
+                    mShutterButton.requestFocusFromTouch();
+                } else {
+                    mShutterButton.requestFocus();
                 }
-                return true;
-            case KeyEvent.KEYCODE_DPAD_CENTER:
-                // If we get a dpad center event without any focused view, move
-                // the focus to the shutter button and press it.
-                if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
-                    // Start auto-focus immediately to reduce shutter lag. After
-                    // the shutter button gets the focus, onShutterButtonFocus()
-                    // will be called again but it is fine.
-                    if (removeTopLevelPopup()) return true;
-                    onShutterButtonFocus(true);
-                    if (mShutterButton.isInTouchMode()) {
-                        mShutterButton.requestFocusFromTouch();
-                    } else {
-                        mShutterButton.requestFocus();
-                    }
-                    mShutterButton.setPressed(true);
-                }
-                return true;
+                mShutterButton.setPressed(true);
+            }
+            return true;
         }
         return false;
     }
@@ -1993,11 +1998,18 @@ public class PhotoModule
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
-            case KeyEvent.KEYCODE_FOCUS:
-                if (mFirstTimeInitialized) {
-                    onShutterButtonFocus(false);
-                }
+        case KeyEvent.KEYCODE_VOLUME_UP:
+        case KeyEvent.KEYCODE_VOLUME_DOWN:
+            if (mActivity.isInCameraApp() && mFirstTimeInitialized) {
+                onShutterButtonClick();
                 return true;
+            }
+            return false;
+        case KeyEvent.KEYCODE_FOCUS:
+            if (mFirstTimeInitialized) {
+                onShutterButtonFocus(false);
+            }
+            return true;
         }
         return false;
     }
