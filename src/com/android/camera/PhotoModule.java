@@ -483,6 +483,7 @@ public class PhotoModule
         if (RecordLocationPreference.isSet(mPreferences)) {
             return;
         }
+        if (mActivity.isSecureCamera()) return;
         // Check if the back camera exists
         int backCameraId = CameraHolder.instance().getBackCameraId();
         if (backCameraId == -1) {
