@@ -27,8 +27,6 @@ import android.util.AttributeSet;
  */
 public class RecordLocationPreference extends IconListPreference {
 
-    public static final String KEY = "pref_camera_recordlocation_key";
-
     public static final String VALUE_NONE = "none";
     public static final String VALUE_ON = "on";
     public static final String VALUE_OFF = "off";
@@ -47,12 +45,14 @@ public class RecordLocationPreference extends IconListPreference {
 
     public static boolean get(
             SharedPreferences pref, ContentResolver resolver) {
-        String value = pref.getString(KEY, VALUE_NONE);
+        String value = pref.getString(
+                CameraSettings.KEY_RECORD_LOCATION, VALUE_NONE);
         return VALUE_ON.equals(value);
     }
 
     public static boolean isSet(SharedPreferences pref) {
-        String value = pref.getString(KEY, VALUE_NONE);
+        String value = pref.getString(
+                CameraSettings.KEY_RECORD_LOCATION, VALUE_NONE);
         return !VALUE_NONE.equals(value);
     }
 }
