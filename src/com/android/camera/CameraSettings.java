@@ -239,6 +239,10 @@ public class CameraSettings {
         // show only integer values for exposure compensation
         int maxValue = (int) FloatMath.floor(max * step);
         int minValue = (int) FloatMath.ceil(min * step);
+        if (minValue < 0 || maxValue < 0) {
+            removePreference(group, exposure.getKey());
+            return;
+        }
         CharSequence entries[] = new CharSequence[maxValue - minValue + 1];
         CharSequence entryValues[] = new CharSequence[maxValue - minValue + 1];
         int[] icons = new int[maxValue - minValue + 1];
