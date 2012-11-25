@@ -230,7 +230,8 @@ public class CameraSettings {
             PreferenceGroup group, IconListPreference exposure) {
         int max = mParameters.getMaxExposureCompensation();
         int min = mParameters.getMinExposureCompensation();
-        if (max == 0 && min == 0) {
+        //checks if value is both 0 or both values either negitive
+        if ((max == 0 && min == 0) || (min < 0 || max < 0)) {
             removePreference(group, exposure.getKey());
             return;
         }
