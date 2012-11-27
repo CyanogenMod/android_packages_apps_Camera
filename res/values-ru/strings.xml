@@ -175,7 +175,7 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Готово"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Задайте интервал"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Сначала включите режим замедленной съемки."</string>
-    <string name="remember_location_title" msgid="9060472929006917810">"Сохранять места съемок?"</string>
+    <string name="remember_location_title" msgid="9060472929006917810">"Сохранять место съемки?"</string>
     <string name="remember_location_prompt" msgid="724592331305808098">"Информация о месте съемки будет автоматически добавляться в описание ваших фотографий и видеозаписей."\n\n"Доступ к этим данным, а также к самим фотографиям и видео смогут получить и другие приложения."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Нет, спасибо"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Да"</string>
