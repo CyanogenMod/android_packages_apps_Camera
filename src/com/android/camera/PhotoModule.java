@@ -517,7 +517,7 @@ public class PhotoModule
 
     private void setLocationPreference(String value) {
         mPreferences.edit()
-            .putString(RecordLocationPreference.KEY, value)
+            .putString(CameraSettings.KEY_RECORD_LOCATION, value)
             .apply();
         // TODO: Fix this to use the actual onSharedPreferencesChanged listener
         // instead of invoking manually

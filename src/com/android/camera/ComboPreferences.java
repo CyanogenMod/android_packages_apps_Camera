@@ -20,13 +20,16 @@ import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.preference.PreferenceManager;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ComboPreferences implements SharedPreferences, OnSharedPreferenceChangeListener {
+public class ComboPreferences implements
+        SharedPreferences,
+        OnSharedPreferenceChangeListener {
     private SharedPreferences mPrefGlobal;  // global preferences
     private SharedPreferences mPrefLocal;  // per-camera preferences
     private BackupManager mBackupManager;
@@ -38,11 +41,22 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
         mPrefGlobal = context.getSharedPreferences(
                 getGlobalSharedPreferencesName(context), Context.MODE_PRIVATE);
         mPrefGlobal.registerOnSharedPreferenceChangeListener(this);
+
         synchronized (sMap) {
             sMap.put(context, this);
         }
         mBackupManager = new BackupManager(context);
         mListeners = new CopyOnWriteArrayList<OnSharedPreferenceChangeListener>();
+
+        // The global preferences was previously stored in the default
+        // shared preferences file. They should be stored in the camera-specific
+        // shared preferences file so we can backup them solely.
+        SharedPreferences oldprefs =
+                PreferenceManager.getDefaultSharedPreferences(context);
+        if (!mPrefGlobal.contains(CameraSettings.KEY_VERSION)
+                && oldprefs.contains(CameraSettings.KEY_VERSION)) {
+            moveGlobalPrefsFrom(oldprefs);
+        }
     }
 
     public static ComboPreferences get(Context context) {
@@ -57,7 +71,37 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
     }
 
     private static String getGlobalSharedPreferencesName(Context context) {
-        return context.getPackageName() + "_preferences";
+        return context.getPackageName() + "_preferences_camera";
+    }
+
+    private void movePrefFrom(
+            Map<String, ?> m, String key, SharedPreferences src) {
+        if (m.containsKey(key)) {
+            Object v = m.get(key);
+            if (v instanceof String) {
+                mPrefGlobal.edit().putString(key, (String) v).apply();
+            } else if (v instanceof Integer) {
+                mPrefGlobal.edit().putInt(key, (Integer) v).apply();
+            } else if (v instanceof Long) {
+                mPrefGlobal.edit().putLong(key, (Long) v).apply();
+            } else if (v instanceof Float) {
+                mPrefGlobal.edit().putFloat(key, (Float) v).apply();
+            } else if (v instanceof Boolean) {
+                mPrefGlobal.edit().putBoolean(key, (Boolean) v).apply();
+            }
+            src.edit().remove(key).apply();
+        }
+    }
+
+    private void moveGlobalPrefsFrom(SharedPreferences src) {
+        Map<String, ?> prefMap = src.getAll();
+        movePrefFrom(prefMap, CameraSettings.KEY_VERSION, src);
+        movePrefFrom(prefMap, CameraSettings.KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL, src);
+        movePrefFrom(prefMap, CameraSettings.KEY_CAMERA_ID, src);
+        movePrefFrom(prefMap, CameraSettings.KEY_RECORD_LOCATION, src);
+        movePrefFrom(prefMap, CameraSettings.KEY_CAMERA_FIRST_USE_HINT_SHOWN, src);
+        movePrefFrom(prefMap, CameraSettings.KEY_VIDEO_FIRST_USE_HINT_SHOWN, src);
+        movePrefFrom(prefMap, CameraSettings.KEY_VIDEO_EFFECT, src);
     }
 
     public static String[] getSharedPreferencesNames(Context context) {
