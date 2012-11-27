@@ -229,16 +229,6 @@ public class VideoModule implements CameraModule,
 
     // The degrees of the device rotated clockwise from its natural orientation.
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
-    // The orientation compensation for icons and dialogs. Ex: if the value
-    // is 90, the UI components should be rotated 90 degrees counter-clockwise.
-    private int mOrientationCompensation = 0;
-
-    // If mOrientationResetNeeded is set to be true, onOrientationChanged will reset
-    // the orientation of the on screen indicators to the current orientation compensation
-    // regardless of whether it's the same as the most recent orientation compensation
-    private boolean mOrientationResetNeeded;
-    // The orientation compensation when we start recording.
-    private int mOrientationCompensationAtRecordStart;
 
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
@@ -488,9 +478,8 @@ public class VideoModule implements CameraModule,
         mQuickCapture = mActivity.getIntent().getBooleanExtra(EXTRA_QUICK_CAPTURE, false);
         mLocationManager = new LocationManager(mActivity, null);
 
-        // Initialize to true to ensure that the on-screen indicators get their
-        // orientation set in onOrientationChanged.
-        mOrientationResetNeeded = true;
+        setOrientationIndicator(0, false);
+        setDisplayOrientation();
 
         // Make sure preview is started.
         try {
@@ -593,31 +582,10 @@ public class VideoModule implements CameraModule,
             }
         }
 
-        // When the screen is unlocked, display rotation may change. Always
-        // calculate the up-to-date orientationCompensation.
-        int orientationCompensation =
-                (mOrientation + Util.getDisplayRotation(mActivity)) % 360;
-
-        if (mOrientationCompensation != orientationCompensation || mOrientationResetNeeded) {
-            mOrientationCompensation = orientationCompensation;
-            // Do not rotate the icons during recording because the video
-            // orientation is fixed after recording.
-            if (!mMediaRecorderRecording) {
-                setOrientationIndicator(mOrientationCompensation, true);
-                mOrientationResetNeeded = false;
-            }
-            setDisplayOrientation();
-        }
-
         // Show the toast after getting the first orientation changed.
         if (mHandler.hasMessages(SHOW_TAP_TO_SNAPSHOT_TOAST)) {
             mHandler.removeMessages(SHOW_TAP_TO_SNAPSHOT_TOAST);
             showTapToSnapshotToast();
-        }
-
-        // Rotate the pop-up if needed
-        if (mPopup != null) {
-            mPopup.setOrientation(mOrientationCompensation, true);
         }
     }
 
@@ -649,7 +617,7 @@ public class VideoModule implements CameraModule,
                 mLabelsLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
             }
         }
-        mRecordingTimeRect.setOrientation(mOrientationCompensation, animation);
+        mRecordingTimeRect.setOrientation(0, animation);
     }
 
     private void startPlayVideoActivity() {
@@ -1273,7 +1241,6 @@ public class VideoModule implements CameraModule,
             }
         }
         mMediaRecorder.setOrientationHint(rotation);
-        mOrientationCompensationAtRecordStart = mOrientationCompensation;
 
         try {
             mMediaRecorder.prepare();
@@ -1335,8 +1302,6 @@ public class VideoModule implements CameraModule,
             orientation = mOrientation;
         }
         mEffectsRecorder.setOrientationHint(orientation);
-
-        mOrientationCompensationAtRecordStart = mOrientationCompensation;
 
         CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
         mEffectsRecorder.setPreviewSurfaceTexture(screenNail.getSurfaceTexture(),
@@ -1691,8 +1656,7 @@ public class VideoModule implements CameraModule,
             // it to match the UI orientation (and mirror if it is front-facing camera).
             CameraInfo[] info = CameraHolder.instance().getCameraInfo();
             boolean mirror = (info[mCameraId].facing == CameraInfo.CAMERA_FACING_FRONT);
-            bitmap = Util.rotateAndMirror(bitmap, -mOrientationCompensationAtRecordStart,
-                    mirror);
+            bitmap = Util.rotateAndMirror(bitmap, 0, mirror);
             mReviewImage.setImageBitmap(bitmap);
             mReviewImage.setVisibility(View.VISIBLE);
         }
@@ -1782,7 +1746,7 @@ public class VideoModule implements CameraModule,
             }
             // The orientation was fixed during video recording. Now make it
             // reflect the device orientation as video recording is stopped.
-            setOrientationIndicator(mOrientationCompensation, true);
+            setOrientationIndicator(0, true);
             keepScreenOnAwhile();
             if (shouldAddToMediaStoreNow) {
                 if (addVideoToMediaStore()) fail = true;
@@ -2338,7 +2302,7 @@ public class VideoModule implements CameraModule,
 
         // From onResume
         initializeZoom();
-        setOrientationIndicator(mOrientationCompensation, false);
+        setOrientationIndicator(0, false);
 
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
             // Start switch camera animation. Post a message because
@@ -2646,7 +2610,7 @@ public class VideoModule implements CameraModule,
     }
 
     private void showTapToSnapshotToast() {
-        new RotateTextToast(mActivity, R.string.video_snapshot_hint, mOrientationCompensation)
+        new RotateTextToast(mActivity, R.string.video_snapshot_hint, 0)
                 .show();
         // Clear the preference.
         Editor editor = mPreferences.edit();
@@ -2815,8 +2779,6 @@ public class VideoModule implements CameraModule,
         mBlocker.setVisibility(View.INVISIBLE);
         setShowMenu(false);
         mPopup = popup;
-        // Make sure popup is brought up with the right orientation
-        mPopup.setOrientation(mOrientationCompensation, false);
         mPopup.setVisibility(View.VISIBLE);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT);
