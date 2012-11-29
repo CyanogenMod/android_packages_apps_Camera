@@ -571,6 +571,7 @@ public class PhotoModule
         initializeZoom();
         updateOnScreenIndicators();
         showTapToFocusToastIfNeeded();
+        onFullScreenChanged(mActivity.isInCameraApp());
     }
 
     private void initializePhotoControl() {
