@@ -67,6 +67,12 @@
             camera:title="@string/pref_camera_recordlocation_title"
             camera:icons="@array/camera_recordlocation_icons"
             camera:largeIcons="@array/camera_recordlocation_largeicons"
-            camera:entries="@array/pref_camera_recordlocation_entries"
-            camera:entryValues="@array/pref_camera_recordlocation_entryvalues" />
+            camera:entries="@array/pref_switch_entries"
+            camera:entryValues="@array/pref_switch_entryvalues" />
+    <ListPreference
+            camera:key="pref_power_shutter"
+            camera:defaultValue="@string/pref_camera_power_shutter_default"
+            camera:title="@string/pref_camera_power_shutter_title"
+            camera:entries="@array/pref_switch_entries"
+            camera:entryValues="@array/pref_switch_entryvalues" />
 </PreferenceGroup>
