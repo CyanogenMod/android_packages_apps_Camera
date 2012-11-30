@@ -433,6 +433,9 @@ public class VideoModule implements CameraModule,
         mPrefVideoEffectDefault = mActivity.getString(R.string.pref_video_effect_default);
         resetEffect();
 
+        // Power shutter
+        mActivity.initPowerShutter(mPreferences);
+
         /*
          * To reduce startup time, we start the preview in another thread.
          * We make sure the preview is started at the end of onCreate.
@@ -1119,6 +1122,11 @@ public class VideoModule implements CameraModule,
         switch (keyCode) {
             case KeyEvent.KEYCODE_CAMERA:
                 mShutterButton.setPressed(false);
+                return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (ActivityBase.mPowerShutter) {
+                    onShutterButtonClick();
+                }
                 return true;
         }
         return false;
@@ -2280,6 +2288,7 @@ public class VideoModule implements CameraModule,
                 setCameraParameters();
             }
             updateOnScreenIndicators();
+            mActivity.initPowerShutter(mPreferences);
         }
     }
 
@@ -2515,6 +2524,9 @@ public class VideoModule implements CameraModule,
     @Override
     public void updateCameraAppView() {
         if (!mPreviewing || mParameters.getFlashMode() == null) return;
+
+        // Setup Power shutter
+        mActivity.initPowerShutter(mPreferences);
 
         // When going to and back from gallery, we need to turn off/on the flash.
         if (!mActivity.mShowCameraAppView) {
