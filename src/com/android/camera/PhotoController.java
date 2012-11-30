@@ -98,6 +98,7 @@ public class PhotoController extends PieController
         mOtherKeys = new String[] {
                 CameraSettings.KEY_SCENE_MODE,
                 CameraSettings.KEY_RECORD_LOCATION,
+                CameraSettings.KEY_POWER_SHUTTER,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_FOCUS_MODE};
         PieItem item = makeItem(R.drawable.ic_settings_holo_light);
