@@ -78,6 +78,9 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     protected boolean mPaused;
     protected GalleryActionBar mActionBar;
 
+    // Keep track of powershutter state
+    public static boolean mPowerShutter = false;
+
     // multiple cameras support
     protected int mNumberOfCameras;
     protected int mCameraId;
@@ -208,6 +211,18 @@ public abstract class ActivityBase extends AbstractGalleryActivity
 
     public boolean isPanoramaActivity() {
         return false;
+    }
+
+    protected void initPowerShutter(ComboPreferences prefs) {
+        prefs.setLocalId(getApplicationContext(), 0);
+        String val = prefs.getString(CameraSettings.KEY_POWER_SHUTTER,
+                getResources().getString(R.string.pref_camera_power_shutter_default));
+        mPowerShutter = val.equals(CameraSettings.VALUE_ON);
+        if (mPowerShutter && mShowCameraAppView) {
+            getWindow().addFlags(WindowManager.LayoutParams.PREVENT_POWER_KEY);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.PREVENT_POWER_KEY);
+        }
     }
 
     @Override
