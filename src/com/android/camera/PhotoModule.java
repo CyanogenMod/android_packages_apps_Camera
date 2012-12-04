@@ -496,7 +496,7 @@ public class PhotoModule
             .setPositiveButton(R.string.remember_location_yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int arg1) {
-                    setLocationPreference(RecordLocationPreference.VALUE_ON);
+                    setLocationPreference(CameraSettings.VALUE_ON);
                 }
             })
             .setNegativeButton(R.string.remember_location_no, new DialogInterface.OnClickListener() {
@@ -508,7 +508,7 @@ public class PhotoModule
             .setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
-                    setLocationPreference(RecordLocationPreference.VALUE_OFF);
+                    setLocationPreference(CameraSettings.VALUE_OFF);
                 }
             })
             .show();
@@ -1643,6 +1643,8 @@ public class PhotoModule
 
     @Override
     public void updateCameraAppView() {
+        // Setup Power shutter
+        mActivity.initPowerShutter(mPreferences);
     }
 
     @Override
@@ -1722,6 +1724,9 @@ public class PhotoModule
             mSurfaceTexture = null;
         }
         resetScreenOn();
+
+        // Load the power shutter
+        mActivity.initPowerShutter(mPreferences);
 
         // Clear UI.
         collapseCameraControls();
@@ -1970,6 +1975,9 @@ public class PhotoModule
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (!mActivity.mShowCameraAppView) {
+            return false;
+        }
         switch (keyCode) {
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized && event.getRepeatCount() == 0) {
@@ -1998,16 +2006,29 @@ public class PhotoModule
                     mShutterButton.setPressed(true);
                 }
                 return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (mFirstTimeInitialized && event.getRepeatCount() == 0 && ActivityBase.mPowerShutter) {
+                    onShutterButtonFocus(true);
+                }
+                return true;
         }
         return false;
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (!mActivity.mShowCameraAppView) {
+            return false;
+        }
         switch (keyCode) {
             case KeyEvent.KEYCODE_FOCUS:
                 if (mFirstTimeInitialized) {
                     onShutterButtonFocus(false);
+                }
+                return true;
+            case KeyEvent.KEYCODE_POWER:
+                if (ActivityBase.mPowerShutter) {
+                    onShutterButtonClick();
                 }
                 return true;
         }
@@ -2400,6 +2421,7 @@ public class PhotoModule
         setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
         setPreviewFrameLayoutAspectRatio();
         updateOnScreenIndicators();
+        mActivity.initPowerShutter(mPreferences);
     }
 
     @Override
