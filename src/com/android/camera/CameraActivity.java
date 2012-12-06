@@ -32,8 +32,8 @@ import android.widget.FrameLayout;
 
 import com.android.camera.ui.CameraSwitcher;
 import com.android.gallery3d.app.PhotoPage;
-import com.android.gallery3d.util.LightCycleHelper;
 import com.android.gallery3d.common.ApiHelper;
+import com.android.gallery3d.util.LightCycleHelper;
 
 public class CameraActivity extends ActivityBase
         implements CameraSwitcher.CameraSwitchListener {
@@ -386,7 +386,8 @@ public class CameraActivity extends ActivityBase
 
     private boolean canReuseScreenNail() {
         return mCurrentModuleIndex == PHOTO_MODULE_INDEX
-                || mCurrentModuleIndex == VIDEO_MODULE_INDEX;
+                || mCurrentModuleIndex == VIDEO_MODULE_INDEX
+                || mCurrentModuleIndex == LIGHTCYCLE_MODULE_INDEX;
     }
 
     @Override

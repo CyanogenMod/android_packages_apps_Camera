@@ -77,6 +77,24 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     private float mScaleX = 1f, mScaleY = 1f;
     private boolean mFullScreen;
     private boolean mEnableAspectRatioClamping = false;
+    private boolean mAcquireTexture = false;
+    private final DrawClient mDefaultDraw = new DrawClient() {
+        @Override
+        public void onDraw(GLCanvas canvas, int x, int y, int width, int height) {
+            CameraScreenNail.super.draw(canvas, x, y, width, height);
+        }
+
+        @Override
+        public void onInitialize(GLCanvas canvas) {
+        }
+
+        @Override
+        public boolean requiresSurfaceTexture() {
+            return true;
+        }
+    };
+    private DrawClient mDraw = mDefaultDraw;
+    private boolean mNeedsInitialize = false;
 
     public interface Listener {
         void requestRender();
@@ -88,6 +106,14 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
     public interface OnFrameDrawnListener {
         void onFrameDrawn(CameraScreenNail c);
+    }
+
+    public interface DrawClient {
+        void onDraw(GLCanvas canvas, int x, int y, int width, int height);
+
+        void onInitialize(GLCanvas canvas);
+
+        boolean requiresSurfaceTexture();
     }
 
     public CameraScreenNail(Listener listener) {
@@ -147,7 +173,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
      * Tells the ScreenNail to override the default aspect ratio scaling
      * and instead perform custom scaling to basically do a centerCrop instead
      * of the default centerInside
-     * 
+     *
      * Note that calls to setSize will disable this
      */
     public void enableAspectRatioClamping() {
@@ -200,16 +226,22 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     public void acquireSurfaceTexture() {
         synchronized (mLock) {
             mFirstFrameArrived = false;
-            super.acquireSurfaceTexture();
             mAnimTexture = new RawTexture(getTextureWidth(), getTextureHeight(), true);
+            mAcquireTexture = true;
         }
+        mListener.requestRender();
     }
 
     @Override
     public void releaseSurfaceTexture() {
         synchronized (mLock) {
-            super.releaseSurfaceTexture();
-            mAnimState = ANIM_NONE; // stop the animation
+            if (mAcquireTexture) {
+                mAcquireTexture = false;
+                mLock.notifyAll();
+            } else {
+                super.releaseSurfaceTexture();
+                mAnimState = ANIM_NONE; // stop the animation
+            }
         }
     }
 
@@ -281,19 +313,42 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     }
 
     public void directDraw(GLCanvas canvas, int x, int y, int width, int height) {
-        super.draw(canvas, x, y, width, height);
+        DrawClient draw;
+        synchronized (mLock) {
+            draw = mDraw;
+        }
+        draw.onDraw(canvas, x, y, width, height);
+    }
+
+    public void setDraw(DrawClient draw) {
+        synchronized (mLock) {
+            if (draw == null) {
+                mDraw = mDefaultDraw;
+            } else {
+                mDraw = draw;
+            }
+            mNeedsInitialize = true;
+        }
+        mListener.requestRender();
     }
 
     @Override
     public void draw(GLCanvas canvas, int x, int y, int width, int height) {
         synchronized (mLock) {
+            if (mNeedsInitialize) {
+                mDraw.onInitialize(canvas);
+                mNeedsInitialize = false;
+            }
+            allocateTextureIfRequested();
             if (!mVisible) mVisible = true;
             SurfaceTexture surfaceTexture = getSurfaceTexture();
-            if (surfaceTexture == null || !mFirstFrameArrived) return;
+            if (mDraw.requiresSurfaceTexture() && (surfaceTexture == null || !mFirstFrameArrived)) {
+                return;
+            }
 
             switch (mAnimState) {
                 case ANIM_NONE:
-                    super.draw(canvas, x, y, width, height);
+                    directDraw(canvas, x, y, width, height);
                     break;
                 case ANIM_SWITCH_COPY_TEXTURE:
                     copyPreviewTexture(canvas);
@@ -411,6 +466,32 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         synchronized (mLock) {
             mFirstFrameArrived = false;
             mOneTimeFrameDrawnListener = l;
+        }
+    }
+
+    @Override
+    public SurfaceTexture getSurfaceTexture() {
+        synchronized (mLock) {
+            SurfaceTexture surfaceTexture = super.getSurfaceTexture();
+            if (surfaceTexture == null && mAcquireTexture) {
+                try {
+                    mLock.wait();
+                    surfaceTexture = super.getSurfaceTexture();
+                } catch (InterruptedException e) {
+                    Log.w(TAG, "unexpected interruption");
+                }
+            }
+            return surfaceTexture;
+        }
+    }
+
+    private void allocateTextureIfRequested() {
+        synchronized (mLock) {
+            if (mAcquireTexture) {
+                super.acquireSurfaceTexture();
+                mAcquireTexture = false;
+                mLock.notifyAll();
+            }
         }
     }
 }
