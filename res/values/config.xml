@@ -21,4 +21,7 @@
     <integer name="max_video_recording_length">0</integer>
     <!-- The camera HAL does its own preview state management during snaps -->
     <bool name="previewStopsDuringSnapshot">false</bool>
+    <!-- The camera removes the focus modes by default when touch-to-focus
+         exists. Use this option to change that behavior -->
+    <bool name="wantsFocusModes">false</bool>
 </resources>
