@@ -21,4 +21,8 @@
     <integer name="max_video_recording_length">0</integer>
     <!-- The camera HAL does its own preview state management during snaps -->
     <bool name="previewStopsDuringSnapshot">false</bool>
+    <!-- Samsung Camcorder Mode -->
+    <bool name="needsSamsungCamMode">false</bool>
+    <!-- HTC Camcorder Mode -->
+    <bool name="needsHTCCamMode">false</bool>
 </resources>
