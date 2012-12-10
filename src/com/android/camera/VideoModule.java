@@ -1932,6 +1932,9 @@ public class VideoModule implements CameraModule,
         mParameters.setPreviewSize(mDesiredPreviewWidth, mDesiredPreviewHeight);
         mParameters.setPreviewFrameRate(mProfile.videoFrameRate);
 
+        // Set video mode
+        CameraSettings.setVideoMode(mParameters, true);
+
         // Set flash mode.
         String flashMode;
         if (mActivity.mShowCameraAppView) {
