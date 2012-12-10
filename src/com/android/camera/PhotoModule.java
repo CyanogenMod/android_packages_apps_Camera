@@ -2125,6 +2125,10 @@ public class PhotoModule
 
         mFocusManager.onPreviewStarted();
 
+        // Set camera mode
+        CameraSettings.setVideoMode(mParameters, false);
+        mCameraDevice.setParameters(mParameters);
+
         if (mSnapshotOnIdle) {
             mHandler.post(mDoSnapRunnable);
         }
@@ -2335,6 +2339,9 @@ public class PhotoModule
     private void setCameraParameters(int updateSet) {
         if ((updateSet & UPDATE_PARAM_INITIALIZE) != 0) {
             updateCameraParametersInitialize();
+
+            // Set camera mode
+            CameraSettings.setVideoMode(mParameters, false);
         }
 
         if ((updateSet & UPDATE_PARAM_ZOOM) != 0) {
