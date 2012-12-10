@@ -572,6 +572,18 @@ public class CameraSettings {
         }
     }
 
+    /**
+     * Set video size for certain cameras.
+     *
+     * @param params
+     * @param profile
+     */
+    public static void setEarlyVideoSize(Parameters params, CamcorderProfile profile) {
+        if (Util.needsEarlyVideoSize()) {
+            params.set("video-size", profile.videoFrameWidth + "x" + profile.videoFrameHeight);
+        }
+    }
+
     private void initVideoEffect(PreferenceGroup group, ListPreference videoEffect) {
         CharSequence[] values = videoEffect.getEntryValues();
 
