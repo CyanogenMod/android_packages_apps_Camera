@@ -24,7 +24,7 @@ import junit.framework.TestSuite;
 public class CameraStressTestRunner extends InstrumentationTestRunner {
 
     // Default recorder settings
-    public static int mVideoDuration = 20000; // set default to 20 seconds
+    public static int mVideoDuration = 60 * 1000; // set default to 1 minute
     public static int mVideoIterations = 100; // set default to 100 videos
     public static int mImageIterations = 100; // set default to 100 images
 
