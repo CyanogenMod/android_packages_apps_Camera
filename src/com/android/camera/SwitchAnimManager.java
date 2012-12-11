@@ -19,8 +19,8 @@ package com.android.camera;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.android.gallery3d.ui.GLCanvas;
-import com.android.gallery3d.ui.RawTexture;
+import com.android.gallery3d.glrenderer.GLCanvas;
+import com.android.gallery3d.glrenderer.RawTexture;
 
 /**
  * Class to handle the animation when switching between back and front cameras.

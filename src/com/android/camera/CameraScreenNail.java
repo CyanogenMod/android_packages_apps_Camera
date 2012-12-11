@@ -22,8 +22,8 @@ import android.opengl.Matrix;
 import android.util.Log;
 
 import com.android.gallery3d.common.ApiHelper;
-import com.android.gallery3d.ui.GLCanvas;
-import com.android.gallery3d.ui.RawTexture;
+import com.android.gallery3d.glrenderer.GLCanvas;
+import com.android.gallery3d.glrenderer.RawTexture;
 import com.android.gallery3d.ui.SurfaceTextureScreenNail;
 
 /*

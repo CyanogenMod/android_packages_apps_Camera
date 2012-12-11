@@ -21,8 +21,8 @@ import android.os.SystemClock;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
-import com.android.gallery3d.ui.GLCanvas;
-import com.android.gallery3d.ui.RawTexture;
+import com.android.gallery3d.glrenderer.GLCanvas;
+import com.android.gallery3d.glrenderer.RawTexture;
 
 /**
  * Class to handle the capture animation.
