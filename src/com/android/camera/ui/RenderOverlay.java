@@ -63,11 +63,13 @@ public class RenderOverlay extends FrameLayout {
         if (renderer.handlesTouch()) {
             mTouchClients.add(0, renderer);
         }
+        renderer.layout(getLeft(), getTop(), getRight(), getBottom());
     }
 
     public void addRenderer(int pos, Renderer renderer) {
         mClients.add(pos, renderer);
         renderer.setOverlay(this);
+        renderer.layout(getLeft(), getTop(), getRight(), getBottom());
     }
 
     public void remove(Renderer renderer) {
