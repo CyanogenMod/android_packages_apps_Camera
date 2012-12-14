@@ -1,0 +1,9 @@
+Change-Id: I59674c36b527f106ef37a239ca4d99c00e6f7a1d
+Code-Review+2: Daniel Hillenbrand <codeworkx@cyanogenmod.org>
+Verified+1: Daniel Hillenbrand <codeworkx@cyanogenmod.org>
+Code-Review+1: Shareef Ali <shareefalis@cyanogenmod.org>
+Submitted-by: Daniel Hillenbrand <codeworkx@cyanogenmod.org>
+Submitted-at: Fri, 14 Dec 2012 04:04:13 -0800
+Reviewed-on: http://review.cyanogenmod.org/28222
+Project: CyanogenMod/android_packages_apps_Camera
+Branch: refs/heads/cm-10.1
