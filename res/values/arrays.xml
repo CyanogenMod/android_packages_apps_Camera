@@ -433,4 +433,41 @@
         <item>75</item>
         <item>50</item>
     </string-array>
+
+    <!-- Camera Preferences Color effect dialog box entries -->
+    <string-array name="pref_camera_coloreffect_entries" translatable="false">
+        <item>@string/pref_camera_coloreffect_entry_greentint</item>
+        <item>@string/pref_camera_coloreffect_entry_bluetint</item>
+        <item>@string/pref_camera_coloreffect_entry_redtint</item>
+        <item>@string/pref_camera_coloreffect_entry_mosaic</item>
+        <item>@string/pref_camera_coloreffect_entry_pastel</item>
+        <item>@string/pref_camera_coloreffect_entry_neon</item>
+        <item>@string/pref_camera_coloreffect_entry_sketch</item>
+        <item>@string/pref_camera_coloreffect_entry_emboss</item>
+        <item>@string/pref_camera_coloreffect_entry_aqua</item>
+        <item>@string/pref_camera_coloreffect_entry_posterize</item>
+        <item>@string/pref_camera_coloreffect_entry_solarize</item>
+        <item>@string/pref_camera_coloreffect_entry_negative</item>
+        <item>@string/pref_camera_coloreffect_entry_sepia</item>
+        <item>@string/pref_camera_coloreffect_entry_mono</item>
+        <item>@string/pref_camera_coloreffect_entry_none</item>
+    </string-array>
+
+    <string-array name="pref_camera_coloreffect_entryvalues" translatable="false">
+        <item>green-tint</item>
+        <item>blue-tint</item>
+        <item>red-tint</item>
+        <item>mosaic</item>
+        <item>pastel</item>
+        <item>neon</item>
+        <item>sketch</item>
+        <item>emboss</item>
+        <item>aqua</item>
+        <item>posterize</item>
+        <item>solarize</item>
+        <item>negative</item>
+        <item>sepia</item>
+        <item>mono</item>
+        <item>none</item>
+    </string-array>
 </resources>

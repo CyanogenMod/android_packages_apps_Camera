@@ -102,7 +102,8 @@ public class PhotoController extends PieController
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_FOCUS_MODE,
                 CameraSettings.KEY_ISO_MODE,
-                CameraSettings.KEY_JPEG};
+                CameraSettings.KEY_JPEG,
+                CameraSettings.KEY_COLOR_EFFECT};
         PieItem item = makeItem(R.drawable.ic_settings_holo_light);
         item.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO * 3, sweep);
         item.setOnClickListener(new OnClickListener() {
