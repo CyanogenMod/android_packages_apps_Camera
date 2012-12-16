@@ -2271,6 +2271,12 @@ public class PhotoModule
         // For the following settings, we need to check if the settings are
         // still supported by latest driver, if not, ignore the settings.
 
+        // Set ISO speed.
+        String isoMode = mPreferences.getString(CameraSettings.KEY_ISO_MODE,
+                mActivity.getString(R.string.pref_camera_iso_default));
+        if (Util.isSupported(isoMode, mParameters.getSupportedIsoValues()))
+                mParameters.setISOValue(isoMode);
+
         // Set exposure compensation
         int value = CameraSettings.readExposure(mPreferences);
         int max = mParameters.getMaxExposureCompensation();
