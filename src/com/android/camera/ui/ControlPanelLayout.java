@@ -32,6 +32,11 @@ import android.widget.RelativeLayout;
 public class ControlPanelLayout extends RelativeLayout {
     private static final String TAG = "ControlPanelLayout";
 
+    /* Since there's no API in ICS to get minWidth and minHeight from
+     * layout/camera_control.xml we need to hardcode those values here too. */
+    private final int MIN_WIDTH = 260;
+    private final int MIN_HEIGHT = 76;
+
     public ControlPanelLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -66,7 +71,13 @@ public class ControlPanelLayout extends RelativeLayout {
             Log.e(TAG, "layout_xxx of ControlPanelLayout should be wrap_content");
         }
 
-        // The width cannot be bigger than the constraint.
+        // The size cannot be smaller than minimum constraint.
+        int minimumSize = (isLandscape) ? MIN_WIDTH : MIN_HEIGHT;
+        if (measuredSize < minimumSize) {
+            measuredSize = minimumSize;
+        }
+
+        // The size cannot be bigger than the constraint.
         if (mode == MeasureSpec.AT_MOST && measuredSize > specSize) {
             measuredSize = specSize;
         }
