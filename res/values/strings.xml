@@ -442,4 +442,64 @@ CHAR LIMIT = NONE] -->
      <string name="pref_camera_power_shutter_title">Power shutter</string>
      <string name="pref_camera_power_shutter_default">off</string>
 
+     <!-- Settings screen, ISO -->
+     <string name="pref_camera_iso_title">ISO</string>
+     <string name="pref_camera_iso_default" translatable="false">auto</string>
+
+     <!-- Settings screen, ISO dialog radio button choices -->
+     <string name="pref_camera_iso_entry_auto">Auto</string>
+     <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
+     <string name="pref_camera_iso_entry_iso1600">1600</string>
+     <string name="pref_camera_iso_entry_iso1200">1200</string>
+     <string name="pref_camera_iso_entry_iso1000">1000</string>
+     <string name="pref_camera_iso_entry_iso800">800</string>
+     <string name="pref_camera_iso_entry_iso400">400</string>
+     <string name="pref_camera_iso_entry_iso200">200</string>
+     <string name="pref_camera_iso_entry_iso100">100</string>
+     <string name="pref_camera_iso_entry_iso50">50</string>
+
+    <!-- Settings screen, JPEG Quality -->
+    <string name="pref_camera_jpeg_title">JPEG Quality</string>
+    <string name="pref_camera_jpeg_default" translatable="false">90</string>
+
+    <!-- Settings screen, JPEG dialog radio button choices -->
+    <string name="pref_camera_jpeg_entry_super">Super</string>
+    <string name="pref_camera_jpeg_entry_high">High</string>
+    <string name="pref_camera_jpeg_entry_medium">Medium</string>
+    <string name="pref_camera_jpeg_entry_low">Low</string>
+
+    <!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">Color effect</string>
+
+    <!-- Default color effect setting. -->
+    <string name="pref_camera_coloreffect_default" translatable="false">none</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">None</string>
+    <string name="pref_camera_coloreffect_entry_mono">Mono</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negative</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Solarize</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Posterize</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Aqua</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Emboss</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Sketch</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mosaic</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Red tint</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Blue tint</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Green tint</string>
+
+    <!-- Settings screen, Burst mode title -->
+    <string name="pref_camera_burst_title">Burst mode</string>
+    <string name="pref_camera_burst_default" translatable="false">1</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_off">Off</string>
+    <string name="pref_camera_burst_entry_5">5 shots</string>
+    <string name="pref_camera_burst_entry_10">10 shots</string>
+    <string name="pref_camera_burst_entry_15">15 shots</string>
+    <string name="pref_camera_burst_entry_20">20 shots</string>
+
 </resources>

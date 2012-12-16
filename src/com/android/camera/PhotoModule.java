@@ -299,6 +299,10 @@ public class PhotoModule
     private final Handler mHandler = new MainHandler();
     private PreferenceGroup mPreferenceGroup;
 
+    // Burst mode
+    private int mBurstShotsDone = 0;
+    private boolean mBurstShotInProgress = false;
+
     private boolean mQuickCapture;
 
     CameraStartUpThread mCameraStartUpThread;
@@ -999,6 +1003,10 @@ public class PhotoModule
             Log.v(TAG, "mJpegCallbackFinishTime = "
                     + mJpegCallbackFinishTime + "ms");
             mJpegPictureCallbackTime = 0;
+
+            if (mSnapshotOnIdle && mBurstShotsDone > 0) {
+                mHandler.post(mDoSnapRunnable);
+            }
         }
     }
 
@@ -1622,6 +1630,8 @@ public class PhotoModule
 
     @Override
     public void onShutterButtonClick() {
+        int nbBurstShots = Integer.valueOf(mPreferences.getString(CameraSettings.KEY_BURST_MODE, "1"));
+
         if (mPaused || collapseCameraControls()
                 || (mCameraState == SWITCHING_CAMERA)
                 || (mCameraState == PREVIEW_STOPPED)) return;
@@ -1645,8 +1655,16 @@ public class PhotoModule
             return;
         }
 
-        mSnapshotOnIdle = false;
         mFocusManager.doSnap();
+        mBurstShotsDone++;
+
+        if (mBurstShotsDone == nbBurstShots) {
+            mBurstShotsDone = 0;
+            mSnapshotOnIdle = false;
+        } else if (mSnapshotOnIdle == false) {
+            // queue a new shot until we done all our shots
+            mSnapshotOnIdle = true;
+        }
     }
 
     @Override
@@ -2146,7 +2164,7 @@ public class PhotoModule
         CameraSettings.setVideoMode(mParameters, false);
         mCameraDevice.setParameters(mParameters);
 
-        if (mSnapshotOnIdle) {
+        if (mSnapshotOnIdle && mBurstShotsDone > 0) {
             mHandler.post(mDoSnapRunnable);
         }
     }
@@ -2297,12 +2315,27 @@ public class PhotoModule
         }
 
         // Set JPEG quality.
-        int jpegQuality = CameraProfile.getJpegEncodingQualityParameter(mCameraId,
-                CameraProfile.QUALITY_HIGH);
+        int jpegQuality = Integer.parseInt(mPreferences.getString(
+                CameraSettings.KEY_JPEG,
+                mActivity.getString(R.string.pref_camera_jpeg_default)));
         mParameters.setJpegQuality(jpegQuality);
 
         // For the following settings, we need to check if the settings are
         // still supported by latest driver, if not, ignore the settings.
+
+        // Set ISO speed.
+        String isoMode = mPreferences.getString(CameraSettings.KEY_ISO_MODE,
+                mActivity.getString(R.string.pref_camera_iso_default));
+        if (Util.isSupported(isoMode, mParameters.getSupportedIsoValues()))
+                mParameters.setISOValue(isoMode);
+
+        // Color effect
+        String colorEffect = mPreferences.getString(
+                CameraSettings.KEY_COLOR_EFFECT,
+                mActivity.getString(R.string.pref_camera_coloreffect_default));
+        if (Util.isSupported(colorEffect, mParameters.getSupportedColorEffects())) {
+            mParameters.setColorEffect(colorEffect);
+        }
 
         // Set exposure compensation
         int value = CameraSettings.readExposure(mPreferences);
