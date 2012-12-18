@@ -16,14 +16,14 @@
  -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="camera_error_title" msgid="6484667504938477337">"Camerafout"</string>
-    <string name="cannot_connect_camera" msgid="955440687597185163">"Kan geen verbinding maken met de camera."</string>
+    <string name="camera_error_title" msgid="6484667504938477337">"Fout met de camera"</string>
+    <string name="cannot_connect_camera" msgid="955440687597185163">"Verbinding met Camera mislukt."</string>
     <string name="camera_disabled" msgid="8923911090533439312">"De camera is uitgeschakeld vanwege het beveiligingsbeleid."</string>
     <string name="camera_label" msgid="6346560772074764302">"Camera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Camcorder"</string>
     <string name="wait" msgid="8600187532323801552">"Een ogenblik geduld\u2026"</string>
-    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Koppel de USB-opslag voordat u de camera gebruikt."</string>
-    <string name="no_storage" product="default" msgid="5137703033746873624">"Plaats een SD-kaart voordat u de camera gebruikt."</string>
+    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Ontkoppel de USB-opslag voordat u de camera gebruikt."</string>
+    <string name="no_storage" product="default" msgid="5137703033746873624">"Plaats een SD-kaart in de telefoon voordat u de camera gebruikt."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"USB-opslag voorbereiden\u2026"</string>
     <string name="preparing_sd" product="default" msgid="2914969119574812666">"SD-kaart voorbereiden\u2026"</string>
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Geen toegang tot USB-opslag."</string>
@@ -42,9 +42,9 @@
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Laag"</string>
     <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Time-lapse"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Camera-instellingen"</string>
-    <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Camcorder-instellingen"</string>
+    <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Camrecorder-instellingen"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Grootte van foto"</string>
-    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 megapixels"</string>
+    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 megapixel"</string>
     <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5 megapixel"</string>
     <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3 megapixel"</string>
     <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2 megapixel"</string>
