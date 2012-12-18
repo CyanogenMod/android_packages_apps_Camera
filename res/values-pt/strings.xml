@@ -177,4 +177,5 @@
     <string name="remember_location_prompt" msgid="724592331305808098">"Marque seus vídeos e fotos com os locais onde foram gerados."\n\n"Outros aplicativos podem acessar essas informações juntamente com suas imagens salvas."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Não, obrigado"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Sim"</string>
+    <string name="pref_camera_power_shutter_title">Tirar c/ botão Liga/Desl.</string>
 </resources>
