@@ -314,8 +314,8 @@
     <string name="accessibility_decrement">Decrease %1$s</string>
     <!-- The increment button in camera preference such as exposure, picture size. [CHAR LIMIT = NONE] -->
     <string name="accessibility_increment">Increase %1$s</string>
-    <!-- The on/off switch in camera settings, such as store location. [CHAR LIMIT = NONE] -->
-    <string name="accessibility_switch">%1$s switch</string>
+    <!-- The check box in camera settings, such as store location. [CHAR LIMIT = NONE] -->
+    <string name="accessibility_check_box">%1$s check box</string>
     <!-- The button to switch to Camera mode. [CHAR LIMIT = NONE] -->
     <string name="accessibility_switch_to_camera">Switch to photo</string>
     <!-- The button to switch to Video mode. [CHAR LIMIT = NONE] -->

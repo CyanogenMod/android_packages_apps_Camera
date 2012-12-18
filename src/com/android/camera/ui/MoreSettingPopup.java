@@ -66,7 +66,7 @@ public class MoreSettingPopup extends AbstractSettingPopup
         private int getSettingLayoutId(ListPreference pref) {
 
             if (isOnOffPreference(pref)) {
-                return R.layout.in_line_setting_switch;
+                return R.layout.in_line_setting_check_box;
             }
             return R.layout.in_line_setting_menu;
         }

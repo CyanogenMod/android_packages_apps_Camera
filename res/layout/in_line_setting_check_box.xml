@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<com.android.camera.ui.InLineSettingSwitch xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.camera.ui.InLineSettingCheckBox xmlns:android="http://schemas.android.com/apk/res/android"
         style="@style/SettingRow">
     <TextView android:id="@+id/title"
             style="@style/SettingItemTitle" />
@@ -23,9 +23,9 @@
     <FrameLayout
             android:layout_width="@dimen/setting_item_text_width"
             android:layout_height="match_parent">
-        <com.android.camera.ui.Switch android:id="@+id/setting_switch"
+        <CheckBox android:id="@+id/setting_check_box"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
     </FrameLayout>
-</com.android.camera.ui.InLineSettingSwitch>
+</com.android.camera.ui.InLineSettingCheckBox>

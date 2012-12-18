@@ -19,6 +19,7 @@ package com.android.camera.ui;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
@@ -26,9 +27,9 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import com.android.camera.ListPreference;
 import com.android.camera.R;
 
-/* A switch setting control which turns on/off the setting. */
-public class InLineSettingSwitch extends InLineSettingItem {
-    private Switch mSwitch;
+/* A check box setting control which turns on/off the setting. */
+public class InLineSettingCheckBox extends InLineSettingItem {
+    private CheckBox mCheckBox;
 
     OnCheckedChangeListener mCheckedChangeListener = new OnCheckedChangeListener() {
         @Override
@@ -37,35 +38,35 @@ public class InLineSettingSwitch extends InLineSettingItem {
         }
     };
 
-    public InLineSettingSwitch(Context context, AttributeSet attrs) {
+    public InLineSettingCheckBox(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mSwitch = (Switch) findViewById(R.id.setting_switch);
-        mSwitch.setOnCheckedChangeListener(mCheckedChangeListener);
+        mCheckBox = (CheckBox) findViewById(R.id.setting_check_box);
+        mCheckBox.setOnCheckedChangeListener(mCheckedChangeListener);
     }
 
     @Override
     public void initialize(ListPreference preference) {
         super.initialize(preference);
         // Add content descriptions for the increment and decrement buttons.
-        mSwitch.setContentDescription(getContext().getResources().getString(
-                R.string.accessibility_switch, mPreference.getTitle()));
+        mCheckBox.setContentDescription(getContext().getResources().getString(
+                R.string.accessibility_check_box, mPreference.getTitle()));
     }
 
     @Override
     protected void updateView() {
-        mSwitch.setOnCheckedChangeListener(null);
+        mCheckBox.setOnCheckedChangeListener(null);
         if (mOverrideValue == null) {
-            mSwitch.setChecked(mIndex == 1);
+            mCheckBox.setChecked(mIndex == 1);
         } else {
             int index = mPreference.findIndexOfValue(mOverrideValue);
-            mSwitch.setChecked(index == 1);
+            mCheckBox.setChecked(index == 1);
         }
-        mSwitch.setOnCheckedChangeListener(mCheckedChangeListener);
+        mCheckBox.setOnCheckedChangeListener(mCheckedChangeListener);
     }
 
     @Override
@@ -77,6 +78,6 @@ public class InLineSettingSwitch extends InLineSettingItem {
     @Override
     public void setEnabled(boolean enable) {
         if (mTitle != null) mTitle.setEnabled(enable);
-        if (mSwitch != null) mSwitch.setEnabled(enable);
+        if (mCheckBox != null) mCheckBox.setEnabled(enable);
     }
 }
