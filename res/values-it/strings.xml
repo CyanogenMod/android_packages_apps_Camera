@@ -177,4 +177,35 @@
     <string name="remember_location_prompt" msgid="724592331305808098">"Aggiungi alle foto e ai video tag relativi alle località in cui sono stati ripresi."\n\n"Altre applicazioni possono accedere a queste informazioni e alle tue immagini salvate."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"No, grazie"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Sì"</string>
+    <string name="pref_camera_power_shutter_title">Scatta tasto On/Off</string>
+    <string name="pref_camera_iso_title">ISO</string>
+    <string name="pref_camera_iso_entry_auto">Automatico</string>
+    <string name="pref_camera_iso_entry_isodeblur">Automatico (HJR)</string>
+    <string name="pref_camera_jpeg_title">Qualità JPEG</string>
+    <string name="pref_camera_jpeg_entry_super">Eccellente</string>
+    <string name="pref_camera_jpeg_entry_high">Alta</string>
+    <string name="pref_camera_jpeg_entry_medium">Media</string>
+    <string name="pref_camera_jpeg_entry_low">Bassa</string>
+    <string name="pref_camera_coloreffect_title">Effetti colore</string>
+    <string name="pref_camera_coloreffect_entry_none">Nessuno</string>
+    <string name="pref_camera_coloreffect_entry_mono">Bianco e nero</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Seppia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negativo</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Solarizzato</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Posterizzazione</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Acqua</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Rilievo</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Schizzo</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastello</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mosaico</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Tinta rossa</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Tinta blu</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Tinta verde</string>
+    <string name="pref_camera_burst_title">Scatti continui</string>
+    <string name="pref_camera_burst_entry_off">Off</string>
+    <string name="pref_camera_burst_entry_5">5 scatti</string>
+    <string name="pref_camera_burst_entry_10">10 scatti</string>
+    <string name="pref_camera_burst_entry_15">15 scatti</string>
+    <string name="pref_camera_burst_entry_20">20 scatti</string>
 </resources>
