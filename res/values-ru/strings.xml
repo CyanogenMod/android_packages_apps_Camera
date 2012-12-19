@@ -177,4 +177,47 @@
     <string name="remember_location_prompt" msgid="724592331305808098">"Укажите, где было сделано фото или видеозапись."\n\n"Эта информация, а также сохраненные изображения будут доступны другим приложениям."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Нет, спасибо"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Да"</string>
+
+    <!-- Settings screen, ISO dialog radio button choices -->
+    <string name="pref_camera_iso_entry_auto">Авто</string>
+    <string name="pref_camera_iso_entry_isodeblur">Авто (HJR)</string>
+
+    <!-- Settings screen, JPEG Quality -->
+    <string name="pref_camera_jpeg_title">Качество JPEG</string>
+
+    <!-- Settings screen, JPEG dialog radio button choices -->
+    <string name="pref_camera_jpeg_entry_super">Лучшее</string>
+    <string name="pref_camera_jpeg_entry_high">Высокое</string>
+    <string name="pref_camera_jpeg_entry_medium">Среднее</string>
+    <string name="pref_camera_jpeg_entry_low">Низкое</string>
+
+    <!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">Цветовой эффект</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">Нет</string>
+    <string name="pref_camera_coloreffect_entry_mono">Ч/Б</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Сепия</string>
+    <string name="pref_camera_coloreffect_entry_negative">Негатив</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Соляризация</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Постеризация</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Под водой</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Рельеф</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Рисунок</string>
+    <string name="pref_camera_coloreffect_entry_neon">Неон</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Пастель</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Мозаика</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Красный оттенок</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Синий оттенок</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Зелёный оттенок</string>
+
+    <!-- Settings screen, Burst mode title -->
+    <string name="pref_camera_burst_title">Серийная съёмка</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_off">Выкл.</string>
+    <string name="pref_camera_burst_entry_5">5 снимков</string>
+    <string name="pref_camera_burst_entry_10">10 снимков</string>
+    <string name="pref_camera_burst_entry_15">15 снимков</string>
+    <string name="pref_camera_burst_entry_20">20 снимков</string>
 </resources>
