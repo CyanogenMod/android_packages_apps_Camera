@@ -855,6 +855,7 @@ public class PhotoModule
     }
 
     private void updateOnScreenIndicators() {
+        if (mParameters == null) return;
         updateSceneOnScreenIndicator(mParameters.getSceneMode());
         updateExposureOnScreenIndicator(CameraSettings.readExposure(mPreferences));
         updateFlashOnScreenIndicator(mParameters.getFlashMode());
