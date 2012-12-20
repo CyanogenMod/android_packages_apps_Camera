@@ -151,6 +151,9 @@ public class Util {
     // Workaround for QC cameras with broken face detection on front camera
     private static boolean sNoFaceDetectOnFrontCamera;
 
+    // Software HDR based on manual shots with multiple exposure
+    private static boolean sEnableSoftwareHDR;
+
     private Util() {
     }
 
@@ -171,6 +174,9 @@ public class Util {
         sEnableZSL = context.getResources().getBoolean(R.bool.enableZSL);
         sNoFaceDetectOnFrontCamera = context.getResources().getBoolean(
                 R.bool.noFaceDetectOnFrontCamera);
+
+        // TODO ; Every ZSL enabled device can handle software HDR if it doesn't do on hw already
+        sEnableSoftwareHDR = true;
     }
 
     public static int dpToPixel(int dp) {
@@ -195,6 +201,10 @@ public class Util {
 
     public static boolean enableZSL() {
         return sEnableZSL;
+    }
+
+    public static boolean useSoftwareHDR() {
+        return sEnableSoftwareHDR;
     }
 
     public static boolean noFaceDetectOnFrontCamera() {
