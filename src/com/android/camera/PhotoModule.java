@@ -299,6 +299,12 @@ public class PhotoModule
     private int mBurstShotsDone = 0;
     private boolean mBurstShotInProgress = false;
 
+    // Software HDR mode
+    private boolean mHDRShotInProgress = false;
+    private boolean mHDRExposureSet = false;
+    private boolean mHDRRendering = false;
+    private static ArrayList<Uri> sHDRShotsPaths = new ArrayList<Uri>();
+
     private boolean mQuickCapture;
 
     CameraStartUpThread mCameraStartUpThread;
@@ -468,6 +474,7 @@ public class PhotoModule
         mPreferences.setLocalId(mActivity, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
         // we need to reset exposure for the preview
+        Log.d(TAG, "XPLOD/ Camera start up, reset exposure");
         resetExposureCompensation();
         // Starting the preview needs preferences, camera screen nail, and
         // focus area indicator.
@@ -1010,6 +1017,7 @@ public class PhotoModule
             mJpegPictureCallbackTime = 0;
 
             if (mSnapshotOnIdle && mBurstShotsDone > 0) {
+                Log.i(TAG, "XPLOD/ Snapshot On Idle, JPEGCallback");
                 mHandler.post(mDoSnapRunnable);
             }
         }
@@ -1252,6 +1260,8 @@ public class PhotoModule
         private void generateUri() {
             mTitle = Util.createJpegName(mDateTaken);
             mUri = Storage.newImage(mResolver, mTitle, mDateTaken, mWidth, mHeight);
+            sHDRShotsPaths.add(mUri);
+            Log.v(TAG, "HDR Stored path: " + mUri.getPath());
         }
 
         // Runs in namer thread
@@ -1626,6 +1636,86 @@ public class PhotoModule
     public void onShutterButtonClick() {
         int nbBurstShots = Integer.valueOf(mPreferences.getString(CameraSettings.KEY_BURST_MODE, "1"));
 
+        if (Util.useSoftwareHDR() && !mHDRShotInProgress && !mHDRRendering) {
+            Log.d(TAG, "XPLOD/ Starting HDR shot - min exposure set");
+            mParameters.setExposureCompensation(mParameters.getMinExposureCompensation());
+            mCameraDevice.setParameters(mParameters);
+            mHDRShotInProgress = true;
+            sHDRShotsPaths.clear();
+
+            // We queue the shot so exposure gets set
+            mHandler.postDelayed(new Runnable() {
+                public void run() {
+                    mHDRExposureSet = true;
+                    onShutterButtonClick();
+                }
+            }, 1000);
+            return;
+        }
+        else if (Util.useSoftwareHDR() && mHDRShotInProgress && !mHDRExposureSet) {
+            // We do min, 0, max exposure shots
+            int value = mParameters.getExposureCompensation();
+            int max = mParameters.getMaxExposureCompensation();
+
+            // Non-ZSL devices hates setting parameters while shot is being taken. We
+            // use SnapshotOnIdle as a callback when a shot is ready to be taken, and
+            // we manually queue another shot.
+            boolean queueShot = false;
+
+            if (mParameters.getMinExposureCompensation() == value) {
+                mParameters.setExposureCompensation(0);
+                Log.d(TAG, "XPLOD/ Set exposure to 0");
+                mCameraDevice.setParameters(mParameters);
+                queueShot = true;
+                mHDRExposureSet = true;
+            } else if (value == 0) {
+                mParameters.setExposureCompensation(mParameters.getMaxExposureCompensation());
+                Log.d(TAG, "XPLOD/ Set exposure to max");
+                mCameraDevice.setParameters(mParameters);
+                queueShot = true;
+                mHDRExposureSet = true;
+            } else {
+                // We did all exposures the sensor is capable of, we stop HDR shot
+                mHDRShotInProgress = false;
+                mHDRRendering = true;
+                mSnapshotOnIdle = false;
+                Log.d(TAG, "XPLOD/ Done shooting all exposures, computing HDR");
+
+                // And we compute the final image
+                final HdrSoftwareProcessor hdr = new HdrSoftwareProcessor();
+
+                // Let a second for the shot to get recorded on SDcard, then go!
+                mHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        Uri[] strArray = new Uri[sHDRShotsPaths.size()];
+                        sHDRShotsPaths.toArray(strArray);
+                        Log.i(TAG, "XPLOD/ Starting HDR rendering with " + strArray.length + " shots");
+                        try {
+                            hdr.prepare(mActivity, strArray);
+                            hdr.computeHDR("/sdcard/test.jpg", mActivity);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Could not make HDR final shot: " + e.getMessage());
+                        }
+                        mHDRRendering = false;
+                    }
+                }, 1000);
+                return;
+            }
+
+            if (queueShot) {
+                mSnapshotOnIdle = false;
+                Log.d(TAG, "XPLOD/ Exposure set, queuing shot!");
+                mHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        Log.d(TAG, "XPLOD/ HDR Shot queue coming down!");
+                        mHDRExposureSet = true;
+                        onShutterButtonClick();
+                    }
+                }, 1000);
+                return;
+            }
+        }
+
         if (mPaused || collapseCameraControls()
                 || (mCameraState == SWITCHING_CAMERA)
                 || (mCameraState == PREVIEW_STOPPED)) return;
@@ -1652,12 +1742,20 @@ public class PhotoModule
         mFocusManager.doSnap();
         mBurstShotsDone++;
 
-        if (mBurstShotsDone == nbBurstShots) {
-            mBurstShotsDone = 0;
-            mSnapshotOnIdle = false;
+        if (mHDRShotInProgress) {
+            mHDRExposureSet = false;
+            mSnapshotOnIdle = true;
+        }
+
+        if (mBurstShotsDone >= nbBurstShots) {
+            if (!mHDRShotInProgress) {
+                mBurstShotsDone = 0;
+                mSnapshotOnIdle = false;
+            }
         } else if (mSnapshotOnIdle == false) {
             // queue a new shot until we done all our shots
             mSnapshotOnIdle = true;
+            Log.d(TAG, "XPLOD/ Burst queued shot");
         }
     }
 
@@ -1690,6 +1788,7 @@ public class PhotoModule
 
         // Start the preview if it is not started.
         if (mCameraState == PREVIEW_STOPPED && mCameraStartUpThread == null) {
+            Log.d(TAG, "XPLOD/ Preview stopped, reset exposure");
             resetExposureCompensation();
             mCameraStartUpThread = new CameraStartUpThread();
             mCameraStartUpThread.start();
@@ -2178,7 +2277,8 @@ public class PhotoModule
         CameraSettings.setVideoMode(mParameters, false);
         mCameraDevice.setParameters(mParameters);
 
-        if (mSnapshotOnIdle && mBurstShotsDone > 0) {
+        if (mSnapshotOnIdle && (mBurstShotsDone > 0 && !mHDRShotInProgress)) {
+            Log.i(TAG, "XPLOD/ Snapshot on Idle, startPreview");
             mHandler.post(mDoSnapRunnable);
         }
     }
@@ -2352,13 +2452,16 @@ public class PhotoModule
         }
 
         // Set exposure compensation
-        int value = CameraSettings.readExposure(mPreferences);
-        int max = mParameters.getMaxExposureCompensation();
-        int min = mParameters.getMinExposureCompensation();
-        if (value >= min && value <= max) {
-            mParameters.setExposureCompensation(value);
-        } else {
-            Log.w(TAG, "invalid exposure range: " + value);
+        if (!mHDRShotInProgress) {
+            int value = CameraSettings.readExposure(mPreferences);
+            int max = mParameters.getMaxExposureCompensation();
+            int min = mParameters.getMinExposureCompensation();
+            if (value >= min && value <= max) {
+                Log.d(TAG, "XPLOD/ Settings set exposure to " + value);
+                mParameters.setExposureCompensation(value);
+            } else {
+                Log.w(TAG, "invalid exposure range: " + value);
+            }
         }
 
         if (Parameters.SCENE_MODE_AUTO.equals(mSceneMode)) {

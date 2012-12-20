@@ -236,7 +236,8 @@ public class CameraSettings {
             }
         }
         if (cameraHdr != null && (!ApiHelper.HAS_CAMERA_HDR
-                    || !Util.isCameraHdrSupported(mParameters))) {
+                    || !Util.isCameraHdrSupported(mParameters))
+                    && !Util.useSoftwareHDR()) {
             removePreference(group, cameraHdr.getKey());
         }
         if (isoMode != null) {
