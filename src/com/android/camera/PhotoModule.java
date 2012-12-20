@@ -303,6 +303,10 @@ public class PhotoModule
     private int mBurstShotsDone = 0;
     private boolean mBurstShotInProgress = false;
 
+    // Software HDR mode
+    private boolean mHDRShotInProgress = false;
+    private static ArrayList<Uri> sHDRShotsPaths = new ArrayList<Uri>();
+
     private boolean mQuickCapture;
 
     CameraStartUpThread mCameraStartUpThread;
@@ -1004,8 +1008,13 @@ public class PhotoModule
                     + mJpegCallbackFinishTime + "ms");
             mJpegPictureCallbackTime = 0;
 
-            if (mSnapshotOnIdle && mBurstShotsDone > 0) {
-                mHandler.post(mDoSnapRunnable);
+            if (mSnapshotOnIdle && (mBurstShotsDone > 0 || mHDRShotInProgress)) {
+                if (mHDRShotInProgress) {
+                    // Let some time for the sensor to set the exposure
+                    mHandler.postDelayed(mDoSnapRunnable, 2000);
+                } else {
+                    mHandler.post(mDoSnapRunnable);
+                }
             }
         }
     }
@@ -1247,6 +1256,8 @@ public class PhotoModule
         private void generateUri() {
             mTitle = Util.createJpegName(mDateTaken);
             mUri = Storage.newImage(mResolver, mTitle, mDateTaken, mWidth, mHeight);
+            sHDRShotsPaths.add(mUri);
+            Log.v(TAG, "HDR Stored path: " + mUri.getPath());
         }
 
         // Runs in namer thread
@@ -1631,6 +1642,12 @@ public class PhotoModule
     @Override
     public void onShutterButtonClick() {
         int nbBurstShots = Integer.valueOf(mPreferences.getString(CameraSettings.KEY_BURST_MODE, "1"));
+        if (Util.useSoftwareHDR() && !mHDRShotInProgress) {
+            mParameters.setExposureCompensation(mParameters.getMinExposureCompensation());
+            mCameraDevice.setParameters(mParameters);
+            mHDRShotInProgress = true;
+            sHDRShotsPaths.clear();
+        }
 
         if (mPaused || collapseCameraControls()
                 || (mCameraState == SWITCHING_CAMERA)
@@ -1658,7 +1675,44 @@ public class PhotoModule
         mFocusManager.doSnap();
         mBurstShotsDone++;
 
-        if (mBurstShotsDone == nbBurstShots) {
+        if (mHDRShotInProgress) {
+            // We do min, 0, max exposure shots
+            int value = mParameters.getExposureCompensation();
+            int max = mParameters.getMaxExposureCompensation();
+
+            if (mParameters.getMinExposureCompensation() == value) {
+                mParameters.setExposureCompensation(0);
+                mCameraDevice.setParameters(mParameters);
+                mSnapshotOnIdle = true;
+            } else if (value == 0) {
+                mParameters.setExposureCompensation(mParameters.getMaxExposureCompensation());
+                mCameraDevice.setParameters(mParameters);
+                mSnapshotOnIdle = true;
+            } else {
+                // We did all exposures the sensor is capable of, we stop HDR shot
+                mHDRShotInProgress = false;
+                mSnapshotOnIdle = false;
+
+                // And we compute the final image
+                final HDRSoftwareProcessor hdr = new HDRSoftwareProcessor();
+
+                // Let a second for the shot to get recorded on SDcard, then go!
+                mHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        Uri[] strArray = new Uri[sHDRShotsPaths.size()];
+                        sHDRShotsPaths.toArray(strArray);
+                        try {
+                            hdr.prepare(mActivity, strArray);
+                            hdr.computeHDR("/sdcard/test.jpg");
+                        } catch (Exception e) {
+                            Log.e(TAG, "Could not make HDR final shot: " + e.getMessage());
+                        }
+                    }
+                }, 1000);
+            }
+        }
+
+        if (mBurstShotsDone >= nbBurstShots && !mHDRShotInProgress) {
             mBurstShotsDone = 0;
             mSnapshotOnIdle = false;
         } else if (mSnapshotOnIdle == false) {
@@ -2164,8 +2218,13 @@ public class PhotoModule
         CameraSettings.setVideoMode(mParameters, false);
         mCameraDevice.setParameters(mParameters);
 
-        if (mSnapshotOnIdle && mBurstShotsDone > 0) {
-            mHandler.post(mDoSnapRunnable);
+        if (mSnapshotOnIdle && (mBurstShotsDone > 0 || mHDRShotInProgress)) {
+            if (mHDRShotInProgress) {
+                // Let some time for the sensor to settle exposure
+                mHandler.postDelayed(mDoSnapRunnable, 2000);
+            } else {
+                mHandler.post(mDoSnapRunnable);
+            }
         }
     }
 
