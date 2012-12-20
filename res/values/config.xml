@@ -41,4 +41,6 @@
     <bool name="noFaceDetectOnFrontCamera">false</bool>
     <!-- Use ZSL mode for Qualcomm cameras -->
     <bool name="enableZSL">false</bool>
+    <!-- Disable software HDR on non-hw HDR devices -->
+    <bool name="disableSoftwareHDR">false</bool>
 </resources>
