@@ -383,6 +383,8 @@
 
     <!-- Icons for exposure compensation -->
     <array name="pref_camera_exposure_icons" translatable="false">
+        <item>@drawable/ic_exposure_n5</item>
+        <item>@drawable/ic_exposure_n4</item>
         <item>@drawable/ic_exposure_n3</item>
         <item>@drawable/ic_exposure_n2</item>
         <item>@drawable/ic_exposure_n1</item>
@@ -390,6 +392,8 @@
         <item>@drawable/ic_exposure_p1</item>
         <item>@drawable/ic_exposure_p2</item>
         <item>@drawable/ic_exposure_p3</item>
+        <item>@drawable/ic_exposure_p4</item>
+        <item>@drawable/ic_exposure_p5</item>
     </array>
 
     <!-- Camera Preferences ISO dialog box entries -->
