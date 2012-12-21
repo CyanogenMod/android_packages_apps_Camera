@@ -270,7 +270,7 @@ public class CameraSettings {
             StringBuilder builder = new StringBuilder();
             if (i > 0) builder.append('+');
             entries[maxValue - i] = builder.append(i).toString();
-            icons[maxValue - i] = iconIds.getResourceId(3 + i, 0);
+            icons[maxValue - i] = iconIds.getResourceId(5 + i, 0);
         }
         exposure.setUseSingleIcon(true);
         exposure.setEntries(entries);
