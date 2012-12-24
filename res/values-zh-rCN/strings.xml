@@ -177,4 +177,62 @@
     <string name="remember_location_prompt" msgid="724592331305808098">"为您的照片和视频标明拍摄地点。"\n\n"其他应用在查看您保存的图片时将可以访问这些信息。"</string>
     <string name="remember_location_no" msgid="7541394381714894896">"不用了"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"是"</string>
+
+     <!-- More Settings screen, power button title -->
+     <string name="pref_camera_power_shutter_title">电源键快门</string>
+
+     <!-- Settings screen, ISO -->
+     <string name="pref_camera_iso_title">ISO</string>
+
+     <!-- Settings screen, ISO dialog radio button choices -->
+    <string name="pref_camera_iso_entry_auto">自动</string>
+    <string name="pref_camera_iso_entry_isodeblur">自动 (HJR)</string>
+    <string name="pref_camera_iso_entry_iso1600">1600</string>
+    <string name="pref_camera_iso_entry_iso1200">1200</string>
+    <string name="pref_camera_iso_entry_iso1000">1000</string>
+    <string name="pref_camera_iso_entry_iso800">800</string>
+    <string name="pref_camera_iso_entry_iso400">400</string>
+    <string name="pref_camera_iso_entry_iso200">200</string>
+    <string name="pref_camera_iso_entry_iso100">100</string>
+    <string name="pref_camera_iso_entry_iso50">50</string>
+
+    <!-- Settings screen, JPEG Quality -->
+    <string name="pref_camera_jpeg_title">JPEG 质量</string>
+
+    <!-- Settings screen, JPEG dialog radio button choices -->
+    <string name="pref_camera_jpeg_entry_super">无损</string>
+    <string name="pref_camera_jpeg_entry_high">高</string>
+    <string name="pref_camera_jpeg_entry_medium">中</string>
+    <string name="pref_camera_jpeg_entry_low">低</string>
+
+    <!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">色彩效果</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">无</string>
+    <string name="pref_camera_coloreffect_entry_mono">黑白</string>
+    <string name="pref_camera_coloreffect_entry_sepia">棕褐色</string>
+    <string name="pref_camera_coloreffect_entry_negative">反色</string>
+    <string name="pref_camera_coloreffect_entry_solarize">负感作用</string>
+    <string name="pref_camera_coloreffect_entry_posterize">高反差色调</string>
+    <string name="pref_camera_coloreffect_entry_aqua">水色</string>
+    <string name="pref_camera_coloreffect_entry_emboss">浮雕</string>
+    <string name="pref_camera_coloreffect_entry_sketch">素描</string>
+    <string name="pref_camera_coloreffect_entry_neon">氖灯</string>
+    <string name="pref_camera_coloreffect_entry_pastel">粉彩</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">马赛克</string>
+    <string name="pref_camera_coloreffect_entry_redtint">偏红</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">偏蓝</string>
+    <string name="pref_camera_coloreffect_entry_greentint">偏绿</string>
+
+    <!-- Settings screen, Burst mode title -->
+    <string name="pref_camera_burst_title">连拍模式</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_off">关闭</string>
+    <string name="pref_camera_burst_entry_5">5 张</string>
+    <string name="pref_camera_burst_entry_10">10 张</string>
+    <string name="pref_camera_burst_entry_15">15 张</string>
+    <string name="pref_camera_burst_entry_20">20 张</string>
+
 </resources>
