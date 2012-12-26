@@ -177,5 +177,50 @@
     <string name="remember_location_prompt" msgid="724592331305808098">"Címkézze fel a fotókat és videókat a hellyel, ahol készítette őket."\n\n"Más alkalmazások hozzáférnek ehhez az információhoz és a mentett képekhez."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Nem, köszönöm."</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Igen"</string>
-    <string name="pref_camera_power_shutter_title">Bekapcsoló gombbal exponálás</string>
+
+     <!-- More Settings screen, power button title -->
+     <string name="pref_camera_power_shutter_title">Bekapcsoló gombbal exponálás</string>
+
+     <!-- Settings screen, ISO dialog radio button choices -->
+     <string name="pref_camera_iso_entry_auto">Automatikus</string>
+     <string name="pref_camera_iso_entry_isodeblur">Automatikus (HJR)</string>
+
+    <!-- Settings screen, JPEG Quality -->
+    <string name="pref_camera_jpeg_title">JPEG minőség</string>
+
+    <!-- Settings screen, JPEG dialog radio button choices -->
+    <string name="pref_camera_jpeg_entry_super">Kiváló</string>
+    <string name="pref_camera_jpeg_entry_high">Jó</string>
+    <string name="pref_camera_jpeg_entry_medium">Normál</string>
+    <string name="pref_camera_jpeg_entry_low">Gyenge</string>
+
+    <!-- Settings screen, Select Color effect title -->
+    <string name="pref_camera_coloreffect_title">Szín effektek</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_entry_none">Nincs</string>
+    <string name="pref_camera_coloreffect_entry_mono">Fekete-fehér</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Szépia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negatív</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Szolarizált</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Poszterizált</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Víz</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Dombormű</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Vázlat</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pasztel</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mozaik</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Vörös árnyalat</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Kék árnyalat</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Zöld árnyalat</string>
+
+    <!-- Settings screen, Burst mode title -->
+    <string name="pref_camera_burst_title">Sorozatfelvétel</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_5">5 kép</string>
+    <string name="pref_camera_burst_entry_10">10 kép</string>
+    <string name="pref_camera_burst_entry_15">15 kép</string>
+    <string name="pref_camera_burst_entry_20">20 kép</string>
+
 </resources>
