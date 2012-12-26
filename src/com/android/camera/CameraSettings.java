@@ -30,6 +30,10 @@ import android.media.CamcorderProfile;
 import android.util.FloatMath;
 import android.util.Log;
 
+import android.os.Environment;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
+
 import com.android.gallery3d.common.ApiHelper;
 
 import java.util.ArrayList;
@@ -67,6 +71,7 @@ public class CameraSettings {
     public static final String KEY_JPEG = "pref_camera_jpeg_key";
     public static final String KEY_COLOR_EFFECT = "pref_camera_coloreffect_key";
     public static final String KEY_BURST_MODE = "pref_camera_burst_key";
+    public static final String KEY_STORAGE = "pref_camera_storage_key";
 
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
     public static final String VALUE_ON = "on";
@@ -178,6 +183,7 @@ public class CameraSettings {
         ListPreference isoMode = group.findPreference(KEY_ISO_MODE);
         ListPreference jpegQuality = group.findPreference(KEY_JPEG);
         ListPreference colorEffect = group.findPreference(KEY_COLOR_EFFECT);
+        ListPreference storage = group.findPreference(KEY_STORAGE);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -245,6 +251,37 @@ public class CameraSettings {
             filterUnsupportedOptions(group,
                     colorEffect, mParameters.getSupportedColorEffects());
         }
+        if (storage != null) buildStorage(group, storage);
+    }
+
+    private void buildStorage(PreferenceGroup group, ListPreference storage) {
+        StorageManager sm = (StorageManager) mContext.getSystemService(Context.STORAGE_SERVICE);
+        StorageVolume[] volumes = sm.getVolumeList();
+        String[] entries = new String[volumes.length];
+        String[] entryValues = new String[volumes.length];
+
+        if (volumes.length < 2) {
+            // No need for storage setting
+            removePreference(group, storage.getKey());
+            return;
+        }
+
+        for (int i = 0; i < volumes.length; i++) {
+            StorageVolume v = volumes[i];
+            entries[i] = v.getDescription(mContext);
+            entryValues[i] = v.getPath();
+        }
+        storage.setEntries(entries);
+        storage.setEntryValues(entryValues);
+
+        // Filter saved invalid value
+        if (storage.findIndexOfValue(storage.getValue()) < 0) {
+            // Default to the primary storage
+            storage.setValueIndex(0);
+        }
+    }
+    public static String readStorage(SharedPreferences pref) {
+        return pref.getString(KEY_STORAGE, Environment.getExternalStorageDirectory().toString());
     }
 
     private void buildExposureCompensation(
