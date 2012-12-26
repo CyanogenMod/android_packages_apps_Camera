@@ -36,6 +36,8 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 
+import android.util.Log;
+
 import com.android.camera.ui.LayoutChangeNotifier;
 import com.android.camera.ui.PopupManager;
 import com.android.gallery3d.app.AbstractGalleryActivity;
@@ -380,7 +382,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
             if (mSecureCamera) {
                 path = "/secure/all/" + sSecureAlbumId;
             } else {
-                path = "/local/all/" + MediaSetUtils.CAMERA_BUCKET_ID;
+                path = "/local/all/" + Storage.generateBucketIdInt();
             }
         } else {
             path = "/local/all/0"; // Use 0 so gallery does not show anything.
@@ -414,7 +416,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
             if (mSecureCamera) {
                 path = "/secure/all/" + sSecureAlbumId;
             } else {
-                path = "/local/all/" + MediaSetUtils.CAMERA_BUCKET_ID;
+                path = "/local/all/" + Storage.generateBucketIdInt();
             }
         } else {
             path = "/local/all/0"; // Use 0 so gallery does not show anything.
@@ -430,6 +432,8 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         data.putParcelable(PhotoPage.KEY_APP_BRIDGE, mAppBridge);
         if (getStateManager().getStateCount() == 0) {
             getStateManager().startState(PhotoPage.class, data);
+        } else {
+            getStateManager().startStateNow(PhotoPage.class, data);
         }
         mCameraScreenNail = mAppBridge.getCameraScreenNail();
         return mCameraScreenNail;
