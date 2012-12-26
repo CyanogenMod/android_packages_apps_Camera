@@ -81,4 +81,7 @@
             camera:title="@string/pref_camera_coloreffect_title"
             camera:entries="@array/pref_camera_coloreffect_entries"
             camera:entryValues="@array/pref_camera_coloreffect_entryvalues" />
+    <ListPreference
+            camera:key="pref_camera_storage_key"
+            camera:title="@string/pref_camera_storage_title" />
 </PreferenceGroup>
