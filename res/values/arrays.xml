@@ -311,16 +311,62 @@
         <item>@string/pref_camera_scenemode_entry_auto</item>
         <item>@string/pref_camera_scenemode_entry_action</item>
         <item>@string/pref_camera_scenemode_entry_night</item>
+        <item>@string/pref_camera_scenemode_entry_nightportrait</item>
+        <item>@string/pref_camera_scenemode_entry_nightindoor</item>
+        <item>@string/pref_camera_scenemode_entry_supernight</item>
         <item>@string/pref_camera_scenemode_entry_sunset</item>
         <item>@string/pref_camera_scenemode_entry_party</item>
+        <item>@string/pref_camera_scenemode_entry_duskdawn</item>
+        <item>@string/pref_camera_scenemode_entry_candlelight</item>
+        <item>@string/pref_camera_scenemode_entry_fallcolor</item>
+        <item>@string/pref_camera_scenemode_entry_closeup</item>
+        <item>@string/pref_camera_scenemode_entry_landscape</item>
+        <item>@string/pref_camera_scenemode_entry_aqua</item>
+        <item>@string/pref_camera_scenemode_entry_sports</item>
+        <item>@string/pref_camera_scenemode_entry_mood</item>
+        <item>@string/pref_camera_scenemode_entry_fireworks</item>
+        <item>@string/pref_camera_scenemode_entry_cine</item>
+        <item>@string/pref_camera_scenemode_entry_oldfilm</item>
+        <item>@string/pref_camera_scenemode_entry_beach</item>
+        <item>@string/pref_camera_scenemode_entry_portrait</item>
+        <item>@string/pref_camera_scenemode_entry_snow</item>
+        <item>@string/pref_camera_scenemode_entry_steadyphoto</item>
+        <item>@string/pref_camera_scenemode_entry_theatre</item>
+        <item>@string/pref_camera_scenemode_entry_backlight</item>
+        <item>@string/pref_camera_scenemode_entry_document</item>
+        <item>@string/pref_camera_scenemode_entry_barcode</item>
+        <item>@string/pref_camera_scenemode_entry_text</item>
     </string-array>
 
     <string-array name="pref_camera_scenemode_entryvalues" translatable="false">
         <item>auto</item>
         <item>action</item>
         <item>night</item>
+        <item>night-portrait</item>
+        <item>night-indoor</item>
+        <item>super-night</item>
         <item>sunset</item>
         <item>party</item>
+        <item>dusk-dawn</item>
+        <item>candlelight</item>
+        <item>fall-color</item>
+        <item>closeup</item>
+        <item>landscape</item>
+        <item>aqua</item>
+        <item>sports</item>
+        <item>mood</item>
+        <item>fireworks</item>
+        <item>cine</item>
+        <item>old-film</item>
+        <item>beach</item>
+        <item>portrait</item>
+        <item>snow</item>
+        <item>steadyphoto</item>
+        <item>theatre</item>
+        <item>back-light</item>
+        <item>document</item>
+        <item>barcode</item>
+        <item>text</item>
     </string-array>
 
     <array name="camera_id_entries" translatable="false">
