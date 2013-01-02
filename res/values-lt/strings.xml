@@ -119,7 +119,8 @@
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Mastelio keitimo valdymas"</string>
     <string name="accessibility_decrement" msgid="1411194318538035666">"Sumažinti %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Padidinti %1$s"</string>
-    <string name="accessibility_switch" msgid="6995966685498958895">"%1$s jungiklis"</string>
+    <!-- no translation found for accessibility_check_box (7317447218256584181) -->
+    <skip />
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Perjungti į fotografavimo režimą"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Perjungti į vaizdo įrašo režimą"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Perjungti į panoramos režimą"</string>

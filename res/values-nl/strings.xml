@@ -119,7 +119,8 @@
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Zoomregeling"</string>
     <string name="accessibility_decrement" msgid="1411194318538035666">"%1$s verlagen"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"%1$s verhogen"</string>
-    <string name="accessibility_switch" msgid="6995966685498958895">"%1$s-schakelaar"</string>
+    <!-- no translation found for accessibility_check_box (7317447218256584181) -->
+    <skip />
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Overschakelen naar foto"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Overschakelen naar video"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Overschakelen naar panorama"</string>

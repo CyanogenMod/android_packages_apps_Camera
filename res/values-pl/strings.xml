@@ -119,15 +119,14 @@
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Sterowanie powiększeniem"</string>
     <string name="accessibility_decrement" msgid="1411194318538035666">"Zmniejsz: %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Zwiększ: %1$s"</string>
-    <string name="accessibility_switch" msgid="6995966685498958895">"Przełącznik: %1$s"</string>
+    <!-- no translation found for accessibility_check_box (7317447218256584181) -->
+    <skip />
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Przełącz na zdjęcia"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Przełącz na wideo"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Przełącz na panoramę"</string>
     <string name="accessibility_switch_to_new_panorama" msgid="8116783308051524188">"Przełącz na nową panoramę"</string>
-    <!-- no translation found for accessibility_review_cancel (9070531914908644686) -->
-    <skip />
-    <!-- no translation found for accessibility_review_ok (7793302834271343168) -->
-    <skip />
+    <string name="accessibility_review_cancel" msgid="9070531914908644686">"Przegląd: anulowanie"</string>
+    <string name="accessibility_review_ok" msgid="7793302834271343168">"Przegląd: gotowe"</string>
     <string name="accessibility_review_retake" msgid="659300290054705484">"Przegląd – zrób zdjęcie/nagraj film ponownie"</string>
     <string name="capital_on" msgid="5491353494964003567">"WŁĄCZONY"</string>
     <string name="capital_off" msgid="7231052688467970897">"WYŁĄCZONY"</string>
