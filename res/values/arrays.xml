@@ -85,7 +85,7 @@
 
     <!-- These values correspond to the time interval between frame capture in
     different units (i.e. seconds, minutes, hours) for time lapse recording -->
-    <string-array name="pref_video_time_lapse_frame_interval_entries">
+    <string-array name="pref_video_time_lapse_frame_interval_entries" translatable="false">
         <item>@string/pref_video_time_lapse_frame_interval_off</item>
         <item>@string/pref_video_time_lapse_frame_interval_500</item>
         <item>@string/pref_video_time_lapse_frame_interval_1000</item>
@@ -146,7 +146,7 @@
         <item>24</item>
     </string-array>
 
-    <string-array name="pref_video_time_lapse_frame_interval_units">
+    <string-array name="pref_video_time_lapse_frame_interval_units" translatable="false">
         <item>@string/time_lapse_seconds</item>
         <item>@string/time_lapse_minutes</item>
         <item>@string/time_lapse_hours</item>
