@@ -54,8 +54,14 @@
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"320 x 240 пикс."</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Режим фокусировки"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Авто"</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Бесконечный фокус</string>
+    <string name="pref_camera_focusmode_entry_extended">Расширенный</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Определение лиц</string>
+    <string name="pref_camera_focusmode_entry_facepriority">Фокус на лица</string>
+    <string name="pref_camera_focusmode_entry_fixed">Фиксированный</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Бесконечность"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Макро"</string>
+    <string name="pref_camera_focusmode_entry_portrait">Портрет</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Режим вспышки"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Авто"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Вкл."</string>
@@ -71,11 +77,33 @@
     <string name="pref_camera_scenemode_entry_hdr" msgid="2923388802899511784">"Эффект HDR"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Спорт"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Ночь"</string>
+    <string name="pref_camera_scenemode_entry_nightportrait">Портрет ночью</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">Тёмное помещение</string>
+    <string name="pref_camera_scenemode_entry_supernight">Тёмная ночь</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Закат"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Вечеринка"</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Сумерки/Рассвет</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Искусственный свет</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Цвета осени</string>
+    <string name="pref_camera_scenemode_entry_closeup">Крупный план</string>
+    <string name="pref_camera_scenemode_entry_landscape">Пейзаж</string>
+    <string name="pref_camera_scenemode_entry_aqua">Вода</string>
+    <string name="pref_camera_scenemode_entry_sports">Спорт</string>
+    <string name="pref_camera_scenemode_entry_mood">Настроение</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Фейерверк</string>
+    <string name="pref_camera_scenemode_entry_cine">Кино</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">Старый фильм</string>
+    <string name="pref_camera_scenemode_entry_beach">Пляж</string>
+    <string name="pref_camera_scenemode_entry_portrait">Портрет</string>
+    <string name="pref_camera_scenemode_entry_snow">Снег</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Стабильный снимок</string>
+    <string name="pref_camera_scenemode_entry_theatre">Театр</string>
+    <string name="pref_camera_scenemode_entry_backlight">Подсветка</string>
+    <string name="pref_camera_scenemode_entry_document">Документ</string>
+    <string name="pref_camera_scenemode_entry_barcode">Штрих-код</string>
+    <string name="pref_camera_scenemode_entry_text">Текст</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Недоступно в режиме съемки"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Экспозиция"</string>
-    <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
     <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"ОК"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Место на USB-накопителе заканчивается. Измените настройки качества или удалите ненужные изображения и другие файлы."</string>
