@@ -54,8 +54,14 @@
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"对焦方式"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"自动"</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">持续性</string>
+    <string name="pref_camera_focusmode_entry_extended">扩展</string>
+    <string name="pref_camera_focusmode_entry_facedetect">脸部检测</string>
+    <string name="pref_camera_focusmode_entry_facepriority">脸部优先</string>
+    <string name="pref_camera_focusmode_entry_fixed">固定</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"无限远"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"微距"</string>
+    <string name="pref_camera_focusmode_entry_portrait">肖像</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"闪光模式"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"自动"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"开"</string>
@@ -71,8 +77,32 @@
     <string name="pref_camera_scenemode_entry_hdr" msgid="2923388802899511784">"HDR"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"运动"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"夜景"</string>
+    <string name="pref_camera_scenemode_entry_nightportrait">夜晚肖像</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">夜晚室内</string>
+    <string name="pref_camera_scenemode_entry_supernight">漆黑夜晚</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"日落"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"派对"</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">黄昏/黎明</string>
+    <string name="pref_camera_scenemode_entry_candlelight">烛光</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">秋色</string>
+    <string name="pref_camera_scenemode_entry_closeup">特写</string>
+    <string name="pref_camera_scenemode_entry_landscape">风景</string>
+    <string name="pref_camera_scenemode_entry_aqua">水景</string>
+    <string name="pref_camera_scenemode_entry_sports">体育</string>
+    <string name="pref_camera_scenemode_entry_mood">情绪</string>
+    <string name="pref_camera_scenemode_entry_fireworks">烟火</string>
+    <string name="pref_camera_scenemode_entry_cine">电影</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">老电影</string>
+    <string name="pref_camera_scenemode_entry_beach">沙滩</string>
+    <string name="pref_camera_scenemode_entry_portrait">肖像</string>
+    <string name="pref_camera_scenemode_entry_snow">雪景</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">平稳照片</string>
+    <string name="pref_camera_scenemode_entry_theatre">剧院</string>
+    <string name="pref_camera_scenemode_entry_backlight">背光</string>
+    <string name="pref_camera_scenemode_entry_document">文档</string>
+    <string name="pref_camera_scenemode_entry_barcode">条形码</string>
+    <string name="pref_camera_scenemode_entry_text">文字</string>
+
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"无法在取景模式下选择。"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"曝光"</string>
     <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
