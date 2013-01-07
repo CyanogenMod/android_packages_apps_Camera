@@ -119,8 +119,7 @@
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Điều khiển thu phóng"</string>
     <string name="accessibility_decrement" msgid="1411194318538035666">"Giảm %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Tăng %1$s"</string>
-    <!-- no translation found for accessibility_check_box (7317447218256584181) -->
-    <skip />
+    <string name="accessibility_check_box" msgid="7317447218256584181">"Hộp kiểm %1$s"</string>
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Chuyển sang ảnh"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Chuyển sang video"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Chuyển sang chế độ toàn cảnh"</string>
