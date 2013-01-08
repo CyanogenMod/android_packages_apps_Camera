@@ -222,7 +222,6 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         Log.i(TAG, "aspect ratio clamping enabled, surfaceTexture scale: " + mScaleX + ", " + mScaleY);
     }
 
-    @Override
     public void acquireSurfaceTexture() {
         synchronized (mLock) {
             mFirstFrameArrived = false;
@@ -339,7 +338,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                 mDraw.onInitialize(canvas);
                 mNeedsInitialize = false;
             }
-            allocateTextureIfRequested();
+            allocateTextureIfRequested(canvas);
             if (!mVisible) mVisible = true;
             SurfaceTexture surfaceTexture = getSurfaceTexture();
             if (mDraw.requiresSurfaceTexture() && (surfaceTexture == null || !mFirstFrameArrived)) {
@@ -485,10 +484,10 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         }
     }
 
-    private void allocateTextureIfRequested() {
+    private void allocateTextureIfRequested(GLCanvas canvas) {
         synchronized (mLock) {
             if (mAcquireTexture) {
-                super.acquireSurfaceTexture();
+                super.acquireSurfaceTexture(canvas);
                 mAcquireTexture = false;
                 mLock.notifyAll();
             }
