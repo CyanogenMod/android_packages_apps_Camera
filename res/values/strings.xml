@@ -73,6 +73,16 @@
 
     <string name="pref_camera_recordlocation_default" translatable="false">none</string>
 
+    <!-- Title for countdown timer on camera settings screen [CHAR LIMIT=30]-->
+    <string name="pref_camera_timer_title">Countdown timer</string>
+
+    <string name="pref_camera_timer_default" translatable="false">0</string>
+    <!-- Entry for countdown timer setting. e.g. 1 second, 10 seconds, etc. [CHAR LIMIT=30]-->
+    <plurals name="pref_camera_timer_entry">
+        <item quantity="one">1 second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
+
     <!-- Entry of a on/off setting. The setting is turned off. [CHAR LIMIT=15] -->
     <string name="setting_off">Off</string>
     <!-- Entry of a on/off setting. The setting is turned on. [CHAR LIMIT=15] -->
@@ -432,7 +442,13 @@ CHAR LIMIT = NONE] -->
     <!-- Title in time interval picker for setting time interval. [CHAR LIMIT = 30]-->
     <string name="set_time_interval">Set Time Interval</string>
     <!-- Help text that is shown when the time lapse feature is turned off. [CHAR LIMIT = 180]-->
-    <string name="set_time_interval_help">Time lapse feature is off. Turn it on to set time interval."</string>
+    <string name="set_time_interval_help">Time lapse feature is off. Turn it on to set time interval.</string>
+    <!-- Help text that is shown when the countdown timer is turned off. [CHAR LIMIT = 180]-->
+    <string name="set_timer_help">Countdown timer is off. Turn it on to count down before taking a picture.</string>
+    <!-- Title in timer setting for setting the duration for the countdown timer. [CHAR LIMIT = 50]-->
+    <string name="set_duration">Set duration in seconds</string>
+    <!-- On-screen hint during timer countdown for taking a photo. [CHAR LIMIT = 60]-->
+    <string name="count_down_title_text">Counting down to take a photo</string>
 
     <!-- Title for first run dialog asking if the user wants to remember photo locations [CHAR LIMIT = 50] -->
     <string name="remember_location_title">Remember photo locations?</string>

@@ -58,10 +58,12 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.camera.CameraManager.CameraProxy;
 import com.android.camera.ui.AbstractSettingPopup;
+import com.android.camera.ui.CountDownView;
 import com.android.camera.ui.FaceView;
 import com.android.camera.ui.PieRenderer;
 import com.android.camera.ui.PopupManager;
@@ -93,7 +95,8 @@ public class PhotoModule
     PreviewFrameLayout.OnSizeChangedListener,
     ShutterButton.OnShutterButtonListener,
     SurfaceHolder.Callback,
-    PieRenderer.PieListener {
+    PieRenderer.PieListener,
+    CountDownView.OnCountDownFinishedListener {
 
     private static final String TAG = "CAM_PhotoModule";
 
@@ -170,6 +173,7 @@ public class PhotoModule
 
     private PreviewFrameLayout mPreviewFrameLayout;
     private Object mSurfaceTexture;
+    private CountDownView mCountDownView;
 
     // for API level 10
     private PreviewSurfaceView mPreviewSurfaceView;
@@ -472,6 +476,8 @@ public class PhotoModule
         initializeMiscControls();
         mLocationManager = new LocationManager(mActivity, this);
         initOnScreenIndicator();
+        mCountDownView = (CountDownView) (mRootView.findViewById(R.id.count_down_to_capture));
+        mCountDownView.setCountDownFinishedListener(this);
     }
 
     // Prompt the user to pick to record location for the very first run of
@@ -1353,6 +1359,7 @@ public class PhotoModule
         if (mBlocker != null) {
             mBlocker.setVisibility(full ? View.VISIBLE : View.GONE);
         }
+        if (!full && mCountDownView != null) mCountDownView.cancelCountDown();
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
             if (mActivity.mCameraScreenNail != null) {
                 ((CameraScreenNail) mActivity.mCameraScreenNail).setFullScreen(full);
@@ -1617,8 +1624,21 @@ public class PhotoModule
             return;
         }
 
-        mSnapshotOnIdle = false;
-        mFocusManager.doSnap();
+        String timer = mPreferences.getString(
+                CameraSettings.KEY_TIMER,
+                mActivity.getString(R.string.pref_camera_timer_default));
+        int seconds = Integer.parseInt(timer);
+        // When shutter button is pressed, check whether the previous countdown is
+        // finished. If not, cancel the previous countdown and start a new one.
+        if (mCountDownView.isCountingDown()) {
+            mCountDownView.cancelCountDown();
+            mCountDownView.startCountDown(seconds);
+        } else if (seconds > 0) {
+            mCountDownView.startCountDown(seconds);
+        } else {
+           mSnapshotOnIdle = false;
+           mFocusManager.doSnap();
+        }
     }
 
     @Override
@@ -1704,6 +1724,7 @@ public class PhotoModule
             mCameraDevice.cancelAutoFocus();
         }
         stopPreview();
+        mCountDownView.cancelCountDown();
         // Close the camera now because other activities may need to use it.
         closeCamera();
         if (mSurfaceTexture != null) {
@@ -1843,9 +1864,12 @@ public class PhotoModule
         Log.v(TAG, "onConfigurationChanged");
         setDisplayOrientation();
 
-        ((ViewGroup) mRootView).removeAllViews();
+        // Only the views in photo_module_content need to be removed and recreated
+        // i.e. CountDownView won't be recreated
+        ViewGroup viewGroup = (ViewGroup) mRootView.findViewById(R.id.camera_app);
+        viewGroup.removeAllViews();
         LayoutInflater inflater = mActivity.getLayoutInflater();
-        inflater.inflate(R.layout.photo_module, (ViewGroup) mRootView);
+        inflater.inflate(R.layout.photo_module_content, (ViewGroup) viewGroup);
 
         // from onCreate()
         initializeControlByIntent();
@@ -2546,6 +2570,11 @@ public class PhotoModule
     @Override
     public void onSizeChanged(int width, int height) {
         if (mFocusManager != null) mFocusManager.setPreviewSize(width, height);
+    }
+
+    public void onCountDownFinished() {
+        mSnapshotOnIdle = false;
+        mFocusManager.doSnap();
     }
 
     void setPreviewFrameLayoutAspectRatio() {

@@ -15,7 +15,7 @@
 -->
 <!-- This layout is shared by phone and tablet in landscape orientation. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/camera_app_root"
+    android:id="@+id/camera_app"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
