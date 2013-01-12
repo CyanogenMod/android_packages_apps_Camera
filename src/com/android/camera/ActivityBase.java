@@ -81,6 +81,9 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     // Keep track of powershutter state
     public static boolean mPowerShutter = false;
 
+    // Set time after touch-to-focus
+    public static int mFocusTime;
+
     // multiple cameras support
     protected int mNumberOfCameras;
     protected int mCameraId;
