@@ -680,20 +680,24 @@ public class PhotoModule
         }
     }
 
+    private void processZoomValueChanged(int index) {
+        if (mPaused) return;
+        mZoomValue = index;
+        if (mParameters == null || mCameraDevice == null) return;
+        // Set zoom parameters asynchronously
+        mParameters.setZoom(mZoomValue);
+        mCameraDevice.setParametersAsync(mParameters);
+        if (mZoomRenderer != null) {
+            Parameters p = mCameraDevice.getParameters();
+            mZoomRenderer.setZoomValue(mZoomRatios.get(p.getZoom()));
+        }
+    }
+
     private class ZoomChangeListener implements ZoomRenderer.OnZoomChangedListener {
         @Override
         public void onZoomValueChanged(int index) {
             // Not useful to change zoom value when the activity is paused.
-            if (mPaused) return;
-            mZoomValue = index;
-            if (mParameters == null || mCameraDevice == null) return;
-            // Set zoom parameters asynchronously
-            mParameters.setZoom(mZoomValue);
-            mCameraDevice.setParametersAsync(mParameters);
-            if (mZoomRenderer != null) {
-                Parameters p = mCameraDevice.getParameters();
-                mZoomRenderer.setZoomValue(mZoomRatios.get(p.getZoom()));
-            }
+            processZoomValueChanged(index);
         }
 
         @Override
@@ -2046,6 +2050,24 @@ public class PhotoModule
                     onShutterButtonFocus(true);
                 }
                 return true;
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (mParameters.isZoomSupported() && mZoomRenderer != null) {
+                    int index = mZoomValue + 1;
+                    if (index <= mZoomMax) {
+                        mZoomRenderer.setZoom(index);
+                        processZoomValueChanged(index);
+                    }
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (mParameters.isZoomSupported() && mZoomRenderer != null) {
+                    int index = mZoomValue - 1;
+                    if (index >= 0) {
+                        mZoomRenderer.setZoom(index);
+                        processZoomValueChanged(index);
+                    }
+                }
+                return true;
         }
         return false;
     }
@@ -2066,6 +2088,16 @@ public class PhotoModule
                     onShutterButtonClick();
                 }
                 return true;
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (mParameters.isZoomSupported() && mZoomRenderer != null) {
+                    return true;
+                }
+                break;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (mParameters.isZoomSupported() && mZoomRenderer != null) {
+                    return true;
+                }
+                break;
         }
         return false;
     }
@@ -2380,6 +2412,12 @@ public class PhotoModule
             // Set focus mode.
             mFocusManager.overrideFocusMode(null);
             mParameters.setFocusMode(mFocusManager.getFocusMode());
+
+            // Set focus time.
+            String delayFocusTime = mPreferences.getString(
+                    CameraSettings.KEY_FOCUS_TIME,
+                    mActivity.getString(R.string.pref_camera_focustime_default));
+            ActivityBase.mFocusTime = Integer.valueOf(delayFocusTime) * 1000;
         } else {
             mFocusManager.overrideFocusMode(mParameters.getFocusMode());
         }
