@@ -1116,6 +1116,18 @@ public class VideoModule implements CameraModule,
             case KeyEvent.KEYCODE_MENU:
                 if (mMediaRecorderRecording) return true;
                 break;
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (mParameters.isZoomSupported() && mZoomRenderer != null) {
+                    int index = mZoomValue + 1;
+                    processZoomValueChanged(index);
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (mParameters.isZoomSupported() && mZoomRenderer != null) {
+                    int index = mZoomValue - 1;
+                    processZoomValueChanged(index);
+                }
+                return true;
         }
         return false;
     }
@@ -1131,6 +1143,12 @@ public class VideoModule implements CameraModule,
                     onShutterButtonClick();
                 }
                 return true;
+            case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (mParameters.isZoomSupported() && mZoomRenderer != null) {
+                    return true;
+                }
+                break;
         }
         return false;
     }
@@ -2447,17 +2465,24 @@ public class VideoModule implements CameraModule,
         return false;
     }
 
-    private class ZoomChangeListener implements ZoomRenderer.OnZoomChangedListener {
-        @Override
-        public void onZoomValueChanged(int value) {
+    private void processZoomValueChanged(int index) {
+        if (index >= 0 && index <= mZoomMax) {
+            mZoomRenderer.setZoom(index);
             // Not useful to change zoom value when the activity is paused.
             if (mPaused) return;
-            mZoomValue = value;
+            mZoomValue = index;
             // Set zoom parameters asynchronously
             mParameters.setZoom(mZoomValue);
             mActivity.mCameraDevice.setParametersAsync(mParameters);
             Parameters p = mActivity.mCameraDevice.getParameters();
             mZoomRenderer.setZoomValue(mZoomRatios.get(p.getZoom()));
+        }
+    }
+
+    private class ZoomChangeListener implements ZoomRenderer.OnZoomChangedListener {
+        @Override
+        public void onZoomValueChanged(int index) {
+            processZoomValueChanged(index);
         }
 
         @Override
