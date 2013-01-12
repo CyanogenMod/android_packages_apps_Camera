@@ -56,6 +56,7 @@ public class CameraSettings {
     public static final String KEY_SCENE_MODE = "pref_camera_scenemode_key";
     public static final String KEY_EXPOSURE = "pref_camera_exposure_key";
     public static final String KEY_TIMER = "pref_camera_timer_key";
+    public static final String KEY_TIMER_SOUND_EFFECTS = "pref_camera_timer_sound_key";
     public static final String KEY_VIDEO_EFFECT = "pref_video_effect_key";
     public static final String KEY_CAMERA_ID = "pref_camera_id_key";
     public static final String KEY_CAMERA_HDR = "pref_camera_hdr_key";
@@ -163,6 +164,7 @@ public class CameraSettings {
                 (IconListPreference) group.findPreference(KEY_EXPOSURE);
         CountDownTimerPreference timer =
                 (CountDownTimerPreference) group.findPreference(KEY_TIMER);
+        ListPreference countDownSoundEffects = group.findPreference(KEY_TIMER_SOUND_EFFECTS);
         IconListPreference cameraIdPref =
                 (IconListPreference) group.findPreference(KEY_CAMERA_ID);
         ListPreference videoFlashMode =
