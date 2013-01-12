@@ -1627,14 +1627,18 @@ public class PhotoModule
         String timer = mPreferences.getString(
                 CameraSettings.KEY_TIMER,
                 mActivity.getString(R.string.pref_camera_timer_default));
+        boolean playSound = mPreferences.getString(CameraSettings.KEY_TIMER_SOUND_EFFECTS,
+                mActivity.getString(R.string.pref_camera_timer_sound_default))
+                .equals(mActivity.getString(R.string.setting_on_value));
+
         int seconds = Integer.parseInt(timer);
         // When shutter button is pressed, check whether the previous countdown is
         // finished. If not, cancel the previous countdown and start a new one.
         if (mCountDownView.isCountingDown()) {
             mCountDownView.cancelCountDown();
-            mCountDownView.startCountDown(seconds);
+            mCountDownView.startCountDown(seconds, playSound);
         } else if (seconds > 0) {
-            mCountDownView.startCountDown(seconds);
+            mCountDownView.startCountDown(seconds, playSound);
         } else {
            mSnapshotOnIdle = false;
            mFocusManager.doSnap();

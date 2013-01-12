@@ -44,6 +44,7 @@ public class CountDownView extends FrameLayout {
     private SoundPool mSoundPool;
     private int mBeepTwice;
     private int mBeepOnce;
+    private boolean mPlaySound;
     private final Handler mHandler = new MainHandler();
 
     public CountDownView(Context context, AttributeSet attrs) {
@@ -79,10 +80,12 @@ public class CountDownView extends FrameLayout {
             mRemainingSecondsView.startAnimation(mCountDownAnim);
 
             // Play sound effect for the last 3 seconds of the countdown
-            if (newVal == 1) {
-                mSoundPool.play(mBeepTwice, 1.0f, 1.0f, 0, 0, 1.0f);
-            } else if (newVal <= 3) {
-                mSoundPool.play(mBeepOnce, 1.0f, 1.0f, 0, 0, 1.0f);
+            if (mPlaySound) {
+                if (newVal == 1) {
+                    mSoundPool.play(mBeepTwice, 1.0f, 1.0f, 0, 0, 1.0f);
+                } else if (newVal <= 3) {
+                    mSoundPool.play(mBeepOnce, 1.0f, 1.0f, 0, 0, 1.0f);
+                }
             }
             // Schedule the next remainingSecondsChanged() call in 1 second
             mHandler.sendEmptyMessageDelayed(SET_TIMER_TEXT, 1000);
@@ -99,12 +102,13 @@ public class CountDownView extends FrameLayout {
         mListener = listener;
     }
 
-    public void startCountDown(int sec) {
+    public void startCountDown(int sec, boolean playSound) {
         if (sec <= 0) {
             Log.w(TAG, "Invalid input for countdown timer: " + sec + " seconds");
             return;
         }
         setVisibility(View.VISIBLE);
+        mPlaySound = playSound;
         remainingSecondsChanged(sec);
     }
 
