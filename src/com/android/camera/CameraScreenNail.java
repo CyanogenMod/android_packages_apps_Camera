@@ -85,16 +85,11 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         }
 
         @Override
-        public void onInitialize(GLCanvas canvas) {
-        }
-
-        @Override
         public boolean requiresSurfaceTexture() {
             return true;
         }
     };
     private DrawClient mDraw = mDefaultDraw;
-    private boolean mNeedsInitialize = false;
 
     public interface Listener {
         void requestRender();
@@ -110,8 +105,6 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
 
     public interface DrawClient {
         void onDraw(GLCanvas canvas, int x, int y, int width, int height);
-
-        void onInitialize(GLCanvas canvas);
 
         boolean requiresSurfaceTexture();
     }
@@ -271,6 +264,10 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         }
     }
 
+    public RawTexture getAnimationTexture() {
+        return mAnimTexture;
+    }
+
     public void animateFlash(int displayRotation) {
         synchronized (mLock) {
             mCaptureAnimManager.setOrientation(displayRotation);
@@ -326,7 +323,6 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
             } else {
                 mDraw = draw;
             }
-            mNeedsInitialize = true;
         }
         mListener.requestRender();
     }
@@ -334,10 +330,6 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     @Override
     public void draw(GLCanvas canvas, int x, int y, int width, int height) {
         synchronized (mLock) {
-            if (mNeedsInitialize) {
-                mDraw.onInitialize(canvas);
-                mNeedsInitialize = false;
-            }
             allocateTextureIfRequested(canvas);
             if (!mVisible) mVisible = true;
             SurfaceTexture surfaceTexture = getSurfaceTexture();
@@ -396,7 +388,7 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                     // Continue to the normal draw procedure if the animation is
                     // not drawn.
                     mAnimState = ANIM_NONE;
-                    super.draw(canvas, x, y, width, height);
+                    directDraw(canvas, x, y, width, height);
                 }
             }
             callbackIfNeeded();
@@ -404,17 +396,24 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
     }
 
     private void copyPreviewTexture(GLCanvas canvas) {
+        if (!mDraw.requiresSurfaceTexture() && mAnimTexture == null) {
+            mAnimTexture = new RawTexture(getTextureWidth(), getTextureHeight(), true);
+            mAnimTexture.setIsFlippedVertically(true);
+        }
         int width = mAnimTexture.getWidth();
         int height = mAnimTexture.getHeight();
         canvas.beginRenderTarget(mAnimTexture);
-        // Flip preview texture vertically. OpenGL uses bottom left point
-        // as the origin (0, 0).
-        canvas.translate(0, height);
-        canvas.scale(1, -1, 1);
-        getSurfaceTexture().getTransformMatrix(mTextureTransformMatrix);
-        updateTransformMatrix(mTextureTransformMatrix);
-        canvas.drawTexture(mExtTexture,
-                mTextureTransformMatrix, 0, 0, width, height);
+        if (!mDraw.requiresSurfaceTexture()) {
+            mDraw.onDraw(canvas, 0, 0, width, height);
+        } else {
+            // Flip preview texture vertically. OpenGL uses bottom left point
+            // as the origin (0, 0).
+            canvas.translate(0, height);
+            canvas.scale(1, -1, 1);
+            getSurfaceTexture().getTransformMatrix(mTextureTransformMatrix);
+            updateTransformMatrix(mTextureTransformMatrix);
+            canvas.drawTexture(mExtTexture, mTextureTransformMatrix, 0, 0, width, height);
+        }
         canvas.endRenderTarget();
     }
 
