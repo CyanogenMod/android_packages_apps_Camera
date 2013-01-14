@@ -35,6 +35,14 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"후방"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"전방"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"위치 저장"</string>
+    <!-- no translation found for pref_camera_timer_title (3105232208281893389) -->
+    <skip />
+    <!-- no translation found for pref_camera_timer_entry:one (1654523400981245448) -->
+    <!-- no translation found for pref_camera_timer_entry:other (6455381617076792481) -->
+    <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
+    <skip />
+    <!-- no translation found for pref_camera_timer_sound_title (2469008631966169105) -->
+    <skip />
     <string name="setting_off" msgid="4480039384202951946">"사용 안함"</string>
     <string name="setting_on" msgid="8602246224465348901">"사용"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"동영상 화질"</string>
@@ -175,6 +183,12 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"완료"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"시간 간격 설정"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"시간 경과 기능을 사용하지 않고 있습니다. 시간 간격을 설정하려면 \'사용\'으로 변경해 주세요."</string>
+    <!-- no translation found for set_timer_help (5007708849404589472) -->
+    <skip />
+    <!-- no translation found for set_duration (5578035312407161304) -->
+    <skip />
+    <!-- no translation found for count_down_title_text (4976386810910453266) -->
+    <skip />
     <string name="remember_location_title" msgid="9060472929006917810">"사진 위치를 기록하시겠습니까?"</string>
     <string name="remember_location_prompt" msgid="724592331305808098">"촬영한 위치로 사진과 동영상에 태그를 지정하세요."\n\n"다른 앱이 저장된 이미지와 더불어 이 정보에 액세스할 수 있습니다."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"아니요"</string>
