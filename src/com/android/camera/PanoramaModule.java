@@ -90,8 +90,10 @@ public class PanoramaModule implements CameraModule,
 
     private static final int MSG_LOW_RES_FINAL_MOSAIC_READY = 1;
     private static final int MSG_GENERATE_FINAL_MOSAIC_ERROR = 2;
-    private static final int MSG_RESET_TO_PREVIEW = 3;
+    private static final int MSG_END_DIALOG_RESET_TO_PREVIEW = 3;
     private static final int MSG_CLEAR_SCREEN_DELAY = 4;
+    private static final int MSG_CONFIG_MOSAIC_PREVIEW = 5;
+    private static final int MSG_RESET_TO_PREVIEW = 6;
 
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
 
@@ -119,6 +121,7 @@ public class PanoramaModule implements CameraModule,
     private View mLeftIndicator;
     private View mRightIndicator;
     private MosaicPreviewRenderer mMosaicPreviewRenderer;
+    private Object mRendererLock = new Object();
     private TextView mTooFastPrompt;
     private ShutterButton mShutterButton;
     private Object mWaitObject = new Object();
@@ -171,6 +174,8 @@ public class PanoramaModule implements CameraModule,
     private View mRootView;
     private CameraProxy mCameraDevice;
     private boolean mPaused;
+    private boolean mIsCreatingRenderer;
+    private boolean mIsConfigPending;
 
     private class MosaicJpeg {
         public MosaicJpeg(byte[] data, int width, int height) {
@@ -238,14 +243,25 @@ public class PanoramaModule implements CameraModule,
                 // If we call onFrameAvailable after pausing, the GL thread will crash.
                 if (mPaused) return;
 
+                MosaicPreviewRenderer renderer = null;
+                synchronized (mRendererLock) {
+                    try {
+                        while (mMosaicPreviewRenderer == null) {
+                            mRendererLock.wait();
+                        }
+                        renderer = mMosaicPreviewRenderer;
+                    } catch (InterruptedException e) {
+                        Log.e(TAG, "Unexpected interruption", e);
+                    }
+                }
                 if (mGLRootView.getVisibility() != View.VISIBLE) {
-                    mMosaicPreviewRenderer.showPreviewFrameSync();
+                    renderer.showPreviewFrameSync();
                     mGLRootView.setVisibility(View.VISIBLE);
                 } else {
                     if (mCaptureState == CAPTURE_STATE_VIEWFINDER) {
-                        mMosaicPreviewRenderer.showPreviewFrame();
+                        renderer.showPreviewFrame();
                     } else {
-                        mMosaicPreviewRenderer.alignFrameSync();
+                        renderer.alignFrameSync();
                         mMosaicFrameProcessor.processFrame();
                     }
                 }
@@ -293,7 +309,7 @@ public class PanoramaModule implements CameraModule,
                         }
                         clearMosaicFrameProcessorIfNeeded();
                         break;
-                    case MSG_RESET_TO_PREVIEW:
+                    case MSG_END_DIALOG_RESET_TO_PREVIEW:
                         onBackgroundThreadFinished();
                         resetToPreview();
                         clearMosaicFrameProcessorIfNeeded();
@@ -301,6 +317,12 @@ public class PanoramaModule implements CameraModule,
                     case MSG_CLEAR_SCREEN_DELAY:
                         mActivity.getWindow().clearFlags(WindowManager.LayoutParams.
                                 FLAG_KEEP_SCREEN_ON);
+                        break;
+                    case MSG_CONFIG_MOSAIC_PREVIEW:
+                        configMosaicPreview(msg.arg1, msg.arg2);
+                        break;
+                    case MSG_RESET_TO_PREVIEW:
+                        resetToPreview();
                         break;
                 }
             }
@@ -411,26 +433,52 @@ public class PanoramaModule implements CameraModule,
         mCameraDevice.setParameters(parameters);
     }
 
-    private void configMosaicPreview(int w, int h) {
+    private void configMosaicPreview(final int w, final int h) {
+        synchronized (mRendererLock) {
+            if (mIsCreatingRenderer) {
+                mMainHandler.removeMessages(MSG_CONFIG_MOSAIC_PREVIEW);
+                mMainHandler.obtainMessage(MSG_CONFIG_MOSAIC_PREVIEW, w, h).sendToTarget();
+                mIsConfigPending = true;
+                return;
+            }
+            mIsCreatingRenderer = true;
+            mIsConfigPending = false;
+        }
         stopCameraPreview();
         CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
         screenNail.setSize(w, h);
-        if (screenNail.getSurfaceTexture() == null) {
-            screenNail.acquireSurfaceTexture();
-        } else {
-            screenNail.releaseSurfaceTexture();
-            screenNail.acquireSurfaceTexture();
-            mActivity.notifyScreenNailChanged();
-        }
-        boolean isLandscape = (mActivity.getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE);
-        if (mMosaicPreviewRenderer != null) mMosaicPreviewRenderer.release();
-        mMosaicPreviewRenderer = new MosaicPreviewRenderer(
-                screenNail.getSurfaceTexture(), w, h, isLandscape);
+        synchronized (mRendererLock) {
+            if (mMosaicPreviewRenderer != null) {
+                mMosaicPreviewRenderer.release();
+            }
+            mMosaicPreviewRenderer = null;
+            if (screenNail.getSurfaceTexture() == null) {
+                screenNail.acquireSurfaceTexture();
+            } else {
+                screenNail.releaseSurfaceTexture();
+                screenNail.acquireSurfaceTexture();
+                mActivity.notifyScreenNailChanged();
+            }
+            final boolean isLandscape = (mActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
+                    MosaicPreviewRenderer renderer = new MosaicPreviewRenderer(
+                            screenNail.getSurfaceTexture(), w, h, isLandscape);
+                    synchronized (mRendererLock) {
+                        mMosaicPreviewRenderer = renderer;
+                        mIsConfigPending = false;
+                        mCameraTexture = mMosaicPreviewRenderer.getInputSurfaceTexture();
 
-        mCameraTexture = mMosaicPreviewRenderer.getInputSurfaceTexture();
-        if (!mPaused && !mThreadRunning && mWaitProcessorTask == null) {
-            resetToPreview();
+                        if (!mPaused && !mThreadRunning && mWaitProcessorTask == null) {
+                            mMainHandler.sendEmptyMessage(MSG_RESET_TO_PREVIEW);
+                        }
+                        mIsCreatingRenderer = false;
+                        mRendererLock.notifyAll();
+                    }
+                }
+            }).start();
         }
     }
 
@@ -552,7 +600,7 @@ public class PanoramaModule implements CameraModule,
                                 MSG_LOW_RES_FINAL_MOSAIC_READY, bitmap));
                     } else {
                         mMainHandler.sendMessage(mMainHandler.obtainMessage(
-                                MSG_RESET_TO_PREVIEW));
+                                MSG_END_DIALOG_RESET_TO_PREVIEW));
                     }
                 }
             });
@@ -753,7 +801,7 @@ public class PanoramaModule implements CameraModule,
                 }
 
                 if (jpeg == null) {  // Cancelled by user.
-                    mMainHandler.sendEmptyMessage(MSG_RESET_TO_PREVIEW);
+                    mMainHandler.sendEmptyMessage(MSG_END_DIALOG_RESET_TO_PREVIEW);
                 } else if (!jpeg.isValid) {  // Error when generating mosaic.
                     mMainHandler.sendEmptyMessage(MSG_GENERATE_FINAL_MOSAIC_ERROR);
                 } else {
@@ -764,7 +812,7 @@ public class PanoramaModule implements CameraModule,
                         Util.broadcastNewPicture(mActivity, uri);
                     }
                     mMainHandler.sendMessage(
-                            mMainHandler.obtainMessage(MSG_RESET_TO_PREVIEW));
+                            mMainHandler.obtainMessage(MSG_END_DIALOG_RESET_TO_PREVIEW));
                 }
             }
         });
@@ -941,13 +989,15 @@ public class PanoramaModule implements CameraModule,
         }
 
         releaseCamera();
-        mCameraTexture = null;
+        synchronized (mRendererLock) {
+            mCameraTexture = null;
 
-        // The preview renderer might not have a chance to be initialized before
-        // onPause().
-        if (mMosaicPreviewRenderer != null) {
-            mMosaicPreviewRenderer.release();
-            mMosaicPreviewRenderer = null;
+            // The preview renderer might not have a chance to be initialized
+            // before onPause().
+            if (mMosaicPreviewRenderer != null) {
+                mMosaicPreviewRenderer.release();
+                mMosaicPreviewRenderer = null;
+            }
         }
 
         clearMosaicFrameProcessorIfNeeded();
@@ -1106,20 +1156,21 @@ public class PanoramaModule implements CameraModule,
         // in a row. mCameraTexture can be null after pressing home during
         // mosaic generation and coming back. Preview will be started later in
         // onLayoutChange->configMosaicPreview. This also reduces the latency.
-        if (mCameraTexture == null) return;
+        synchronized (mRendererLock) {
+            if (mCameraTexture == null) return;
 
-        // If we're previewing already, stop the preview first (this will blank
-        // the screen).
-        if (mCameraState != PREVIEW_STOPPED) stopCameraPreview();
+            // If we're previewing already, stop the preview first (this will
+            // blank the screen).
+            if (mCameraState != PREVIEW_STOPPED) stopCameraPreview();
 
-        // Set the display orientation to 0, so that the underlying mosaic library
-        // can always get undistorted mPreviewWidth x mPreviewHeight image data
-        // from SurfaceTexture.
-        mCameraDevice.setDisplayOrientation(0);
+            // Set the display orientation to 0, so that the underlying mosaic
+            // library can always get undistorted mPreviewWidth x mPreviewHeight
+            // image data from SurfaceTexture.
+            mCameraDevice.setDisplayOrientation(0);
 
-        if (mCameraTexture != null) mCameraTexture.setOnFrameAvailableListener(this);
-        mCameraDevice.setPreviewTextureAsync(mCameraTexture);
-
+            mCameraTexture.setOnFrameAvailableListener(this);
+            mCameraDevice.setPreviewTextureAsync(mCameraTexture);
+        }
         mCameraDevice.startPreviewAsync();
         mCameraState = PREVIEW_ACTIVE;
     }
