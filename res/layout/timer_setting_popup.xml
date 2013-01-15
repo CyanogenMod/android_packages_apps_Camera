@@ -29,13 +29,16 @@
                     android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:layout_weight="1"
                     android:minHeight="@dimen/popup_title_frame_min_height"
                     android:gravity="center_vertical"
                     style="@style/PopupTitleText" />
             <Switch
                     android:id="@+id/timer_setting_switch"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_weight="0"
                     android:layout_marginRight="8dp"
                     android:layout_gravity="right|center_vertical" />
         </LinearLayout>
