@@ -462,14 +462,13 @@ public class VideoModule implements CameraModule,
             // ignore
         }
 
-        Thread startPreviewThread = new Thread(new Runnable() {
+        readVideoPreferences();
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                readVideoPreferences();
                 startPreview();
             }
-        });
-        startPreviewThread.start();
+        }).start();
 
         initializeControlByIntent();
         initializeOverlay();
@@ -480,20 +479,6 @@ public class VideoModule implements CameraModule,
 
         setOrientationIndicator(0, false);
         setDisplayOrientation();
-
-        // Make sure preview is started.
-        try {
-            startPreviewThread.join();
-            if (mActivity.mOpenCameraFail) {
-                Util.showErrorAndFinish(mActivity, R.string.cannot_connect_camera);
-                return;
-            } else if (mActivity.mCameraDisabled) {
-                Util.showErrorAndFinish(mActivity, R.string.camera_disabled);
-                return;
-            }
-        } catch (InterruptedException ex) {
-            // ignore
-        }
 
         showTimeLapseUI(mCaptureTimeLapse);
         initializeVideoSnapshot();
@@ -844,7 +829,12 @@ public class VideoModule implements CameraModule,
             }
             readVideoPreferences();
             resizeForPreviewAspectRatio();
-            startPreview();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    startPreview();
+                }
+            }).start();
         }
 
         // Initializing it here after the preview is started.
@@ -892,6 +882,8 @@ public class VideoModule implements CameraModule,
             }
         }
 
+        mPreviewing = true;
+
         setDisplayOrientation();
         mActivity.mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
         setCameraParameters();
@@ -912,9 +904,18 @@ public class VideoModule implements CameraModule,
         } catch (Throwable ex) {
             closeCamera();
             throw new RuntimeException("startPreview failed", ex);
+        } finally {
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mActivity.mOpenCameraFail) {
+                        Util.showErrorAndFinish(mActivity, R.string.cannot_connect_camera);
+                    } else if (mActivity.mCameraDisabled) {
+                        Util.showErrorAndFinish(mActivity, R.string.camera_disabled);
+                    }
+                }
+            });
         }
-
-        mPreviewing = true;
     }
 
     private void stopPreview() {
