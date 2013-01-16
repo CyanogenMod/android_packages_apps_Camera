@@ -125,8 +125,9 @@
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Examen – Annuler"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Examen – OK"</string>
     <string name="accessibility_review_retake" msgid="659300290054705484">"Examiner la deuxième prise de la photo"</string>
-    <string name="capital_on" msgid="5491353494964003567">"ACTIVÉ"</string>
-    <string name="capital_off" msgid="7231052688467970897">"DÉSACTIVÉ"</string>
+    <!-- With "ACTIVE" or "DESACTIVE", text is too long for button -->
+    <string name="capital_on" msgid="5491353494964003567">"OUI"</string>
+    <string name="capital_off" msgid="7231052688467970897">"NON"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Désactivé"</string>
     <string name="pref_video_time_lapse_frame_interval_500" msgid="2949719376111679816">"1 demi-seconde"</string>
     <string name="pref_video_time_lapse_frame_interval_1000" msgid="1672458758823855874">"1 seconde"</string>
@@ -177,4 +178,75 @@
     <string name="remember_location_prompt" msgid="724592331305808098">"Ajoutez des tags à vos photos et à vos vidéos pour identifier l\'endroit de la prise de vue."\n\n"D\'autres applications peuvent accéder à ces informations, ainsi qu\'aux images enregistrées."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Non, merci"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Oui"</string>
+
+    <!-- **** CYANOGENMOD ADDITIONS START **** -->
+
+    <!-- More Settings screen, power button title -->
+    <string name="pref_camera_power_shutter_title">Bouton marche</string>
+
+    <!-- Settings screen, JPEG dialog radio button choices -->
+    <string name="pref_camera_jpeg_title">Qualité JPEG</string>
+    <string name="pref_camera_jpeg_entry_super">Maximum</string>
+    <string name="pref_camera_jpeg_entry_high">Élevée</string>
+    <string name="pref_camera_jpeg_entry_medium">Normale</string>
+    <string name="pref_camera_jpeg_entry_low">Basse</string>
+
+    <!-- Settings screen, Color effect dialog radio button choices -->
+    <string name="pref_camera_coloreffect_title">Effet de couleur</string>
+    <string name="pref_camera_coloreffect_entry_none">Aucun</string>
+    <string name="pref_camera_coloreffect_entry_mono">Mono</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Sépia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Négatif</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Solariser</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Postériser</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Eau</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Embossage</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Croquis</string>
+    <string name="pref_camera_coloreffect_entry_neon">Néon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mosaïque</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Teinte rouge</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Teinte bleue</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Teinte verte</string>
+
+    <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_title">Mode rafale</string>
+    <string name="pref_camera_burst_entry_off">Désactivé</string>
+    <string name="pref_camera_burst_entry_5">5 prises</string>
+    <string name="pref_camera_burst_entry_10">10 prises</string>
+    <string name="pref_camera_burst_entry_15">15 prises</string>
+    <string name="pref_camera_burst_entry_20">20 prises</string>
+
+    <!-- More Focus Mode -->
+    <string name="pref_camera_focusmode_entry_continuouspicture">Image en continu</string>
+    <string name="pref_camera_focusmode_entry_extended">Étendue</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Détection des visages</string>
+    <string name="pref_camera_focusmode_entry_facepriority">Priorité au visage</string>
+    <string name="pref_camera_focusmode_entry_fixed">Fixé</string>
+    <string name="pref_camera_focusmode_entry_portrait">Portrait</string>
+
+    <!-- Scene mode optimized for taking indoor low-lights pictures. [CHAR LIMIT=16] -->
+    <string name="pref_camera_scenemode_entry_duskdawn">Crépuscule</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Bougie</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Automne</string>
+    <string name="pref_camera_scenemode_entry_closeup">Gros plan</string>
+    <string name="pref_camera_scenemode_entry_landscape">Paysage</string>
+    <string name="pref_camera_scenemode_entry_aqua">Aquatique</string>
+    <string name="pref_camera_scenemode_entry_sports">Sports</string>
+    <string name="pref_camera_scenemode_entry_mood">Humeur</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Feu d\'artifice</string>
+    <string name="pref_camera_scenemode_entry_cine">Cinéma</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">Vieux films</string>
+    <string name="pref_camera_scenemode_entry_beach">Plage</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portrait</string>
+    <string name="pref_camera_scenemode_entry_snow">Neige</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Photo stable</string>
+    <string name="pref_camera_scenemode_entry_theatre">Thêatre</string>
+    <string name="pref_camera_scenemode_entry_backlight">Rétroéclairé</string>
+    <string name="pref_camera_scenemode_entry_document">Document</string>
+    <string name="pref_camera_scenemode_entry_barcode">Code barre</string>
+    <string name="pref_camera_scenemode_entry_text">Texte</string>
+    <string name="pref_camera_scenemode_entry_nightportrait">Portrait de nuit</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">Intérieur sombre</string>
+    <string name="pref_camera_scenemode_entry_supernight">Nuit noire</string>
 </resources>
