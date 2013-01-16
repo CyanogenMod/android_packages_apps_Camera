@@ -58,7 +58,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.camera.CameraManager.CameraProxy;
@@ -74,8 +73,8 @@ import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomRenderer;
 import com.android.gallery3d.common.ApiHelper;
-import com.android.gallery3d.filtershow.FilterShowActivity;
 import com.android.gallery3d.filtershow.CropExtras;
+import com.android.gallery3d.filtershow.FilterShowActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -310,6 +309,7 @@ public class PhotoModule
 
         public void cancel() {
             mCancelled = true;
+            interrupt();
         }
 
         @Override
@@ -2121,7 +2121,9 @@ public class PhotoModule
                 mSurfaceTexture = screenNail.getSurfaceTexture();
             }
             mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
-            mCameraDevice.setPreviewTextureAsync((SurfaceTexture) mSurfaceTexture);
+            if (mSurfaceTexture != null) {
+                mCameraDevice.setPreviewTextureAsync((SurfaceTexture) mSurfaceTexture);
+            }
         } else {
             mCameraDevice.setDisplayOrientation(mDisplayOrientation);
             mCameraDevice.setPreviewDisplayAsync(mCameraSurfaceHolder);
@@ -2580,6 +2582,7 @@ public class PhotoModule
         if (mFocusManager != null) mFocusManager.setPreviewSize(width, height);
     }
 
+    @Override
     public void onCountDownFinished() {
         mSnapshotOnIdle = false;
         mFocusManager.doSnap();

@@ -28,6 +28,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
@@ -891,8 +892,12 @@ public class VideoModule implements CameraModule,
         try {
             if (!effectsActive()) {
                 if (ApiHelper.HAS_SURFACE_TEXTURE) {
-                    mActivity.mCameraDevice.setPreviewTextureAsync(
-                            ((CameraScreenNail) mActivity.mCameraScreenNail).getSurfaceTexture());
+                    SurfaceTexture surfaceTexture = ((CameraScreenNail) mActivity.mCameraScreenNail)
+                            .getSurfaceTexture();
+                    if (surfaceTexture == null) {
+                        return; // The texture has been destroyed (pause, etc)
+                    }
+                    mActivity.mCameraDevice.setPreviewTextureAsync(surfaceTexture);
                 } else {
                     mActivity.mCameraDevice.setPreviewDisplayAsync(mPreviewSurfaceView.getHolder());
                 }
@@ -977,9 +982,7 @@ public class VideoModule implements CameraModule,
     private void releasePreviewResources() {
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
             CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
-            if (screenNail.getSurfaceTexture() != null) {
-                screenNail.releaseSurfaceTexture();
-            }
+            screenNail.releaseSurfaceTexture();
             if (!ApiHelper.HAS_SURFACE_TEXTURE_RECORDING) {
                 mHandler.removeMessages(HIDE_SURFACE_VIEW);
                 mPreviewSurfaceView.setVisibility(View.GONE);
