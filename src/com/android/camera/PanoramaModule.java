@@ -849,6 +849,7 @@ public class PanoramaModule implements CameraModule,
         mShutterButton.setImageResource(R.drawable.btn_new_shutter);
         mReviewLayout.setVisibility(View.GONE);
         mPanoProgressBar.setVisibility(View.GONE);
+        mGLRootView.setVisibility(View.VISIBLE);
         // Orientation change will trigger onLayoutChange->configMosaicPreview->
         // resetToPreview. Do not show the capture UI in film strip.
         if (mActivity.mShowCameraAppView) {
