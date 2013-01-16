@@ -2375,6 +2375,7 @@ public class PhotoModule
 
     private boolean isCameraIdle() {
         return (mCameraState == IDLE) ||
+                (mCameraState == PREVIEW_STOPPED) ||
                 ((mFocusManager != null) && mFocusManager.isFocusCompleted()
                         && (mCameraState != SWITCHING_CAMERA));
     }
