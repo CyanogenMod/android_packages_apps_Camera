@@ -452,34 +452,38 @@ public class PanoramaModule implements CameraModule,
                 mMosaicPreviewRenderer.release();
             }
             mMosaicPreviewRenderer = null;
-            if (screenNail.getSurfaceTexture() == null) {
-                screenNail.acquireSurfaceTexture();
-            } else {
-                screenNail.releaseSurfaceTexture();
-                screenNail.acquireSurfaceTexture();
-                mActivity.notifyScreenNailChanged();
-            }
-            final boolean isLandscape = (mActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
-                    MosaicPreviewRenderer renderer = new MosaicPreviewRenderer(
-                            screenNail.getSurfaceTexture(), w, h, isLandscape);
+            screenNail.releaseSurfaceTexture();
+            screenNail.acquireSurfaceTexture();
+        }
+        mActivity.notifyScreenNailChanged();
+        final boolean isLandscape = (mActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
+                SurfaceTexture surfaceTexture = screenNail.getSurfaceTexture();
+                if (surfaceTexture == null) {
                     synchronized (mRendererLock) {
-                        mMosaicPreviewRenderer = renderer;
-                        mIsConfigPending = false;
-                        mCameraTexture = mMosaicPreviewRenderer.getInputSurfaceTexture();
-
-                        if (!mPaused && !mThreadRunning && mWaitProcessorTask == null) {
-                            mMainHandler.sendEmptyMessage(MSG_RESET_TO_PREVIEW);
-                        }
+                        mIsConfigPending = true; // try config again later.
                         mIsCreatingRenderer = false;
                         mRendererLock.notifyAll();
+                        return;
                     }
                 }
-            }).start();
-        }
+                MosaicPreviewRenderer renderer = new MosaicPreviewRenderer(
+                        screenNail.getSurfaceTexture(), w, h, isLandscape);
+                synchronized (mRendererLock) {
+                    mMosaicPreviewRenderer = renderer;
+                    mCameraTexture = mMosaicPreviewRenderer.getInputSurfaceTexture();
+
+                    if (!mPaused && !mThreadRunning && mWaitProcessorTask == null) {
+                        mMainHandler.sendEmptyMessage(MSG_RESET_TO_PREVIEW);
+                    }
+                    mIsCreatingRenderer = false;
+                    mRendererLock.notifyAll();
+                }
+            }
+        }).start();
     }
 
     // Receives the layout change event from the preview area. So we can set
@@ -1012,9 +1016,7 @@ public class PanoramaModule implements CameraModule,
             mSoundPlayer = null;
         }
         CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
-        if (screenNail.getSurfaceTexture() != null) {
-            screenNail.releaseSurfaceTexture();
-        }
+        screenNail.releaseSurfaceTexture();
         System.gc();
     }
 
