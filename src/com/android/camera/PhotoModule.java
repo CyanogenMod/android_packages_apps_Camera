@@ -1778,6 +1778,9 @@ public class PhotoModule
             @Override
             public void onClick(View v) {
                 if (mPieRenderer != null) {
+                    // If autofocus is not finished, cancel autofocus so that the
+                    // subsequent touch can be handled by PreviewGestures
+                    if (mCameraState == FOCUSING) cancelAutoFocus();
                     mPieRenderer.showInCenter();
                 }
             }
