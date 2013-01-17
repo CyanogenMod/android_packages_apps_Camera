@@ -222,6 +222,50 @@
     <string name="pref_camera_burst_entry_15">15 skud</string>
     <string name="pref_camera_burst_entry_20">20 skud</string>
 
+    <!-- Settings screen, Focus mode dialog radio button choices -->
+    <string name="pref_camera_focusmode_entry_continuouspicture">Kontinuerligt billede</string>
+    <string name="pref_camera_focusmode_entry_extended">Udvidet</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Ansigtsgenkendelse</string>
+    <string name="pref_camera_focusmode_entry_facepriority">Ansigtsprioritet</string>
+    <string name="pref_camera_focusmode_entry_fixed">Fast</string>
+    <string name="pref_camera_focusmode_entry_portrait">Portræt</string>
+
+    <string name="pref_camera_scenemode_entry_nightportrait">Natportræt</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">Nat indendørs</string>
+    <string name="pref_camera_scenemode_entry_supernight">Sort nat</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Tusmørke</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Stearinlys</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Efterårsfarve</string>
+    <string name="pref_camera_scenemode_entry_closeup">Nærbillede</string>
+    <string name="pref_camera_scenemode_entry_landscape">Landskab</string>
+    <string name="pref_camera_scenemode_entry_aqua">Vand</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_mood">Stemning</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Fyrværkeri</string>
+    <string name="pref_camera_scenemode_entry_cine">Smalfilm</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">Gammel film</string>
+    <string name="pref_camera_scenemode_entry_beach">Strand</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portræt</string>
+    <string name="pref_camera_scenemode_entry_snow">Sne</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Stabilt foto</string>
+    <string name="pref_camera_scenemode_entry_theatre">Teater</string>
+    <string name="pref_camera_scenemode_entry_backlight">Baggrundslys</string>
+    <string name="pref_camera_scenemode_entry_document">Dokument</string>
+    <string name="pref_camera_scenemode_entry_barcode">Stregkode</string>
+    <string name="pref_camera_scenemode_entry_text">Tekst</string>
+
+    <!-- Touch-to-focus duration settings -->
+    <string name="pref_camera_focustime_title">Varighed for berøringsfokus</string>
+    <string name="pref_camera_focustime_summary">Vælg varighed for berøringsfokus</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_focustime_entry_5">5s</string>
+    <string name="pref_camera_focustime_entry_10">10s</string>
+    <string name="pref_camera_focustime_entry_15">15s</string>
+    <string name="pref_camera_focustime_entry_20">20s</string>
+    <string name="pref_camera_focustime_entry_30">30s</string>
+    <string name="pref_camera_focustime_entry_infinite">Uendelig</string>
+
     <!-- CYANOGENMOD ADDITIONS END -->
 
 </resources>
