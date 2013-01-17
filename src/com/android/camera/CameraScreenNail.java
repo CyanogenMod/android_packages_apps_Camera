@@ -231,7 +231,9 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
                 mAcquireTexture = false;
                 mLock.notifyAll();
             } else {
-                super.releaseSurfaceTexture();
+                if (super.getSurfaceTexture() != null) {
+                    super.releaseSurfaceTexture();
+                }
                 mAnimState = ANIM_NONE; // stop the animation
             }
         }
