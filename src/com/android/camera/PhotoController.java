@@ -166,6 +166,7 @@ public class PhotoController extends PieController
             mSecondPopup = null;
             if (topPopupOnly) mModule.showPopup(mPopup);
         }
+        initializePopup();
     }
 
     // Return true if the preference has the specified key but not the value.
