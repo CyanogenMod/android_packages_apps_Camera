@@ -206,6 +206,8 @@
     <string name="remember_location_no" msgid="7541394381714894896">"Нет, спасибо"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Да"</string>
 
+    <string name="pref_camera_power_shutter_title">Съёмка кнопкой питания</string>
+
     <!-- Settings screen, ISO dialog radio button choices -->
     <string name="pref_camera_iso_entry_auto">Авто</string>
     <string name="pref_camera_iso_entry_isodeblur">Авто (HJR)</string>
@@ -248,4 +250,16 @@
     <string name="pref_camera_burst_entry_10">10 снимков</string>
     <string name="pref_camera_burst_entry_15">15 снимков</string>
     <string name="pref_camera_burst_entry_20">20 снимков</string>
+
+    <!-- Touch-to-focus duration settings -->
+    <string name="pref_camera_focustime_title">Длительность фокуса при нажатии</string>
+    <string name="pref_camera_focustime_summary">Установка длительности блокировки фокуса нажатием на экран</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_focustime_entry_5">5 сек.</string>
+    <string name="pref_camera_focustime_entry_10">10 сек.</string>
+    <string name="pref_camera_focustime_entry_15">15 сек.</string>
+    <string name="pref_camera_focustime_entry_20">20 сек.</string>
+    <string name="pref_camera_focustime_entry_30">30 сек.</string>
+    <string name="pref_camera_focustime_entry_infinite">Бесконечно</string>
 </resources>
