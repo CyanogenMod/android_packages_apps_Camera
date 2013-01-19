@@ -19,6 +19,7 @@
     <color name="on_viewfinder_label_background_color">#77333333</color>
     <color name="review_control_pressed_color">#FF33B5E5</color>
     <color name="review_control_pressed_fan_color">#3F33B5E5</color>
+    <color name="review_background">#FF000000</color>
     <color name="icon_disabled_color">#DD777777</color>
     <color name="time_lapse_arc">#FFC5C5C5</color>
     <color name="indicator_background">#40000000</color>

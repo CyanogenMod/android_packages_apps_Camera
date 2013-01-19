@@ -134,6 +134,7 @@ public class PanoramaModule implements CameraModule,
 
     private int mIndicatorColor;
     private int mIndicatorColorFast;
+    private int mReviewBackground;
 
     private boolean mUsingFrontCamera;
     private int mPreviewWidth;
@@ -690,6 +691,7 @@ public class PanoramaModule implements CameraModule,
 
         mReviewLayout = mRootView.findViewById(R.id.pano_review_layout);
         mReview = (ImageView) mRootView.findViewById(R.id.pano_reviewarea);
+        mReview.setBackgroundColor(mReviewBackground);
         View cancelButton = mRootView.findViewById(R.id.pano_review_cancel_button);
         cancelButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -715,6 +717,7 @@ public class PanoramaModule implements CameraModule,
         Resources appRes = mActivity.getResources();
         mCaptureLayout = (LinearLayout) mRootView.findViewById(R.id.camera_app_root);
         mIndicatorColor = appRes.getColor(R.color.pano_progress_indication);
+        mReviewBackground = appRes.getColor(R.color.review_background);
         mIndicatorColorFast = appRes.getColor(R.color.pano_progress_indication_fast);
         mPanoLayout = (ViewGroup) mRootView.findViewById(R.id.pano_layout);
         mRotateDialog = new RotateDialogController(mActivity, R.layout.rotate_dialog);
@@ -898,7 +901,6 @@ public class PanoramaModule implements CameraModule,
             }
         }
 
-        mGLRootView.setVisibility(View.GONE);
         mCaptureLayout.setVisibility(View.GONE);
         mReviewLayout.setVisibility(View.VISIBLE);
     }
@@ -1083,7 +1085,7 @@ public class PanoramaModule implements CameraModule,
             mActivity.hideUI();
             mWaitProcessorTask = new WaitProcessorTask().execute();
         } else {
-            if (!mThreadRunning) mGLRootView.setVisibility(View.VISIBLE);
+            mGLRootView.setVisibility(View.VISIBLE);
             // Camera must be initialized before MosaicFrameProcessor is
             // initialized. The preview size has to be decided by camera device.
             initMosaicFrameProcessorIfNeeded();
