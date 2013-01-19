@@ -114,6 +114,7 @@ public class PhotoModule
     private static final int START_PREVIEW_DONE = 10;
     private static final int OPEN_CAMERA_FAIL = 11;
     private static final int CAMERA_DISABLED = 12;
+    private static final int UPDATE_SECURE_ALBUM_ITEM = 13;
 
     // The subset of parameters we need to update in setCameraParameters().
     private static final int UPDATE_PARAM_INITIALIZE = 1;
@@ -204,7 +205,7 @@ public class PhotoModule
     private ImageSaver mImageSaver;
     // Similarly, we use a thread to generate the name of the picture and insert
     // it into MediaStore while picture taking is still in progress.
-    private ImageNamer mImageNamer;
+    private NamedImages mNamedImages;
 
     private Runnable mDoSnapRunnable = new Runnable() {
         @Override
@@ -433,6 +434,11 @@ public class PhotoModule
                             R.string.camera_disabled);
                     break;
                 }
+
+                case UPDATE_SECURE_ALBUM_ITEM: {
+                    mActivity.addSecureAlbumItemIfNeeded(false, (Uri) msg.obj);
+                    break;
+                }
             }
         }
     }
@@ -630,7 +636,7 @@ public class PhotoModule
         mShutterButton.setVisibility(View.VISIBLE);
 
         mImageSaver = new ImageSaver();
-        mImageNamer = new ImageNamer();
+        mNamedImages = new NamedImages();
 
         mFirstTimeInitialized = true;
         addIdleHandler();
@@ -668,7 +674,7 @@ public class PhotoModule
         mLocationManager.recordLocation(recordLocation);
 
         mImageSaver = new ImageSaver();
-        mImageNamer = new ImageNamer();
+        mNamedImages = new NamedImages();
         initializeZoom();
         keepMediaProviderInstance();
         hidePostCaptureAlert();
@@ -967,11 +973,15 @@ public class PhotoModule
                     width = s.height;
                     height = s.width;
                 }
-                Uri uri = mImageNamer.getUri();
-                mActivity.addSecureAlbumItemIfNeeded(false, uri);
-                String title = mImageNamer.getTitle();
-                mImageSaver.addImage(jpegData, uri, title, mLocation,
-                        width, height, orientation);
+                String title = mNamedImages.getTitle();
+                long date = mNamedImages.getDate();
+                if (title == null) {
+                    Log.e(TAG, "Unbalanced name/data pair");
+                } else {
+                    if (date == -1) date = mCaptureStartTime;
+                    mImageSaver.addImage(jpegData, title, date, mLocation, width, height,
+                            orientation);
+                }
             } else {
                 mJpegImageData = jpegData;
                 if (!mQuickCapture) {
@@ -1022,8 +1032,8 @@ public class PhotoModule
     // Each SaveRequest remembers the data needed to save an image.
     private static class SaveRequest {
         byte[] data;
-        Uri uri;
         String title;
+        long date;
         Location loc;
         int width, height;
         int orientation;
@@ -1057,11 +1067,11 @@ public class PhotoModule
         }
 
         // Runs in main thread
-        public void addImage(final byte[] data, Uri uri, String title,
-                Location loc, int width, int height, int orientation) {
+        public void addImage(final byte[] data, String title, long date, Location loc,
+                int width, int height, int orientation) {
             SaveRequest r = new SaveRequest();
             r.data = data;
-            r.uri = uri;
+            r.date = date;
             r.title = title;
             r.loc = (loc == null) ? null : new Location(loc);  // make a copy
             r.width = width;
@@ -1102,7 +1112,7 @@ public class PhotoModule
                     }
                     r = mQueue.get(0);
                 }
-                storeImage(r.data, r.uri, r.title, r.loc, r.width, r.height,
+                storeImage(r.data, r.title, r.date, r.loc, r.width, r.height,
                         r.orientation);
                 synchronized (this) {
                     mQueue.remove(0);
@@ -1139,106 +1149,53 @@ public class PhotoModule
         }
 
         // Runs in saver thread
-        private void storeImage(final byte[] data, Uri uri, String title,
+        private void storeImage(final byte[] data, String title, long date,
                 Location loc, int width, int height, int orientation) {
-            boolean ok = Storage.updateImage(mContentResolver, uri, title, loc,
+            Uri uri = Storage.addImage(mContentResolver, title, date, loc,
                     orientation, data, width, height);
-            if (ok) {
+            if (uri != null) {
+                mHandler.sendMessage(mHandler.obtainMessage(UPDATE_SECURE_ALBUM_ITEM, uri));
                 Util.broadcastNewPicture(mActivity, uri);
             }
         }
     }
 
-    private static class ImageNamer extends Thread {
-        private boolean mRequestPending;
-        private ContentResolver mResolver;
-        private long mDateTaken;
-        private int mWidth, mHeight;
+    private static class NamedImages {
+        private ArrayList<NamedEntity> mQueue;
         private boolean mStop;
-        private Uri mUri;
-        private String mTitle;
+        private NamedEntity mNamedEntity;
 
-        // Runs in main thread
-        public ImageNamer() {
-            start();
+        public NamedImages() {
+            mQueue = new ArrayList<NamedEntity>();
         }
 
-        // Runs in main thread
-        public synchronized void prepareUri(ContentResolver resolver,
-                long dateTaken, int width, int height, int rotation) {
-            if (rotation % 180 != 0) {
-                int tmp = width;
-                width = height;
-                height = tmp;
+        public void nameNewImage(ContentResolver resolver, long date) {
+            NamedEntity r = new NamedEntity();
+            r.title = Util.createJpegName(date);
+            r.date = date;
+            mQueue.add(r);
+        }
+
+        public String getTitle() {
+            if (mQueue.isEmpty()) {
+                mNamedEntity = null;
+                return null;
             }
-            mRequestPending = true;
-            mResolver = resolver;
-            mDateTaken = dateTaken;
-            mWidth = width;
-            mHeight = height;
-            notifyAll();
+            mNamedEntity = mQueue.get(0);
+            mQueue.remove(0);
+
+            return mNamedEntity.title;
         }
 
-        // Runs in main thread
-        public synchronized Uri getUri() {
-            // wait until the request is done.
-            while (mRequestPending) {
-                try {
-                    wait();
-                } catch (InterruptedException ex) {
-                    // ignore.
-                }
-            }
-
-            // return the uri generated
-            Uri uri = mUri;
-            mUri = null;
-            return uri;
+        // Must be called after getTitle().
+        public long getDate() {
+            if (mNamedEntity == null) return -1;
+            return mNamedEntity.date;
         }
 
-        // Runs in main thread, should be called after getUri().
-        public synchronized String getTitle() {
-            return mTitle;
-        }
-
-        // Runs in namer thread
-        @Override
-        public synchronized void run() {
-            while (true) {
-                if (mStop) break;
-                if (!mRequestPending) {
-                    try {
-                        wait();
-                    } catch (InterruptedException ex) {
-                        // ignore.
-                    }
-                    continue;
-                }
-                cleanOldUri();
-                generateUri();
-                mRequestPending = false;
-                notifyAll();
-            }
-            cleanOldUri();
-        }
-
-        // Runs in main thread
-        public synchronized void finish() {
-            mStop = true;
-            notifyAll();
-        }
-
-        // Runs in namer thread
-        private void generateUri() {
-            mTitle = Util.createJpegName(mDateTaken);
-            mUri = Storage.newImage(mResolver, mTitle, mDateTaken, mWidth, mHeight);
-        }
-
-        // Runs in namer thread
-        private void cleanOldUri() {
-            if (mUri == null) return;
-            Storage.deleteImage(mResolver, mUri);
-            mUri = null;
+        private static class NamedEntity {
+            String title;
+            long date;
         }
     }
 
@@ -1303,9 +1260,7 @@ public class PhotoModule
             animateFlash();
         }
 
-        Size size = mParameters.getPictureSize();
-        mImageNamer.prepareUri(mContentResolver, mCaptureStartTime,
-                size.width, size.height, mJpegRotation);
+        mNamedImages.nameNewImage(mContentResolver, mCaptureStartTime);
 
         mFaceDetectionStarted = false;
         setCameraState(SNAPSHOT_IN_PROGRESS);
@@ -1745,8 +1700,7 @@ public class PhotoModule
             if (mImageSaver != null) {
                 mImageSaver.finish();
                 mImageSaver = null;
-                mImageNamer.finish();
-                mImageNamer = null;
+                mNamedImages = null;
             }
         }
 
