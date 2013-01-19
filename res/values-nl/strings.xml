@@ -180,17 +180,8 @@
 
     <!-- CYANOGENMOD EDITS -->
      <string name="pref_camera_power_shutter_title">Aan/uit-knop</string>
-     <string name="pref_camera_iso_title">ISO</string>
      <string name="pref_camera_iso_entry_auto">Automatisch</string>
      <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
-     <string name="pref_camera_iso_entry_iso1600">1600</string>
-     <string name="pref_camera_iso_entry_iso1200">1200</string>
-     <string name="pref_camera_iso_entry_iso1000">1000</string>
-     <string name="pref_camera_iso_entry_iso800">800</string>
-     <string name="pref_camera_iso_entry_iso400">400</string>
-     <string name="pref_camera_iso_entry_iso200">200</string>
-     <string name="pref_camera_iso_entry_iso100">100</string>
-     <string name="pref_camera_iso_entry_iso50">50</string>
     <string name="pref_camera_jpeg_title">JPEG-kwaliteit</string>
     <string name="pref_camera_jpeg_entry_super">Super</string>
     <string name="pref_camera_jpeg_entry_high">Hoog</string>

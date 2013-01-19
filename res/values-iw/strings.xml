@@ -215,20 +215,9 @@
      <!-- More Settings screen, power button title -->
      <string name="pref_camera_power_shutter_title">צילום בכפתור הכיבוי</string>
 
-     <!-- Settings screen, ISO -->
-     <string name="pref_camera_iso_title">ISO</string>
-
      <!-- Settings screen, ISO dialog radio button choices -->
      <string name="pref_camera_iso_entry_auto">אוטומטי</string>
      <string name="pref_camera_iso_entry_isodeblur">אוטומטי (HJR)</string>
-     <string name="pref_camera_iso_entry_iso1600">1600</string>
-     <string name="pref_camera_iso_entry_iso1200">1200</string>
-     <string name="pref_camera_iso_entry_iso1000">1000</string>
-     <string name="pref_camera_iso_entry_iso800">800</string>
-     <string name="pref_camera_iso_entry_iso400">400</string>
-     <string name="pref_camera_iso_entry_iso200">200</string>
-     <string name="pref_camera_iso_entry_iso100">100</string>
-     <string name="pref_camera_iso_entry_iso50">50</string>
 
     <!-- Settings screen, JPEG Quality -->
     <string name="pref_camera_jpeg_title">איכות JPEG</string>

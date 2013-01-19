@@ -179,7 +179,6 @@
     <string name="remember_location_yes" msgid="862884269285964180">"Da"</string>
 
     <string name="pref_camera_power_shutter_title">"Decl. buton pornire"</string>
-    <string name="pref_camera_power_shutter_default">"Dezactivată"</string>
 
     <string name="pref_camera_jpeg_title">"Calitate JPEG"</string>
     <string name="pref_camera_jpeg_entry_super">"Super"</string>
