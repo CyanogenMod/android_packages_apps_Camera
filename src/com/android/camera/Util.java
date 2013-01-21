@@ -77,6 +77,9 @@ public class Util {
     private static float sPixelDensity = 1;
     private static ImageFileNamer sImageFileNamer;
 
+    // For setting video desired profile size
+    private static boolean sProfileVideoSize;
+
     // For setting video size before recording starts
     private static boolean sEarlyVideoSize;
 
@@ -107,6 +110,7 @@ public class Util {
                 context.getString(R.string.image_file_name_format));
 
         // These come from the config, but are needed before parameters are set.
+        sProfileVideoSize = context.getResources().getBoolean(R.bool.useProfileVideoSize);
         sEarlyVideoSize = context.getResources().getBoolean(R.bool.needsEarlyVideoSize);
         sSamsungCamMode = context.getResources().getBoolean(R.bool.needsSamsungCamMode);
         sSamsungCamSettings = context.getResources().getBoolean(R.bool.hasSamsungCamSettings);
@@ -116,6 +120,10 @@ public class Util {
                 R.bool.noFaceDetectOnFrontCamera);
         sNoFaceDetectOnRearCamera = context.getResources().getBoolean(
                 R.bool.noFaceDetectOnRearCamera);
+    }
+
+    public static boolean useProfileVideoSize() {
+        return sProfileVideoSize;
     }
 
     public static boolean needsEarlyVideoSize() {

@@ -20,6 +20,8 @@
 <!-- These resources are around just to allow their values to be customized
      for different hardware and product builds. -->
 <resources>
+    <!-- Force use of profile video size -->
+    <bool name="useProfileVideoSize">false</bool>
     <!-- Allows setting video size before recording starts -->
     <bool name="needsEarlyVideoSize">false</bool>
     <!-- Samsung Camcorder Mode -->
