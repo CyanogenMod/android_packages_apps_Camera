@@ -312,6 +312,10 @@ public class PhotoModule
             interrupt();
         }
 
+        public boolean isCanceled() {
+            return mCancelled;
+        }
+
         @Override
         public void run() {
             try {
@@ -2118,6 +2122,10 @@ public class PhotoModule
                 screenNail.enableAspectRatioClamping();
                 mActivity.notifyScreenNailChanged();
                 screenNail.acquireSurfaceTexture();
+                CameraStartUpThread t = mCameraStartUpThread;
+                if (t != null && t.isCanceled()) {
+                    return; // Exiting, so no need to get the surface texture.
+                }
                 mSurfaceTexture = screenNail.getSurfaceTexture();
             }
             mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
