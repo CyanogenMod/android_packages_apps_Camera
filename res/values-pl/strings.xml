@@ -35,14 +35,14 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Tył"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Przód"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Zapis lokalizacji"</string>
-    <!-- no translation found for pref_camera_timer_title (3105232208281893389) -->
-    <skip />
-    <!-- no translation found for pref_camera_timer_entry:one (1654523400981245448) -->
-    <!-- no translation found for pref_camera_timer_entry:other (6455381617076792481) -->
+    <string name="pref_camera_timer_title" msgid="3105232208281893389">"Samowyzwalacz"</string>
+  <plurals name="pref_camera_timer_entry">
+    <item quantity="one" msgid="1654523400981245448">"1 sekunda"</item>
+    <item quantity="other" msgid="6455381617076792481">"%d s"</item>
+  </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
     <skip />
-    <!-- no translation found for pref_camera_timer_sound_title (2469008631966169105) -->
-    <skip />
+    <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"Sygnał odliczania"</string>
     <string name="setting_off" msgid="4480039384202951946">"Wyłączono"</string>
     <string name="setting_on" msgid="8602246224465348901">"Włączono"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Jakość wideo"</string>
@@ -183,12 +183,9 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Gotowe"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Ustaw interwał czasu"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Funkcja filmu poklatkowego jest wyłączona. Włącz ją, by ustawić interwał czasu."</string>
-    <!-- no translation found for set_timer_help (5007708849404589472) -->
-    <skip />
-    <!-- no translation found for set_duration (5578035312407161304) -->
-    <skip />
-    <!-- no translation found for count_down_title_text (4976386810910453266) -->
-    <skip />
+    <string name="set_timer_help" msgid="5007708849404589472">"Samowyzwalacz jest wyłączony. Włącz go, by odliczał czas pozostały do wykonania zdjęcia."</string>
+    <string name="set_duration" msgid="5578035312407161304">"Ustaw czas w sekundach"</string>
+    <string name="count_down_title_text" msgid="4976386810910453266">"Odliczanie czasu pozostałego do zrobienia zdjęcia"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Zapamiętywać lokalizacje zdjęć?"</string>
     <string name="remember_location_prompt" msgid="724592331305808098">"Oznacz zdjęcia i filmy informacją, gdzie zostały zrobione."\n\n"Inne aplikacje mają dostęp do tych informacji wraz z zapisanymi zdjęciami."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Nie, dziękuję"</string>

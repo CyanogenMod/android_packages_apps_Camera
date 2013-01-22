@@ -35,14 +35,14 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"後置鏡頭"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"前置鏡頭"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"儲存位置"</string>
-    <!-- no translation found for pref_camera_timer_title (3105232208281893389) -->
-    <skip />
-    <!-- no translation found for pref_camera_timer_entry:one (1654523400981245448) -->
-    <!-- no translation found for pref_camera_timer_entry:other (6455381617076792481) -->
+    <string name="pref_camera_timer_title" msgid="3105232208281893389">"倒數計時器"</string>
+  <plurals name="pref_camera_timer_entry">
+    <item quantity="one" msgid="1654523400981245448">"1 秒"</item>
+    <item quantity="other" msgid="6455381617076792481">"%d 秒"</item>
+  </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
     <skip />
-    <!-- no translation found for pref_camera_timer_sound_title (2469008631966169105) -->
-    <skip />
+    <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"倒數時發出提示音"</string>
     <string name="setting_off" msgid="4480039384202951946">"關閉"</string>
     <string name="setting_on" msgid="8602246224465348901">"開啟"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"影片品質"</string>
@@ -183,12 +183,9 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"完成"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"設定時間間隔"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"延時攝影功能已關閉，請開啟以設定時間間格。"</string>
-    <!-- no translation found for set_timer_help (5007708849404589472) -->
-    <skip />
-    <!-- no translation found for set_duration (5578035312407161304) -->
-    <skip />
-    <!-- no translation found for count_down_title_text (4976386810910453266) -->
-    <skip />
+    <string name="set_timer_help" msgid="5007708849404589472">"倒數計時器目前為關閉狀態，開啓即可在拍照前倒數計時。"</string>
+    <string name="set_duration" msgid="5578035312407161304">"設定倒數時間 (以秒為單位)"</string>
+    <string name="count_down_title_text" msgid="4976386810910453266">"拍照倒數計時中"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"記錄拍攝地點？"</string>
     <string name="remember_location_prompt" msgid="724592331305808098">"為您的相片和影片標記拍攝地點。"\n\n"其他應用程式可存取這項資訊及您所儲存的相片。"</string>
     <string name="remember_location_no" msgid="7541394381714894896">"不用了，謝謝"</string>
