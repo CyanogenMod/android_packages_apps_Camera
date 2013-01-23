@@ -1,0 +1,11 @@
+Change-Id: I1689b9f9f6978cab0cc382360fadfb21e1b8c16b
+Code-Review+1: Pavel Volkov <marshmollow@gmail.com>
+Code-Review+2: Danny Baumann <dannybaumann@web.de>
+Verified+1: Danny Baumann <dannybaumann@web.de>
+Code-Review+1: Igor Sokolov <wildfatduck@gmail.com>
+Verified+1: Cid
+Submitted-by: Danny Baumann <dannybaumann@web.de>
+Submitted-at: Wed, 23 Jan 2013 00:41:22 -0800
+Reviewed-on: http://review.cyanogenmod.org/30554
+Project: CyanogenMod/android_packages_apps_Camera
+Branch: refs/heads/cm-10.1
