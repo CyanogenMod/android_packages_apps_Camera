@@ -19,6 +19,7 @@ package com.android.camera;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 
 /**
@@ -121,7 +122,7 @@ public class ShutterButton extends ImageView {
     @Override
     public boolean performClick() {
         boolean result = super.performClick();
-        if (mListener != null) {
+        if (mListener != null && getVisibility() == View.VISIBLE) {
             mListener.onShutterButtonClick();
         }
         return result;
