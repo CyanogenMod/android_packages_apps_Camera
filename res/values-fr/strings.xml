@@ -181,6 +181,7 @@
 
     <!-- **** CYANOGENMOD ADDITIONS START **** -->
 
+
     <!-- More Settings screen, power button title -->
     <string name="pref_camera_power_shutter_title">Bouton marche</string>
 
@@ -217,6 +218,18 @@
     <string name="pref_camera_burst_entry_15">15 prises</string>
     <string name="pref_camera_burst_entry_20">20 prises</string>
 
+    <!-- Touch-to-focus duration settings -->
+    <string name="pref_camera_focustime_title">Temps d\'appui pour le focus</string>
+    <string name="pref_camera_focustime_summary">Définir le temps d\'appui pour effectuer le focus</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_focustime_entry_5">5s</string>
+    <string name="pref_camera_focustime_entry_10">10s</string>
+    <string name="pref_camera_focustime_entry_15">15s</string>
+    <string name="pref_camera_focustime_entry_20">20s</string>
+    <string name="pref_camera_focustime_entry_30">30s</string>
+    <string name="pref_camera_focustime_entry_infinite">Infini</string>
+
     <!-- More Focus Mode -->
     <string name="pref_camera_focusmode_entry_continuouspicture">Image en continu</string>
     <string name="pref_camera_focusmode_entry_extended">Étendue</string>
@@ -249,4 +262,7 @@
     <string name="pref_camera_scenemode_entry_nightportrait">Portrait de nuit</string>
     <string name="pref_camera_scenemode_entry_nightindoor">Intérieur sombre</string>
     <string name="pref_camera_scenemode_entry_supernight">Nuit noire</string>
+
+    <!-- ****  CYANOGENMOD ADDITIONS END  **** -->
+
 </resources>
