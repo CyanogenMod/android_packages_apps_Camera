@@ -1071,6 +1071,11 @@ public class PhotoModule
         }
 
         // Runs in main thread
+        public synchronized boolean queueFull() {
+            return (mQueue.size() >= QUEUE_LIMIT);
+        }
+
+        // Runs in main thread
         public void addImage(final byte[] data, String title, long date, Location loc,
                 int width, int height, int orientation) {
             SaveRequest r = new SaveRequest();
@@ -1234,9 +1239,10 @@ public class PhotoModule
 
     @Override
     public boolean capture() {
-        // If we are already in the middle of taking a snapshot then ignore.
+        // If we are already in the middle of taking a snapshot or the image save request
+        // is full then ignore.
         if (mCameraDevice == null || mCameraState == SNAPSHOT_IN_PROGRESS
-                || mCameraState == SWITCHING_CAMERA) {
+                || mCameraState == SWITCHING_CAMERA || mImageSaver.queueFull()) {
             return false;
         }
         mCaptureStartTime = System.currentTimeMillis();
