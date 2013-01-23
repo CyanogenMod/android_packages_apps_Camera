@@ -183,9 +183,9 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Готово"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Установити інтервал часу"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Функцію уповільненої зйомки вимкнено. Щоб установити інтервал часу, увімкніть її."</string>
-    <string name="set_timer_help" msgid="5007708849404589472">"Таймер зворотного відліку вимкнено. Увімкніть його, щоб розпочати відлік перед фотографуванням."</string>
+    <string name="set_timer_help" msgid="5007708849404589472">"Таймер зворотного відліку вимкнено. Увімкніть його, щоб розпочати відлік перед зйомкою."</string>
     <string name="set_duration" msgid="5578035312407161304">"Установити тривалість у секундах"</string>
-    <string name="count_down_title_text" msgid="4976386810910453266">"Відлік перед фотографуванням"</string>
+    <string name="count_down_title_text" msgid="4976386810910453266">"Відлік перед зйомкою"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Зберігати місця з фотографій?"</string>
     <string name="remember_location_prompt" msgid="724592331305808098">"Додавайте до своїх фотографій і відео теги про місця, де їх було зроблено."\n\n"Інші програми можуть отримувати доступ до цієї інформації, а також ваших збережених зображень."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Ні, дякую"</string>
