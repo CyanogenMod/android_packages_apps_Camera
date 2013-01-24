@@ -147,9 +147,9 @@ public class VideoController extends PieController
     }
 
     public void popupDismissed(boolean topPopupOnly) {
+        initializePopup();
         // if the 2nd level popup gets dismissed
         if (mPopupStatus == POPUP_SECOND_LEVEL) {
-            initializePopup();
             mPopupStatus = POPUP_FIRST_LEVEL;
             if (topPopupOnly) mModule.showPopup(mPopup);
         }
