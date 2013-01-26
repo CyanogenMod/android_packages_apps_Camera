@@ -458,6 +458,11 @@
     <string-array name="pref_camera_iso_entries" translatable="false">
         <item>@string/pref_camera_iso_entry_auto</item>
         <item>@string/pref_camera_iso_entry_isodeblur</item>
+        <item>@string/pref_camera_iso_entry_isosports</item>
+        <item>@string/pref_camera_iso_entry_isonight</item>
+        <item>@string/pref_camera_iso_entry_isomovie</item>
+        <item>@string/pref_camera_iso_entry_iso6400</item>
+        <item>@string/pref_camera_iso_entry_iso3200</item>
         <item>@string/pref_camera_iso_entry_iso1600</item>
         <item>@string/pref_camera_iso_entry_iso1200</item>
         <item>@string/pref_camera_iso_entry_iso1000</item>
@@ -471,6 +476,11 @@
     <string-array name="pref_camera_iso_entryvalues" translatable="false">
         <item>auto</item>
         <item>ISO_HJR</item>
+        <item>ISO_SPORTS</item>
+        <item>ISO_NIGHT</item>
+        <item>ISO_MOVIE</item>
+        <item>ISO6400</item>
+        <item>ISO3200</item>
         <item>ISO1600</item>
         <item>ISO1200</item>
         <item>ISO1000</item>

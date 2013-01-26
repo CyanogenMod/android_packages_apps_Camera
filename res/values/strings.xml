@@ -478,6 +478,11 @@ CHAR LIMIT = NONE] -->
      <!-- Settings screen, ISO dialog radio button choices -->
      <string name="pref_camera_iso_entry_auto">Auto</string>
      <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
+     <string name="pref_camera_iso_entry_isosports">Sports</string>
+     <string name="pref_camera_iso_entry_isonight">Night</string>
+     <string name="pref_camera_iso_entry_isomovie">Movie</string>
+     <string name="pref_camera_iso_entry_iso6400" translatable="false">6400</string>
+     <string name="pref_camera_iso_entry_iso3200" translatable="false">3200</string>
      <string name="pref_camera_iso_entry_iso1600" translatable="false">1600</string>
      <string name="pref_camera_iso_entry_iso1200" translatable="false">1200</string>
      <string name="pref_camera_iso_entry_iso1000" translatable="false">1000</string>
