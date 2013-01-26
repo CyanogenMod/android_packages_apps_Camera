@@ -20,7 +20,7 @@
     <string name="cannot_connect_camera" msgid="955440687597185163">"Não é possível conectar à câmera."</string>
     <string name="camera_disabled" msgid="8923911090533439312">"A câmera foi desativada devido às políticas de segurança."</string>
     <string name="camera_label" msgid="6346560772074764302">"Câmera"</string>
-    <string name="video_camera_label" msgid="2899292505526427293">"Filmadora"</string>
+    <string name="video_camera_label">"Filmadora"</string>
     <string name="wait" msgid="8600187532323801552">"Aguarde..."</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Monte o armazenamento USB antes de usar a câmera."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Insira um cartão SD antes de usar a câmera."</string>
@@ -239,4 +239,7 @@
     <string name="pref_camera_focustime_title">Duração do toque para ajustar o foco</string>
     <string name="pref_camera_focustime_summary">Selecione a duração do toque para ajustar o foco</string>
     <string name="pref_camera_focustime_entry_infinite">Infinito</string>
+    <string name="pref_camera_iso_entry_isosports">Esportes</string>
+    <string name="pref_camera_iso_entry_isonight">Noturno</string>
+    <string name="pref_camera_iso_entry_isomovie">Filme</string>
 </resources>
