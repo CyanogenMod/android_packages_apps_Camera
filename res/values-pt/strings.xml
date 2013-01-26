@@ -239,4 +239,7 @@
     <string name="pref_camera_focustime_title">Duração do toque para ajustar o foco</string>
     <string name="pref_camera_focustime_summary">Selecione a duração do toque para ajustar o foco</string>
     <string name="pref_camera_focustime_entry_infinite">Infinito</string>
+    <string name="pref_camera_iso_entry_isosports">Esportes</string>
+    <string name="pref_camera_iso_entry_isonight">Noturno</string>
+    <string name="pref_camera_iso_entry_isomovie">Filme</string>
 </resources>
