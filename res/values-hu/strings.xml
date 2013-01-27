@@ -216,6 +216,9 @@
      <!-- Settings screen, ISO dialog radio button choices -->
      <string name="pref_camera_iso_entry_auto">Automatikus</string>
      <string name="pref_camera_iso_entry_isodeblur">Automatikus (HJR)</string>
+     <string name="pref_camera_iso_entry_isosports">Sportesemény</string>
+     <string name="pref_camera_iso_entry_isonight">Éjszakai</string>
+     <string name="pref_camera_iso_entry_isomovie">Mozi</string>
 
     <!-- Settings screen, JPEG Quality -->
     <string name="pref_camera_jpeg_title">JPEG minőség</string>
