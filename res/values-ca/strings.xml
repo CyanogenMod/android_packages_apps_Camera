@@ -42,7 +42,7 @@
   </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
     <skip />
-    <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"Emet un so durant el compte enrere"</string>
+    <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"Sona en compte enr."</string>
     <string name="setting_off" msgid="4480039384202951946">"Desactivat"</string>
     <string name="setting_on" msgid="8602246224465348901">"Activat"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualitat de vídeo"</string>
