@@ -200,9 +200,9 @@ public class PhotoModule
     // A view group that contains all the small indicators.
     private View mOnScreenIndicators;
 
-    // We use a thread in ImageSaver to do the work of saving images. This
+    // We use a thread in MediaSaver to do the work of saving images. This
     // reduces the shot-to-shot time.
-    private ImageSaver mImageSaver;
+    private MediaSaver mMediaSaver;
     // Similarly, we use a thread to generate the name of the picture and insert
     // it into MediaStore while picture taking is still in progress.
     private NamedImages mNamedImages;
@@ -303,6 +303,17 @@ public class PhotoModule
     ConditionVariable mStartPreviewPrerequisiteReady = new ConditionVariable();
 
     private PreviewGestures mGestures;
+
+    private MediaSaver.OnMediaSavedListener mOnMediaSavedListener = new MediaSaver.OnMediaSavedListener() {
+        @Override
+
+        public void onMediaSaved(Uri uri) {
+            if (uri != null) {
+                mHandler.obtainMessage(UPDATE_SECURE_ALBUM_ITEM, uri).sendToTarget();
+                Util.broadcastNewPicture(mActivity, uri);
+            }
+        }
+    };
 
     // The purpose is not to block the main thread in onCreate and onResume.
     private class CameraStartUpThread extends Thread {
@@ -639,7 +650,7 @@ public class PhotoModule
         mShutterButton.setOnShutterButtonListener(this);
         mShutterButton.setVisibility(View.VISIBLE);
 
-        mImageSaver = new ImageSaver();
+        mMediaSaver = new MediaSaver(mContentResolver);
         mNamedImages = new NamedImages();
 
         mFirstTimeInitialized = true;
@@ -677,7 +688,7 @@ public class PhotoModule
                 mPreferences, mContentResolver);
         mLocationManager.recordLocation(recordLocation);
 
-        mImageSaver = new ImageSaver();
+        mMediaSaver = new MediaSaver(mContentResolver);
         mNamedImages = new NamedImages();
         initializeZoom();
         keepMediaProviderInstance();
@@ -983,8 +994,8 @@ public class PhotoModule
                     Log.e(TAG, "Unbalanced name/data pair");
                 } else {
                     if (date == -1) date = mCaptureStartTime;
-                    mImageSaver.addImage(jpegData, title, date, mLocation, width, height,
-                            orientation);
+                    mMediaSaver.addImage(jpegData, title, date, mLocation, width, height,
+                            orientation, mOnMediaSavedListener);
                 }
             } else {
                 mJpegImageData = jpegData;
@@ -1030,142 +1041,6 @@ public class PhotoModule
         public void onAutoFocusMoving(
             boolean moving, android.hardware.Camera camera) {
                 mFocusManager.onAutoFocusMoving(moving);
-        }
-    }
-
-    // Each SaveRequest remembers the data needed to save an image.
-    private static class SaveRequest {
-        byte[] data;
-        String title;
-        long date;
-        Location loc;
-        int width, height;
-        int orientation;
-    }
-
-    // We use a queue to store the SaveRequests that have not been completed
-    // yet. The main thread puts the request into the queue. The saver thread
-    // gets it from the queue, does the work, and removes it from the queue.
-    //
-    // The main thread needs to wait for the saver thread to finish all the work
-    // in the queue, when the activity's onPause() is called, we need to finish
-    // all the work, so other programs (like Gallery) can see all the images.
-    //
-    // If the queue becomes too long, adding a new request will block the main
-    // thread until the queue length drops below the threshold (QUEUE_LIMIT).
-    // If we don't do this, we may face several problems: (1) We may OOM
-    // because we are holding all the jpeg data in memory. (2) We may ANR
-    // when we need to wait for saver thread finishing all the work (in
-    // onPause() or gotoGallery()) because the time to finishing a long queue
-    // of work may be too long.
-    private class ImageSaver extends Thread {
-        private static final int QUEUE_LIMIT = 3;
-
-        private ArrayList<SaveRequest> mQueue;
-        private boolean mStop;
-
-        // Runs in main thread
-        public ImageSaver() {
-            mQueue = new ArrayList<SaveRequest>();
-            start();
-        }
-
-        // Runs in main thread
-        public synchronized boolean queueFull() {
-            return (mQueue.size() >= QUEUE_LIMIT);
-        }
-
-        // Runs in main thread
-        public void addImage(final byte[] data, String title, long date, Location loc,
-                int width, int height, int orientation) {
-            SaveRequest r = new SaveRequest();
-            r.data = data;
-            r.date = date;
-            r.title = title;
-            r.loc = (loc == null) ? null : new Location(loc);  // make a copy
-            r.width = width;
-            r.height = height;
-            r.orientation = orientation;
-            synchronized (this) {
-                while (mQueue.size() >= QUEUE_LIMIT) {
-                    try {
-                        wait();
-                    } catch (InterruptedException ex) {
-                        // ignore.
-                    }
-                }
-                mQueue.add(r);
-                notifyAll();  // Tell saver thread there is new work to do.
-            }
-        }
-
-        // Runs in saver thread
-        @Override
-        public void run() {
-            while (true) {
-                SaveRequest r;
-                synchronized (this) {
-                    if (mQueue.isEmpty()) {
-                        notifyAll();  // notify main thread in waitDone
-
-                        // Note that we can only stop after we saved all images
-                        // in the queue.
-                        if (mStop) break;
-
-                        try {
-                            wait();
-                        } catch (InterruptedException ex) {
-                            // ignore.
-                        }
-                        continue;
-                    }
-                    r = mQueue.get(0);
-                }
-                storeImage(r.data, r.title, r.date, r.loc, r.width, r.height,
-                        r.orientation);
-                synchronized (this) {
-                    mQueue.remove(0);
-                    notifyAll();  // the main thread may wait in addImage
-                }
-            }
-        }
-
-        // Runs in main thread
-        public void waitDone() {
-            synchronized (this) {
-                while (!mQueue.isEmpty()) {
-                    try {
-                        wait();
-                    } catch (InterruptedException ex) {
-                        // ignore.
-                    }
-                }
-            }
-        }
-
-        // Runs in main thread
-        public void finish() {
-            waitDone();
-            synchronized (this) {
-                mStop = true;
-                notifyAll();
-            }
-            try {
-                join();
-            } catch (InterruptedException ex) {
-                // ignore.
-            }
-        }
-
-        // Runs in saver thread
-        private void storeImage(final byte[] data, String title, long date,
-                Location loc, int width, int height, int orientation) {
-            Uri uri = Storage.addImage(mContentResolver, title, date, loc,
-                    orientation, data, width, height);
-            if (uri != null) {
-                mHandler.sendMessage(mHandler.obtainMessage(UPDATE_SECURE_ALBUM_ITEM, uri));
-                Util.broadcastNewPicture(mActivity, uri);
-            }
         }
     }
 
@@ -1242,7 +1117,7 @@ public class PhotoModule
         // If we are already in the middle of taking a snapshot or the image save request
         // is full then ignore.
         if (mCameraDevice == null || mCameraState == SNAPSHOT_IN_PROGRESS
-                || mCameraState == SWITCHING_CAMERA || mImageSaver.queueFull()) {
+                || mCameraState == SWITCHING_CAMERA || mMediaSaver.queueFull()) {
             return false;
         }
         mCaptureStartTime = System.currentTimeMillis();
@@ -1707,9 +1582,9 @@ public class PhotoModule
         if (mFaceView != null) mFaceView.clear();
 
         if (mFirstTimeInitialized) {
-            if (mImageSaver != null) {
-                mImageSaver.finish();
-                mImageSaver = null;
+            if (mMediaSaver != null) {
+                mMediaSaver.finish();
+                mMediaSaver = null;
                 mNamedImages = null;
             }
         }
