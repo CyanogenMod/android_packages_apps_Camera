@@ -259,8 +259,10 @@ public class CameraSettings {
         float step = mParameters.getExposureCompensationStep();
 
         // show only integer values for exposure compensation
-        int maxValue = (int) FloatMath.floor(max * step);
-        int minValue = (int) FloatMath.ceil(min * step);
+        // Limit values to -5..5 due to the limitation in the icon
+        // resource array
+        int maxValue = Math.min((int) FloatMath.floor(max * step), 5);
+        int minValue = Math.max((int) FloatMath.ceil(min * step), -5);
         CharSequence entries[] = new CharSequence[maxValue - minValue + 1];
         CharSequence entryValues[] = new CharSequence[maxValue - minValue + 1];
         int[] icons = new int[maxValue - minValue + 1];
