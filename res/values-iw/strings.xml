@@ -218,6 +218,9 @@
      <!-- Settings screen, ISO dialog radio button choices -->
      <string name="pref_camera_iso_entry_auto">אוטומטי</string>
      <string name="pref_camera_iso_entry_isodeblur">אוטומטי (HJR)</string>
+     <string name="pref_camera_iso_entry_isosports">ספורט</string>
+     <string name="pref_camera_iso_entry_isonight">לילה</string>
+     <string name="pref_camera_iso_entry_isomovie">סרט</string>
 
     <!-- Settings screen, JPEG Quality -->
     <string name="pref_camera_jpeg_title">איכות JPEG</string>
@@ -257,6 +260,18 @@
     <string name="pref_camera_burst_entry_10">10 תמונות</string>
     <string name="pref_camera_burst_entry_15">15 תמונות</string>
     <string name="pref_camera_burst_entry_20">20 תמונות</string>
+
+    <!-- Touch-to-focus duration settings -->
+    <string name="pref_camera_focustime_title">משך מיקוד במגע</string>
+    <string name="pref_camera_focustime_summary">בחר את משך הזמן המוקצה להתמקדות בעת מגע</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_focustime_entry_5">5ש\'</string>
+    <string name="pref_camera_focustime_entry_10">10ש\'</string>
+    <string name="pref_camera_focustime_entry_15">15ש\'</string>
+    <string name="pref_camera_focustime_entry_20">20ש\'</string>
+    <string name="pref_camera_focustime_entry_30">30ש\'</string>
+    <string name="pref_camera_focustime_entry_infinite">אינסופי</string>
 
     <!-- **** CYANOGENMOD ADDITIONS END **** -->
 
