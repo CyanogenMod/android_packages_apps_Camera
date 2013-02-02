@@ -743,6 +743,10 @@ public class PhotoModule
                 && (CameraHolder.instance().getCameraInfo()[mCameraId].facing == CameraInfo.CAMERA_FACING_FRONT)) {
             return;
         }
+        if (Util.noFaceDetectOnBackCamera()
+                && (CameraHolder.instance().getCameraInfo()[mCameraId].facing == CameraInfo.CAMERA_FACING_BACK)) {
+            return;
+        }
 
         if (mFaceDetectionStarted || mCameraState != IDLE) return;
         if (mParameters.getMaxNumDetectedFaces() > 0) {
