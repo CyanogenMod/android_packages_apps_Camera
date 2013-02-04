@@ -22,6 +22,7 @@
     <string name="camera_label" msgid="6346560772074764302">"Cameră foto"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Cameră video"</string>
     <string name="wait" msgid="8600187532323801552">"Aşteptaţi…"</string>
+    <string name="pref_camera_storage_title">Spaţiu stocare</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Înainte de a utiliza camera foto, montaţi dispozitivul de stocare USB."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Introduceţi un card SD înainte de a utiliza camera foto."</string>
     <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Se pregăteşte stocarea USB..."</string>
@@ -125,8 +126,8 @@
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Anulaţi examinarea"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Terminaţi examinarea"</string>
     <string name="accessibility_review_retake" msgid="659300290054705484">"Refaceţi"</string>
-    <string name="capital_on" msgid="5491353494964003567">"ACTIVAT"</string>
-    <string name="capital_off" msgid="7231052688467970897">"DEZACTIVAT"</string>
+    <string name="capital_on" msgid="5491353494964003567">"PORNIT"</string>
+    <string name="capital_off" msgid="7231052688467970897">"OPRIT"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Dezactivat"</string>
     <string name="pref_video_time_lapse_frame_interval_500" msgid="2949719376111679816">"0,5 secunde"</string>
     <string name="pref_video_time_lapse_frame_interval_1000" msgid="1672458758823855874">"1 secundă"</string>
@@ -202,9 +203,12 @@
     <string name="pref_camera_coloreffect_entry_greentint">"Nuanță verde"</string>
 
     <string name="pref_camera_burst_title">"Serie de fotografii"</string>
-    <string name="pref_camera_burst_entry_off">"Dezactivată"</string>
+    <string name="pref_camera_burst_entry_off">"Oprită"</string>
     <string name="pref_camera_burst_entry_5">"5 fotografii"</string>
     <string name="pref_camera_burst_entry_10">"10 fotografii"</string>
     <string name="pref_camera_burst_entry_15">"15 fotografii"</string>
     <string name="pref_camera_burst_entry_20">"20 fotografii"</string>
+
+    <string name="pref_camera_focustime_title">Durată focalizare</string>
+    <string name="pref_camera_focustime_summary">Alege durata pentru focalizare</string>
 </resources>
