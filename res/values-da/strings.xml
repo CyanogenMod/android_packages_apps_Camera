@@ -182,6 +182,13 @@
     <!-- More Settings screen, power button title -->
     <string name="pref_camera_power_shutter_title">Strømudløser</string>
 
+     <!-- Settings screen, ISO dialog radio button choices -->
+     <string name="pref_camera_iso_entry_auto">Auto</string>
+     <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
+     <string name="pref_camera_iso_entry_isosports">Sport</string>
+     <string name="pref_camera_iso_entry_isonight">Nat</string>
+     <string name="pref_camera_iso_entry_isomovie">Film</string>
+
     <!-- Settings screen, JPEG Quality -->
     <string name="pref_camera_jpeg_title">JPEG-kvalitet</string>
 
