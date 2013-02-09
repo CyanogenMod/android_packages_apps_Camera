@@ -178,10 +178,13 @@
     <string name="remember_location_no" msgid="7541394381714894896">"Nee, bedankt"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ja"</string>
 
-    <!-- CYANOGENMOD EDITS -->
-     <string name="pref_camera_power_shutter_title">Aan/uit-knop</string>
-     <string name="pref_camera_iso_entry_auto">Automatisch</string>
-     <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
+    <!-- CYANOGENMOD ADDITIONS -->
+    <string name="pref_camera_power_shutter_title">Aan/uit-knop</string>
+    <string name="pref_camera_iso_entry_auto">Automatisch</string>
+    <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">Sport</string>
+    <string name="pref_camera_iso_entry_isonight">Nacht</string>
+    <string name="pref_camera_iso_entry_isomovie">Film</string>
     <string name="pref_camera_jpeg_title">JPEG-kwaliteit</string>
     <string name="pref_camera_jpeg_entry_super">Super</string>
     <string name="pref_camera_jpeg_entry_high">Hoog</string>
@@ -209,4 +212,41 @@
     <string name="pref_camera_burst_entry_10">10 foto\'s</string>
     <string name="pref_camera_burst_entry_15">15 foto\'s</string>
     <string name="pref_camera_burst_entry_20">20 foto\'s</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Doorlopend</string>
+    <string name="pref_camera_focusmode_entry_extended">Uitgebreid</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Gezichtsdetectie</string>
+    <string name="pref_camera_focusmode_entry_facepriority">Gezichtsprioriteit</string>
+    <string name="pref_camera_focusmode_entry_fixed">Vast</string>
+    <string name="pref_camera_focusmode_entry_portrait">Portret</string>
+    <string name="pref_camera_focustime_title">Duur aanraakfocus</string>
+    <string name="pref_camera_focustime_summary">Duur selecteren voor aanraakfocus</string>
+    <string name="pref_camera_focustime_entry_5">5 sec.</string>
+    <string name="pref_camera_focustime_entry_10">10 sec.</string>
+    <string name="pref_camera_focustime_entry_15">15 sec.</string>
+    <string name="pref_camera_focustime_entry_20">20 sec.</string>
+    <string name="pref_camera_focustime_entry_30">30 sec.</string>
+    <string name="pref_camera_focustime_entry_infinite">Oneindig</string>
+    <string name="pref_camera_scenemode_entry_nightportrait">Nacht (portret)</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">Nacht (binnen)</string>
+    <string name="pref_camera_scenemode_entry_supernight">Donkere nacht</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Zonsop-/ondergang</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Kaarslicht</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Herfstkleur</string>
+    <string name="pref_camera_scenemode_entry_closeup">Close-up</string>
+    <string name="pref_camera_scenemode_entry_landscape">Landschap</string>
+    <string name="pref_camera_scenemode_entry_aqua">Water</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_mood">Stemming</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Vuurwerk</string>
+    <string name="pref_camera_scenemode_entry_cine">Bioscoop</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">Oude film</string>
+    <string name="pref_camera_scenemode_entry_beach">Strand</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portret</string>
+    <string name="pref_camera_scenemode_entry_snow">Sneeuw</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Stilstaand</string>
+    <string name="pref_camera_scenemode_entry_theatre">Theater</string>
+    <string name="pref_camera_scenemode_entry_backlight">Achtergrondlicht</string>
+    <string name="pref_camera_scenemode_entry_document">Document</string>
+    <string name="pref_camera_scenemode_entry_barcode">Streepjescode</string>
+    <string name="pref_camera_scenemode_entry_text">Tekst</string>
 </resources>
