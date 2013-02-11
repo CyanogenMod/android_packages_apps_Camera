@@ -12,7 +12,7 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
- -->
+-->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
@@ -178,7 +178,7 @@
     <string name="remember_location_no" msgid="7541394381714894896">"No, gracias"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Sí"</string>
 
-    <!-- CYANOGENMOD EDITS START -->
+    <!-- CYANOGENMOD ADDITIONS START -->
 
     <string name="pref_camera_burst_title">Modo ráfaga</string>
     <string name="pref_camera_burst_entry_off">Apagado</string>
@@ -186,23 +186,19 @@
     <string name="pref_camera_burst_entry_10">10 disparos</string>
     <string name="pref_camera_burst_entry_15">15 disparos</string>
     <string name="pref_camera_burst_entry_20">20 disparos</string>
-
     <string name="pref_camera_focusmode_entry_continuouspicture">Continuo</string>
     <string name="pref_camera_focusmode_entry_extended">Amplio</string>
     <string name="pref_camera_focusmode_entry_facedetect">Detección rostro</string>
     <string name="pref_camera_focusmode_entry_facepriority">Prioridad rostro</string>
     <string name="pref_camera_focusmode_entry_fixed">Fijo</string>
     <string name="pref_camera_focusmode_entry_portrait">Retrato</string>
-
     <string name="pref_camera_iso_entry_auto">Auto</string>
     <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
-
     <string name="pref_camera_jpeg_title">Calidad JPEG</string>
     <string name="pref_camera_jpeg_entry_super">Máxima</string>
     <string name="pref_camera_jpeg_entry_high">Alta</string>
     <string name="pref_camera_jpeg_entry_medium">Media</string>
     <string name="pref_camera_jpeg_entry_low">Baja</string>
-
     <string name="pref_camera_coloreffect_title">Efecto color</string>
     <string name="pref_camera_coloreffect_entry_none">Ninguno</string>
     <string name="pref_camera_coloreffect_entry_mono">Mono</string>
@@ -219,9 +215,7 @@
     <string name="pref_camera_coloreffect_entry_redtint">Tintado en rojo</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Tintado en azul</string>
     <string name="pref_camera_coloreffect_entry_greentint">Tintado en verde</string>
-
     <string name="pref_camera_power_shutter_title">Disparador alternativo</string>
-
     <string name="pref_camera_scenemode_entry_nightportrait">Retrato nocturno</string>
     <string name="pref_camera_scenemode_entry_nightindoor">Interior nocturno</string>
     <string name="pref_camera_scenemode_entry_supernight">Noche cerrada</string>
@@ -245,6 +239,14 @@
     <string name="pref_camera_scenemode_entry_document">Documento</string>
     <string name="pref_camera_scenemode_entry_barcode">Código de barras</string>
     <string name="pref_camera_scenemode_entry_text">Texto</string>
+    <string name="pref_camera_focustime_title">Duración del enfoque</string>
+    <string name="pref_camera_focustime_summary">Seleccionar la duración del enfoque al tocar la pantalla</string>
+    <string name="pref_camera_focustime_entry_5">5 segundos</string>
+    <string name="pref_camera_focustime_entry_10">10 segundos</string>
+    <string name="pref_camera_focustime_entry_15">15 segundos</string>
+    <string name="pref_camera_focustime_entry_20">20 segundos</string>
+    <string name="pref_camera_focustime_entry_30">30 segundos</string>
+    <string name="pref_camera_focustime_entry_infinite">Infinita</string>
 
     <!-- CYANOGENMOD ADDITIONS END -->
 </resources>
