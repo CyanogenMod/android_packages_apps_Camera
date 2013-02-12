@@ -135,6 +135,7 @@
     <!-- Settings screen, Focus mode dialog radio button choices -->
     <string name="pref_camera_focusmode_entry_auto">Auto</string>
     <string name="pref_camera_focusmode_entry_continuouspicture">Continuous Picture</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Continuous Video</string>
     <string name="pref_camera_focusmode_entry_extended">Extended</string>
     <string name="pref_camera_focusmode_entry_facedetect">Face detect</string>
     <string name="pref_camera_focusmode_entry_facepriority">Face priority</string>
@@ -142,6 +143,7 @@
     <string name="pref_camera_focusmode_entry_infinity">Infinity</string>
     <string name="pref_camera_focusmode_entry_macro">Macro</string>
     <string name="pref_camera_focusmode_entry_portrait">Portrait</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Hyperfocal</string>
 
     <!-- Default flash mode setting.-->
     <string name="pref_camera_flashmode_default" translatable="false">auto</string>
@@ -211,9 +213,14 @@
     <string name="pref_camera_scenemode_entry_steadyphoto">Steadyphoto</string>
     <string name="pref_camera_scenemode_entry_theatre">Theatre</string>
     <string name="pref_camera_scenemode_entry_backlight">Backlight</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Backlight portrait</string>
     <string name="pref_camera_scenemode_entry_document">Document</string>
     <string name="pref_camera_scenemode_entry_barcode">Barcode</string>
     <string name="pref_camera_scenemode_entry_text">Text</string>
+    <string name="pref_camera_scenemode_entry_beauty">Beauty</string>
+    <string name="pref_camera_scenemode_entry_flowers">Flowers</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Whiteboard</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Background blur</string>
 
     <!-- Toast after trying to select a setting that is not allowed to change in scene mode [CHAR LIMIT=NONE] -->
     <string name="not_selectable_in_scene_mode">Not selectable in scene mode.</string>
