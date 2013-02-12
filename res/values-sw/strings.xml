@@ -61,7 +61,7 @@
     <string name="pref_camera_picturesize_entry_vga" msgid="806934254162981919">"VGA"</string>
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Hali ya kulenga"</string>
-    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Atomatiki"</string>
+    <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Otomatiki"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Pasipo mwisho"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Hali ya mweka"</string>
