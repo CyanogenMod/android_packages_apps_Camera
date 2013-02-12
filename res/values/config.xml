@@ -32,6 +32,8 @@
     <!-- The camera removes the focus modes by default when touch-to-focus
          exists. Use this option to change that behavior -->
     <bool name="wantsFocusModes">false</bool>
+    <!-- Ignore preferred preview size and use best value from supported preview sizes -->
+    <bool name="ignorePreferredPreviewSizeForVideo">false</bool>
     <!-- Disable face detection on the front camera -->
     <bool name="noFaceDetectOnFrontCamera">false</bool>
     <!-- Use ZSL mode for Qualcomm cameras -->
