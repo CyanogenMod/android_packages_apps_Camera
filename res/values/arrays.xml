@@ -333,9 +333,14 @@
         <item>@string/pref_camera_scenemode_entry_steadyphoto</item>
         <item>@string/pref_camera_scenemode_entry_theatre</item>
         <item>@string/pref_camera_scenemode_entry_backlight</item>
+        <item>@string/pref_camera_scenemode_entry_backlightportrait</item>
         <item>@string/pref_camera_scenemode_entry_document</item>
         <item>@string/pref_camera_scenemode_entry_barcode</item>
         <item>@string/pref_camera_scenemode_entry_text</item>
+        <item>@string/pref_camera_scenemode_entry_beauty</item>
+        <item>@string/pref_camera_scenemode_entry_flowers</item>
+        <item>@string/pref_camera_scenemode_entry_whiteboard</item>
+        <item>@string/pref_camera_scenemode_entry_backgroundblur</item>
     </string-array>
 
     <string-array name="pref_camera_scenemode_entryvalues" translatable="false">
@@ -364,9 +369,14 @@
         <item>steadyphoto</item>
         <item>theatre</item>
         <item>back-light</item>
+        <item>backlight_portrait</item>
         <item>document</item>
         <item>barcode</item>
         <item>text</item>
+        <item>beauty-mode</item>
+        <item>flowers</item>
+        <item>white-board</item>
+        <item>background-blur</item>
     </string-array>
 
     <array name="camera_id_entries" translatable="false">
