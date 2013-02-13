@@ -136,6 +136,20 @@ public class MoreSettingPopup extends AbstractSettingPopup
         }
     }
 
+    // When preferences are disabled, we will display them grayed out. Users
+    // will not be able to change the disabled preferences, but they can still see
+    // the current value of the preferences
+    public void setPreferenceEnabled(String key, boolean enable) {
+        int count = mEnabled == null ? 0 : mEnabled.length;
+        for (int j = 0; j < count; j++) {
+            ListPreference pref = mListItem.get(j);
+            if (pref != null && key.equals(pref.getKey())) {
+                mEnabled[j] = enable;
+                break;
+            }
+        }
+    }
+
     public void onSettingChanged(ListPreference pref) {
         if (mListener != null) {
             mListener.onSettingChanged(pref);

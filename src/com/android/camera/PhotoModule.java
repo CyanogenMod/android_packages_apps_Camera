@@ -68,7 +68,6 @@ import com.android.camera.ui.PopupManager;
 import com.android.camera.ui.PreviewSurfaceView;
 import com.android.camera.ui.RenderOverlay;
 import com.android.camera.ui.Rotatable;
-import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
 import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomRenderer;
@@ -163,9 +162,6 @@ public class PhotoModule
 
     // The degrees of the device rotated clockwise from its natural orientation.
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
-    // The orientation compensation for icons and dialogs. Ex: if the value
-    // is 90, the UI components should be rotated 90 degrees counter-clockwise.
-    private int mOrientationCompensation = 0;
     private ComboPreferences mPreferences;
 
     private static final String sTempCropFilename = "crop-temp";
@@ -490,6 +486,7 @@ public class PhotoModule
         if (RecordLocationPreference.isSet(mPreferences)) {
             return;
         }
+        if (mActivity.isSecureCamera()) return;
         // Check if the back camera exists
         int backCameraId = CameraHolder.instance().getBackCameraId();
         if (backCameraId == -1) {
@@ -581,6 +578,7 @@ public class PhotoModule
         initializeZoom();
         updateOnScreenIndicators();
         showTapToFocusToastIfNeeded();
+        onFullScreenChanged(mActivity.isInCameraApp());
     }
 
     private void initializePhotoControl() {
@@ -1482,17 +1480,6 @@ public class PhotoModule
         // the correct orientation.
         if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) return;
         mOrientation = Util.roundOrientation(orientation, mOrientation);
-        // When the screen is unlocked, display rotation may change. Always
-        // calculate the up-to-date orientationCompensation.
-        int orientationCompensation =
-                (mOrientation + Util.getDisplayRotation(mActivity)) % 360;
-        if (mOrientationCompensation != orientationCompensation) {
-            mOrientationCompensation = orientationCompensation;
-            if (mFaceView != null) {
-                mFaceView.setOrientation(mOrientationCompensation, true);
-            }
-            setDisplayOrientation();
-        }
 
         // Show the toast after getting the first orientation changed.
         if (mHandler.hasMessages(SHOW_TAP_TO_FOCUS_TOAST)) {
@@ -2666,7 +2653,8 @@ public class PhotoModule
     }
 
     private void showTapToFocusToast() {
-        new RotateTextToast(mActivity, R.string.tap_to_focus, mOrientationCompensation).show();
+        // TODO: Use a toast?
+        new RotateTextToast(mActivity, R.string.tap_to_focus, 0).show();
         // Clear the preference.
         Editor editor = mPreferences.edit();
         editor.putBoolean(CameraSettings.KEY_CAMERA_FIRST_USE_HINT_SHOWN, false);
@@ -2705,8 +2693,6 @@ public class PhotoModule
         mBlocker.setVisibility(View.INVISIBLE);
         setShowMenu(false);
         mPopup = popup;
-        // Make sure popup is brought up with the right orientation
-        mPopup.setOrientation(mOrientationCompensation, false);
         mPopup.setVisibility(View.VISIBLE);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT);
