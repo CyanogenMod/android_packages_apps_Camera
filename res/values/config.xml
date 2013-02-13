@@ -36,4 +36,7 @@
     <bool name="noFaceDetectOnFrontCamera">false</bool>
     <!-- Use ZSL mode for Qualcomm cameras -->
     <bool name="enableZSL">false</bool>
+    <!-- Override not-paused check while taking video snapshot. Set it to true only when
+         your device supports video snapshot mode but isn't doing so -->
+    <bool name="overridenotPausecheckwhiletakingVideoSnapshot">false</bool>
 </resources>

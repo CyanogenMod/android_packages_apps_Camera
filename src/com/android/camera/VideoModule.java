@@ -2541,7 +2541,9 @@ public class VideoModule implements CameraModule,
 
         if (!mPaused || mSnapshotInProgress || effectsActive()
                 || !Util.isVideoSnapshotSupported(mParameters)) {
-            return;
+            // Override not-paused check here if enabled
+            if ( !Util.overridenotPausecheckwhiletakingVideoSnapshot() )
+                return;
         }
 
         if (!mMediaRecorderRecording) {
