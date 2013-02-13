@@ -151,6 +151,10 @@ public class Util {
     // Workaround for QC cameras with broken face detection on front camera
     private static boolean sNoFaceDetectOnFrontCamera;
 
+    // If in not paused video recording mode Snapshot works, this should be configured true
+    // in device overlay.
+    private static boolean sVideoSnapshotInNotPausedMode;
+
     private Util() {
     }
 
@@ -171,6 +175,8 @@ public class Util {
         sEnableZSL = context.getResources().getBoolean(R.bool.enableZSL);
         sNoFaceDetectOnFrontCamera = context.getResources().getBoolean(
                 R.bool.noFaceDetectOnFrontCamera);
+        sVideoSnapshotInNotPausedMode = context.getResources().getBoolean(
+                R.bool.videoSnapshotInNotPausedMode);
     }
 
     public static int dpToPixel(int dp) {
@@ -199,6 +205,10 @@ public class Util {
 
     public static boolean noFaceDetectOnFrontCamera() {
         return sNoFaceDetectOnFrontCamera;
+    }
+
+    public static boolean videoSnapshotInNotPausedMode() {
+        return sVideoSnapshotInNotPausedMode;
     }
 
     // Rotates the bitmap by the specified degree.
