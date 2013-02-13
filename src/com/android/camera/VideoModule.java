@@ -2539,7 +2539,10 @@ public class VideoModule implements CameraModule,
             return;
         }
 
-        if (!mPaused || mSnapshotInProgress || effectsActive()
+        // if video snapshot supported while not paused but it's paused, don't take snapshot
+        // if video snapshot not supported while not paused and it's not paused, don't take snapshot
+        if (mPaused && Util.videoSnapshotInNotPausedMode() || !mPaused && !Util.videoSnapshotInNotPausedMode()
+                || mSnapshotInProgress || effectsActive()
                 || !Util.isVideoSnapshotSupported(mParameters)) {
             return;
         }
