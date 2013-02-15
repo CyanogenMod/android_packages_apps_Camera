@@ -16,6 +16,9 @@
 
 package com.android.camera;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -53,10 +56,7 @@ public class CameraActivity extends ActivityBase
 
     private MyOrientationEventListener mOrientationListener;
     // The degrees of the device rotated clockwise from its natural orientation.
-    private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
-    // The orientation compensation for icons. Eg: if the value
-    // is 90, the UI components should be rotated 90 degrees counter-clockwise.
-    private int mOrientationCompensation = 0;
+    private int mLastRawOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
 
     private static final String TAG = "CAM_activity";
 
@@ -122,46 +122,83 @@ public class CameraActivity extends ActivityBase
             // the camera then point the camera to floor or sky, we still have
             // the correct orientation.
             if (orientation == ORIENTATION_UNKNOWN) return;
-            mOrientation = Util.roundOrientation(orientation, mOrientation);
-            // When the screen is unlocked, display rotation may change. Always
-            // calculate the up-to-date orientationCompensation.
-            int orientationCompensation =
-                    (mOrientation + Util.getDisplayRotation(CameraActivity.this)) % 360;
-            // Rotate camera mode icons in the switcher
-            if (mOrientationCompensation != orientationCompensation) {
-                mOrientationCompensation = orientationCompensation;
-            }
+            mLastRawOrientation = orientation;
             mCurrentModule.onOrientationChanged(orientation);
         }
     }
 
+    private ObjectAnimator mCameraSwitchAnimator;
+
     @Override
-    public void onCameraSelected(int i) {
+    public void onCameraSelected(final int i) {
         if (mPaused) return;
         if (i != mCurrentModuleIndex) {
             mPaused = true;
-            boolean canReuse = canReuseScreenNail();
-            CameraHolder.instance().keep();
-            closeModule(mCurrentModule);
-            mCurrentModuleIndex = i;
-            switch (i) {
-                case VIDEO_MODULE_INDEX:
-                    mCurrentModule = new VideoModule();
-                    break;
-                case PHOTO_MODULE_INDEX:
-                    mCurrentModule = new PhotoModule();
-                    break;
-                case PANORAMA_MODULE_INDEX:
-                    mCurrentModule = new PanoramaModule();
-                    break;
-                case LIGHTCYCLE_MODULE_INDEX:
-                    mCurrentModule = LightCycleHelper.createPanoramaModule();
-                    break;
+            CameraScreenNail screenNail = getCameraScreenNail();
+            if (screenNail != null) {
+                if (mCameraSwitchAnimator != null && mCameraSwitchAnimator.isRunning()) {
+                    mCameraSwitchAnimator.cancel();
+                }
+                mCameraSwitchAnimator = ObjectAnimator.ofFloat(
+                        screenNail, "alpha", screenNail.getAlpha(), 0f);
+                mCameraSwitchAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        doChangeCamera(i);
+                    }
+                });
+                mCameraSwitchAnimator.start();
+            } else {
+                doChangeCamera(i);
             }
-            openModule(mCurrentModule, canReuse);
-            mCurrentModule.onOrientationChanged(mOrientation);
+
         }
     }
+
+    private void doChangeCamera(int i) {
+        boolean canReuse = canReuseScreenNail();
+        CameraHolder.instance().keep();
+        closeModule(mCurrentModule);
+        mCurrentModuleIndex = i;
+        switch (i) {
+            case VIDEO_MODULE_INDEX:
+                mCurrentModule = new VideoModule();
+                break;
+            case PHOTO_MODULE_INDEX:
+                mCurrentModule = new PhotoModule();
+                break;
+            case PANORAMA_MODULE_INDEX:
+                mCurrentModule = new PanoramaModule();
+                break;
+            case LIGHTCYCLE_MODULE_INDEX:
+                mCurrentModule = LightCycleHelper.createPanoramaModule();
+                break;
+        }
+        openModule(mCurrentModule, canReuse);
+        mCurrentModule.onOrientationChanged(mLastRawOrientation);
+        getCameraScreenNail().setAlpha(0f);
+        getCameraScreenNail().setOnFrameDrawnOneShot(mOnFrameDrawn);
+    }
+
+    private Runnable mOnFrameDrawn = new Runnable() {
+
+        @Override
+        public void run() {
+            runOnUiThread(mFadeInCameraScreenNail);
+        }
+    };
+
+    private Runnable mFadeInCameraScreenNail = new Runnable() {
+
+        @Override
+        public void run() {
+            mCameraSwitchAnimator = ObjectAnimator.ofFloat(
+                    getCameraScreenNail(), "alpha", 0f, 1f);
+            mCameraSwitchAnimator.setStartDelay(50);
+            mCameraSwitchAnimator.start();
+        }
+    };
 
     @Override
     public void onShowSwitcherPopup() {
@@ -195,6 +232,8 @@ public class CameraActivity extends ActivityBase
         mControlsBackground.setVisibility(View.VISIBLE);
         showSwitcher();
         mShutter.setVisibility(View.VISIBLE);
+        // Force a layout change to show shutter button
+        mShutter.requestLayout();
     }
 
     public void hideSwitcher() {

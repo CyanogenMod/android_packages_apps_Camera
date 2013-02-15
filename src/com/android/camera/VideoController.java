@@ -143,6 +143,10 @@ public class VideoController extends PieController
                 R.layout.more_setting_popup, null, false);
         popup.setSettingChangedListener(this);
         popup.initialize(mPreferenceGroup, mOtherKeys);
+        if (mActivity.isSecureCamera()) {
+            // Prevent location preference from getting changed in secure camera mode
+            popup.setPreferenceEnabled(CameraSettings.KEY_RECORD_LOCATION, false);
+        }
         mPopup = popup;
     }
 

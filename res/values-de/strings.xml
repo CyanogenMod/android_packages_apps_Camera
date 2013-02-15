@@ -199,7 +199,7 @@
     <string name="set_time_interval_help" msgid="6665849510484821483">"Die Zeitrafferfunktion ist ausgeschaltet. Schalten Sie sie ein, um das Zeitintervall festzulegen."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Aufnahmeorte für Fotos speichern?"</string>
     <string name="remember_location_prompt" msgid="724592331305808098">"Taggen Sie Ihre Fotos und Videos mit den Standorten, an denen sie aufgenommen wurden."\n\n"Andere Apps können auf diese Informationen und Ihre gespeicherten Bilder zugreifen."</string>
-    <string name="remember_location_no" msgid="7541394381714894896">"Nein, danke"</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"Nein"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ja"</string>
     <string name="pref_camera_power_shutter_title">Ein/Aus-Auslöser</string>
     <string name="pref_camera_jpeg_title">JPEG-Qualität</string>

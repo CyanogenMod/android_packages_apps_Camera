@@ -27,7 +27,6 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_above">@+id/indicator_control</item>
         <item name="android:layout_marginBottom">@dimen/setting_popup_right_margin</item>
         <item name="android:visibility">gone</item>
     </style>
@@ -53,7 +52,7 @@
         <item name="android:alpha">1.0</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dp</item>
-        <item name="android:layout_weight">0.85</item>
+        <item name="android:layout_weight">1</item>
     </style>
     <style name="SettingPopupWindow_xlarge">
         <item name="android:layout_width">wrap_content</item>

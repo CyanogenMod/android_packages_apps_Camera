@@ -27,8 +27,10 @@ public class ProxyLauncher extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent().getParcelableExtra(Intent.EXTRA_INTENT);
-        startActivityForResult(intent, 0);
+        if (savedInstanceState == null) {
+                Intent intent = getIntent().getParcelableExtra(Intent.EXTRA_INTENT);
+                startActivityForResult(intent, 0);
+        }
     }
 
     @Override
