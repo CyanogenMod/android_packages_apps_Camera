@@ -19,7 +19,7 @@
     <string name="camera_error_title" msgid="6484667504938477337">"Σφάλμα φωτογραφικής μηχανής"</string>
     <string name="cannot_connect_camera" msgid="955440687597185163">"Δεν είναι δυνατή η σύνδεση με τη φωτογραφική μηχανή."</string>
     <string name="camera_disabled" msgid="8923911090533439312">"Η φωτογραφική μηχανή έχει απενεργοποιηθεί λόγω των πολιτικών ασφαλείας."</string>
-    <string name="camera_label" msgid="6346560772074764302">"Φωτογ.μηχανή"</string>
+    <string name="camera_label" msgid="6346560772074764302">"Φωτογραφ. μηχανή"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Βιντεοκάμ."</string>
     <string name="wait" msgid="8600187532323801552">"Περιμένετε\u2026"</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Προσαρτήστε τον χώρο αποθήκευσης USB προτού κάνετε χρήση της φωτογραφικής μηχανής."</string>
@@ -35,8 +35,8 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Πίσω"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Μπροστά"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Αποθήκευση τοποθεσίας"</string>
-    <string name="setting_off" msgid="4480039384202951946">"Απενεργοποιημ."</string>
-    <string name="setting_on" msgid="8602246224465348901">"Ενεργοποιημ."</string>
+    <string name="setting_off" msgid="4480039384202951946">"Ανενεργό"</string>
+    <string name="setting_on" msgid="8602246224465348901">"Ενεργό"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Ποιότητα βίντεο"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Υψηλή"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Χαμηλή"</string>
@@ -44,12 +44,12 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Ρυθμίσεις φωτογραφικής μηχανής"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Ρυθμίσεις βιντεοκάμερας"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Μέγεθος εικόνας"</string>
-    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8M εικονοστ."</string>
-    <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5M εικονοστ."</string>
-    <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3M εικονοστ."</string>
-    <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2M  εικονοστ."</string>
-    <string name="pref_camera_picturesize_entry_1_3mp" msgid="829109608140747258">"1.3M εικονοστ."</string>
-    <string name="pref_camera_picturesize_entry_1mp" msgid="1669725616780375066">"1M εικονοστ."</string>
+    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8MP"</string>
+    <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5MP"</string>
+    <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3MP"</string>
+    <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2MP"</string>
+    <string name="pref_camera_picturesize_entry_1_3mp" msgid="829109608140747258">"1.3MP"</string>
+    <string name="pref_camera_picturesize_entry_1mp" msgid="1669725616780375066">"1MP"</string>
     <string name="pref_camera_picturesize_entry_vga" msgid="806934254162981919">"VGA"</string>
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Λειτουργία εστίασης"</string>
@@ -62,7 +62,7 @@
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Άπειρο"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Απόσταση"</string>
     <string name="pref_camera_focusmode_entry_portrait">Πορτραίτο</string>
-    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Λειτουργία Flash"</string>
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Λειτουργία φλας"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Αυτόματο"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Ενεργοποιημένο"</string>
     <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΟ"</string>
@@ -79,7 +79,7 @@
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Νύχτα"</string>
     <string name="pref_camera_scenemode_entry_nightportrait">Νυχτερινό πορτραίτο</string>
     <string name="pref_camera_scenemode_entry_nightindoor">Νύχτα σε εσωτ. χώρο</string>
-    <string name="pref_camera_scenemode_entry_supernight">Μαύρη νύχτα</string>
+    <string name="pref_camera_scenemode_entry_supernight">Απόλυτο σκοτάδι</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Ηλιοβασίλεμα"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Πάρτι"</string>
     <string name="pref_camera_scenemode_entry_duskdawn">Αυγή/Σούρουπο</string>
@@ -205,12 +205,15 @@
     <string name="remember_location_no" msgid="7541394381714894896">"Όχι ευχαριστώ"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ναι"</string>
 
-     <!-- More Settings screen, power button title -->
-     <string name="pref_camera_power_shutter_title">Power shutter</string>
+    <!-- More Settings screen, power button title -->
+    <string name="pref_camera_power_shutter_title">Power shutter</string>
 
-     <!-- Settings screen, ISO dialog radio button choices -->
-     <string name="pref_camera_iso_entry_auto">Αυτόματο</string>
-     <string name="pref_camera_iso_entry_isodeblur">Αυτόματο (HJR)</string>
+    <!-- Settings screen, ISO dialog radio button choices -->
+    <string name="pref_camera_iso_entry_auto">Αυτόματο</string>
+    <string name="pref_camera_iso_entry_isodeblur">Αυτόματο (HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">Αθλήματα</string>
+    <string name="pref_camera_iso_entry_isonight">Νύχτα</string>
+    <string name="pref_camera_iso_entry_isomovie">Ταινία</string>
 
     <!-- Settings screen, JPEG Quality -->
     <string name="pref_camera_jpeg_title">Ποιότητα JPEG</string>
@@ -250,4 +253,16 @@
     <string name="pref_camera_burst_entry_10">10 λήψεις</string>
     <string name="pref_camera_burst_entry_15">15 λήψεις</string>
     <string name="pref_camera_burst_entry_20">20 λήψεις</string>
+
+    <!-- Touch-to-focus duration settings -->
+    <string name="pref_camera_focustime_title">Διάρκεια εστίασης αγγίγματος</string>
+    <string name="pref_camera_focustime_summary">Επιλογή διάρκειας για την εστίαση με άγγιγμα</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_focustime_entry_5">5δ</string>
+    <string name="pref_camera_focustime_entry_10">10δ</string>
+    <string name="pref_camera_focustime_entry_15">15δ</string>
+    <string name="pref_camera_focustime_entry_20">20δ</string>
+    <string name="pref_camera_focustime_entry_30">30δ</string>
+    <string name="pref_camera_focustime_entry_infinite">Απεριόριστο</string>
 </resources>
