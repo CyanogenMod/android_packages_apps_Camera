@@ -214,6 +214,9 @@
      <!-- Settings screen, ISO dialog radio button choices -->
     <string name="pref_camera_iso_entry_auto">自动</string>
     <string name="pref_camera_iso_entry_isodeblur">自动 (HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">体育</string>
+    <string name="pref_camera_iso_entry_isonight">夜晚</string>
+    <string name="pref_camera_iso_entry_isomovie">电影</string>
 
     <!-- Settings screen, JPEG Quality -->
     <string name="pref_camera_jpeg_title">JPEG 质量</string>
@@ -253,5 +256,17 @@
     <string name="pref_camera_burst_entry_10">10 张</string>
     <string name="pref_camera_burst_entry_15">15 张</string>
     <string name="pref_camera_burst_entry_20">20 张</string>
+
+    <!-- Touch-to-focus duration settings -->
+    <string name="pref_camera_focustime_title">触摸对焦持续时间</string>
+    <string name="pref_camera_focustime_summary">选择触摸对焦的持续时间</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_focustime_entry_5">5 秒</string>
+    <string name="pref_camera_focustime_entry_10">10 秒</string>
+    <string name="pref_camera_focustime_entry_15">15 秒</string>
+    <string name="pref_camera_focustime_entry_20">20 秒</string>
+    <string name="pref_camera_focustime_entry_30">30 秒</string>
+    <string name="pref_camera_focustime_entry_infinite">永久</string>
 
 </resources>
