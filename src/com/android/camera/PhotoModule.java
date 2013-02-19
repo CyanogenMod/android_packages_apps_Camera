@@ -1690,7 +1690,7 @@ public class PhotoModule
                 mActivity.setSwipingEnabled(true);
 
                 // And we compute the final image
-                final HdrSoftwareProcessor hdr = new HdrSoftwareProcessor();
+                final HdrSoftwareProcessor hdr = new HdrSoftwareProcessor(mActivity);
 
                 mHdrProgressDialog = ProgressDialog.show(mActivity, mActivity.getString(R.string.pref_camera_scenemode_entry_hdr), mActivity.getString(R.string.wait), true);
 
@@ -1744,7 +1744,7 @@ public class PhotoModule
                         mHDRExposureSet = true;
                         onShutterButtonClick();
                     }
-                }, 1000);
+                }, Util.getSoftwareHDRExposureSettleTime());
                 return;
             }
         }

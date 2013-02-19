@@ -43,4 +43,6 @@
     <bool name="enableZSL">false</bool>
     <!-- Disable software HDR on non-hw HDR devices -->
     <bool name="disableSoftwareHDR">false</bool>
+    <!-- Time needed for exposure change to be effective for Software HDR (ms) -->
+    <integer name="softwareHDRExposureSettleTime">800</integer>
 </resources>
