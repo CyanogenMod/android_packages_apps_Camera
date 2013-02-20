@@ -20,6 +20,7 @@ import com.android.camera.ScriptC_HdrSoftware;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.renderscript.Allocation;
+import android.renderscript.Element;
 import android.renderscript.Matrix4f;
 import android.renderscript.ProgramFragment;
 import android.renderscript.ProgramFragmentFixedFunction;
@@ -65,7 +66,23 @@ public class HdrSoftwareRS {
         // We don't really care about the content at this point, we just need the same size
         // and pixel depth.
         mOutBitmapAlloc = Allocation.createTyped(mRS, mInBitmapAlloc[BITMAP_LOW].getType());
-        mScript.set_gOutput(mOutBitmapAlloc);
+        mScript.bind_gOutput(mOutBitmapAlloc);
+
+        // We refer to the row of the images through an alloc to parallelize processing
+        int num_rows = mOutBitmap.getHeight();
+        int row_width = mOutBitmap.getWidth();
+
+        int[] row_indices = new int[num_rows];
+        for (int i = 0; i < num_rows; i++) {
+            row_indices[i] = i * row_width;
+        }
+
+        Allocation row_indices_alloc = Allocation.createSized(mRS, Element.I32(mRS), num_rows, Allocation.USAGE_SCRIPT);
+        row_indices_alloc.copyFrom(row_indices);
+
+        mScript.set_gInIndex(row_indices_alloc);
+        mScript.set_gImageWidth(row_width);
+        mScript.set_gScript(mScript);
 
         // We run the script...
         mScript.invoke_performHdrComputation();
@@ -103,15 +120,15 @@ public class HdrSoftwareRS {
         // Bind our allocations to our script
         switch (input_image) {
         case BITMAP_LOW:
-            mScript.set_gInputLow(mInBitmapAlloc[BITMAP_LOW]);
+            mScript.bind_gInputLow(mInBitmapAlloc[BITMAP_LOW]);
             break;
 
         case BITMAP_MID:
-            mScript.set_gInputMid(mInBitmapAlloc[BITMAP_MID]);
+            mScript.bind_gInputMid(mInBitmapAlloc[BITMAP_MID]);
             break;
 
         case BITMAP_HI:
-            mScript.set_gInputHi(mInBitmapAlloc[BITMAP_HI]);
+            mScript.bind_gInputHi(mInBitmapAlloc[BITMAP_HI]);
             break;
         }
 
