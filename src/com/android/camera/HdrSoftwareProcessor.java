@@ -56,17 +56,10 @@ public class HdrSoftwareProcessor {
         }
     };
 
-    // Method of average pixel computation (RenderScript)
-    public final static int METHOD_AVERAGE_RS = 1;
-
-    // Method of reinhard computation (RenderScript)
-    public final static int METHOD_REINHARD_RS = 2;
-
     private Bitmap mSourceBitmap;
     private Bitmap mOutputBitmap;
     private int mImageWidth;
     private int mImageHeight;
-    private int mMethod;
     private RenderScript mRSRenderer;
     private HdrSoftwareRS mRSHost;
 
@@ -74,7 +67,6 @@ public class HdrSoftwareProcessor {
      * Default constructor
      */
     public HdrSoftwareProcessor(Context ctx) {
-        mMethod = METHOD_AVERAGE_RS;
         mRSRenderer = RenderScript.create(ctx);
         mRSHost = new HdrSoftwareRS(mRSRenderer, ctx.getResources(), R.raw.hdrsoftware);
     }
@@ -96,14 +88,6 @@ public class HdrSoftwareProcessor {
             // try to use as few memory as possible
             mSourceBitmap.recycle();    
         }
-    }
-
-    /**
-     * Set the computation method
-     * @param method See METHOD_*
-     */
-    public void setMethod(int method) {
-        mMethod = method;
     }
 
     /**
