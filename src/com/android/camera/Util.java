@@ -105,7 +105,9 @@ public class Util {
 
     public static boolean isCameraHdrSupported(Parameters params) {
         List<String> supported = params.getSupportedSceneModes();
-        return (supported != null) && supported.contains(SCENE_MODE_HDR);
+        boolean ret = (supported != null) && supported.contains(SCENE_MODE_HDR);
+        if (ret && sEnableSoftwareHDR) { sEnableSoftwareHDR = false; }
+        return ret;
     }
 
     @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
