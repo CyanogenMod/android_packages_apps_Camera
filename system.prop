@@ -1,0 +1,187 @@
+#
+# system.prop for m7
+#
+
+rild.libpath=/system/lib/libril-qc-qmi-1.so
+rild.libargs=-d /dev/smd0
+persist.rild.nitz_plmn=
+persist.rild.nitz_long_ons_0=
+persist.rild.nitz_long_ons_1=
+persist.rild.nitz_long_ons_2=
+persist.rild.nitz_long_ons_3=
+persist.rild.nitz_short_ons_0=
+persist.rild.nitz_short_ons_1=
+persist.rild.nitz_short_ons_2=
+persist.rild.nitz_short_ons_3=
+ril.subscription.types=NV,RUIM
+DEVICE_PROVISIONED=1
+
+#
+#system props for display
+#
+debug.sf.hw=1
+debug.egl.hw=1
+debug.composition.type=gpu
+debug.enabletr=true
+ro.hwui.renderer.disable_opaque=true
+ro.sf.lcd_density=480
+debug.mdpcomp.maxlayer=3
+debug.egl.buffcount=4
+
+dalvik.vm.heapsize=384m
+dalvik.vm.heapgrowthlimit=192m
+dev.pm.dyn_samplingrate=1
+
+#
+# system props for the cne module
+#
+persist.cne.UseCne=vendor
+persist.cne.UseSwim=false
+persist.cne.bat.range.low.med=30
+persist.cne.bat.range.med.high=60
+persist.cne.loc.policy.op=/system/etc/OperatorPolicy.xml
+persist.cne.loc.policy.user=/system/etc/UserPolicy.xml
+persist.cne.bwbased.rat.sel=false
+persist.cne.snsr.based.rat.mgt=false
+persist.cne.bat.based.rat.mgt=false
+persist.cne.rat.acq.time.out=30000
+persist.cne.rat.acq.retry.tout=0
+persist.cne.sync.swim.mode=false
+
+ro.hdmi.enable=true
+lpa.decode=true
+tunnel.decode=true
+lpa.use-stagefright=true
+lpa.releaselock=true
+
+#system props for the MM modules
+
+media.stagefright.enable-player=true
+media.stagefright.enable-http=true
+media.stagefright.enable-aac=true
+media.stagefright.enable-qcp=true
+media.stagefright.enable-fma2dp=true
+media.stagefright.enable-scan=true
+mmp.enable.3g2=true
+
+#
+# system props for the data modules
+#
+ro.use_data_netmgrd=true
+
+#system props for time-services
+persist.timed.enable=true
+
+# System props for audio
+persist.audio.fluence.mode=endfire
+persist.audio.vr.enable=false
+persist.audio.handset.mic=digital
+# System props for soundhound
+persist.htc.audio.pcm.samplerate=48000
+persist.htc.audio.pcm.channels=2
+
+# System prop to select audio resampler quality
+af.resampler.quality=255
+
+# System props for global effect
+htc.audio.global.state=0
+htc.audio.global.profile=0
+htc.audio.q6.topology=0
+htc.audio.global.speaker=1
+
+#
+# system prop for opengles version
+#
+# 131072 is decimal for 0x20000 to report version 2
+ro.opengles.version=131072
+
+#system prop for switching gps driver to qmi
+persist.gps.qmienabled=true
+
+# System property for cabl
+ro.qualcomm.cabl=0
+
+#
+# System prop for sending transmit power request to RIL during WiFi hotspot on/off
+#
+ro.ril.transmitpower=true
+
+# For workaround for ro.baseband property. QCT use the property same as radio version to determine the architecture.
+# But we hard code to mdm for M7.
+ro.baseband.arch = mdm
+
+#Add default network type for phone reference
+ro.telephony.default_network=9
+
+#
+#Simulate sdcard on /data/media
+#
+persist.fuse_sdcard=true
+
+# M7 Hardware Info
+ro.product.bluetooth=4.0
+ro.product.display_resolution = 4.7 inch 1080p resolution
+ro.product.main_camera = 4M
+ro.product.front_camera = 2.1M
+ro.product.processor = Quadcore
+ro.product.ram = 2GB
+ro.product.wifi = 802.11 a/b/g/n
+
+
+#wifi
+wifi.interface=wlan0
+wifi.supplicant_scan_interval=15
+wifi.softap.interface=wlan0
+wifi.softapconcurrent.interface=wl0.1
+persist.wifi.v6=true
+persist.wifi.v6.rs.count=5
+persist.wifi.v6.rs.timeout=5
+
+# Properties of BTLA stack
+service.brcm.bt.activation = 0
+service.brcm.bt.srv_active = 0
+service.brcm.bt.hcid_active = 0
+service.brcm.bt.btld = 0
+service.brcm.bt.btld_pid = 0
+service.brcm.bt.avrcp_pass_thru = 0
+service.brcm.bt.avrcp_toggle = 1
+service.brcm.bt.local_name =
+service.brcm.bt.4335hwerrwar = 1
+service.brcm.bt.TRC_HTCSDBG = 1
+
+# Support HW reset
+ro.product.hwreset = 1
+ro.product.hwreset.timer1 = 8
+ro.product.hwreset.timer2 = 11
+
+#For usb storage
+ro.usb_host = 1
+
+# Preloading common control assets
+persist.preload.common=1
+
+# Force Enable HWacce for GB PlayStoreAP
+persist.sys.htc.ui.hw = 1
+
+# Perflock for inter-process activity launch and first launch
+persist.htc.multicore.timeout = 1500
+
+# Perflock for Home process lock duration
+persist.htc.multicore.home = 800
+
+#
+# ADDITIONAL_BUILD_PROPERTIES
+#
+ro.carrier=unknown
+ro.config.notification_sound=OnTheHunt.ogg
+ro.config.alarm_alert=Alarm_Classic.ogg
+drm.service.enabled=true
+ro.setupwizard.mode=OPTIONAL
+ro.com.google.gmsversion=4.1_r4
+lpa.decode=false
+tunnel.decode=false
+ro.service.dpsvr.enabled=true
+ro.vendor.extension_library=/system/lib/libqc-opt.so
+dalvik.vm.lockprof.threshold=500
+net.bt.name=Android
+dalvik.vm.stack-trace-file=/data/anr/traces.txt
