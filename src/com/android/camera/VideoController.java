@@ -57,6 +57,7 @@ public class VideoController extends PieController
         float sweep = FLOAT_PI_DIVIDED_BY_TWO / 2;
 
         addItem(CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE, FLOAT_PI_DIVIDED_BY_TWO - sweep, sweep);
+        addItem(CameraSettings.KEY_EXPOSURE, 3 * FLOAT_PI_DIVIDED_BY_TWO - sweep, sweep);
         addItem(CameraSettings.KEY_WHITE_BALANCE, 3 * FLOAT_PI_DIVIDED_BY_TWO + sweep, sweep);
         if (group.findPreference(CameraSettings.KEY_CAMERA_ID) != null) {
             PieItem item = makeItem(R.drawable.ic_switch_video_facing_holo_light);
