@@ -961,6 +961,7 @@ public class PhotoModule
             // don't show animation
             if (ApiHelper.HAS_SURFACE_TEXTURE && !mIsImageCaptureIntent
                     && mActivity.mShowCameraAppView
+                    && !mBurstShotInProgress
                     && !(mHDRShotInProgress && mBurstShotsDone < 3)) {
                 // Finish capture animation
                 ((CameraScreenNail) mActivity.mCameraScreenNail).animateSlide();
@@ -1785,11 +1786,13 @@ public class PhotoModule
         if (mBurstShotsDone >= nbBurstShots) {
             if (!mHDRShotInProgress) {
                 mBurstShotsDone = 0;
+                mBurstShotInProgress = false;
                 mSnapshotOnIdle = false;
             }
         } else if (mSnapshotOnIdle == false) {
             // queue a new shot until we done all our shots
             mSnapshotOnIdle = true;
+            mBurstShotInProgress = true;
         }
     }
 
