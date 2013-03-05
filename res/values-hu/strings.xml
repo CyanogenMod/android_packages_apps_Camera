@@ -58,6 +58,7 @@
     <!-- Settings screen, Focus mode dialog radio button choices -->
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatikus"</string>
     <string name="pref_camera_focusmode_entry_continuouspicture">Folyamatos fókusz</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Folyamatos videó</string>
     <string name="pref_camera_focusmode_entry_extended">Kiterjesztett</string>
     <string name="pref_camera_focusmode_entry_facedetect">Arcfelismerés</string>
     <string name="pref_camera_focusmode_entry_facepriority">Arc prioritásos</string>
@@ -65,6 +66,7 @@
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Végtelen"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makró"</string>
     <string name="pref_camera_focusmode_entry_portrait">Portré</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Hiperfokális</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Vakumód"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatikus"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Be"</string>
@@ -102,9 +104,14 @@
     <string name="pref_camera_scenemode_entry_steadyphoto">Állókép</string>
     <string name="pref_camera_scenemode_entry_theatre">Színház</string>
     <string name="pref_camera_scenemode_entry_backlight">Háttérvilágítás</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Háttérvilágítású portré</string>
     <string name="pref_camera_scenemode_entry_document">Dokumentum</string>
     <string name="pref_camera_scenemode_entry_barcode">Vonalkód</string>
     <string name="pref_camera_scenemode_entry_text">Szöveg</string>
+    <string name="pref_camera_scenemode_entry_beauty">Szépség</string>
+    <string name="pref_camera_scenemode_entry_flowers">Virágok</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Fehértábla</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Háttér életlenítése</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Nem választható ebben a módban."</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Megvilágítás"</string>
     <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
