@@ -35,3 +35,5 @@
 /sdcard		datamedia	/dev/null
 /system		ext4		/dev/block/mmcblk0p35
 /devlog		ext4		/dev/block/mmcblk0p22
+# USB OTG DRIVE
+/external_sd  	vfat		/dev/block/sda1
