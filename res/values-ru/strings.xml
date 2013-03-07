@@ -30,7 +30,7 @@
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Нет доступа к SD-карте."</string>
     <string name="review_cancel" msgid="8188009385853399254">"ОТМЕНА"</string>
     <string name="review_ok" msgid="1156261588693116433">"ГОТОВО"</string>
-    <string name="time_lapse_title" msgid="4360632427760662691">"Режим замедленной съемки"</string>
+    <string name="time_lapse_title" msgid="4360632427760662691">"Режим замедленной съёмки"</string>
     <string name="pref_camera_id_title" msgid="4040791582294635851">"Выбор камеры"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Задняя"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Передняя"</string>
@@ -40,7 +40,7 @@
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Качество видео"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Высокое качество"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Низкое качество"</string>
-    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Замедленная съемка"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Замедленная съёмка"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Настройки камеры"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Настройки видеокамеры"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Размер фото"</string>
@@ -54,7 +54,8 @@
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"320 x 240 пикс."</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Режим фокусировки"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Авто"</string>
-    <string name="pref_camera_focusmode_entry_continuouspicture">Бесконечный фокус</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Непрерывная фокусировка</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Непрерывная фокусировка в видео</string>
     <string name="pref_camera_focusmode_entry_extended">Расширенный</string>
     <string name="pref_camera_focusmode_entry_facedetect">Определение лиц</string>
     <string name="pref_camera_focusmode_entry_facepriority">Фокус на лица</string>
@@ -62,6 +63,7 @@
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Бесконечность"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Макро"</string>
     <string name="pref_camera_focusmode_entry_portrait">Портрет</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Гиперфокальная</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Режим вспышки"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Авто"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Вкл."</string>
@@ -72,7 +74,7 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Солнечный свет"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Лампа дн. света"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Пасмурный день"</string>
-    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Режим съемки"</string>
+    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Режим съёмки"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Авто"</string>
     <string name="pref_camera_scenemode_entry_hdr" msgid="2923388802899511784">"Эффект HDR"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Спорт"</string>
@@ -98,11 +100,16 @@
     <string name="pref_camera_scenemode_entry_snow">Снег</string>
     <string name="pref_camera_scenemode_entry_steadyphoto">Стабильный снимок</string>
     <string name="pref_camera_scenemode_entry_theatre">Театр</string>
-    <string name="pref_camera_scenemode_entry_backlight">Подсветка</string>
+    <string name="pref_camera_scenemode_entry_backlight">Контровой свет</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Портрет с контровым светом</string>
     <string name="pref_camera_scenemode_entry_document">Документ</string>
     <string name="pref_camera_scenemode_entry_barcode">Штрих-код</string>
     <string name="pref_camera_scenemode_entry_text">Текст</string>
-    <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Недоступно в режиме съемки"</string>
+    <string name="pref_camera_scenemode_entry_beauty">Великолепие</string>
+    <string name="pref_camera_scenemode_entry_flowers">Цветы</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Доска</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Размытие фона</string>
+    <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Недоступно в режиме съёмки"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Экспозиция"</string>
     <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"ОК"</string>
@@ -200,8 +207,8 @@
     <string name="time_lapse_hours" msgid="1776453661704997476">"ч."</string>
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Готово"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Задайте интервал"</string>
-    <string name="set_time_interval_help" msgid="6665849510484821483">"Сначала включите режим замедленной съемки."</string>
-    <string name="remember_location_title" msgid="9060472929006917810">"Сохранять места съемок?"</string>
+    <string name="set_time_interval_help" msgid="6665849510484821483">"Сначала включите режим замедленной съёмки."</string>
+    <string name="remember_location_title" msgid="9060472929006917810">"Сохранять места съёмок?"</string>
     <string name="remember_location_prompt" msgid="724592331305808098">"Укажите, где было сделано фото или видеозапись."\n\n"Эта информация, а также сохраненные изображения будут доступны другим приложениям."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Нет, спасибо"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Да"</string>
