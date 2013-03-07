@@ -54,7 +54,8 @@
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Λειτουργία εστίασης"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Αυτόματο"</string>
-    <string name="pref_camera_focusmode_entry_continuouspicture">Συνεχής εικόνα</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Συνεχής - Εικόνα</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Συνεχής - Βίντεο</string>
     <string name="pref_camera_focusmode_entry_extended">Εκτεταμένη</string>
     <string name="pref_camera_focusmode_entry_facedetect">Εντοπισμός προσώπου</string>
     <string name="pref_camera_focusmode_entry_facepriority">Προτεραιότητα προσώπου</string>
@@ -62,6 +63,7 @@
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Άπειρο"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Απόσταση"</string>
     <string name="pref_camera_focusmode_entry_portrait">Πορτραίτο</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Υπερ-εστίαση</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Λειτουργία φλας"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Αυτόματο"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Ενεργοποιημένο"</string>
@@ -98,10 +100,15 @@
     <string name="pref_camera_scenemode_entry_snow">Χιόνι</string>
     <string name="pref_camera_scenemode_entry_steadyphoto">Σταθερή φωτογραφία</string>
     <string name="pref_camera_scenemode_entry_theatre">Θέατρο</string>
-    <string name="pref_camera_scenemode_entry_backlight">Backlight</string>
+    <string name="pref_camera_scenemode_entry_backlight">Οπίσθιος φωτισμός</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Πορτραίτο με οπίσθιο φωτισμό</string>
     <string name="pref_camera_scenemode_entry_document">Έγγραφο</string>
     <string name="pref_camera_scenemode_entry_barcode">Barcode</string>
     <string name="pref_camera_scenemode_entry_text">Κείμενο</string>
+    <string name="pref_camera_scenemode_entry_beauty">Ομορφιά</string>
+    <string name="pref_camera_scenemode_entry_flowers">Λουλούδια</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Άσπρος πίνακας</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Θολό παρασκήνιο</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Δεν υπάρχει δυνατότητα επιλογής στη λειτουργία σκηνής."</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Έκθεση"</string>
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
