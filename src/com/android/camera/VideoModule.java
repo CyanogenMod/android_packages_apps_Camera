@@ -2017,13 +2017,13 @@ public class VideoModule implements CameraModule,
 
         // Set JPEG quality.
         int jpegQuality = Integer.parseInt(mPreferences.getString(
-                CameraSettings.KEY_JPEG,
+                CameraSettings.KEY_VIDEOCAMERA_JPEG,
                 mActivity.getString(R.string.pref_camera_jpeg_default)));
         mParameters.setJpegQuality(jpegQuality);
 
         // Color effect
         String colorEffect = mPreferences.getString(
-                CameraSettings.KEY_COLOR_EFFECT,
+                CameraSettings.KEY_VIDEOCAMERA_COLOR_EFFECT,
                 mActivity.getString(R.string.pref_camera_coloreffect_default));
         if (Util.isSupported(colorEffect, mParameters.getSupportedColorEffects())) {
             mParameters.setColorEffect(colorEffect);
