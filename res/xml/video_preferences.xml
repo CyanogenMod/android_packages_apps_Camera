@@ -81,13 +81,13 @@
             camera:entries="@array/pref_switch_entries"
             camera:entryValues="@array/pref_switch_entryvalues" />
     <ListPreference
-            camera:key="pref_camera_coloreffect_key"
+            camera:key="pref_camera_video_coloreffect_key"
             camera:defaultValue="@string/pref_camera_coloreffect_default"
             camera:title="@string/pref_camera_coloreffect_title"
             camera:entries="@array/pref_camera_coloreffect_entries"
             camera:entryValues="@array/pref_camera_coloreffect_entryvalues" />
     <ListPreference
-            camera:key="pref_camera_jpeg_key"
+            camera:key="pref_camera_video_jpeg_key"
             camera:defaultValue="@string/pref_camera_jpeg_default"
             camera:title="@string/pref_camera_jpeg_title"
             camera:entries="@array/pref_camera_jpeg_entries"
