@@ -7,6 +7,9 @@ TARGET_NO_BOOTLOADER := true
 TARGET_BOARD_PLATFORM := msm8960
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
+TARGET_ARCH := arm
+TARGET_ARCH_VARIANT := armv7-a-neon
+TARGET_ARCH_VARIANT_CPU := cortex-a9
 TARGET_BOOTLOADER_BOARD_NAME := m7
 
 BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.hardware=m7 user_debug=31
