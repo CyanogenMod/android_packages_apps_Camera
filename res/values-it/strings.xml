@@ -57,11 +57,13 @@
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Infinito"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
     <string name="pref_camera_focusmode_entry_continuouspicture">"Scatti continui"</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Video continuo</string>
     <string name="pref_camera_focusmode_entry_extended">"Esteso"</string>
     <string name="pref_camera_focusmode_entry_facedetect">"Rilevamento viso"</string>
     <string name="pref_camera_focusmode_entry_facepriority">"Priorità viso"</string>
     <string name="pref_camera_focusmode_entry_fixed">"Fisso"</string>
     <string name="pref_camera_focusmode_entry_portrait">"Ritratto"</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Iperfocale</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Modalità flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatica"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Attiva"</string>
@@ -99,13 +101,16 @@
     <string name="pref_camera_scenemode_entry_steadyphoto">"Treppiede"</string>
     <string name="pref_camera_scenemode_entry_theatre">"Teatro"</string>
     <string name="pref_camera_scenemode_entry_backlight">"Retroilluminato"</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Ritratto retroilluminato</string>
     <string name="pref_camera_scenemode_entry_document">"Documento"</string>
     <string name="pref_camera_scenemode_entry_barcode">"Codice a barre"</string>
     <string name="pref_camera_scenemode_entry_text">"Testo"</string>
+    <string name="pref_camera_scenemode_entry_beauty">Bellezza</string>
+    <string name="pref_camera_scenemode_entry_flowers">Fiori</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Lavagna bianca</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Fondale sfocato</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Non selezionabile in modalità scena."</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Esposizione"</string>
-    <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
-    <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Lo spazio dell\'archivio USB si sta esaurendo. Cambia l\'impostazione di qualità o elimina alcune immagini o altri file."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Lo spazio della scheda SD si sta esaurendo. Cambia l\'impostazione di qualità o elimina alcune immagini o altri file."</string>
