@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--  Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
--->
+ -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
@@ -186,12 +186,14 @@
     <string name="pref_camera_burst_entry_10">10 disparos</string>
     <string name="pref_camera_burst_entry_15">15 disparos</string>
     <string name="pref_camera_burst_entry_20">20 disparos</string>
-    <string name="pref_camera_focusmode_entry_continuouspicture">Continuo</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Imagen continua</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Vídeo continuo</string>
     <string name="pref_camera_focusmode_entry_extended">Amplio</string>
     <string name="pref_camera_focusmode_entry_facedetect">Detección rostro</string>
     <string name="pref_camera_focusmode_entry_facepriority">Prioridad rostro</string>
     <string name="pref_camera_focusmode_entry_fixed">Fijo</string>
     <string name="pref_camera_focusmode_entry_portrait">Retrato</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Hiperfocal</string>
     <string name="pref_camera_iso_entry_auto">Auto</string>
     <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
     <string name="pref_camera_jpeg_title">Calidad JPEG</string>
@@ -236,9 +238,14 @@
     <string name="pref_camera_scenemode_entry_steadyphoto">Foto rápida</string>
     <string name="pref_camera_scenemode_entry_theatre">Teatro</string>
     <string name="pref_camera_scenemode_entry_backlight">Contraluz</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Retrato a contraluz</string>
     <string name="pref_camera_scenemode_entry_document">Documento</string>
     <string name="pref_camera_scenemode_entry_barcode">Código de barras</string>
     <string name="pref_camera_scenemode_entry_text">Texto</string>
+    <string name="pref_camera_scenemode_entry_beauty">Belleza</string>
+    <string name="pref_camera_scenemode_entry_flowers">Flores</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Pizarra</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Fondo desenfocado</string>
     <string name="pref_camera_focustime_title">Duración del enfoque</string>
     <string name="pref_camera_focustime_summary">Seleccionar la duración del enfoque al tocar la pantalla</string>
     <string name="pref_camera_focustime_entry_5">5 segundos</string>
