@@ -54,16 +54,8 @@
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"320 x 240 пикс."</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Режим фокусировки"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Авто"</string>
-    <string name="pref_camera_focusmode_entry_continuouspicture">Непрерывная фокусировка</string>
-    <string name="pref_camera_focusmode_entry_continuousvideo">Непрерывная фокусировка в видео</string>
-    <string name="pref_camera_focusmode_entry_extended">Расширенный</string>
-    <string name="pref_camera_focusmode_entry_facedetect">Определение лиц</string>
-    <string name="pref_camera_focusmode_entry_facepriority">Фокус на лица</string>
-    <string name="pref_camera_focusmode_entry_fixed">Фиксированный</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Бесконечность"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Макро"</string>
-    <string name="pref_camera_focusmode_entry_portrait">Портрет</string>
-    <string name="pref_camera_focusmode_entry_hyperfocal">Гиперфокальная</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Режим вспышки"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Авто"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Вкл."</string>
@@ -79,36 +71,8 @@
     <string name="pref_camera_scenemode_entry_hdr" msgid="2923388802899511784">"Эффект HDR"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Спорт"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Ночь"</string>
-    <string name="pref_camera_scenemode_entry_nightportrait">Портрет ночью</string>
-    <string name="pref_camera_scenemode_entry_nightindoor">Тёмное помещение</string>
-    <string name="pref_camera_scenemode_entry_supernight">Тёмная ночь</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Закат"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Вечеринка"</string>
-    <string name="pref_camera_scenemode_entry_duskdawn">Сумерки/Рассвет</string>
-    <string name="pref_camera_scenemode_entry_candlelight">Искусственный свет</string>
-    <string name="pref_camera_scenemode_entry_fallcolor">Цвета осени</string>
-    <string name="pref_camera_scenemode_entry_closeup">Крупный план</string>
-    <string name="pref_camera_scenemode_entry_landscape">Пейзаж</string>
-    <string name="pref_camera_scenemode_entry_aqua">Вода</string>
-    <string name="pref_camera_scenemode_entry_sports">Спорт</string>
-    <string name="pref_camera_scenemode_entry_mood">Настроение</string>
-    <string name="pref_camera_scenemode_entry_fireworks">Фейерверк</string>
-    <string name="pref_camera_scenemode_entry_cine">Кино</string>
-    <string name="pref_camera_scenemode_entry_oldfilm">Старый фильм</string>
-    <string name="pref_camera_scenemode_entry_beach">Пляж</string>
-    <string name="pref_camera_scenemode_entry_portrait">Портрет</string>
-    <string name="pref_camera_scenemode_entry_snow">Снег</string>
-    <string name="pref_camera_scenemode_entry_steadyphoto">Стабильный снимок</string>
-    <string name="pref_camera_scenemode_entry_theatre">Театр</string>
-    <string name="pref_camera_scenemode_entry_backlight">Контровой свет</string>
-    <string name="pref_camera_scenemode_entry_backlightportrait">Портрет с контровым светом</string>
-    <string name="pref_camera_scenemode_entry_document">Документ</string>
-    <string name="pref_camera_scenemode_entry_barcode">Штрих-код</string>
-    <string name="pref_camera_scenemode_entry_text">Текст</string>
-    <string name="pref_camera_scenemode_entry_beauty">Великолепие</string>
-    <string name="pref_camera_scenemode_entry_flowers">Цветы</string>
-    <string name="pref_camera_scenemode_entry_whiteboard">Доска</string>
-    <string name="pref_camera_scenemode_entry_backgroundblur">Размытие фона</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Недоступно в режиме съёмки"</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Экспозиция"</string>
     <skip />
@@ -213,6 +177,8 @@
     <string name="remember_location_no" msgid="7541394381714894896">"Нет, спасибо"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Да"</string>
 
+    <!-- **** CYANOGENMOD EDITS START **** -->
+
     <string name="pref_camera_power_shutter_title">Съёмка кнопкой питания</string>
 
     <!-- Settings screen, ISO dialog radio button choices -->
@@ -269,4 +235,51 @@
     <string name="pref_camera_focustime_entry_20">20 сек.</string>
     <string name="pref_camera_focustime_entry_30">30 сек.</string>
     <string name="pref_camera_focustime_entry_infinite">Бесконечно</string>
+
+    <string name="pref_camera_picturesize_entry_13mp">13 Мпикс.</string>
+    <string name="pref_camera_picturesize_entry_9mp">9 Мпикс.</string>
+    <string name="pref_camera_picturesize_entry_6_4mp">6.4 Мпикс.</string>
+    <string name="pref_camera_picturesize_entry_2_5mp">2.5 Мпикс.</string>
+
+    <string name="pref_camera_focusmode_entry_continuouspicture">Непрерывная фокусировка</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Непрерывная фокусировка в видео</string>
+    <string name="pref_camera_focusmode_entry_extended">Расширенный</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Определение лиц</string>
+    <string name="pref_camera_focusmode_entry_facepriority">Фокус на лица</string>
+    <string name="pref_camera_focusmode_entry_fixed">Фиксированный</string>
+
+    <string name="pref_camera_focusmode_entry_portrait">Портрет</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Гиперфокальная</string>
+
+    <string name="pref_camera_scenemode_entry_nightportrait">Портрет ночью</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">Тёмное помещение</string>
+    <string name="pref_camera_scenemode_entry_supernight">Тёмная ночь</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Сумерки/Рассвет</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Искусственный свет</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Цвета осени</string>
+    <string name="pref_camera_scenemode_entry_closeup">Крупный план</string>
+    <string name="pref_camera_scenemode_entry_landscape">Пейзаж</string>
+    <string name="pref_camera_scenemode_entry_aqua">Вода</string>
+    <string name="pref_camera_scenemode_entry_sports">Спорт</string>
+    <string name="pref_camera_scenemode_entry_mood">Настроение</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Фейерверк</string>
+    <string name="pref_camera_scenemode_entry_cine">Кино</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">Старый фильм</string>
+    <string name="pref_camera_scenemode_entry_beach">Пляж</string>
+    <string name="pref_camera_scenemode_entry_portrait">Портрет</string>
+    <string name="pref_camera_scenemode_entry_snow">Снег</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Стабильный снимок</string>
+    <string name="pref_camera_scenemode_entry_theatre">Театр</string>
+    <string name="pref_camera_scenemode_entry_backlight">Контровой свет</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Портрет с контровым светом</string>
+    <string name="pref_camera_scenemode_entry_document">Документ</string>
+    <string name="pref_camera_scenemode_entry_barcode">Штрих-код</string>
+    <string name="pref_camera_scenemode_entry_text">Текст</string>
+    <string name="pref_camera_scenemode_entry_beauty">Великолепие</string>
+    <string name="pref_camera_scenemode_entry_flowers">Цветы</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Доска</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Размытие фона</string>
+
+    <!-- **** CYANOGENMOD ADDITIONS END **** -->
+
 </resources>
