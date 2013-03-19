@@ -54,19 +54,10 @@
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Fókuszálás módja"</string>
 
-
     <!-- Settings screen, Focus mode dialog radio button choices -->
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatikus"</string>
-    <string name="pref_camera_focusmode_entry_continuouspicture">Folyamatos fókusz</string>
-    <string name="pref_camera_focusmode_entry_continuousvideo">Folyamatos videó</string>
-    <string name="pref_camera_focusmode_entry_extended">Kiterjesztett</string>
-    <string name="pref_camera_focusmode_entry_facedetect">Arcfelismerés</string>
-    <string name="pref_camera_focusmode_entry_facepriority">Arc prioritásos</string>
-    <string name="pref_camera_focusmode_entry_fixed">Rögzített</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Végtelen"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makró"</string>
-    <string name="pref_camera_focusmode_entry_portrait">Portré</string>
-    <string name="pref_camera_focusmode_entry_hyperfocal">Hiperfokális</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Vakumód"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatikus"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Be"</string>
@@ -82,36 +73,8 @@
     <string name="pref_camera_scenemode_entry_hdr" msgid="2923388802899511784">"HDR"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Akció"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Éjszakai"</string>
-    <string name="pref_camera_scenemode_entry_nightportrait">Éjszakai portré</string>
-    <string name="pref_camera_scenemode_entry_nightindoor">Éjszakai beltéri</string>
-    <string name="pref_camera_scenemode_entry_supernight">Sötét éjszakai</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Napnyugta"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Buli"</string>
-    <string name="pref_camera_scenemode_entry_duskdawn">Alkonyat</string>
-    <string name="pref_camera_scenemode_entry_candlelight">Gyertyafény</string>
-    <string name="pref_camera_scenemode_entry_fallcolor">Őszi színek</string>
-    <string name="pref_camera_scenemode_entry_closeup">Közeli</string>
-    <string name="pref_camera_scenemode_entry_landscape">Tájkép</string>
-    <string name="pref_camera_scenemode_entry_aqua">Víz</string>
-    <string name="pref_camera_scenemode_entry_sports">Sport esemény</string>
-    <string name="pref_camera_scenemode_entry_mood">Hangulat</string>
-    <string name="pref_camera_scenemode_entry_fireworks">Tűzijáték</string>
-    <string name="pref_camera_scenemode_entry_cine">Mozi</string>
-    <string name="pref_camera_scenemode_entry_oldfilm">Régi film</string>
-    <string name="pref_camera_scenemode_entry_beach">Strand</string>
-    <string name="pref_camera_scenemode_entry_portrait">Portré</string>
-    <string name="pref_camera_scenemode_entry_snow">Hó</string>
-    <string name="pref_camera_scenemode_entry_steadyphoto">Állókép</string>
-    <string name="pref_camera_scenemode_entry_theatre">Színház</string>
-    <string name="pref_camera_scenemode_entry_backlight">Háttérvilágítás</string>
-    <string name="pref_camera_scenemode_entry_backlightportrait">Háttérvilágítású portré</string>
-    <string name="pref_camera_scenemode_entry_document">Dokumentum</string>
-    <string name="pref_camera_scenemode_entry_barcode">Vonalkód</string>
-    <string name="pref_camera_scenemode_entry_text">Szöveg</string>
-    <string name="pref_camera_scenemode_entry_beauty">Szépség</string>
-    <string name="pref_camera_scenemode_entry_flowers">Virágok</string>
-    <string name="pref_camera_scenemode_entry_whiteboard">Fehértábla</string>
-    <string name="pref_camera_scenemode_entry_backgroundblur">Háttér életlenítése</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Nem választható ebben a módban."</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Megvilágítás"</string>
     <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
@@ -217,15 +180,62 @@
     <string name="remember_location_no" msgid="7541394381714894896">"Nem, köszönöm."</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Igen"</string>
 
-     <!-- More Settings screen, power button title -->
-     <string name="pref_camera_power_shutter_title">Bekapcsoló gombbal exponálás</string>
+    <!-- **** CYANOGENMOD EDITS START **** -->
 
-     <!-- Settings screen, ISO dialog radio button choices -->
-     <string name="pref_camera_iso_entry_auto">Automatikus</string>
-     <string name="pref_camera_iso_entry_isodeblur">Automatikus (HJR)</string>
-     <string name="pref_camera_iso_entry_isosports">Sportesemény</string>
-     <string name="pref_camera_iso_entry_isonight">Éjszakai</string>
-     <string name="pref_camera_iso_entry_isomovie">Mozi</string>
+    <!-- Settings screen, Picture size entries -->
+    <string name="pref_camera_picturesize_entry_13mp">13 megapixel</string>
+    <string name="pref_camera_picturesize_entry_9mp">9 megapixel</string>
+    <string name="pref_camera_picturesize_entry_6_4mp">6,4 megapixel</string>
+    <string name="pref_camera_picturesize_entry_2_5mp">2,5 megapixel</string>
+    <string name="pref_camera_picturesize_entry_2_1mp">2,1 megapixel</string>
+
+    <!-- Settings screen, Focus mode dialog radio button choices -->
+    <string name="pref_camera_focusmode_entry_continuouspicture">Folyamatos fókusz</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Folyamatos videó</string>
+    <string name="pref_camera_focusmode_entry_extended">Kiterjesztett</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Arcfelismerés</string>
+    <string name="pref_camera_focusmode_entry_facepriority">Arc prioritásos</string>
+    <string name="pref_camera_focusmode_entry_fixed">Rögzített</string>
+    <string name="pref_camera_focusmode_entry_portrait">Portré</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Hiperfokális</string>
+    <string name="pref_camera_scenemode_entry_nightportrait">Éjszakai portré</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">Éjszakai beltéri</string>
+    <string name="pref_camera_scenemode_entry_supernight">Sötét éjszakai</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Alkonyat</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Gyertyafény</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Őszi színek</string>
+    <string name="pref_camera_scenemode_entry_closeup">Közeli</string>
+    <string name="pref_camera_scenemode_entry_landscape">Tájkép</string>
+    <string name="pref_camera_scenemode_entry_aqua">Víz</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport esemény</string>
+    <string name="pref_camera_scenemode_entry_mood">Hangulat</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Tűzijáték</string>
+    <string name="pref_camera_scenemode_entry_cine">Mozi</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">Régi film</string>
+    <string name="pref_camera_scenemode_entry_beach">Strand</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portré</string>
+    <string name="pref_camera_scenemode_entry_snow">Hó</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Állókép</string>
+    <string name="pref_camera_scenemode_entry_theatre">Színház</string>
+    <string name="pref_camera_scenemode_entry_backlight">Háttérvilágítás</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Háttérvilágítású portré</string>
+    <string name="pref_camera_scenemode_entry_document">Dokumentum</string>
+    <string name="pref_camera_scenemode_entry_barcode">Vonalkód</string>
+    <string name="pref_camera_scenemode_entry_text">Szöveg</string>
+    <string name="pref_camera_scenemode_entry_beauty">Szépség</string>
+    <string name="pref_camera_scenemode_entry_flowers">Virágok</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Fehértábla</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Háttér életlenítése</string>
+
+    <!-- More Settings screen, power button title -->
+    <string name="pref_camera_power_shutter_title">Bekapcsoló gombbal exponálás</string>
+
+    <!-- Settings screen, ISO dialog radio button choices -->
+    <string name="pref_camera_iso_entry_auto">Automatikus</string>
+    <string name="pref_camera_iso_entry_isodeblur">Automatikus (HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">Sportesemény</string>
+    <string name="pref_camera_iso_entry_isonight">Éjszakai</string>
+    <string name="pref_camera_iso_entry_isomovie">Mozi</string>
 
     <!-- Settings screen, JPEG Quality -->
     <string name="pref_camera_jpeg_title">JPEG minőség</string>
@@ -250,7 +260,7 @@
     <string name="pref_camera_coloreffect_entry_emboss">Dombormű</string>
     <string name="pref_camera_coloreffect_entry_sketch">Vázlat</string>
     <string name="pref_camera_coloreffect_entry_neon">Neon</string>
-    <string name="pref_camera_coloreffect_entry_pastel">Pasztel</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pasztell</string>
     <string name="pref_camera_coloreffect_entry_mosaic">Mozaik</string>
     <string name="pref_camera_coloreffect_entry_redtint">Vörös árnyalat</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Kék árnyalat</string>
@@ -260,6 +270,7 @@
     <string name="pref_camera_burst_title">Sorozatfelvétel</string>
 
     <!-- Settings screen, Burst mode entries -->
+    <string name="pref_camera_burst_entry_off">Ki</string>
     <string name="pref_camera_burst_entry_5">5 kép</string>
     <string name="pref_camera_burst_entry_10">10 kép</string>
     <string name="pref_camera_burst_entry_15">15 kép</string>
@@ -277,4 +288,5 @@
     <string name="pref_camera_focustime_entry_30">30 mp</string>
     <string name="pref_camera_focustime_entry_infinite">Végtelen</string>
 
+    <!-- **** CYANOGENMOD ADDITIONS END **** -->
 </resources>
