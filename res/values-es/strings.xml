@@ -254,6 +254,11 @@
     <string name="pref_camera_focustime_entry_20">20 segundos</string>
     <string name="pref_camera_focustime_entry_30">30 segundos</string>
     <string name="pref_camera_focustime_entry_infinite">Infinita</string>
+    <string name="pref_camera_picturesize_entry_13mp">13 MP</string>
+    <string name="pref_camera_picturesize_entry_9mp">9 MP</string>
+    <string name="pref_camera_picturesize_entry_6_4mp">6,4 MP</string>
+    <string name="pref_camera_picturesize_entry_2_5mp">2,5 MP</string>
+    <string name="pref_camera_picturesize_entry_2_1mp">2,1 MP</string>
 
     <!-- CYANOGENMOD ADDITIONS END -->
 </resources>
