@@ -91,10 +91,10 @@
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Upeo wa ukubwa umefikiwa."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Haraka mno"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Panorama inaandaliwa"</string>
-    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Haikuweza kuhifadhi Picha ya mandhari."</string>
-    <string name="pano_dialog_title" msgid="5755531234434437697">"Mandhari"</string>
-    <string name="pano_capture_indication" msgid="8248825828264374507">"Piga Picha ya mandhari"</string>
-    <string name="pano_dialog_waiting_previous" msgid="7800325815031423516">"Inasubiri mandhari ya awali"</string>
+    <string name="pano_dialog_panorama_failed" msgid="2155692796549642116">"Imeshindwa kuhifadhi picha ya panorama."</string>
+    <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
+    <string name="pano_capture_indication" msgid="8248825828264374507">"Inapiga picha ya panorama"</string>
+    <string name="pano_dialog_waiting_previous" msgid="7800325815031423516">"Inasubiri picha ya awali ya panorama"</string>
     <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Inahifadhi…"</string>
     <string name="pano_review_rendering" msgid="2887552964129301902">"Inaonyesha panorama"</string>
     <string name="tap_to_focus" msgid="8863427645591903760">"Gusa ili kulenga."</string>
@@ -132,7 +132,7 @@
     <skip />
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Badilisha hadi kwa picha"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Badilisha hadi kwa video"</string>
-    <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Badilisha hadi kwa panorama"</string>
+    <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Badilisha hadi panorama"</string>
     <string name="accessibility_switch_to_new_panorama" msgid="8116783308051524188">"Badili hadi kwenye panorama mpya"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Ukaguzi umeghairiwa"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Ukaguzi umekamilika"</string>
