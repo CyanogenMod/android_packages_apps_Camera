@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pref_camera_picturesize_entry_13mp">13 MP</string>
+    <string name="pref_camera_picturesize_entry_9mp">9 MP</string>
+    <string name="pref_camera_picturesize_entry_6_4mp">6,4 MP</string>
+    <string name="pref_camera_picturesize_entry_2_5mp">2,5 MP</string>
+    <string name="pref_camera_picturesize_entry_2_1mp">2,1 MP</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Scatti continui</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Video continuo</string>
+    <string name="pref_camera_focusmode_entry_extended">Esteso</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Rilevamento viso</string>
+    <string name="pref_camera_focusmode_entry_facepriority">Priorità viso</string>
+    <string name="pref_camera_focusmode_entry_fixed">Fisso</string>
+    <string name="pref_camera_focusmode_entry_portrait">Ritratto</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Iperfocale</string>
+    <string name="pref_camera_scenemode_entry_nightportrait">Ritratto notturno</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">Interno di notte</string>
+    <string name="pref_camera_scenemode_entry_supernight">Notte nera</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Crepuscolo</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Lume di candela</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Colori di primavera</string>
+    <string name="pref_camera_scenemode_entry_closeup">Ravvicinato</string>
+    <string name="pref_camera_scenemode_entry_landscape">Panorama</string>
+    <string name="pref_camera_scenemode_entry_aqua">Acqua</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_mood">Umore</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Fuochi d\'artificio</string>
+    <string name="pref_camera_scenemode_entry_cine">Cinema</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">Vecchio film</string>
+    <string name="pref_camera_scenemode_entry_beach">Spiaggia</string>
+    <string name="pref_camera_scenemode_entry_portrait">Ritratto</string>
+    <string name="pref_camera_scenemode_entry_snow">Neve</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Treppiede</string>
+    <string name="pref_camera_scenemode_entry_theatre">Teatro</string>
+    <string name="pref_camera_scenemode_entry_backlight">Retroilluminato</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Ritratto retroilluminato</string>
+    <string name="pref_camera_scenemode_entry_document">Documento</string>
+    <string name="pref_camera_scenemode_entry_barcode">Codice a barre</string>
+    <string name="pref_camera_scenemode_entry_text">Testo</string>
+    <string name="pref_camera_scenemode_entry_beauty">Bellezza</string>
+    <string name="pref_camera_scenemode_entry_flowers">Fiori</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Lavagna bianca</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Fondale sfocato</string>
+    <string name="pref_camera_power_shutter_title">Scatta tasto On/Off</string>
+    <string name="pref_camera_iso_entry_auto">Automatico</string>
+    <string name="pref_camera_iso_entry_isodeblur">Automatico (HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">Sport</string>
+    <string name="pref_camera_iso_entry_isonight">Notte</string>
+    <string name="pref_camera_iso_entry_isomovie">Film</string>
+    <string name="pref_camera_jpeg_title">Qualità JPEG</string>
+    <string name="pref_camera_jpeg_entry_super">Eccellente</string>
+    <string name="pref_camera_jpeg_entry_high">Alta</string>
+    <string name="pref_camera_jpeg_entry_medium">Media</string>
+    <string name="pref_camera_jpeg_entry_low">Bassa</string>
+    <string name="pref_camera_coloreffect_title">Effetti colore</string>
+    <string name="pref_camera_coloreffect_entry_none">Nessuno</string>
+    <string name="pref_camera_coloreffect_entry_mono">Bianco e nero</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Seppia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negativo</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Solarizzato</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Posterizzazione</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Acqua</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Rilievo</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Schizzo</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastello</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mosaico</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Tinta rossa</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Tinta blu</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Tinta verde</string>
+    <string name="pref_camera_burst_title">Scatti continui</string>
+    <string name="pref_camera_burst_entry_off">Off</string>
+    <string name="pref_camera_burst_entry_5">5 scatti</string>
+    <string name="pref_camera_burst_entry_10">10 scatti</string>
+    <string name="pref_camera_burst_entry_15">15 scatti</string>
+    <string name="pref_camera_burst_entry_20">20 scatti</string>
+    <string name="pref_camera_focustime_title">Fuoco: durata tocco</string>
+    <string name="pref_camera_focustime_summary">Seleziona la durata per il tocco della messa a fuoco</string>
+    <string name="pref_camera_focustime_entry_5">5s</string>
+    <string name="pref_camera_focustime_entry_10">10s</string>
+    <string name="pref_camera_focustime_entry_15">15s</string>
+    <string name="pref_camera_focustime_entry_20">20s</string>
+    <string name="pref_camera_focustime_entry_30">30s</string>
+    <string name="pref_camera_focustime_entry_infinite">Infinito</string>
+</resources>
