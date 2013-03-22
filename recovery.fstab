@@ -30,10 +30,8 @@
 /boot		emmc		/dev/block/mmcblk0p33
 /cache		ext4		/dev/block/mmcblk0p36
 /data		ext4		/dev/block/mmcblk0p37
-/misc		emmc		/dev/block/mmcblk0p19
 /recovery	emmc		/dev/block/mmcblk0p34
 /sdcard		datamedia	/dev/null
 /system		ext4		/dev/block/mmcblk0p35
-/devlog		ext4		/dev/block/mmcblk0p22
 # USB OTG DRIVE
 /external_sd  	vfat		/dev/block/sda1
