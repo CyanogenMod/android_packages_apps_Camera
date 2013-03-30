@@ -1,0 +1,5 @@
+key 116   POWER             WAKE_DROPPED
+key 114   VOLUME_DOWN       WAKE
+key 115   VOLUME_UP         WAKE
+
+key 107   ENDCALL           WAKE_DROPPED

@@ -4,6 +4,10 @@ $(call inherit-product, vendor/cm/config/gsm.mk)
 # Release name
 PRODUCT_RELEASE_NAME := m7
 
+# Boot animation
+TARGET_SCREEN_HEIGHT := 1920
+TARGET_SCREEN_WIDTH := 1080
+
 # Inherit some common CM stuff.
 $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 
