@@ -25,7 +25,7 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-
+#
 # Start camera server as daemon
 service qcamerasvr /system/bin/mm-qcamera-daemon
         class late_start
@@ -42,7 +42,6 @@ on emmc-fs
    insmod /system/lib/modules/moc_platform_mod.ko
    insmod /system/lib/modules/moc_crypto.ko
    insmod /system/lib/modules/dm-crypt.ko
-   insmod /system/lib/modules/wp_mod.ko
 
    mkdir /data 0771 system system
    devwait emmc@userdata
@@ -505,21 +504,11 @@ service pnpmgr /system/bin/pnpmgr
     class main
     user root
 
-service adaptive /system/bin/adaptive -c 0 -s 150 -b 210
-    class main
-    user root
-    disabled
-
 service kickstart /system/bin/qcks -1 modem_st1 -2 modem_st2 -3 radio_config -4 cdma_record -i /firmware/mdm/image/ -u
-    class core
-    user root
-    oneshot
-    disabled
-
-service memlock /system/bin/memlock
-    class main
-    cgroup bg
-    user root
+        class core
+        user root
+        oneshot
+        disabled
 
 service usf_tester /system/bin/usf_tester
     user system
@@ -598,11 +587,6 @@ on property:init.svc.bootanim=stopped
     start thermald
     stop pnpmgr
     start pnpmgr
-
-service post-boot /system/bin/sh /system/etc/init.post_boot.sh
-    user root
-    disabled
-    oneshot
 
 # ++SSD_BT
 service btld /system/bin/btld -lpm 1 -hb 3000000
