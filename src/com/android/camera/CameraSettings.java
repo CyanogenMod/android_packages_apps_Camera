@@ -180,8 +180,8 @@ public class CameraSettings {
         ListPreference videoEffect = group.findPreference(KEY_VIDEO_EFFECT);
         ListPreference cameraHdr = group.findPreference(KEY_CAMERA_HDR);
         ListPreference isoMode = group.findPreference(KEY_ISO_MODE);
-        ListPreference jpegQuality = group.findPreference(KEY_JPEG);
         ListPreference colorEffect = group.findPreference(KEY_COLOR_EFFECT);
+        ListPreference videoColorEffect = group.findPreference(KEY_VIDEOCAMERA_COLOR_EFFECT);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -207,10 +207,9 @@ public class CameraSettings {
                     flashMode, mParameters.getSupportedFlashModes());
         }
         if (focusMode != null) {
-            if (!Util.isFocusAreaSupported(mParameters)) {
-                filterUnsupportedOptions(group,
-                        focusMode, mParameters.getSupportedFocusModes());
-            } else if (!mContext.getResources().getBoolean(R.bool.wantsFocusModes)) {
+            filterUnsupportedOptions(group,
+                    focusMode, mParameters.getSupportedFocusModes());
+            if (!mContext.getResources().getBoolean(R.bool.wantsFocusModes)) {
                 // Remove the focus mode if we can use tap-to-focus.
                 removePreference(group, focusMode.getKey());
             }
@@ -249,6 +248,10 @@ public class CameraSettings {
         if (colorEffect != null) {
             filterUnsupportedOptions(group,
                     colorEffect, mParameters.getSupportedColorEffects());
+        }
+        if (videoColorEffect != null) {
+            filterUnsupportedOptions(group,
+                    videoColorEffect, mParameters.getSupportedColorEffects());
         }
     }
 
