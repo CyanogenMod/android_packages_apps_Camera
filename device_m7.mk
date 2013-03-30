@@ -1,8 +1,5 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
-# The gps config appropriate for this device
-$(call inherit-product, device/common/gps/gps_us_supl.mk)
-
 $(call inherit-product-if-exists, vendor/htc/m7/m7-vendor.mk)
 
 DEVICE_PACKAGE_OVERLAYS += device/htc/m7/overlay
@@ -60,6 +57,15 @@ PRODUCT_COPY_FILES += \
     device/htc/m7/dsp/soundimage/srsfx_trumedia_voice.cfg:system/etc/soundimage/srsfx_trumedia_voice.cfg \
     device/htc/m7/dsp/soundimage/srs_geq10.cfg:system/etc/soundimage/srs_geq10.cfg \
     device/htc/m7/dsp/soundimage/srs_global.cfg:system/etc/soundimage/srs_global.cfg
+	
+# Media config
+PRODUCT_COPY_FILES += \
+    device/htc/m7/configs/audio_policy.conf:system/etc/audio_policy.conf \
+    device/htc/m7/configs/AudioBTID.csv:system/etc/AudioBTID.csv \
+    device/htc/m7/configs/AudioBTIDnew.csv:system/etc/AudioBTIDnew.csvs \
+    device/htc/m7/configs/media_profiles.xml:system/etc/media_profiles.xml \
+    device/htc/m7/configs/media_codecs.xml:system/etc/media_codecs.xml \
+    device/htc/m7/dsp/snd_soc_msm/snd_soc_msm_2x_Fusion3:system/etc/snd_soc_msm/snd_soc_msm_2x_Fusion3
 	
 # Keylayouts and Keychars
 PRODUCT_COPY_FILES += \
@@ -183,7 +189,41 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.compass.xml \
     packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml
 
-$(call inherit-product, build/target/product/full.mk)
+# GPS config
+PRODUCT_COPY_FILES += \
+    device/htc/m7/configs/gps.conf:system/etc/gps.conf
+	
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+	persist.sys.usb.config=mtp
+	
+# Common build properties
+PRODUCT_PROPERTY_OVERRIDES += \
+    com.qc.hardware=true \
+    debug.composition.type=dyn \
+    debug.egl.hw=1 \
+    debug.mdpcomp.logs=0 \
+    debug.sf.hw=1 \
+    dev.pm.dyn_samplingrate=1 \
+    lpa.decode=true \
+    persist.audio.fluence.mode=endfire \
+    persist.audio.vr.enable=false \
+    persist.audio.handset.mic=digital \
+    persist.audio.speaker.location=high \
+    persist.gps.qmienabled=true \
+    persist.hwc.mdpcomp.enable=true \
+    persist.thermal.monitor=true \
+    ro.baseband.arch=msm \
+    ro.opengles.version=131072 \
+    ro.product.wireless=WCN3660 \
+    ro.qc.sdk.audio.fluencetype=fluence \
+    ro.qualcomm.bt.hci_transport=smd \
+    ro.telephony.ril_class=HTC8960RIL \
+    ro.use_data_netmgrd=true \
+    wifi.interface=wlan0
+	
+$(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
+PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
+PRODUCT_AAPT_PREF_CONFIG := xhdpi
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 PRODUCT_NAME := full_m7
 PRODUCT_DEVICE := m7
