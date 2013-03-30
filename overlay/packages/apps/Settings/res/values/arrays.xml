@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Values for the notification light pulse spinners -->
+    <string-array name="notification_pulse_length_entries" translatable="false">
+        <item>@string/pulse_length_always_on</item>
+        <item>@string/pulse_length_normal</item>
+        <item>@string/pulse_length_long</item>
+    </string-array>
+
+    <string-array name="notification_pulse_length_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="notification_pulse_speed_entries" translatable="false">
+        <item>@string/pulse_speed_normal</item>
+    </string-array>
+
+    <string-array name="notification_pulse_speed_values" translatable="false">
+        <item>1000</item>
+    </string-array>
+
+</resources>

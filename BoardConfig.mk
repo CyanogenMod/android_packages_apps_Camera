@@ -26,6 +26,9 @@
 
 BOARD_VENDOR := htc
 
+# Include path
+TARGET_SPECIFIC_HEADER_PATH := device/htc/m7/include
+
 # inherit from the proprietary version
 -include vendor/htc/m7/BoardConfigVendor.mk
 
@@ -66,12 +69,13 @@ TARGET_KERNEL_SOURCE := kernel/htc/m7-$(TARGET_KERNEL_VERSION)
 BOARD_USES_ALSA_AUDIO:= true
 BOARD_USES_FLUENCE_INCALL := true
 BOARD_USES_SEPERATED_AUDIO_INPUT := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/htc/m7/bluetooth
+TARGET_QCOM_AUDIO_VARIANT := caf
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_QCOM := true
 BLUETOOTH_HCI_USE_MCT := true
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/htc/m7/bluetooth
 
 # Camera
 TARGET_PROVIDES_CAMERA_HAL := true

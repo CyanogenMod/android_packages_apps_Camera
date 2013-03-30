@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Copyright 2011, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<!-- These resources are around just to allow their values to be customized
+     for different hardware and product builds. -->
+<resources>
+
+    <!-- Set to false to enable CRT-off animation. -->
+    <bool name="config_animateScreenLights">false</bool>
+
+    <!-- disable menu hard key in non-pattern lockscreen -->
+    <bool name="config_disableMenuKeyInLockScreen">true</bool>
+
+    <!-- Component name of the service providing network location support. -->
+    <!-- string name="config_networkLocationProviderPackageName">com.google.android.location.NetworkLocationProvider</string -->
+
+    <!-- Component name of the service providing geocoder API support. -->
+    <!-- string name="config_geocodeProviderPackageName">com.google.android.location.GeocodeProvider</string -->
+
+    <!-- Flag indicating whether we should enable the automatic brightness in Settings.
+         config_hardware_automatic_brightness_available is not set, so we will use software implementation -->
+    <bool name="config_automatic_brightness_available">true</bool>
+
+    <!-- Needed for capacitive buttons to work without toggling auto-brightness. -->
+    <!-- <bool name="config_autoBrightnessButtonKeyboard">false</bool -->
+
+    <!-- XXXXX NOTE THE FOLLOWING RESOURCES USE THE WRONG NAMING CONVENTION.
+         Please don't copy them, copy anything else. -->
+
+    <!-- An Array of "[Connection name],[ConnectivityManager.TYPE_xxxx],
+         [associated radio-type],[priority],[restoral-timer(ms)],[dependencyMet]  -->
+
+    <!-- List of regexpressions describing the interface (if any) that represent tetherable
+         USB interfaces.  If the device doesn't want to support tething over USB this should
+         be empty.  An example would be "usb.*" -->
+    <string-array translatable="false" name="config_tether_usb_regexs">
+        <item>"rndis0"</item>
+    </string-array>
+
+    <!-- List of regexpressions describing the interface (if any) that represent tetherable
+         Wifi interfaces.  If the device doesn't want to support tethering over Wifi this
+         should be empty.  An example would be "softap.*" -->
+    <string-array translatable="false" name="config_tether_wifi_regexs">
+        <item>"wlan\\d"</item>
+    </string-array>
+
+    <!-- List of regexpressions describing the interface (if any) that represent tetherable
+         bluetooth interfaces.  If the device doesn't want to support tethering over bluetooth this
+         should be empty. -->
+    <string-array translatable="false" name="config_tether_bluetooth_regexs">
+        <item>"bnep\\d"</item>
+    </string-array>
+
+    <!-- Boolean indicating whether the wifi chipset has dual frequency band support -->
+    <bool translatable="false" name="config_wifi_dual_band_support">true</bool>
+
+    <!-- Boolean indicating whether the wifi chipset has background scan support -->
+    <bool translatable="false" name="config_wifi_background_scan_support">true</bool>
+
+    <!-- Is the notification LED intrusive? Used to decide if there should be a disable option -->
+    <bool name="config_intrusiveNotificationLed">true</bool>
+
+    <!-- We dont have different firmware for wifi modes, prevent reloading it -->
+    <bool name="config_wifiApFirmwareReload">false</bool>
+
+    <!-- Hardware 'face' keys present on the device, stored as a bit field.
+         This integer should equal the sum of the corresponding value for each
+         of the following keys present:
+             1 - Home
+             2 - Back
+             4 - Menu
+             8 - Search
+            16 - App switch
+         For example, a device with Home, Back and Menu keys would set this
+         config to 7. -->
+    <integer name="config_deviceHardwareKeys">19</integer>
+</resources>
