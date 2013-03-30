@@ -77,7 +77,7 @@ BLUETOOTH_HCI_USE_MCT := true
 TARGET_PROVIDES_CAMERA_HAL := true
 
 # Ril
-BOARD_RIL_CLASS := "../../../device/htc/msm8960-common/libril/"
+BOARD_RIL_CLASS := "../../../device/htc/m7/libril/"
 BOARD_PROVIDES_LIBRIL := true
 
 # HTClog
@@ -89,7 +89,7 @@ TARGET_USES_C2D_COMPOSITION := true
 TARGET_USES_ION := true
 TARGET_QCOM_DISPLAY_VARIANT := caf
 BOARD_HAVE_OLD_ION_API := true
-BOARD_EGL_CFG := device/htc/msm8960-common/configs/egl.cfg
+BOARD_EGL_CFG := device/htc/m7/configs/egl.cfg
 
 # Lights
 TARGET_PROVIDES_LIBLIGHTS := true
