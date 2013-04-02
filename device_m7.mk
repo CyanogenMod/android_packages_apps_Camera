@@ -6,7 +6,7 @@ DEVICE_PACKAGE_OVERLAYS += device/htc/m7/overlay
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-    device/htc/m7/ramdisk/fstab.dlx:root/fstab.m7 \
+    device/htc/m7/ramdisk/fstab.m7:root/fstab.m7 \
 	device/htc/m7/ramdisk/init:root/init \
     device/htc/m7/ramdisk/init.m7.rc:root/init.m7.rc \
 	device/htc/m7/ramdisk/init.m7.usb.rc:root/init.m7.usb.rc \
@@ -172,7 +172,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
     frameworks/base/nfc-extras/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
-    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml
+    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
 	frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
     frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
