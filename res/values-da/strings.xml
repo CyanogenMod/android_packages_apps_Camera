@@ -230,11 +230,13 @@
 
     <!-- Settings screen, Focus mode dialog radio button choices -->
     <string name="pref_camera_focusmode_entry_continuouspicture">Kontinuerligt billede</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Kontinuerlig video</string>
     <string name="pref_camera_focusmode_entry_extended">Udvidet</string>
     <string name="pref_camera_focusmode_entry_facedetect">Ansigtsgenkendelse</string>
     <string name="pref_camera_focusmode_entry_facepriority">Ansigtsprioritet</string>
     <string name="pref_camera_focusmode_entry_fixed">Fast</string>
     <string name="pref_camera_focusmode_entry_portrait">Portræt</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Hyperfokal</string>
 
     <string name="pref_camera_scenemode_entry_nightportrait">Natportræt</string>
     <string name="pref_camera_scenemode_entry_nightindoor">Nat indendørs</string>
@@ -256,9 +258,14 @@
     <string name="pref_camera_scenemode_entry_steadyphoto">Stabilt foto</string>
     <string name="pref_camera_scenemode_entry_theatre">Teater</string>
     <string name="pref_camera_scenemode_entry_backlight">Baggrundslys</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Baggrundslys portræt</string>
     <string name="pref_camera_scenemode_entry_document">Dokument</string>
     <string name="pref_camera_scenemode_entry_barcode">Stregkode</string>
     <string name="pref_camera_scenemode_entry_text">Tekst</string>
+    <string name="pref_camera_scenemode_entry_beauty">Skønhed</string>
+    <string name="pref_camera_scenemode_entry_flowers">Blomster</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Whiteboard</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Baggrundsslør</string>
 
     <!-- Touch-to-focus duration settings -->
     <string name="pref_camera_focustime_title">Varighed for berøringsfokus</string>
@@ -271,6 +278,14 @@
     <string name="pref_camera_focustime_entry_20">20s</string>
     <string name="pref_camera_focustime_entry_30">30s</string>
     <string name="pref_camera_focustime_entry_infinite">Uendelig</string>
+
+    <!-- additional picture sizes, formatted like similar Danish strings above -->
+    <string name="pref_camera_picturesize_entry_13mp">13 megapixel</string>
+    <string name="pref_camera_picturesize_entry_9mp">9 megapixel</string>
+    <string name="pref_camera_picturesize_entry_6_4mp">6,4 megapixel</string>
+    <string name="pref_camera_picturesize_entry_2_5mp">2,5 megapixel</string>
+    <string name="pref_camera_picturesize_entry_2_1mp">2,1 megapixel</string>
+
 
     <!-- CYANOGENMOD ADDITIONS END -->
 

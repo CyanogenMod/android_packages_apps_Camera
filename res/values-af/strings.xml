@@ -177,4 +177,58 @@
     <string name="remember_location_prompt" msgid="724592331305808098">"Merk jou foto\'s en video\'s met die liggings waar hulle geneem is."\n\n"Ander programme kan toegang kry tot hierdie inligting saam met jou gestoorde prente."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Nee dankie"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ja"</string>
+
+ <!-- CYANOGENMOD ADDITIONS START -->
+    <string name="pref_camera_picturesize_entry_13mp">"13M pixels"</string>
+    <string name="pref_camera_picturesize_entry_6_4mp">"6.4M pixels"</string>
+    <string name="pref_camera_picturesize_entry_2_5mp">"2.5M pixels"</string>
+    <string name="pref_camera_picturesize_entry_2_1mp">"2.1m pixels"</string>
+
+    <string name="pref_camera_power_shutter_title">Krag sluiter</string>
+
+    <string name="pref_camera_iso_entry_auto">Outo</string>
+    <string name="pref_camera_iso_entry_isodeblur">Outo (HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">Sport</string>
+    <string name="pref_camera_iso_entry_isonight">Nag</string>
+    <string name="pref_camera_iso_entry_isomovie">Fliek</string>
+
+    <string name="pref_camera_jpeg_title">JPEG kwaliteit</string>
+    <string name="pref_camera_jpeg_entry_super">Super</string>
+    <string name="pref_camera_jpeg_entry_high">Hoë</string>
+    <string name="pref_camera_jpeg_entry_medium">Middel</string>
+    <string name="pref_camera_jpeg_entry_low">Laag</string>
+
+    <string name="pref_camera_coloreffect_title">Kleur effek</string>
+    <string name="pref_camera_coloreffect_entry_none">Geen</string>
+    <string name="pref_camera_coloreffect_entry_mono">Mono</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negatief</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Sonagtig</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Poskaart</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Aqua</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Versier</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Skets</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mosaïek</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Rooi skynsel</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Blou skynsel</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Groen skynsel</string>
+
+    <string name="pref_camera_burst_title">Sarsie mode</string>
+    <string name="pref_camera_burst_entry_off">Off</string>
+    <string name="pref_camera_burst_entry_5">5 fotos</string>
+    <string name="pref_camera_burst_entry_10">10 fotos</string>
+    <string name="pref_camera_burst_entry_15">15 fotos</string>
+    <string name="pref_camera_burst_entry_20">20 fotos</string>
+
+    <string name="pref_camera_focustime_title">Raak-fokus tydsduur</string>
+    <string name="pref_camera_focustime_summary">Kies tydsduur vir raak-fokus</string>
+    <string name="pref_camera_focustime_entry_5">5s</string>
+    <string name="pref_camera_focustime_entry_10">10s</string>
+    <string name="pref_camera_focustime_entry_15">15s</string>
+    <string name="pref_camera_focustime_entry_20">20s</string>
+    <string name="pref_camera_focustime_entry_30">30s</string>
+    <string name="pref_camera_focustime_entry_infinite">Oneindig</string>
+ <!-- CYANOGENMOD ADDITIONS END -->
 </resources>
