@@ -135,8 +135,8 @@
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Отмена"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Готово"</string>
     <string name="accessibility_review_retake" msgid="659300290054705484">"Ещё раз"</string>
-    <string name="capital_on" msgid="5491353494964003567">"Вкл"</string>
-    <string name="capital_off" msgid="7231052688467970897">"Выкл"</string>
+    <string name="capital_on" msgid="5491353494964003567">"I"</string>
+    <string name="capital_off" msgid="7231052688467970897">"O"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Выкл."</string>
     <string name="pref_video_time_lapse_frame_interval_500" msgid="2949719376111679816">"0,5 сек."</string>
     <string name="pref_video_time_lapse_frame_interval_1000" msgid="1672458758823855874">"1 сек."</string>
