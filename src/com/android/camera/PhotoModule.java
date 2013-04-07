@@ -883,6 +883,18 @@ public class PhotoModule
         }
     }
 
+    public void updateVoiceShutterIndicator(boolean active) {
+        ImageView mVSIndicator = (ImageView) mRootView.findViewById(R.id.indicator_voiceshutter);
+        if (mVSIndicator == null) {
+            return;
+        }
+        if (active) {
+            mVSIndicator.setImageResource(R.drawable.ic_switch_voiceshutter);
+        } else {
+            mVSIndicator.setImageBitmap(null);
+        }
+    }
+
     private void updateOnScreenIndicators() {
         updateSceneOnScreenIndicator(mParameters.getSceneMode());
         updateExposureOnScreenIndicator(CameraSettings.readExposure(mPreferences));

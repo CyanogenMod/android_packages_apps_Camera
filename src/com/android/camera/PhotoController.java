@@ -95,6 +95,17 @@ public class PhotoController extends PieController
             });
             mRenderer.addItem(hdr);
         }
+        if (group.findPreference(CameraSettings.KEY_VOICE_SHUTTER) != null) {
+            PieItem item = makeItem(R.drawable.ic_switch_voiceshutter);
+            item.setFixedSlice((float)(1.5 * FLOAT_PI_DIVIDED_BY_TWO) + sweep, sweep);
+            item.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(PieItem item) {
+                    Util.enableSpeechRecognition(true, mModule);
+                }
+            });
+            mRenderer.addItem(item);
+        }
         mOtherKeys = new String[] {
                 CameraSettings.KEY_STORAGE,
                 CameraSettings.KEY_SCENE_MODE,
