@@ -160,4 +160,8 @@
     <string name="pref_camera_focustime_entry_20">20s</string>
     <string name="pref_camera_focustime_entry_30">30s</string>
     <string name="pref_camera_focustime_entry_infinite">Infinite</string>
+
+    <string name="pref_camera_voiceshutter_title">Voice-triggered shutter</string>
+    <string name="pref_camera_voiceshutter_default" translatable="false">@string/setting_off_value</string>
+
 </resources>

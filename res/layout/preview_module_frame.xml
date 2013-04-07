@@ -24,6 +24,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         <include layout="@layout/preview_surface_view"/>
+        <ImageView
+            android:id="@+id/indicator_voiceshutter"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:paddingTop="5dp"
+            android:paddingLeft="5dp"
+            style="@style/MenuIndicator" />
         <ViewStub android:id="@+id/face_view_stub"
                 android:inflatedId="@+id/face_view"
                 android:layout="@layout/face_view"
