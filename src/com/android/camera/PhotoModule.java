@@ -2435,16 +2435,17 @@ public class PhotoModule
         if (mActivity.getString(R.string.setting_on_value).equals(hdr)) {
             if (!Util.useSoftwareHDR())
                 mSceneMode = Util.SCENE_MODE_HDR;
-            else
+            else {
+                mSceneMode = Parameters.SCENE_MODE_AUTO;
                 Util.setDoSoftwareHDRShot(true);
+            }
         } else {
-            if (!Util.useSoftwareHDR()) {
-                mSceneMode = mPreferences.getString(
-                    CameraSettings.KEY_SCENE_MODE,
-                    mActivity.getString(R.string.pref_camera_scenemode_default));
-            } else {
+            if (Util.useSoftwareHDR()) {
                 Util.setDoSoftwareHDRShot(false);
             }
+            mSceneMode = mPreferences.getString(
+                CameraSettings.KEY_SCENE_MODE,
+                mActivity.getString(R.string.pref_camera_scenemode_default));
         }
         if (Util.isSupported(mSceneMode, mParameters.getSupportedSceneModes())) {
             if (!mParameters.getSceneMode().equals(mSceneMode)) {
