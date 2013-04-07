@@ -260,6 +260,8 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         }
 
         unregisterReceiver(mReceiver);
+        /* Kill the voice shutter */
+        Util.enableSpeechRecognition(false, null);
     }
 
     @Override
