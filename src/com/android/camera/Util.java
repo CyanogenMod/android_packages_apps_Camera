@@ -36,9 +36,15 @@ import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.location.Location;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.ParcelFileDescriptor;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.FloatMath;
@@ -58,6 +64,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -158,6 +165,15 @@ public class Util {
     private static boolean sDoSoftwareHDRShot;
     private static int sSoftwareHDRExposureSettleTime;
 
+    private static SpeechRecognizer mSpeechRecognizer;
+    private static Intent mSpeechRecognizerIntent;
+    private static String[] mShutterWords;
+    private static PhotoModule mPhotoModule;
+    private static boolean mSpeechActive = false;
+    private static boolean mIsCountDownOn;
+    private static AudioManager mAudioManager;
+    private static boolean mIsMuted = false;
+
     private Util() {
     }
 
@@ -183,6 +199,24 @@ public class Util {
         sSoftwareHDRExposureSettleTime = context.getResources().getInteger(
                 R.integer.softwareHDRExposureSettleTime);
         sDoSoftwareHDRShot = false;
+
+        /* Voice Shutter */
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
+        mSpeechRecognizer.setRecognitionListener(new ShutterVoice());
+
+        mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                                         RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
+                                         "com.cyanogenmod.voiceshutter");
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 10);
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+
+
+        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+        mShutterWords = context.getResources().getStringArray(
+                    R.array.pref_camera_voiceshutter_triggerwords);
     }
 
     public static int dpToPixel(int dp) {
@@ -227,6 +261,33 @@ public class Util {
 
     public static boolean noFaceDetectOnFrontCamera() {
         return sNoFaceDetectOnFrontCamera;
+    }
+
+    public static boolean enableSpeechRecognition(boolean enable, PhotoModule module) {
+        if (module != null) {
+            mPhotoModule = module;
+            enable = !mSpeechActive;
+        } else if (enable && !mIsMuted) {
+            /* Avoid beeps when re-arming the listener */
+            mIsMuted = true;
+            mAudioManager.setStreamMute(AudioManager.STREAM_SYSTEM, true);
+        }
+        if (!enable) {
+            //Log.d(TAG,"Stopping speach recog - " + mSpeechActive + "/" + enable);
+            mSpeechActive = false;
+            if (mIsMuted) {
+                mAudioManager.setStreamMute(AudioManager.STREAM_SYSTEM, false);
+                mIsMuted = false;
+            }
+            mPhotoModule.updateVoiceShutterIndicator(false);
+            mSpeechRecognizer.cancel();
+        } else {
+            //Log.d(TAG,"Starting speach recog");
+            mSpeechActive = true;
+            mPhotoModule.updateVoiceShutterIndicator(true);
+            mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
+        }
+        return true;
     }
 
     // Rotates the bitmap by the specified degree.
@@ -852,4 +913,102 @@ public class Util {
             return result;
         }
     }
+
+    static class ShutterVoice implements RecognitionListener
+    {
+        public void onReadyForSpeech(Bundle params)
+        {
+            mIsCountDownOn = true;
+            mNoSpeechCountDown.start();
+            if (mIsMuted) {
+                mAudioManager.setStreamMute(AudioManager.STREAM_SYSTEM, false);
+                mIsMuted = false;
+            }
+        }
+        public void onBeginningOfSpeech()
+        {
+            if (mIsCountDownOn)
+            {
+                mIsCountDownOn = false;
+                mNoSpeechCountDown.cancel();
+            }
+        }
+        public void onBufferReceived(byte[] buffer)
+        {
+        }
+        public void onEndOfSpeech()
+        {
+        }
+        public void onRmsChanged(float rms)
+        {
+        }
+        public void onError(int error)
+        {
+            Log.d(TAG,  "error " +  error);
+            if (mIsCountDownOn)
+            {
+                mIsCountDownOn = false;
+                mNoSpeechCountDown.cancel();
+            }
+            enableSpeechRecognition(true, null);
+        }
+        public void onResults(Bundle results)
+        {
+            //Log.d(TAG, "got full results - ");
+            onPartialResults(results);
+            /* If after processing the full results there's still no answer, re-arm */
+            if (mSpeechActive) {
+                enableSpeechRecognition(true, null);
+            }
+        }
+        public void onPartialResults(Bundle partialResults)
+        {
+            //Log.d(TAG, "got partials!");
+            if (!mSpeechActive) { return; }
+            String str = new String();
+            ArrayList data = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            for (int i = 0; i < data.size(); i++)
+            {
+                Log.d(TAG, "result " + data.get(i));
+                for (int f = 0; f < mShutterWords.length; f++) {
+                    String[] resultWords = data.get(i).toString().split(" ");
+                    for (int g = 0; g < resultWords.length; g++) {
+                        if (mShutterWords[f].equalsIgnoreCase(resultWords[g])) {
+                            Log.d(TAG, "matched to hotword! FIRE SHUTTER!");
+                            mPhotoModule.onShutterButtonFocus(true);
+                            mPhotoModule.onShutterButtonClick();
+                            mSpeechActive = false;
+                            enableSpeechRecognition(false, null);
+                        }
+                    }
+                }
+                str += data.get(i);
+            }
+        }
+        public void onEvent(int eventType, Bundle params)
+        {
+        }
+    }
+
+    protected static CountDownTimer mNoSpeechCountDown = new CountDownTimer(5000, 5000)
+    {
+
+        @Override
+        public void onTick(long millisUntilFinished)
+        {
+        }
+
+        @Override
+        public void onFinish()
+        {
+            mIsCountDownOn = false;
+            /* Timed out, but still enabled. Re-arm */
+            if (mSpeechActive) {
+                enableSpeechRecognition(false, null);
+                enableSpeechRecognition(true, null);
+            }
+        }
+    };
+
+
 }
