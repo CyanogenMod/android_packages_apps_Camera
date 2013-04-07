@@ -74,6 +74,7 @@ public class CameraSettings {
     public static final String KEY_VIDEOCAMERA_COLOR_EFFECT = "pref_camera_video_coloreffect_key";
     public static final String KEY_BURST_MODE = "pref_camera_burst_key";
     public static final String KEY_STORAGE = "pref_camera_storage_key";
+    public static final String KEY_VOICE_SHUTTER = "pref_voice_shutter_key";
 
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
     public static final String VALUE_ON = "on";
@@ -186,6 +187,7 @@ public class CameraSettings {
         ListPreference colorEffect = group.findPreference(KEY_COLOR_EFFECT);
         ListPreference videoColorEffect = group.findPreference(KEY_VIDEOCAMERA_COLOR_EFFECT);
         ListPreference storage = group.findPreference(KEY_STORAGE);
+        ListPreference voiceShutter = group.findPreference(KEY_VOICE_SHUTTER);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
