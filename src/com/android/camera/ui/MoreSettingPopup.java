@@ -82,7 +82,6 @@ public class MoreSettingPopup extends AbstractSettingPopup
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView != null) return convertView;
 
             ListPreference pref = mListItem.get(position);
 
