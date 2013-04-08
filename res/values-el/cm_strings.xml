@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pref_camera_picturesize_entry_13mp">13 MP</string>
+    <string name="pref_camera_picturesize_entry_9mp">9 MP</string>
+    <string name="pref_camera_picturesize_entry_6_4mp">6.4 MP</string>
+    <string name="pref_camera_picturesize_entry_4mp">4 MP</string>
+    <string name="pref_camera_picturesize_entry_2_5mp">2.5 MP</string>
+    <string name="pref_camera_picturesize_entry_2_1mp">2.1 MP</string>
+    <string name="pref_camera_picturesize_entry_1_5mp">1.5 MP</string>
+    <string name="pref_camera_picturesize_entry_xga">XGA</string>
+    <string name="pref_camera_picturesize_entry_svga">SVGA</string>
+    <string name="pref_camera_picturesize_entry_wvga">WVGA</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Συνεχής - Εικόνα</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Συνεχής - Βίντεο</string>
+    <string name="pref_camera_focusmode_entry_extended">Εκτεταμένη</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Εντοπισμός προσώπου</string>
+    <string name="pref_camera_focusmode_entry_facepriority">Προτεραιότητα προσώπου</string>
+    <string name="pref_camera_focusmode_entry_fixed">Σταθερή</string>
+    <string name="pref_camera_focusmode_entry_portrait">Πορτραίτο</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Υπερ-εστίαση</string>
+    <string name="pref_camera_scenemode_entry_nightportrait">Νυχτερινό πορτραίτο</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">Νύχτα σε εσωτ. χώρο</string>
+    <string name="pref_camera_scenemode_entry_supernight">Απόλυτο σκοτάδι</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Αυγή/Σούρουπο</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Φως κεριού</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Fallcolor</string>
+    <string name="pref_camera_scenemode_entry_closeup">Κοντινό</string>
+    <string name="pref_camera_scenemode_entry_landscape">Τοπίο</string>
+    <string name="pref_camera_scenemode_entry_aqua">Νερό</string>
+    <string name="pref_camera_scenemode_entry_sports">Αθλήματα</string>
+    <string name="pref_camera_scenemode_entry_mood">Διάθεση</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Πυροτεχνήματα</string>
+    <string name="pref_camera_scenemode_entry_cine">Σινεμά</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">Παλιό φιλμ</string>
+    <string name="pref_camera_scenemode_entry_beach">Παραλία</string>
+    <string name="pref_camera_scenemode_entry_portrait">Πορτραίτο</string>
+    <string name="pref_camera_scenemode_entry_snow">Χιόνι</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Σταθερή φωτογραφία</string>
+    <string name="pref_camera_scenemode_entry_theatre">Θέατρο</string>
+    <string name="pref_camera_scenemode_entry_backlight">Οπίσθιος φωτισμός</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Πορτραίτο με οπίσθιο φωτισμό</string>
+    <string name="pref_camera_scenemode_entry_document">Έγγραφο</string>
+    <string name="pref_camera_scenemode_entry_barcode">Barcode</string>
+    <string name="pref_camera_scenemode_entry_text">Κείμενο</string>
+    <string name="pref_camera_scenemode_entry_beauty">Ομορφιά</string>
+    <string name="pref_camera_scenemode_entry_flowers">Λουλούδια</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Άσπρος πίνακας</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Θολό παρασκήνιο</string>
+    <string name="pref_camera_power_shutter_title">Power shutter</string>
+    <string name="pref_camera_iso_entry_auto">Αυτόματο</string>
+    <string name="pref_camera_iso_entry_isodeblur">Αυτόματο (HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">Αθλήματα</string>
+    <string name="pref_camera_iso_entry_isonight">Νύχτα</string>
+    <string name="pref_camera_iso_entry_isomovie">Ταινία</string>
+    <string name="pref_camera_jpeg_title">Ποιότητα JPEG</string>
+    <string name="pref_camera_jpeg_entry_super">Τέλεια</string>
+    <string name="pref_camera_jpeg_entry_high">Υψηλή</string>
+    <string name="pref_camera_jpeg_entry_medium">Μέτρια</string>
+    <string name="pref_camera_jpeg_entry_low">Χαμηλή</string>
+    <string name="pref_camera_coloreffect_title">Εφέ χρώματος</string>
+    <string name="pref_camera_coloreffect_entry_none">Κανένα</string>
+    <string name="pref_camera_coloreffect_entry_mono">Μονόχρωμο</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Σέπια</string>
+    <string name="pref_camera_coloreffect_entry_negative">Αρνητικό</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Υπερφωτισμός</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Ποστεροποίηση</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Νερό</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Ξεθώριασμα</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Σκίτσο</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Παστέλ</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Μωσαϊκό</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Κόκκινη απόχρωση</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Μπλε απόχρωση</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Πράσινη απόχρωση</string>
+    <string name="pref_camera_burst_title">Λειτουργία ριπής</string>
+    <string name="pref_camera_burst_entry_off">Απενεργοποιημένη</string>
+    <string name="pref_camera_burst_entry_5">5 λήψεις</string>
+    <string name="pref_camera_burst_entry_10">10 λήψεις</string>
+    <string name="pref_camera_burst_entry_15">15 λήψεις</string>
+    <string name="pref_camera_burst_entry_20">20 λήψεις</string>
+    <string name="pref_camera_focustime_title">Διάρκεια εστίασης αγγίγματος</string>
+    <string name="pref_camera_focustime_summary">Επιλογή διάρκειας για την εστίαση με άγγιγμα</string>
+    <string name="pref_camera_focustime_entry_5">5δ</string>
+    <string name="pref_camera_focustime_entry_10">10δ</string>
+    <string name="pref_camera_focustime_entry_15">15δ</string>
+    <string name="pref_camera_focustime_entry_20">20δ</string>
+    <string name="pref_camera_focustime_entry_30">30δ</string>
+    <string name="pref_camera_focustime_entry_infinite">Απεριόριστο</string>
+</resources>
