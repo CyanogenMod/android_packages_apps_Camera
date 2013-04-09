@@ -44,12 +44,12 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configurações da câmera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configurações da filmadora"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Tamanho da imagem"</string>
-    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 MP"</string>
-    <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5 megapixels"</string>
-    <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3 megapixels"</string>
-    <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2 megapixels"</string>
-    <string name="pref_camera_picturesize_entry_1_3mp" msgid="829109608140747258">"1,3 megapixels"</string>
-    <string name="pref_camera_picturesize_entry_1mp" msgid="1669725616780375066">"1 megapixel"</string>
+    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8M pixels"</string>
+    <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5M pixels"</string>
+    <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3M pixels"</string>
+    <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2M pixels"</string>
+    <string name="pref_camera_picturesize_entry_1_3mp" msgid="829109608140747258">"1,3M pixels"</string>
+    <string name="pref_camera_picturesize_entry_1mp" msgid="1669725616780375066">"1M pixels"</string>
     <string name="pref_camera_picturesize_entry_vga" msgid="806934254162981919">"VGA"</string>
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Modo de foco"</string>
@@ -125,8 +125,8 @@
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Cancelar"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Revisão concluída"</string>
     <string name="accessibility_review_retake" msgid="659300290054705484">"Repetir anexo"</string>
-    <string name="capital_on" msgid="5491353494964003567">"LIGADO"</string>
-    <string name="capital_off" msgid="7231052688467970897">"DESLIGADO"</string>
+    <string name="capital_on" msgid="5491353494964003567">"LIG."</string>
+    <string name="capital_off" msgid="7231052688467970897">"DESL."</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Desligado"</string>
     <string name="pref_video_time_lapse_frame_interval_500" msgid="2949719376111679816">"0,5 segundo"</string>
     <string name="pref_video_time_lapse_frame_interval_1000" msgid="1672458758823855874">"1 segundo"</string>
