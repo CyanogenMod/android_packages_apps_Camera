@@ -187,8 +187,13 @@
     <string name="pref_camera_picturesize_entry_11_5mp">11,5 megapixel</string>
     <string name="pref_camera_picturesize_entry_9mp">9 megapixel</string>
     <string name="pref_camera_picturesize_entry_6_4mp">6,4 megapixel</string>
+    <string name="pref_camera_picturesize_entry_4mp">4 megapixel</string>
     <string name="pref_camera_picturesize_entry_2_5mp">2,5 megapixel</string>
     <string name="pref_camera_picturesize_entry_2_1mp">2,1 megapixel</string>
+    <string name="pref_camera_picturesize_entry_1_5mp">1,5M megapixel</string>
+    <string name="pref_camera_picturesize_entry_svga">SVGA</string>
+    <string name="pref_camera_picturesize_entry_wvga">WVGA</string>
+    <string name="pref_camera_picturesize_entry_xga">XGA</string>
 
     <!-- Settings screen, Focus mode dialog radio button choices -->
     <string name="pref_camera_focusmode_entry_continuouspicture">Folyamatos fókusz</string>
