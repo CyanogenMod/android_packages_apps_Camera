@@ -44,29 +44,35 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kameraeinstellungen"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Camcordereinstellungen"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Bildgröße"</string>
-    <string name="pref_camera_picturesize_entry_13mp">13 Megapixel</string>
-    <string name="pref_camera_picturesize_entry_9mp">9 Megapixel</string>
+    <string name="pref_camera_picturesize_entry_13mp">"13 Megapixel"</string>
+    <string name="pref_camera_picturesize_entry_11_5mp">"11.5 Megapixel"</string>
+    <string name="pref_camera_picturesize_entry_9mp">"9 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_6_4mp">6,4 Megapixel</string>
+    <string name="pref_camera_picturesize_entry_6_4mp">"6,4 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5 Megapixel"</string>
+    <string name="pref_camera_picturesize_entry_4mp">"4 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_2_5mp">2,5 Megapixel</string>
-    <string name="pref_camera_picturesize_entry_2_1mp">2,1 Megapixel</string>
+    <string name="pref_camera_picturesize_entry_2_5mp">"2,5 Megapixel"</string>
+    <string name="pref_camera_picturesize_entry_2_1mp">"2,1 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2 Megapixel"</string>
+    <string name="pref_camera_picturesize_entry_1_5mp">"1.5 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_1_3mp" msgid="829109608140747258">"1,3 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_1mp" msgid="1669725616780375066">"1 Megapixel"</string>
+    <string name="pref_camera_picturesize_entry_xga">"XGA"</string>
+    <string name="pref_camera_picturesize_entry_svga">"SVGA"</string>
+    <string name="pref_camera_picturesize_entry_wvga">"WVGA"</string>
     <string name="pref_camera_picturesize_entry_vga" msgid="806934254162981919">"VGA"</string>
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Fokussierungsmodus"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatisch"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Unendlich"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
-    <string name="pref_camera_focusmode_entry_continuouspicture">Kontinuierlich</string>
-    <string name="pref_camera_focusmode_entry_extended">Erweitert</string>
-    <string name="pref_camera_focusmode_entry_facedetect">Gesichtserkennung</string>
-    <string name="pref_camera_focusmode_entry_facepriority">Gesichter bevorzugen</string>
-    <string name="pref_camera_focusmode_entry_fixed">Fixiert</string>
-    <string name="pref_camera_focusmode_entry_portrait">Porträt</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">"Kontinuierlich"</string>
+    <string name="pref_camera_focusmode_entry_extended">"Erweitert"</string>
+    <string name="pref_camera_focusmode_entry_facedetect">"Gesichtserkennung"</string>
+    <string name="pref_camera_focusmode_entry_facepriority">"Gesichter bevorzugen"</string>
+    <string name="pref_camera_focusmode_entry_fixed">"Fixiert"</string>
+    <string name="pref_camera_focusmode_entry_portrait">"Porträt"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Blitzmodus"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatisch"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"An"</string>
@@ -82,28 +88,28 @@
     <string name="pref_camera_scenemode_entry_hdr" msgid="2923388802899511784">"HDR"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Action"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Nachtaufnahme"</string>
-    <string name="pref_camera_scenemode_entry_nightportrait">Nachtporträt</string>
-    <string name="pref_camera_scenemode_entry_nightindoor">Nacht-Innenraum</string>
-    <string name="pref_camera_scenemode_entry_supernight">Dunkle Nacht</string>
+    <string name="pref_camera_scenemode_entry_nightportrait">"Nachtporträt"</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">"Nacht-Innenraum"</string>
+    <string name="pref_camera_scenemode_entry_supernight">"Dunkle Nacht"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Sonnenuntergang"</string>
-    <string name="pref_camera_scenemode_entry_fallcolor">Herbst</string>
-    <string name="pref_camera_scenemode_entry_closeup">Nahaufnahme</string>
-    <string name="pref_camera_scenemode_entry_landscape">Landschaft</string>
-    <string name="pref_camera_scenemode_entry_aqua">Unterwasser</string>
-    <string name="pref_camera_scenemode_entry_sports">Sport</string>
-    <string name="pref_camera_scenemode_entry_mood">Stimmungsvoll</string>
-    <string name="pref_camera_scenemode_entry_fireworks">Feuerwerk</string>
-    <string name="pref_camera_scenemode_entry_cine">Kino</string>
-    <string name="pref_camera_scenemode_entry_oldfilm">Alter Film</string>
-    <string name="pref_camera_scenemode_entry_beach">Strand</string>
-    <string name="pref_camera_scenemode_entry_portrait">Porträt</string>
-    <string name="pref_camera_scenemode_entry_snow">Schnee</string>
-    <string name="pref_camera_scenemode_entry_steadyphoto">Standbild</string>
-    <string name="pref_camera_scenemode_entry_theatre">Theater</string>
-    <string name="pref_camera_scenemode_entry_backlight">Hintergrundlicht</string>
-    <string name="pref_camera_scenemode_entry_document">Dokument</string>
-    <string name="pref_camera_scenemode_entry_barcode">Barcode</string>
-    <string name="pref_camera_scenemode_entry_text">Text</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">"Herbst"</string>
+    <string name="pref_camera_scenemode_entry_closeup">"Nahaufnahme"</string>
+    <string name="pref_camera_scenemode_entry_landscape">"Landschaft"</string>
+    <string name="pref_camera_scenemode_entry_aqua">"Unterwasser"</string>
+    <string name="pref_camera_scenemode_entry_sports">"Sport"</string>
+    <string name="pref_camera_scenemode_entry_mood">"Stimmungsvoll"</string>
+    <string name="pref_camera_scenemode_entry_fireworks">"Feuerwerk"</string>
+    <string name="pref_camera_scenemode_entry_cine">"Kino"</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">"Alter Film"</string>
+    <string name="pref_camera_scenemode_entry_beach">"Strand"</string>
+    <string name="pref_camera_scenemode_entry_portrait">"Porträt"</string>
+    <string name="pref_camera_scenemode_entry_snow">"Schnee"</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">"Standbild"</string>
+    <string name="pref_camera_scenemode_entry_theatre">"Theater"</string>
+    <string name="pref_camera_scenemode_entry_backlight">"Hintergrundlicht"</string>
+    <string name="pref_camera_scenemode_entry_document">"Dokument"</string>
+    <string name="pref_camera_scenemode_entry_barcode">"Barcode"</string>
+    <string name="pref_camera_scenemode_entry_text">"Text"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Party"</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Diese Einstellung kann im Szenenmodus nicht ausgewählt werden."</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Belichtung"</string>
