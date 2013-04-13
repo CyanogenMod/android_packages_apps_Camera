@@ -177,8 +177,6 @@ public class PanoramaModule implements CameraModule,
     private CameraProxy mCameraDevice;
     private boolean mPaused;
 
-    private ComboPreferences mPreferences;
-
     private class MosaicJpeg {
         public MosaicJpeg(byte[] data, int width, int height) {
             this.data = data;
@@ -229,8 +227,6 @@ public class PanoramaModule implements CameraModule,
         mRootView = (ViewGroup) parent;
 
         createContentView();
-
-        mPreferences = new ComboPreferences(activity);
 
         mContentResolver = mActivity.getContentResolver();
         if (reuseScreenNail) {

@@ -239,8 +239,6 @@ public class VideoModule implements CameraModule,
     private int mVideoWidth;
     private int mVideoHeight;
 
-    private Storage mStorage;
-
     protected class CameraOpenThread extends Thread {
         @Override
         public void run() {
