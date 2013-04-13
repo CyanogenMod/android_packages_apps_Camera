@@ -109,6 +109,9 @@
     <!-- Settings screen, Camcorder setting category title -->
     <string name="pref_camcorder_settings_category">Camcorder settings</string>
 
+    <!-- More Settings screen, storage title -->
+    <string name="pref_camera_storage_title">Storage</string>
+
     <!-- Settings screen, Picture size title -->
     <string name="pref_camera_picturesize_title">Picture size</string>
 

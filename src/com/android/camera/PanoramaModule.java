@@ -177,6 +177,8 @@ public class PanoramaModule implements CameraModule,
     private CameraProxy mCameraDevice;
     private boolean mPaused;
 
+    private ComboPreferences mPreferences;
+
     private class MosaicJpeg {
         public MosaicJpeg(byte[] data, int width, int height) {
             this.data = data;
@@ -227,6 +229,8 @@ public class PanoramaModule implements CameraModule,
         mRootView = (ViewGroup) parent;
 
         createContentView();
+
+        mPreferences = new ComboPreferences(activity);
 
         mContentResolver = mActivity.getContentResolver();
         if (reuseScreenNail) {
@@ -866,8 +870,7 @@ public class PanoramaModule implements CameraModule,
         if (jpegData != null) {
             String filename = PanoUtil.createName(
                     mActivity.getResources().getString(R.string.pano_file_name_format), mTimeTaken);
-            String filepath = Storage.generateFilepath(filename);
-            Storage.writeFile(filepath, jpegData);
+            String filepath = Storage.getStorage().writeFile(filename, jpegData);
 
             // Add Exif tags.
             try {
@@ -886,7 +889,7 @@ public class PanoramaModule implements CameraModule,
             }
 
             int jpegLength = (int) (new File(filepath).length());
-            return Storage.addImage(mContentResolver, filename, mTimeTaken,
+            return Storage.getStorage().addImage(mContentResolver, filename, mTimeTaken,
                     null, orientation, jpegLength, filepath, width, height);
         }
         return null;

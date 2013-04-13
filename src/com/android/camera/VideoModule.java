@@ -239,6 +239,8 @@ public class VideoModule implements CameraModule,
     private int mVideoWidth;
     private int mVideoHeight;
 
+    private Storage mStorage;
+
     protected class CameraOpenThread extends Thread {
         @Override
         public void run() {
@@ -1443,7 +1445,7 @@ public class VideoModule implements CameraModule,
         // Used when emailing.
         String filename = title + convertOutputFormatToFileExt(outputFileFormat);
         String mime = convertOutputFormatToMimeType(outputFileFormat);
-        String path = Storage.DIRECTORY + '/' + filename;
+        String path = Storage.getStorage().generateDirectory() + '/' + filename;
         String tmpPath = path + ".tmp";
         mCurrentVideoValues = new ContentValues(7);
         mCurrentVideoValues.put(Video.Media.TITLE, title);
@@ -2145,7 +2147,7 @@ public class VideoModule implements CameraModule,
         // Write default effect out to shared prefs
         writeDefaultEffectToPrefs();
         // Tell VideoCamer to re-init based on new shared pref values.
-        onSharedPreferenceChanged();
+        onSharedPreferenceChanged(null);
     }
 
     @Override
@@ -2326,7 +2328,7 @@ public class VideoModule implements CameraModule,
     }
 
     @Override
-    public void onSharedPreferenceChanged() {
+    public void onSharedPreferenceChanged(String key) {
         // ignore the events after "onPause()" or preview has not started yet
         if (mPaused) return;
         synchronized (mPreferences) {
@@ -2340,6 +2342,11 @@ public class VideoModule implements CameraModule,
 
             // Check if the current effects selection has changed
             if (updateEffectSelection()) return;
+
+            if (CameraSettings.KEY_STORAGE.equals(key)){
+                mActivity.updateStorageSpaceAndHint();
+                mActivity.reuseCameraScreenNail(!mIsVideoCaptureIntent);
+            }
 
             readVideoPreferences();
             showTimeLapseUI(mCaptureTimeLapse);
@@ -2684,7 +2691,7 @@ public class VideoModule implements CameraModule,
         String title = Util.createJpegName(dateTaken);
         int orientation = Exif.getOrientation(data);
         Size s = mParameters.getPictureSize();
-        Uri uri = Storage.addImage(mContentResolver, title, dateTaken, loc, orientation, data,
+        Uri uri = Storage.getStorage().addImage(mContentResolver, title, dateTaken, loc, orientation, data,
                 s.width, s.height);
         if (uri != null) {
             Util.broadcastNewPicture(mActivity, uri);

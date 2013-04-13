@@ -64,7 +64,7 @@ public class PieController {
 
     public void onSettingChanged(ListPreference pref) {
         if (mListener != null) {
-            mListener.onSharedPreferenceChanged();
+            mListener.onSharedPreferenceChanged(pref.getKey());
         }
     }
 
