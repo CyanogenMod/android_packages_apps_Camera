@@ -109,48 +109,21 @@
     <!-- Settings screen, Camcorder setting category title -->
     <string name="pref_camcorder_settings_category">Camcorder settings</string>
 
-    <!-- More Settings screen, storage title -->
-    <string name="pref_camera_storage_title">Storage</string>
-
     <!-- Settings screen, Picture size title -->
     <string name="pref_camera_picturesize_title">Picture size</string>
 
-    <!-- Settings screen, dialog choice for 13 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_13mp">13M pixels</string>
-    <!-- Settings screen, dialog choice for 12.8 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_12_8mp">12.8M pixels</string>
-    <!-- Settings screen, dialog choice for 11.5 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_11_5mp">11.5M pixels</string>
-    <!-- Settings screen, dialog choice for 9 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_9mp">9M pixels</string>
     <!-- Settings screen, dialog choice for 8 megapixels picture size [CHAR LIMIT=15] -->
     <string name="pref_camera_picturesize_entry_8mp">8M pixels</string>
-    <!-- Settings screen, dialog choice for 6.4 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_6_4mp">6.4M pixels</string>
     <!-- Settings screen, dialog choice for 5 megapixels picture size [CHAR LIMIT=15] -->
     <string name="pref_camera_picturesize_entry_5mp">5M pixels</string>
-    <!-- Settings screen, dialog choice for 4 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_4mp">4M pixels</string>
     <!-- Settings screen, dialog choice for 3 megapixels picture size [CHAR LIMIT=15] -->
     <string name="pref_camera_picturesize_entry_3mp">3M pixels</string>
-    <!-- Settings screen, dialog choice for 2.5 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_2_5mp">2.5M pixels</string>
-    <!-- Settings screen, dialog choice for 2.1 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_2_1mp">2.1M pixels</string>
     <!-- Settings screen, dialog choice for 2 megapixels picture size [CHAR LIMIT=15] -->
     <string name="pref_camera_picturesize_entry_2mp">2M pixels</string>
-    <!-- Settings screen, dialog choice for 1.5 megapixels picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_1_5mp">1.5M pixels</string>
     <!-- Settings screen, dialog choice for 1.3 megapixels picture size [CHAR LIMIT=15] -->
     <string name="pref_camera_picturesize_entry_1_3mp">1.3M pixels</string>
     <!-- Settings screen, dialog choice for 1 megapixels picture size [CHAR LIMIT=15] -->
     <string name="pref_camera_picturesize_entry_1mp">1M pixels</string>
-    <!-- Settings screen, dialog choice for XGA picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_xga">XGA</string>
-    <!-- Settings screen, dialog choice for SVGA picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_svga">SVGA</string>
-    <!-- Settings screen, dialog choice for WVGA picture size [CHAR LIMIT=15] -->
-    <string name="pref_camera_picturesize_entry_wvga">WVGA</string>
     <!-- Settings screen, dialog choice for VGA picture size [CHAR LIMIT=15] -->
     <string name="pref_camera_picturesize_entry_vga">VGA</string>
     <!-- Settings screen, dialog choice for QVGA picture size [CHAR LIMIT=15] -->
@@ -161,16 +134,8 @@
 
     <!-- Settings screen, Focus mode dialog radio button choices -->
     <string name="pref_camera_focusmode_entry_auto">Auto</string>
-    <string name="pref_camera_focusmode_entry_continuouspicture">Continuous Picture</string>
-    <string name="pref_camera_focusmode_entry_continuousvideo">Continuous Video</string>
-    <string name="pref_camera_focusmode_entry_extended">Extended</string>
-    <string name="pref_camera_focusmode_entry_facedetect">Face detect</string>
-    <string name="pref_camera_focusmode_entry_facepriority">Face priority</string>
-    <string name="pref_camera_focusmode_entry_fixed">Fixed</string>
     <string name="pref_camera_focusmode_entry_infinity">Infinity</string>
     <string name="pref_camera_focusmode_entry_macro">Macro</string>
-    <string name="pref_camera_focusmode_entry_portrait">Portrait</string>
-    <string name="pref_camera_focusmode_entry_hyperfocal">Hyperfocal</string>
 
     <!-- Default flash mode setting.-->
     <string name="pref_camera_flashmode_default" translatable="false">auto</string>
@@ -216,38 +181,10 @@
     <string name="pref_camera_scenemode_entry_action">Action</string>
     <!-- Scene mode that takes long exposures to capture night scenes without flash. [CHAR LIMIT=16] -->
     <string name="pref_camera_scenemode_entry_night">Night</string>
-    <string name="pref_camera_scenemode_entry_nightportrait">Night Portrait</string>
-    <string name="pref_camera_scenemode_entry_nightindoor">Night indoor</string>
-    <string name="pref_camera_scenemode_entry_supernight">Black night</string>
     <!-- Scene mode optimized for taking images in the sunset. [CHAR LIMIT=16] -->
     <string name="pref_camera_scenemode_entry_sunset">Sunset</string>
     <!-- Scene mode optimized for taking indoor low-lights pictures. [CHAR LIMIT=16] -->
     <string name="pref_camera_scenemode_entry_party">Party</string>
-    <string name="pref_camera_scenemode_entry_duskdawn">Duskdawn</string>
-    <string name="pref_camera_scenemode_entry_candlelight">Candlelight</string>
-    <string name="pref_camera_scenemode_entry_fallcolor">Fallcolor</string>
-    <string name="pref_camera_scenemode_entry_closeup">Closeup</string>
-    <string name="pref_camera_scenemode_entry_landscape">Landscape</string>
-    <string name="pref_camera_scenemode_entry_aqua">Aqua</string>
-    <string name="pref_camera_scenemode_entry_sports">Sports</string>
-    <string name="pref_camera_scenemode_entry_mood">Mood</string>
-    <string name="pref_camera_scenemode_entry_fireworks">Fireworks</string>
-    <string name="pref_camera_scenemode_entry_cine">Cine</string>
-    <string name="pref_camera_scenemode_entry_oldfilm">Old film</string>
-    <string name="pref_camera_scenemode_entry_beach">Beach</string>
-    <string name="pref_camera_scenemode_entry_portrait">Portrait</string>
-    <string name="pref_camera_scenemode_entry_snow">Snow</string>
-    <string name="pref_camera_scenemode_entry_steadyphoto">Steadyphoto</string>
-    <string name="pref_camera_scenemode_entry_theatre">Theatre</string>
-    <string name="pref_camera_scenemode_entry_backlight">Backlight</string>
-    <string name="pref_camera_scenemode_entry_backlightportrait">Backlight portrait</string>
-    <string name="pref_camera_scenemode_entry_document">Document</string>
-    <string name="pref_camera_scenemode_entry_barcode">Barcode</string>
-    <string name="pref_camera_scenemode_entry_text">Text</string>
-    <string name="pref_camera_scenemode_entry_beauty">Beauty</string>
-    <string name="pref_camera_scenemode_entry_flowers">Flowers</string>
-    <string name="pref_camera_scenemode_entry_whiteboard">Whiteboard</string>
-    <string name="pref_camera_scenemode_entry_backgroundblur">Background blur</string>
 
     <!-- Toast after trying to select a setting that is not allowed to change in scene mode [CHAR LIMIT=NONE] -->
     <string name="not_selectable_in_scene_mode">Not selectable in scene mode.</string>
@@ -257,7 +194,7 @@
     <string name="pref_exposure_default" translatable="false">0</string>
 
     <!-- Default HDR entry value -->
-    <string name="pref_camera_hdr_default" translatable="false">@string/setting_off_value</string>
+    <string name="pref_camera_hdr_default">@string/setting_off_value</string>
 
     <!-- Dialog "OK" button. Dismisses dialog. -->
     <string name="dialog_ok">OK</string>
@@ -500,87 +437,5 @@ CHAR LIMIT = NONE] -->
     <string name="remember_location_no">No thanks</string>
     <!-- Positive answer for first run dialog asking if the user wants to remember photo locations [CHAR LIMIT = 20] -->
     <string name="remember_location_yes">Yes</string>
-
-     <!-- More Settings screen, power button title -->
-     <string name="pref_camera_power_shutter_title">Power shutter</string>
-     <string name="pref_camera_power_shutter_default" translatable="false">off</string>
-
-     <!-- Settings screen, ISO -->
-     <string name="pref_camera_iso_title" translatable="false">ISO</string>
-     <string name="pref_camera_iso_default" translatable="false">auto</string>
-
-     <!-- Settings screen, ISO dialog radio button choices -->
-     <string name="pref_camera_iso_entry_auto">Auto</string>
-     <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
-     <string name="pref_camera_iso_entry_isosports">Sports</string>
-     <string name="pref_camera_iso_entry_isonight">Night</string>
-     <string name="pref_camera_iso_entry_isomovie">Movie</string>
-     <string name="pref_camera_iso_entry_iso6400" translatable="false">6400</string>
-     <string name="pref_camera_iso_entry_iso3200" translatable="false">3200</string>
-     <string name="pref_camera_iso_entry_iso1600" translatable="false">1600</string>
-     <string name="pref_camera_iso_entry_iso1200" translatable="false">1200</string>
-     <string name="pref_camera_iso_entry_iso1000" translatable="false">1000</string>
-     <string name="pref_camera_iso_entry_iso800" translatable="false">800</string>
-     <string name="pref_camera_iso_entry_iso400" translatable="false">400</string>
-     <string name="pref_camera_iso_entry_iso200" translatable="false">200</string>
-     <string name="pref_camera_iso_entry_iso100" translatable="false">100</string>
-     <string name="pref_camera_iso_entry_iso50" translatable="false">50</string>
-
-    <!-- Settings screen, JPEG Quality -->
-    <string name="pref_camera_jpeg_title">JPEG Quality</string>
-    <string name="pref_camera_jpeg_default" translatable="false">90</string>
-
-    <!-- Settings screen, JPEG dialog radio button choices -->
-    <string name="pref_camera_jpeg_entry_super">Super</string>
-    <string name="pref_camera_jpeg_entry_high">High</string>
-    <string name="pref_camera_jpeg_entry_medium">Medium</string>
-    <string name="pref_camera_jpeg_entry_low">Low</string>
-
-    <!-- Settings screen, Select Color effect title -->
-    <string name="pref_camera_coloreffect_title">Color effect</string>
-
-    <!-- Default color effect setting. -->
-    <string name="pref_camera_coloreffect_default" translatable="false">none</string>
-
-    <!-- Settings screen, Color effect dialog radio button choices -->
-    <string name="pref_camera_coloreffect_entry_none">None</string>
-    <string name="pref_camera_coloreffect_entry_mono">Mono</string>
-    <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
-    <string name="pref_camera_coloreffect_entry_negative">Negative</string>
-    <string name="pref_camera_coloreffect_entry_solarize">Solarize</string>
-    <string name="pref_camera_coloreffect_entry_posterize">Posterize</string>
-    <string name="pref_camera_coloreffect_entry_aqua">Aqua</string>
-    <string name="pref_camera_coloreffect_entry_emboss">Emboss</string>
-    <string name="pref_camera_coloreffect_entry_sketch">Sketch</string>
-    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
-    <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
-    <string name="pref_camera_coloreffect_entry_mosaic">Mosaic</string>
-    <string name="pref_camera_coloreffect_entry_redtint">Red tint</string>
-    <string name="pref_camera_coloreffect_entry_bluetint">Blue tint</string>
-    <string name="pref_camera_coloreffect_entry_greentint">Green tint</string>
-
-    <!-- Settings screen, Burst mode title -->
-    <string name="pref_camera_burst_title">Burst mode</string>
-    <string name="pref_camera_burst_default" translatable="false">1</string>
-
-    <!-- Settings screen, Burst mode entries -->
-    <string name="pref_camera_burst_entry_off">Off</string>
-    <string name="pref_camera_burst_entry_5">5 shots</string>
-    <string name="pref_camera_burst_entry_10">10 shots</string>
-    <string name="pref_camera_burst_entry_15">15 shots</string>
-    <string name="pref_camera_burst_entry_20">20 shots</string>
-
-    <!-- Touch-to-focus duration settings -->
-    <string name="pref_camera_focustime_title">Touch focus duration</string>
-    <string name="pref_camera_focustime_summary">Select duration for touch focus</string>
-    <string name="pref_camera_focustime_default" translatable="false">5000</string>
-
-    <!-- Settings screen, Timer mode entries -->
-    <string name="pref_camera_focustime_entry_5">5s</string>
-    <string name="pref_camera_focustime_entry_10">10s</string>
-    <string name="pref_camera_focustime_entry_15">15s</string>
-    <string name="pref_camera_focustime_entry_20">20s</string>
-    <string name="pref_camera_focustime_entry_30">30s</string>
-    <string name="pref_camera_focustime_entry_infinite">Infinite</string>
 
 </resources>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Camera Preferences ISO dialog box entries -->
+    <string-array name="pref_camera_iso_entries" translatable="false">
+        <item>@string/pref_camera_iso_entry_auto</item>
+        <item>@string/pref_camera_iso_entry_isodeblur</item>
+        <item>@string/pref_camera_iso_entry_isosports</item>
+        <item>@string/pref_camera_iso_entry_isonight</item>
+        <item>@string/pref_camera_iso_entry_isomovie</item>
+        <item>@string/pref_camera_iso_entry_iso6400</item>
+        <item>@string/pref_camera_iso_entry_iso3200</item>
+        <item>@string/pref_camera_iso_entry_iso1600</item>
+        <item>@string/pref_camera_iso_entry_iso1200</item>
+        <item>@string/pref_camera_iso_entry_iso1000</item>
+        <item>@string/pref_camera_iso_entry_iso800</item>
+        <item>@string/pref_camera_iso_entry_iso400</item>
+        <item>@string/pref_camera_iso_entry_iso200</item>
+        <item>@string/pref_camera_iso_entry_iso100</item>
+        <item>@string/pref_camera_iso_entry_iso50</item>
+    </string-array>
+
+    <string-array name="pref_camera_iso_entryvalues" translatable="false">
+        <item>auto</item>
+        <item>ISO_HJR</item>
+        <item>ISO_SPORTS</item>
+        <item>ISO_NIGHT</item>
+        <item>ISO_MOVIE</item>
+        <item>ISO6400</item>
+        <item>ISO3200</item>
+        <item>ISO1600</item>
+        <item>ISO1200</item>
+        <item>ISO1000</item>
+        <item>ISO800</item>
+        <item>ISO400</item>
+        <item>ISO200</item>
+        <item>ISO100</item>
+        <item>ISO50</item>
+    </string-array>
+
+    <!-- Camera Preferences JPEG dialog box entries -->
+    <string-array name="pref_camera_jpeg_entries" translatable="false">
+        <item>@string/pref_camera_jpeg_entry_super</item>
+        <item>@string/pref_camera_jpeg_entry_high</item>
+        <item>@string/pref_camera_jpeg_entry_medium</item>
+        <item>@string/pref_camera_jpeg_entry_low</item>
+    </string-array>
+
+    <string-array name="pref_camera_jpeg_entryvalues" translatable="false">
+        <item>100</item>
+        <item>90</item>
+        <item>75</item>
+        <item>50</item>
+    </string-array>
+
+    <!-- Camera Preferences Color effect dialog box entries -->
+    <string-array name="pref_camera_coloreffect_entries" translatable="false">
+        <item>@string/pref_camera_coloreffect_entry_greentint</item>
+        <item>@string/pref_camera_coloreffect_entry_bluetint</item>
+        <item>@string/pref_camera_coloreffect_entry_redtint</item>
+        <item>@string/pref_camera_coloreffect_entry_mosaic</item>
+        <item>@string/pref_camera_coloreffect_entry_pastel</item>
+        <item>@string/pref_camera_coloreffect_entry_neon</item>
+        <item>@string/pref_camera_coloreffect_entry_sketch</item>
+        <item>@string/pref_camera_coloreffect_entry_emboss</item>
+        <item>@string/pref_camera_coloreffect_entry_aqua</item>
+        <item>@string/pref_camera_coloreffect_entry_posterize</item>
+        <item>@string/pref_camera_coloreffect_entry_solarize</item>
+        <item>@string/pref_camera_coloreffect_entry_negative</item>
+        <item>@string/pref_camera_coloreffect_entry_sepia</item>
+        <item>@string/pref_camera_coloreffect_entry_mono</item>
+        <item>@string/pref_camera_coloreffect_entry_none</item>
+    </string-array>
+
+    <string-array name="pref_camera_coloreffect_entryvalues" translatable="false">
+        <item>green-tint</item>
+        <item>blue-tint</item>
+        <item>red-tint</item>
+        <item>mosaic</item>
+        <item>pastel</item>
+        <item>neon</item>
+        <item>sketch</item>
+        <item>emboss</item>
+        <item>aqua</item>
+        <item>posterize</item>
+        <item>solarize</item>
+        <item>negative</item>
+        <item>sepia</item>
+        <item>mono</item>
+        <item>none</item>
+    </string-array>
+
+    <!-- Camera Preferences for burst modes -->
+    <string-array name="pref_camera_burst_mode_entries" translatable="false">
+        <item>@string/pref_camera_burst_entry_20</item>
+        <item>@string/pref_camera_burst_entry_15</item>
+        <item>@string/pref_camera_burst_entry_10</item>
+        <item>@string/pref_camera_burst_entry_5</item>
+        <item>@string/pref_camera_burst_entry_off</item>
+    </string-array>
+
+    <string-array name="pref_camera_burst_mode_values" translatable="false">
+        <item>20</item>
+        <item>15</item>
+        <item>10</item>
+        <item>5</item>
+        <item>1</item>
+     </string-array>
+
+    <!-- Camera Preferences for timer duration -->
+    <string-array name="pref_camera_focustime_duration_entries" translatable="false">
+        <item>@string/pref_camera_focustime_entry_infinite</item>
+        <item>@string/pref_camera_focustime_entry_30</item>
+        <item>@string/pref_camera_focustime_entry_20</item>
+        <item>@string/pref_camera_focustime_entry_15</item>
+        <item>@string/pref_camera_focustime_entry_10</item>
+        <item>@string/pref_camera_focustime_entry_5</item>
+    </string-array>
+
+    <!-- Camera focus duration - stored in milliseconds -->
+    <string-array name="pref_camera_focustime_duration_values" translatable="false">
+        <item>0</item>
+        <item>30000</item>
+        <item>20000</item>
+        <item>15000</item>
+        <item>10000</item>
+        <item>5000</item>
+    </string-array>
+</resources>
