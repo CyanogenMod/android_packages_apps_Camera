@@ -77,9 +77,6 @@ BOARD_HAVE_BLUETOOTH_QCOM := true
 BLUETOOTH_HCI_USE_MCT := true
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/htc/m7/bluetooth
 
-# Camera
-TARGET_PROVIDES_CAMERA_HAL := true
-
 # Ril
 BOARD_RIL_CLASS := "../../../device/htc/m7/libril/"
 BOARD_PROVIDES_LIBRIL := true
