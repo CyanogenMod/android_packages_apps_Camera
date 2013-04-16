@@ -177,4 +177,104 @@
     <string name="remember_location_prompt" msgid="724592331305808098">"Přidejte do fotek a videí označení míst, kde jste je pořídili."\n\n"Ostatní aplikace budou mít k těmto informacím přístup společně s přístupem k uloženým obrázkům."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Ne, děkuji"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ano"</string>
+
+    <!-- CYANOGENMOD ADDITIONS -->
+    <string name="pref_camera_storage_title">Úložiště</string>
+    <string name="pref_camera_picturesize_entry_13mp">13Mpx</string>
+    <string name="pref_camera_picturesize_entry_11_5mp">11.5Mpx</string>
+    <string name="pref_camera_picturesize_entry_9mp">9Mpx</string>
+    <string name="pref_camera_picturesize_entry_6_4mp">6.4Mpx</string>
+    <string name="pref_camera_picturesize_entry_4mp">4Mpx</string>
+    <string name="pref_camera_picturesize_entry_2_5mp">2.5Mpx</string>
+    <string name="pref_camera_picturesize_entry_2_1mp">2.1Mpx</string>
+    <string name="pref_camera_picturesize_entry_1_5mp">1.5Mpx</string>
+
+    <string name="pref_camera_focusmode_entry_continuouspicture">Průběžné foto</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Průběžné video</string>
+    <string name="pref_camera_focusmode_entry_extended">Rozšířený</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Detekce obličeje</string>
+    <string name="pref_camera_focusmode_entry_facepriority">Priorita obličeje</string>
+    <string name="pref_camera_focusmode_entry_fixed">Pevný</string>
+    <string name="pref_camera_focusmode_entry_portrait">Portrét</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Hyperfokální</string>
+
+    <string name="pref_camera_scenemode_entry_nightportrait">Noční portrét</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">Noční interiér</string>
+    <string name="pref_camera_scenemode_entry_supernight">Černá noc</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Soumrak</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Osvětleno svíčkami</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Podzim</string>
+    <string name="pref_camera_scenemode_entry_closeup">Detail</string>
+    <string name="pref_camera_scenemode_entry_landscape">Krajina</string>
+    <string name="pref_camera_scenemode_entry_aqua">Vodní</string>
+    <string name="pref_camera_scenemode_entry_sports">Sporty</string>
+    <string name="pref_camera_scenemode_entry_mood">Náladovka</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Ohňostroj</string>
+    <string name="pref_camera_scenemode_entry_cine">Filmový</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">Starý film</string>
+    <string name="pref_camera_scenemode_entry_beach">Pláž</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portrét</string>
+    <string name="pref_camera_scenemode_entry_snow">Sníh</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Nehybná fotografie</string>
+    <string name="pref_camera_scenemode_entry_theatre">Divadlo</string>
+    <string name="pref_camera_scenemode_entry_backlight">Protisvětlo</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Portrét s protisvětlem</string>
+    <string name="pref_camera_scenemode_entry_document">Dokument</string>
+    <string name="pref_camera_scenemode_entry_barcode">Čárový kód</string>
+    <string name="pref_camera_scenemode_entry_text">Text</string>
+    <string name="pref_camera_scenemode_entry_beauty">Krása</string>
+    <string name="pref_camera_scenemode_entry_flowers">Květiny</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Bílá tabule</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Rozmazané pozadí</string>
+
+    <string name="pref_camera_power_shutter_title">Tlačítko vypínání</string>
+
+    <string name="pref_camera_iso_entry_auto">Automaticky</string>
+    <string name="pref_camera_iso_entry_isodeblur">Automaticky (HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">Soprty</string>
+    <string name="pref_camera_iso_entry_isonight">Noc</string>
+    <string name="pref_camera_iso_entry_isomovie">Film</string>
+
+    <string name="pref_camera_jpeg_title">Kvalita JPEG</string>
+
+    <string name="pref_camera_jpeg_entry_super">Nejlepší</string>
+    <string name="pref_camera_jpeg_entry_high">Vysoká</string>
+    <string name="pref_camera_jpeg_entry_medium">Střední</string>
+    <string name="pref_camera_jpeg_entry_low">Nízká</string>
+
+    <string name="pref_camera_coloreffect_title">Barevný efekt</string>
+
+    <string name="pref_camera_coloreffect_entry_none">Žádný</string>
+    <string name="pref_camera_coloreffect_entry_mono">Černobílý</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Sépie</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negativ</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Solarizace</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Posterizace</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Voda</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Reliéf</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Skica</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neonový</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastelový</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mozaika</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Červený nádech</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Modrý nádech</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Zelený nádech</string>
+
+    <string name="pref_camera_burst_title">Sekvenční snímání</string>
+
+    <string name="pref_camera_burst_entry_off">Vypnuto</string>
+    <string name="pref_camera_burst_entry_5">5 snímků</string>
+    <string name="pref_camera_burst_entry_10">10 snímků</string>
+    <string name="pref_camera_burst_entry_15">15 snímků</string>
+    <string name="pref_camera_burst_entry_20">20 snímků</string>
+
+    <string name="pref_camera_focustime_title">Doba ostření dotykem</string>
+    <string name="pref_camera_focustime_summary">Zvolte dobu, po kterou bude aktivní ostření dotykem</string>
+
+    <string name="pref_camera_focustime_entry_5">5s</string>
+    <string name="pref_camera_focustime_entry_10">10s</string>
+    <string name="pref_camera_focustime_entry_15">15s</string>
+    <string name="pref_camera_focustime_entry_20">20s</string>
+    <string name="pref_camera_focustime_entry_30">30s</string>
+    <string name="pref_camera_focustime_entry_infinite">Trvale</string>
 </resources>
