@@ -34,15 +34,15 @@
     <string name="pref_camera_id_title" msgid="4040791582294635851">"Chagua kamera"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Nyuma"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Mbele"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Mahali pa hifadhi"</string>
-    <string name="pref_camera_timer_title" msgid="3105232208281893389">"Kipima muda cha kuhesabu"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Rekodi mahali"</string>
+    <string name="pref_camera_timer_title" msgid="3105232208281893389">"Kipima muda"</string>
   <plurals name="pref_camera_timer_entry">
     <item quantity="one" msgid="1654523400981245448">"Sekunde 1"</item>
     <item quantity="other" msgid="6455381617076792481">"Sekunde %d"</item>
   </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
     <skip />
-    <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"Toa mlio wakati wa kuhesabu"</string>
+    <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"Toa mlio inapohesabu"</string>
     <string name="setting_off" msgid="4480039384202951946">"Imezimwa"</string>
     <string name="setting_on" msgid="8602246224465348901">"Imewashwa"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Ubora wa video"</string>
@@ -74,7 +74,7 @@
     <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Mwangaza wa mchana"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Kiakisi mwanga"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Mawingu"</string>
-    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"gumzo ya mandhari"</string>
+    <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Hali ya mandhari"</string>
     <string name="pref_camera_scenemode_entry_auto" msgid="7113995286836658648">"Otomatiki"</string>
     <string name="pref_camera_scenemode_entry_hdr" msgid="2923388802899511784">"HDR"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Kitendo"</string>
@@ -185,7 +185,7 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Imekamilika"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Weka Nafasi ya Muda"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Kipengele cha muda kupita kimezimika. Kiwashe ili kuweka nafasi ya muda."</string>
-    <string name="set_timer_help" msgid="5007708849404589472">"Kipima muda cha kuhesabu kimezimwa. Kiwashe ili kihesabu kabla ya kupiga picha."</string>
+    <string name="set_timer_help" msgid="5007708849404589472">"Kipima muda kimezimwa. Kiwashe ili kihesabu kabla ya kupiga picha."</string>
     <string name="set_duration" msgid="5578035312407161304">"Weka muda katika sekunde"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"Inahesabu ili kupiga picha"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Kumbuka maeneo ya picha?"</string>
