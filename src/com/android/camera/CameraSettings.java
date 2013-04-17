@@ -27,6 +27,8 @@ import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.util.FloatMath;
 import android.util.Log;
 
@@ -256,9 +258,38 @@ public class CameraSettings {
                     videoColorEffect, mParameters.getSupportedColorEffects());
         }
         if (storage != null) {
-            if (storage.getEntries().length < 2) {
-                removePreference(group, storage.getKey());
+            buildStorage(group, storage);
+        }
+    }
+
+    private void buildStorage(PreferenceGroup group, ListPreference storage) {
+        StorageManager sm = (StorageManager) mContext.getSystemService(Context.STORAGE_SERVICE);
+        StorageVolume[] volumes = sm.getVolumeList();
+        String[] entries = new String[volumes.length];
+        String[] entryValues = new String[volumes.length];
+        int primary = 0;
+
+        if (volumes.length < 2) {
+            // No need for storage setting  264
+            removePreference(group, storage.getKey());
+            return;
+        }
+
+        for (int i = 0; i < volumes.length; i++) {
+            StorageVolume v = volumes[i];
+            entries[i] = v.getDescription(mContext);
+            entryValues[i] = v.getPath();
+            if (v.isPrimary()) {
+                primary = i;
             }
+        }
+        storage.setEntries(entries);
+        storage.setEntryValues(entryValues);
+
+        // Filter saved invalid value
+        if (storage.findIndexOfValue(storage.getValue()) < 0) {
+            // Default to the primary storage
+            storage.setValueIndex(primary);
         }
     }
 
