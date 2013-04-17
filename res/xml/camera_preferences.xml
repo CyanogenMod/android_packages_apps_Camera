@@ -113,7 +113,7 @@
             camera:title="@string/pref_camera_scenemode_entry_hdr"
             camera:entries="@array/pref_camera_hdr_entries"
             camera:entryValues="@array/pref_camera_hdr_entryvalues" />
-    <StoragePreference
+    <ListPreference
             camera:key="pref_camera_storage_key"
             camera:title="@string/pref_camera_storage_title" />
 </PreferenceGroup>

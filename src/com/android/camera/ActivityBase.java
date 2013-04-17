@@ -20,12 +20,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.hardware.Camera.Parameters;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
@@ -105,6 +107,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
     protected boolean mSecureCamera;
     private static boolean sFirstStartAfterScreenOn = true;
 
+    private String mStoragePath;
     private long mStorageSpace = Storage.LOW_STORAGE_THRESHOLD;
     private static final int UPDATE_STORAGE_HINT = 0;
     private final Handler mHandler = new Handler() {
@@ -211,6 +214,17 @@ public abstract class ActivityBase extends AbstractGalleryActivity
 
     public boolean isPanoramaActivity() {
         return false;
+    }
+
+    protected boolean setStoragePath(SharedPreferences prefs) {
+        String storagePath = prefs.getString(CameraSettings.KEY_STORAGE,
+                Environment.getExternalStorageDirectory().toString());
+        if (storagePath.equals(mStoragePath)) {
+            return false;
+        }
+        mStoragePath = storagePath;
+        Storage.getStorage().setRoot(mStoragePath);
+        return true;
     }
 
     protected void initPowerShutter(ComboPreferences prefs) {
@@ -430,8 +444,6 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         data.putParcelable(PhotoPage.KEY_APP_BRIDGE, mAppBridge);
         if (getStateManager().getStateCount() == 0) {
             getStateManager().startState(PhotoPage.class, data);
-        } else {
-            getStateManager().startStateNow(PhotoPage.class, data);
         }
         mCameraScreenNail = mAppBridge.getCameraScreenNail();
         return mCameraScreenNail;

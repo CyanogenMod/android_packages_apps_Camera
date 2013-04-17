@@ -426,6 +426,8 @@ public class VideoModule implements CameraModule,
         mPreferences.setLocalId(mActivity, mCameraId);
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
 
+        mActivity.setStoragePath(mPreferences);
+
         mActivity.mNumberOfCameras = CameraHolder.instance().getNumberOfCameras();
         mPrefVideoEffectDefault = mActivity.getString(R.string.pref_video_effect_default);
         resetEffect();
@@ -2145,7 +2147,7 @@ public class VideoModule implements CameraModule,
         // Write default effect out to shared prefs
         writeDefaultEffectToPrefs();
         // Tell VideoCamer to re-init based on new shared pref values.
-        onSharedPreferenceChanged(null);
+        onSharedPreferenceChanged();
     }
 
     @Override
@@ -2326,7 +2328,7 @@ public class VideoModule implements CameraModule,
     }
 
     @Override
-    public void onSharedPreferenceChanged(String key) {
+    public void onSharedPreferenceChanged() {
         // ignore the events after "onPause()" or preview has not started yet
         if (mPaused) return;
         synchronized (mPreferences) {
@@ -2341,7 +2343,7 @@ public class VideoModule implements CameraModule,
             // Check if the current effects selection has changed
             if (updateEffectSelection()) return;
 
-            if (CameraSettings.KEY_STORAGE.equals(key)){
+            if (mActivity.setStoragePath(mPreferences)) {
                 mActivity.updateStorageSpaceAndHint();
                 mActivity.reuseCameraScreenNail(!mIsVideoCaptureIntent);
             }
