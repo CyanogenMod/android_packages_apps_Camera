@@ -48,6 +48,8 @@ public class ZoomRenderer extends OverlayRenderer
     private int mZoomSig;
     private int mZoomFraction;
     private Rect mTextBounds;
+    private float mBeginSpan;
+    private float mBeginCircle;
 
     public interface OnZoomChangedListener {
         void onZoomStart();
@@ -125,8 +127,8 @@ public class ZoomRenderer extends OverlayRenderer
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
-        final float sf = detector.getScaleFactor();
-        float circle = (int) (mCircleSize * sf * sf);
+        float span = (detector.getCurrentSpan() - mBeginSpan) / 2.5f;
+        float circle = (int) (mBeginCircle + span);
         circle = Math.max(mMinCircle, circle);
         circle = Math.min(mMaxCircle, circle);
         if (mListener != null && (int) circle != mCircleSize) {
@@ -140,6 +142,8 @@ public class ZoomRenderer extends OverlayRenderer
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
         setVisible(true);
+        mBeginSpan = detector.getCurrentSpan();
+        mBeginCircle = mCircleSize;
         if (mListener != null) {
             mListener.onZoomStart();
         }
