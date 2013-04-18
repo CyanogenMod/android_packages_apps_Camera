@@ -439,7 +439,8 @@ public class FocusOverlayManager {
         if (mOverrideFocusMode != null) return mOverrideFocusMode;
         List<String> supportedFocusModes = mParameters.getSupportedFocusModes();
 
-        if (mFocusAreaSupported && mFocusArea != null) {
+        if (mFocusAreaSupported && mFocusArea != null
+                && !Util.noFocusModeChangeForTouch()) {
             // Always use autofocus in tap-to-focus.
             mFocusMode = Parameters.FOCUS_MODE_AUTO;
         } else {
