@@ -14,6 +14,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pref_camera_storage_title">Memoria</string>
     <string name="pref_camera_picturesize_entry_13mp">13 MP</string>
     <string name="pref_camera_picturesize_entry_11_5mp">11,5 MP</string>
     <string name="pref_camera_picturesize_entry_9mp">9 MP</string>
