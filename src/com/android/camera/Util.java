@@ -276,7 +276,6 @@ public class Util {
     public static void enableSpeechRecognition(boolean enable, PhotoModule module) {
         if (module != null) {
             mPhotoModule = module;
-            enable = !mSpeechActive;
         } else if (enable && !mIsMuted) {
             /* Avoid beeps when re-arming the listener */
             mIsMuted = true;
@@ -287,6 +286,9 @@ public class Util {
                invocation */
             return; 
         }
+        mPhotoModule.updateNoHandsIndicator();
+        /* Always make sure there are no pending listeners */
+        mSpeechRecognizer.cancel();
         if (!enable) {
             //Log.d(TAG,"Stopping speach recog - " + mSpeechActive + "/" + enable);
             mSpeechActive = false;
@@ -294,12 +296,9 @@ public class Util {
                 mAudioManager.setStreamMute(AudioManager.STREAM_SYSTEM, false);
                 mIsMuted = false;
             }
-            mPhotoModule.updateVoiceShutterIndicator(false);
-            mSpeechRecognizer.cancel();
         } else {
             //Log.d(TAG,"Starting speach recog");
             mSpeechActive = true;
-            mPhotoModule.updateVoiceShutterIndicator(true);
             mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
         }
     }
@@ -983,7 +982,7 @@ public class Util {
             ArrayList data = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             for (int i = 0; i < data.size(); i++)
             {
-                Log.d(TAG, "result " + data.get(i));
+                //Log.d(TAG, "result " + data.get(i));
                 for (int f = 0; f < mShutterWords.length; f++) {
                     String[] resultWords = data.get(i).toString().split(" ");
                     for (int g = 0; g < resultWords.length; g++) {
