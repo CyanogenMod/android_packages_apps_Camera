@@ -148,30 +148,48 @@
         <item>cheese</item>
     </string-array>
 
-    <string-array name="pref_camera_voiceshutter_entries" translatable="false">
+    <!-- Camera Preferences for No-Hands shots (Voice / Timer) -->
+    <array name="camera_nohands_icons" translatable="false">
+        <item>@drawable/ic_indicator_timer_0</item>
+        <item>@drawable/ic_switch_voiceshutter</item>
+        <item>@drawable/ic_indicator_timer_10</item>
+        <item>@drawable/ic_indicator_timer_20</item>
+        <item>@drawable/ic_indicator_timer_30</item>
+        <item>@drawable/ic_indicator_timer_40</item>
+        <item>@drawable/ic_indicator_timer_50</item>
+        <item>@drawable/ic_indicator_timer_60</item>
+    </array>
+
+    <string-array name="pref_camera_nohands_entries" translatable="false">
+        <item>@string/pref_camera_timer_entry_0</item>
+        <item>@string/pref_camera_nohands_voice</item>
+        <item>@string/pref_camera_timer_entry_10</item>
+        <item>@string/pref_camera_timer_entry_20</item>
+        <item>@string/pref_camera_timer_entry_30</item>
+        <item>@string/pref_camera_timer_entry_40</item>
+        <item>@string/pref_camera_timer_entry_50</item>
+        <item>@string/pref_camera_timer_entry_60</item>
+    </string-array>
+
+    <string-array name="pref_camera_nohands_entryvalues" translatable="false">
+        <item>0</item>
+        <item>voice</item>
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+    </string-array>
+
+    <string-array name="pref_nohands_persistent_entries" translatable="false">
         <item>@string/setting_off</item>
         <item>@string/setting_on</item>
     </string-array>
 
-    <!-- Camera Preferences for timer duration -->
-    <string-array name="pref_camera_timer_duration_entries" translatable="false">
-        <item>@string/pref_camera_timer_entry_60</item>
-        <item>@string/pref_camera_timer_entry_50</item>
-        <item>@string/pref_camera_timer_entry_40</item>
-        <item>@string/pref_camera_timer_entry_30</item>
-        <item>@string/pref_camera_timer_entry_20</item>
-        <item>@string/pref_camera_timer_entry_10</item>
-        <item>@string/pref_camera_timer_entry_0</item>
-    </string-array>
-
-    <string-array name="pref_camera_timer_duration_values" translatable="false">
-        <item>60</item>
-        <item>50</item>
-        <item>40</item>
-        <item>30</item>
-        <item>20</item>
-        <item>10</item>
-        <item>0</item>
+    <string-array name="pref_nohands_persistent_entryvalues" translatable="false">
+        <item>@string/setting_off_value</item>
+        <item>@string/setting_on_value</item>
     </string-array>
 
 </resources>
