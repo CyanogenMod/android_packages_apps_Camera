@@ -294,12 +294,12 @@ public class Util {
                 mAudioManager.setStreamMute(AudioManager.STREAM_SYSTEM, false);
                 mIsMuted = false;
             }
-            mPhotoModule.updateVoiceShutterIndicator(false);
+            mPhotoModule.updateNoHandsIndicator(0);
             mSpeechRecognizer.cancel();
         } else {
             //Log.d(TAG,"Starting speach recog");
             mSpeechActive = true;
-            mPhotoModule.updateVoiceShutterIndicator(true);
+            mPhotoModule.updateNoHandsIndicator(-1);
             mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
         }
     }
