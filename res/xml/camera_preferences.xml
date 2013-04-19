@@ -117,14 +117,16 @@
             camera:key="pref_camera_storage_key"
             camera:title="@string/pref_camera_storage_title" />
     <IconListPreference
-            camera:key="pref_voice_shutter_key"
-            camera:defaultValue="@string/pref_camera_voiceshutter_default"
-            camera:title="@string/pref_camera_voiceshutter_title"
-            camera:entries="@array/pref_camera_voiceshutter_entries" />
+            camera:key="pref_nohands_shutter_key"
+            camera:title="@string/pref_camera_nohands_title"
+            camera:entries="@array/pref_camera_nohands_entries"
+            camera:defaultValue="@string/pref_camera_nohands_default"
+            camera:entryValues="@array/pref_camera_nohands_entryvalues"
+            camera:largeIcons="@array/camera_nohands_icons" />
     <ListPreference
-            camera:key="pref_camera_timer_key"
-            camera:defaultValue="@string/pref_camera_timer_default"
-            camera:title="@string/pref_camera_timer_title"
-            camera:entries="@array/pref_camera_timer_duration_entries"
-            camera:entryValues="@array/pref_camera_timer_duration_values" />
+            camera:key="pref_nohands_persistent_key"
+            camera:title="@string/pref_nohands_persistent_title"
+            camera:entries="@array/pref_nohands_persistent_entries"
+            camera:defaultValue="@string/pref_nohands_persistent_default"
+            camera:entryValues="@array/pref_nohands_persistent_entryvalues" />
 </PreferenceGroup>

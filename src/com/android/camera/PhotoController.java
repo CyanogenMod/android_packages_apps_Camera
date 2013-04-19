@@ -95,17 +95,7 @@ public class PhotoController extends PieController
             });
             mRenderer.addItem(hdr);
         }
-        if (group.findPreference(CameraSettings.KEY_VOICE_SHUTTER) != null) {
-            PieItem item = makeItem(R.drawable.ic_switch_voiceshutter);
-            item.setFixedSlice((float)(1.5 * FLOAT_PI_DIVIDED_BY_TWO) + sweep, sweep);
-            item.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(PieItem item) {
-                    Util.enableSpeechRecognition(true, mModule);
-                }
-            });
-            mRenderer.addItem(item);
-        }
+        addItem(CameraSettings.KEY_NOHANDS_MODE, (float)(1.5 * FLOAT_PI_DIVIDED_BY_TWO) + sweep, sweep);
         mOtherKeys = new String[] {
                 CameraSettings.KEY_STORAGE,
                 CameraSettings.KEY_SCENE_MODE,
@@ -117,7 +107,7 @@ public class PhotoController extends PieController
                 CameraSettings.KEY_ISO_MODE,
                 CameraSettings.KEY_JPEG,
                 CameraSettings.KEY_COLOR_EFFECT,
-                CameraSettings.KEY_TIMER_MODE,
+                CameraSettings.KEY_PERSISTENT_NOHANDS,
                 CameraSettings.KEY_BURST_MODE};
         PieItem item = makeItem(R.drawable.ic_settings_holo_light);
         item.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO * 3, sweep);
@@ -208,6 +198,12 @@ public class PhotoController extends PieController
             setPreference(CameraSettings.KEY_SCENE_MODE, Parameters.SCENE_MODE_AUTO);
         } else if (notSame(pref, CameraSettings.KEY_SCENE_MODE, Parameters.SCENE_MODE_AUTO)) {
             setPreference(CameraSettings.KEY_CAMERA_HDR, mSettingOff);
+        } else if (pref.getKey().equals(CameraSettings.KEY_NOHANDS_MODE)) {
+            if (pref.getValue().equals(mActivity.getString(R.string.pref_camera_nohands_voice))) {
+                Util.enableSpeechRecognition(true, mModule);
+            } else {
+                Util.enableSpeechRecognition(false, null);
+            }
         }
         super.onSettingChanged(pref);
     }
@@ -228,4 +224,26 @@ public class PhotoController extends PieController
         mSecondPopup = basic;
         mModule.showPopup(mSecondPopup);
     }
+
+    public void resetNoHandsShutter(boolean force) {
+        ListPreference persist = mPreferenceGroup.findPreference(CameraSettings.KEY_PERSISTENT_NOHANDS);
+        ListPreference pref = mPreferenceGroup.findPreference(CameraSettings.KEY_NOHANDS_MODE);
+
+        if (persist.getValue().equals(mActivity.getString(R.string.setting_on_value))) {
+            Util.enableSpeechRecognition( (pref.getValue().equals(mActivity.getString(R.string.pref_camera_nohands_voice)) && 
+                                           !force),
+                                          null);
+            return;
+        }
+        pref.setValue(mActivity.getString(R.string.pref_camera_nohands_default));
+        Util.enableSpeechRecognition(false, null);
+        super.reloadPreferences();
+        super.onSettingChanged(pref);
+    }
+
+    public void restoreNoHandsShutter() {
+        ListPreference pref = mPreferenceGroup.findPreference(CameraSettings.KEY_NOHANDS_MODE);
+        Util.enableSpeechRecognition(pref.getValue().equals(mActivity.getString(R.string.pref_camera_nohands_voice)), mModule);
+    }
+
 }
