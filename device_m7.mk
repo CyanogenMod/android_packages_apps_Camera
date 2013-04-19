@@ -38,11 +38,11 @@ PRODUCT_PACKAGES += \
 
 # Qualcomm scripts
 PRODUCT_COPY_FILES += \
-    device/htc/msm8960-common/configs/init.qcom.bt.sh:/system/etc/init.qcom.bt.sh \
-    device/htc/msm8960-common/configs/init.qcom.fm.sh:/system/etc/init.qcom.fm.sh \
-    device/htc/msm8960-common/configs/init.qcom.post_boot.sh:/system/etc/init.qcom.post_boot.sh \
-    device/htc/msm8960-common/configs/init.qcom.sdio.sh:/system/etc/init.qcom.sdio.sh \
-    device/htc/msm8960-common/configs/init.qcom.wifi.sh:/system/etc/init.qcom.wifi.sh
+    device/htc/m7/configs/init.qcom.bt.sh:/system/etc/init.qcom.bt.sh \
+    device/htc/m7/configs/init.qcom.fm.sh:/system/etc/init.qcom.fm.sh \
+    device/htc/m7/configs/init.qcom.post_boot.sh:/system/etc/init.qcom.post_boot.sh \
+    device/htc/m7/configs/init.qcom.sdio.sh:/system/etc/init.qcom.sdio.sh \
+    device/htc/m7/configs/init.qcom.wifi.sh:/system/etc/init.qcom.wifi.sh
 
 # Custom recovery charging
 PRODUCT_COPY_FILES += \
