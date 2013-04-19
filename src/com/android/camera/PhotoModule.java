@@ -875,19 +875,6 @@ public class PhotoModule
         }
     }
 
-    private void updateTimerOnScreenIndicator() {
-        if (mNoHandsIndicator == null) {
-            return;
-        }
-        if (mCaptureMode != 0) {
-            mNoHandsIndicator.setImageResource(R.drawable.ic_indicators_timer);
-            mNoHandsIndicator.setVisibility(View.VISIBLE);
-        } else {
-            mNoHandsIndicator.setVisibility(View.GONE);
-            mNoHandsIndicator.setImageBitmap(null);
-        }
-    }
-
     private void updateSceneOnScreenIndicator(String value) {
         if (mSceneIndicator == null) {
             return;
@@ -911,12 +898,15 @@ public class PhotoModule
         }
     }
 
-    public void updateVoiceShutterIndicator(boolean active) {
+    public void updateNoHandsIndicator(int state) {
         if (mNoHandsIndicator == null) {
             return;
         }
-        if (active) {
+        if (state < 0) {
             mNoHandsIndicator.setImageResource(R.drawable.ic_switch_voiceshutter);
+            mNoHandsIndicator.setVisibility(View.VISIBLE);
+        } else if (state > 0) {
+            mNoHandsIndicator.setImageResource(R.drawable.ic_indicator_timer);
             mNoHandsIndicator.setVisibility(View.VISIBLE);
         } else {
             mNoHandsIndicator.setVisibility(View.GONE);
@@ -929,7 +919,7 @@ public class PhotoModule
         updateExposureOnScreenIndicator(CameraSettings.readExposure(mPreferences));
         updateFlashOnScreenIndicator(mParameters.getFlashMode());
         updateHdrOnScreenIndicator(mParameters.getSceneMode());
-        updateTimerOnScreenIndicator();
+        updateNoHandsIndicator(mCaptureMode);
     }
 
     private final class ShutterCallback
@@ -939,6 +929,8 @@ public class PhotoModule
             mShutterCallbackTime = System.currentTimeMillis();
             mShutterLag = mShutterCallbackTime - mCaptureStartTime;
             Log.v(TAG, "mShutterLag = " + mShutterLag + "ms");
+
+            mPhotoControl.resetNoHandsShutter();
         }
     }
 
@@ -1698,7 +1690,7 @@ public class PhotoModule
         int nbBurstShots = Integer.valueOf(mPreferences.getString(CameraSettings.KEY_BURST_MODE, "1"));
 
         if (!mTimerMode) {
-            if (mCaptureMode != 0) {
+            if (mCaptureMode > 0) {
                 mTimerMode = true;
                 updateTimer(mCaptureMode);
                 return;
@@ -2616,11 +2608,6 @@ public class PhotoModule
             mFocusManager.setFocusTime(Integer.valueOf(
                     mPreferences.getString(CameraSettings.KEY_FOCUS_TIME,
                     mActivity.getString(R.string.pref_camera_focustime_default))));
-
-            // Set capture mode.
-            String defaultTime = mActivity.getString(R.string.pref_camera_timer_default);
-            String delayTime = mPreferences.getString(CameraSettings.KEY_TIMER_MODE, defaultTime);
-            mCaptureMode = Integer.valueOf(delayTime);
         } else {
             mFocusManager.overrideFocusMode(mParameters.getFocusMode());
         }
@@ -2747,6 +2734,15 @@ public class PhotoModule
         if (mActivity.setStoragePath(mPreferences)) {
             mActivity.updateStorageSpaceAndHint();
             mActivity.reuseCameraScreenNail(!mIsImageCaptureIntent);
+        }
+
+        // Set capture mode.
+        String defaultTime = mActivity.getString(R.string.pref_camera_nohands_default);
+        String delayTime = mPreferences.getString(CameraSettings.KEY_NOHANDS_MODE, defaultTime);
+        if (delayTime.equals(mActivity.getString(R.string.pref_camera_nohands_voice))) {
+            mCaptureMode = -1;
+        } else {
+            mCaptureMode = Integer.valueOf(delayTime);
         }
 
         setCameraParametersWhenIdle(UPDATE_PARAM_PREFERENCE);
