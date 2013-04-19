@@ -31,6 +31,16 @@
             android:paddingTop="5dp"
             android:paddingLeft="5dp"
             style="@style/MenuIndicator" />
+        <TextView
+            style="@style/TextAppearance.Medium"
+            android:id="@+id/timer_countdown"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_vertical"
+            android:layout_toRightOf="@id/indicator_nohandsshot"
+            android:paddingLeft="3dp"
+            android:paddingTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <ViewStub android:id="@+id/face_view_stub"
                 android:inflatedId="@+id/face_view"
                 android:layout="@layout/face_view"
