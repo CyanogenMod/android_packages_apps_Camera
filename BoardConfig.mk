@@ -26,11 +26,8 @@
 
 BOARD_VENDOR := htc
 
-# Include path
-TARGET_SPECIFIC_HEADER_PATH := device/htc/m7/include
-
 # inherit from the proprietary version
--include vendor/htc/m7/BoardConfigVendor.mk
+-include vendor/htc/m7wls/BoardConfigVendor.mk
 
 # Flags
 TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
@@ -61,8 +58,8 @@ BOARD_KERNEL_BASE := 0x80600000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01400000
 TARGET_KERNEL_VERSION := 3.4
-TARGET_KERNEL_CONFIG := m7_defconfig
-TARGET_KERNEL_SOURCE := kernel/htc/m7-$(TARGET_KERNEL_VERSION)
+TARGET_KERNEL_CONFIG := m7wls_defconfig
+TARGET_KERNEL_SOURCE := kernel/htc/msm8960
 
 # Audio
 BOARD_USES_ALSA_AUDIO:= true
@@ -74,14 +71,14 @@ TARGET_QCOM_AUDIO_VARIANT := caf
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_QCOM := true
 BLUETOOTH_HCI_USE_MCT := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/htc/m7/bluetooth
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/htc/m7wls/bluetooth
 
 # Camera
 TARGET_PROVIDES_CAMERA_HAL := false
 USE_CAMERA_STUB := true
 
 # Ril
-BOARD_RIL_CLASS := "../../../device/htc/m7/libril/"
+BOARD_RIL_CLASS := "../../../device/htc/m7wls/libril/"
 BOARD_PROVIDES_LIBRIL := true
 
 # HTClog
@@ -93,7 +90,7 @@ TARGET_USES_C2D_COMPOSITION := true
 TARGET_USES_ION := true
 TARGET_QCOM_DISPLAY_VARIANT := caf
 BOARD_HAVE_OLD_ION_API := true
-BOARD_EGL_CFG := device/htc/m7/configs/egl.cfg
+BOARD_EGL_CFG := device/htc/m7wls/configs/egl.cfg
 
 # Lights
 TARGET_PROVIDES_LIBLIGHTS := true
@@ -133,9 +130,9 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE := 27917287424
 BOARD_FLASH_BLOCK_SIZE := 131072
 
 # Custom Recovery
-TARGET_PREBUILT_KERNEL := device/htc/m7/kernel
+TARGET_PREBUILT_KERNEL := device/htc/m7wls/kernel
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_23x41.h\"
-TARGET_RECOVERY_INITRC := device/htc/m7/recovery/init.rc
+TARGET_RECOVERY_INITRC := device/htc/m7wls/recovery/init.rc
 BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_HAS_LARGE_FILESYSTEM := true
 
