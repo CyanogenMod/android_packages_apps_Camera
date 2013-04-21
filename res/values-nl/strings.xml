@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2007 The Android Open Source Project
-     Copyright (C) 2012 The CyanogenMod Project
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,6 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
  -->
+
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"Camerafout"</string>
@@ -21,11 +21,11 @@
     <string name="camera_disabled" msgid="8923911090533439312">"De camera is uitgeschakeld vanwege het beveiligingsbeleid."</string>
     <string name="camera_label" msgid="6346560772074764302">"Camera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Camcorder"</string>
-    <string name="wait" msgid="8600187532323801552">"Een ogenblik geduld\u2026"</string>
+    <string name="wait" msgid="8600187532323801552">"Een ogenblik geduld..."</string>
     <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Koppel de USB-opslag voordat u de camera gebruikt."</string>
     <string name="no_storage" product="default" msgid="5137703033746873624">"Plaats een SD-kaart voordat u de camera gebruikt."</string>
-    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"USB-opslag voorbereiden\u2026"</string>
-    <string name="preparing_sd" product="default" msgid="2914969119574812666">"SD-kaart voorbereiden\u2026"</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"USB-opslag voorbereiden…"</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"SD-kaart voorbereiden…"</string>
     <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Geen toegang tot USB-opslag."</string>
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Geen toegang tot SD-kaart."</string>
     <string name="review_cancel" msgid="8188009385853399254">"ANNULEREN"</string>
@@ -87,9 +87,9 @@
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panorama"</string>
     <string name="pano_capture_indication" msgid="8248825828264374507">"Panorama vastleggen"</string>
     <string name="pano_dialog_waiting_previous" msgid="7800325815031423516">"Wachten op het vorige panorama"</string>
-    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Opslaan\u2026"</string>
+    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Opslaan…"</string>
     <string name="pano_review_rendering" msgid="2887552964129301902">"Panorama genereren"</string>
-    <string name="tap_to_focus" msgid="8863427645591903760">"Tik om scherp te stellen"</string>
+    <string name="tap_to_focus" msgid="8863427645591903760">"Raak aan voor scherpstellen."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Effecten"</string>
     <string name="effect_none" msgid="3601545724573307541">"Geen"</string>
     <string name="effect_goofy_face_squeeze" msgid="1207235692524289171">"Samendrukken"</string>
@@ -102,7 +102,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Zonsondergang"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Uw video"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Zet uw apparaat neer."\n"Stap even uit beeld."</string>
-    <string name="video_snapshot_hint" msgid="18833576851372483">"Tik om een foto te maken tijdens een opname."</string>
+    <string name="video_snapshot_hint" msgid="18833576851372483">"Raak aan om een foto te maken tijdens een opname."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Videosnapshot staat uit als speciale effecten zijn ingeschakeld."</string>
     <string name="clear_effects" msgid="5485339175014139481">"Effecten wissen"</string>
     <string name="effect_silly_faces" msgid="8107732405347155777">"GEKKE GEZICHTEN"</string>
@@ -110,9 +110,9 @@
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Sluiterknop"</string>
     <string name="accessibility_menu_button" msgid="7140794046259897328">"Menuknop"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Meest recente foto"</string>
-    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Schakelen tussen camera aan voor- en achterzijde"</string>
+    <string name="accessibility_camera_picker" msgid="8807945470215734566">"Schakelen tussen camera aan voorzijde en aan achterzijde"</string>
     <string name="accessibility_mode_picker" msgid="3278002189966833100">"Camera-, video- of panoramakiezer"</string>
-    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Meer\u2026"</string>
+    <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"Meer instelopties"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"Instelopties sluiten"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Zoomregeling"</string>
     <string name="accessibility_decrement" msgid="1411194318538035666">"%1$s verlagen"</string>
@@ -177,76 +177,4 @@
     <string name="remember_location_prompt" msgid="724592331305808098">"Label uw foto\'s en video\'s met de locaties waar ze zijn genomen."\n\n"Andere apps hebben toegang tot deze informatie en uw opgeslagen afbeeldingen."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Nee, bedankt"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ja"</string>
-
-    <!-- CYANOGENMOD ADDITIONS -->
-    <string name="pref_camera_power_shutter_title">Aan/uit-knop</string>
-    <string name="pref_camera_iso_entry_auto">Automatisch</string>
-    <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
-    <string name="pref_camera_iso_entry_isosports">Sport</string>
-    <string name="pref_camera_iso_entry_isonight">Nacht</string>
-    <string name="pref_camera_iso_entry_isomovie">Film</string>
-    <string name="pref_camera_jpeg_title">JPEG-kwaliteit</string>
-    <string name="pref_camera_jpeg_entry_super">Super</string>
-    <string name="pref_camera_jpeg_entry_high">Hoog</string>
-    <string name="pref_camera_jpeg_entry_medium">Normaal</string>
-    <string name="pref_camera_jpeg_entry_low">Laag</string>
-    <string name="pref_camera_coloreffect_title">Kleureffect</string>
-    <string name="pref_camera_coloreffect_entry_none">Geen</string>
-    <string name="pref_camera_coloreffect_entry_mono">Monochroom</string>
-    <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
-    <string name="pref_camera_coloreffect_entry_negative">Negatief</string>
-    <string name="pref_camera_coloreffect_entry_solarize">Solarisatie</string>
-    <string name="pref_camera_coloreffect_entry_posterize">Posterisatie</string>
-    <string name="pref_camera_coloreffect_entry_aqua">Turquoise</string>
-    <string name="pref_camera_coloreffect_entry_emboss">Reliëf</string>
-    <string name="pref_camera_coloreffect_entry_sketch">Schets</string>
-    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
-    <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
-    <string name="pref_camera_coloreffect_entry_mosaic">Mozaïek</string>
-    <string name="pref_camera_coloreffect_entry_redtint">Rode tint</string>
-    <string name="pref_camera_coloreffect_entry_bluetint">Blauwe tint</string>
-    <string name="pref_camera_coloreffect_entry_greentint">Groene tint</string>
-    <string name="pref_camera_burst_title">Burstmodus</string>
-    <string name="pref_camera_burst_entry_off">Uit</string>
-    <string name="pref_camera_burst_entry_5">5 foto\'s</string>
-    <string name="pref_camera_burst_entry_10">10 foto\'s</string>
-    <string name="pref_camera_burst_entry_15">15 foto\'s</string>
-    <string name="pref_camera_burst_entry_20">20 foto\'s</string>
-    <string name="pref_camera_focusmode_entry_continuouspicture">Doorlopend</string>
-    <string name="pref_camera_focusmode_entry_extended">Uitgebreid</string>
-    <string name="pref_camera_focusmode_entry_facedetect">Gezichtsdetectie</string>
-    <string name="pref_camera_focusmode_entry_facepriority">Gezichtsprioriteit</string>
-    <string name="pref_camera_focusmode_entry_fixed">Vast</string>
-    <string name="pref_camera_focusmode_entry_portrait">Portret</string>
-    <string name="pref_camera_focustime_title">Duur aanraakfocus</string>
-    <string name="pref_camera_focustime_summary">Duur selecteren voor aanraakfocus</string>
-    <string name="pref_camera_focustime_entry_5">5 sec.</string>
-    <string name="pref_camera_focustime_entry_10">10 sec.</string>
-    <string name="pref_camera_focustime_entry_15">15 sec.</string>
-    <string name="pref_camera_focustime_entry_20">20 sec.</string>
-    <string name="pref_camera_focustime_entry_30">30 sec.</string>
-    <string name="pref_camera_focustime_entry_infinite">Oneindig</string>
-    <string name="pref_camera_scenemode_entry_nightportrait">Nacht (portret)</string>
-    <string name="pref_camera_scenemode_entry_nightindoor">Nacht (binnen)</string>
-    <string name="pref_camera_scenemode_entry_supernight">Donkere nacht</string>
-    <string name="pref_camera_scenemode_entry_duskdawn">Zonsop-/ondergang</string>
-    <string name="pref_camera_scenemode_entry_candlelight">Kaarslicht</string>
-    <string name="pref_camera_scenemode_entry_fallcolor">Herfstkleur</string>
-    <string name="pref_camera_scenemode_entry_closeup">Close-up</string>
-    <string name="pref_camera_scenemode_entry_landscape">Landschap</string>
-    <string name="pref_camera_scenemode_entry_aqua">Water</string>
-    <string name="pref_camera_scenemode_entry_sports">Sport</string>
-    <string name="pref_camera_scenemode_entry_mood">Stemming</string>
-    <string name="pref_camera_scenemode_entry_fireworks">Vuurwerk</string>
-    <string name="pref_camera_scenemode_entry_cine">Bioscoop</string>
-    <string name="pref_camera_scenemode_entry_oldfilm">Oude film</string>
-    <string name="pref_camera_scenemode_entry_beach">Strand</string>
-    <string name="pref_camera_scenemode_entry_portrait">Portret</string>
-    <string name="pref_camera_scenemode_entry_snow">Sneeuw</string>
-    <string name="pref_camera_scenemode_entry_steadyphoto">Stilstaand</string>
-    <string name="pref_camera_scenemode_entry_theatre">Theater</string>
-    <string name="pref_camera_scenemode_entry_backlight">Achtergrondlicht</string>
-    <string name="pref_camera_scenemode_entry_document">Document</string>
-    <string name="pref_camera_scenemode_entry_barcode">Streepjescode</string>
-    <string name="pref_camera_scenemode_entry_text">Tekst</string>
 </resources>

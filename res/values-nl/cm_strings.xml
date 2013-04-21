@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pref_camera_storage_title">Opslag</string>
+    <string name="pref_camera_picturesize_entry_13mp">13 megapixel</string>
+    <string name="pref_camera_picturesize_entry_12_8mp">12,8 megapixel</string>
+    <string name="pref_camera_picturesize_entry_11_5mp">11,5 megapixel</string>
+    <string name="pref_camera_picturesize_entry_9mp">9 megapixel</string>
+    <string name="pref_camera_picturesize_entry_6_4mp">6,4 megapixel</string>
+    <string name="pref_camera_picturesize_entry_4mp">4 megapixel</string>
+    <string name="pref_camera_picturesize_entry_2_5mp">2,5 megapixel</string>
+    <string name="pref_camera_picturesize_entry_2_1mp">2,1 megapixel</string>
+    <string name="pref_camera_picturesize_entry_1_5mp">1,5 megapixel</string>
+    <string name="pref_camera_picturesize_entry_xga">XGA</string>
+    <string name="pref_camera_picturesize_entry_svga">SVGA</string>
+    <string name="pref_camera_picturesize_entry_wvga">WVGA</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Doorlopend (foto)</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Doorlopend (video)</string>
+    <string name="pref_camera_focusmode_entry_extended">Uitgebreid</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Gezichtsdetectie</string>
+    <string name="pref_camera_focusmode_entry_facepriority">Gezichtsprioriteit</string>
+    <string name="pref_camera_focusmode_entry_fixed">Vast</string>
+    <string name="pref_camera_focusmode_entry_portrait">Portret</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Hyperfocaal</string>
+    <string name="pref_camera_scenemode_entry_nightportrait">Nacht (portret)</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">Nacht (binnen)</string>
+    <string name="pref_camera_scenemode_entry_supernight">Donkere nacht</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Zonsop-/ondergang</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Kaarslicht</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Herfstkleur</string>
+    <string name="pref_camera_scenemode_entry_closeup">Close-up</string>
+    <string name="pref_camera_scenemode_entry_landscape">Landschap</string>
+    <string name="pref_camera_scenemode_entry_aqua">Water</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_mood">Stemming</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Vuurwerk</string>
+    <string name="pref_camera_scenemode_entry_cine">Bioscoop</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">Oude film</string>
+    <string name="pref_camera_scenemode_entry_beach">Strand</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portret</string>
+    <string name="pref_camera_scenemode_entry_snow">Sneeuw</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Stilstaand</string>
+    <string name="pref_camera_scenemode_entry_theatre">Theater</string>
+    <string name="pref_camera_scenemode_entry_backlight">Tegenlicht</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Portret met tegenlicht</string>
+    <string name="pref_camera_scenemode_entry_document">Document</string>
+    <string name="pref_camera_scenemode_entry_barcode">Streepjescode</string>
+    <string name="pref_camera_scenemode_entry_text">Tekst</string>
+    <string name="pref_camera_scenemode_entry_beauty">Schoonheid</string>
+    <string name="pref_camera_scenemode_entry_flowers">Bloemen</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Whiteboard</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Achtergrond vervagen</string>
+    <string name="pref_camera_power_shutter_title">Aan/uit-knop</string>
+    <string name="pref_camera_iso_entry_auto">Automatisch</string>
+    <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">Sport</string>
+    <string name="pref_camera_iso_entry_isonight">Nacht</string>
+    <string name="pref_camera_iso_entry_isomovie">Film</string>
+    <string name="pref_camera_jpeg_title">JPEG-kwaliteit</string>
+    <string name="pref_camera_jpeg_entry_super">Super</string>
+    <string name="pref_camera_jpeg_entry_high">Hoog</string>
+    <string name="pref_camera_jpeg_entry_medium">Normaal</string>
+    <string name="pref_camera_jpeg_entry_low">Laag</string>
+    <string name="pref_camera_coloreffect_title">Kleureffect</string>
+    <string name="pref_camera_coloreffect_entry_none">Geen</string>
+    <string name="pref_camera_coloreffect_entry_mono">Monochroom</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negatief</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Solarisatie</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Posterisatie</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Turquoise</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Reliëf</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Schets</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastel</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mozaïek</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Rode tint</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Blauwe tint</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Groene tint</string>
+    <string name="pref_camera_burst_title">Burstmodus</string>
+    <string name="pref_camera_burst_entry_off">Uit</string>
+    <string name="pref_camera_burst_entry_5">5 foto\'s</string>
+    <string name="pref_camera_burst_entry_10">10 foto\'s</string>
+    <string name="pref_camera_burst_entry_15">15 foto\'s</string>
+    <string name="pref_camera_burst_entry_20">20 foto\'s</string>
+    <string name="pref_camera_focustime_title">Duur aanraakfocus</string>
+    <string name="pref_camera_focustime_summary">Duur selecteren voor aanraakfocus</string>
+    <string name="pref_camera_focustime_entry_5">5 sec.</string>
+    <string name="pref_camera_focustime_entry_10">10 sec.</string>
+    <string name="pref_camera_focustime_entry_15">15 sec.</string>
+    <string name="pref_camera_focustime_entry_20">20 sec.</string>
+    <string name="pref_camera_focustime_entry_30">30 sec.</string>
+    <string name="pref_camera_focustime_entry_infinite">Oneindig</string>
+</resources>
