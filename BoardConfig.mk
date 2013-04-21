@@ -28,13 +28,13 @@
 -include device/htc/msm8960-common/BoardConfigCommon.mk
 
 # Bootloader
-TARGET_BOOTLOADER_BOARD_NAME := m7wls
+TARGET_BOOTLOADER_BOARD_NAME := m7
 
 # Kernel
-TARGET_KERNEL_CONFIG := m7wls_defconfig
+TARGET_KERNEL_CONFIG := m7_defconfig
 
 # Bluetooth
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/htc/m7wls/bluetooth
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/htc/m7/bluetooth
 
 # HTClog
 COMMON_GLOBAL_CFLAGS += -DHTCLOG

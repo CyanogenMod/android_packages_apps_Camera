@@ -1,5 +1,5 @@
 #
-# system.prop for m7wls
+# system.prop for m7
 #
 
 ro.sf.lcd_density=480
@@ -10,10 +10,10 @@ rild.libpath=/system/lib/libril-qc-qmi-1.so
 ro.vendor.extension_library=/system/lib/libqc-opt.so
 ril.subscription.types=NV,RUIM
 ro.telephony.ril.v3=subscriptionFromSource,skipCdmaSubcription
-ro.telephony.default_network=8
+ro.telephony.default_network=9
 keyguard.no_require_sim=true
 DEVICE_PROVISIONED=1
-telephony.lteOnCdmaDevice=1
+telephony.lteOnGsmDevice=1
 ro.config.svlte1x=true
 ro.cdma.subscribe_on_ruim_ready=true
 persist.radio.no_wait_for_card=1

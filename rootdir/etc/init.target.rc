@@ -15,14 +15,14 @@ on early-init
 
 on fs
     # mount all the things
-    mount_all fstab.m7wls
+    mount_all fstab.m7
 
     # for NFC
     symlink /system/vendor/pittpatt /vendor/pittpatt
     symlink /system/vendor/firmware/libpn544_fw.so /vendor/firmware/libpn544_fw.so
 
 on boot
-    # m7wls radio
+    # m7 radio
     mkdir /dev/socket/qmux_radio 0770 radio radio
     chmod 2770 /dev/socket/qmux_radio
 
