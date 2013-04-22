@@ -1,0 +1,148 @@
+/dev/rtc0                 0600   system     system
+
+# HTC diag
+/dev/btdiag               0660   radio      radio
+/dev/diag_arm9            0660   radio      radio
+/dev/diag_mdm             0660   radio      radio
+/dev/htcdiag              0660   radio      radio
+
+# the genlock client device node is world writable/readable.
+/dev/genlock              0666   root       root
+
+# gpu driver for adreno200 is globally accessible
+/dev/kgsl-3d0             0666   root       root
+/dev/kgsl-2d0             0666   root       root
+/dev/kgsl-2d1             0666   root       root
+
+/dev/ttyHS0               0660   bluetooth  bluetooth
+/dev/ttyGS0               0660   system     system
+/dev/sdio_tty_ciq_00      0660   system     system
+/dev/msm_rotator          0660   system     graphics
+/dev/pmem_audio           0660   system     audio
+/dev/pmem_smipool*        0660   system     camera
+/dev/oncrpc/*             0660   radio      system
+/dev/radio0               0644   fm_radio   fm_radio
+/dev/i2c-0                0664   root       system
+/dev/i2c-1                0664   root       system
+/dev/i2c-2                0664   root       system
+/dev/i2c-4                0664   root       system
+/dev/msm_mvs              0660   system     audio
+/dev/msm_voicememo        0660   system     audio
+/dev/tzcom                0660   system     audio
+/dev/qce                  0660   system     audio
+/dev/msm_pcm_lp_dec       0660   system     audio
+# HTC
+/dev/smd0                 0660   system     system
+/dev/smd4                 0660   system     system
+/dev/smd3                 0660   bluetooth      bluetooth
+/dev/smd2                 0660   bluetooth      bluetooth
+/dev/smd7                 0640   radio      radio
+/dev/smdcntl0             0640   radio      radio
+/dev/smdcntl1             0640   radio      radio
+/dev/smdcntl2             0640   radio      radio
+/dev/smdcntl3             0640   radio      radio
+/dev/smdcntl4             0640   radio      radio
+/dev/smdcntl5             0640   radio      radio
+/dev/smdcntl6             0640   radio      radio
+/dev/smdcntl7             0640   radio      radio
+/dev/sdioctl0             0640   radio      radio
+/dev/sdioctl1             0640   radio      radio
+/dev/sdioctl2             0640   radio      radio
+/dev/sdioctl3             0640   radio      radio
+/dev/sdioctl4             0640   radio      radio
+/dev/sdioctl4             0640   radio      radio
+/dev/sdioctl5             0640   radio      radio
+/dev/sdioctl6             0640   radio      radio
+/dev/sdioctl7             0640   radio      radio
+/dev/sdioctl8             0640   radio      radio
+/dev/rmnet_ctrl           0640   radio      radio
+/dev/qemu_trace           0666   system     system
+/dev/gemini0              0660   system     camera
+/dev/rawchip0             0660   system     system
+/dev/mdm                  0660   system     system
+/dev/ttyHSL1              0660   system     system
+/dev/tty_sdio_00          0660   system     system
+/dev/block/mmcblk0p17     0660   system     system
+/dev/block/mmcblk0p18     0660   system     system
+/dev/video*               0660   system     camera
+
+# regular apps need to be able to open ion
+/dev/ion                  0664   system     system
+
+# wifi
+/dev/rfkill               0660   root       wifi
+
+# CDMA radio interface MUX
+/dev/ts0710mux*           0640   radio      radio
+/dev/ppp                  0660   radio      vpn
+
+# permissions for video
+/dev/msm_vidc_reg         0660  system       audio
+/dev/msm_vidc_dec         0660  system       audio
+/dev/msm_vidc_dec_sec     0660  system       audio
+/dev/msm_vidc_enc         0660  system       audio
+
+# permissions for audio
+/dev/msm_amrnb            0660  system       audio
+/dev/msm_amrwb            0660  system       audio
+/dev/msm_aac              0660  system       audio
+/dev/msm_multi_aac        0660  system       audio
+/dev/msm_aac_in           0660  system       audio
+/dev/msm_qcelp            0660  system       audio
+/dev/msm_evrc             0660  system       audio
+/dev/msm_fm               0660  system       audio
+/dev/msm_acdb             0660  system       audio
+/dev/msm_rtac             0660  system       audio
+/dev/msm_wma              0660  system       audio
+/dev/msm_wmapro           0660  system       audio
+/dev/msm_qcelp_in         0660  system       audio
+/dev/msm_evrc_in          0660  system       audio
+/dev/msm_preproc_ctl      0660  system       audio
+/dev/msm_a2dp_in          0640  system       audio
+/dev/msm_amrnb_in         0640  system       audio
+
+# sensors
+/dev/akm8975_aot          0640  compass      system
+/dev/akm8975_daemon       0640  compass      system
+/dev/bma150               0640  compass      system
+/dev/ewtzmu2daemon        0640  system       system
+/dev/ewtzmu2hal           0640  system       system
+/dev/ewtzmu2              0640  system       system
+/dev/mpu                  0664  system       system
+/dev/mpuirq               0664  system       system
+/dev/timerirq             0664  system       system
+
+# for simlock
+/dev/simlock              0660  radio        radio
+
+# sysfs properties
+/sys/devices/virtual/smdpkt/smdcntl*       open_timeout   0664 radio radio
+
+# felica device file nodes
+/dev/felica            0666   felicaclient   felicaclient
+/dev/felica_pon        0666   felicaclient   felicaclient
+/dev/felica_cen        0666   felicalock     felicalock
+/dev/felica_rfs        0444   felicaclient   felicaclient
+/dev/felica_rws        0666   felicaclient   felicaclient
+/dev/felica_int        0444   felicaclient   felicaclient
+/dev/felica_int_poll   0400   felicaclient   felicaclient
+/dev/felica_uid        0222   felicaclient   felicaclient
+
+# for modem link
+/sys/module/serial/parameters/modem_enabled    0600    system  system
+/dev/ttyHSUSB0                                 0600    system  system
+/dev/ttySA0                                    0600    system  system
+/dev/smd9                                      0600    system  system
+
+# for autobot car pc
+/dev/ttyHSUSB3                                 0660    autobot_access autobot_access
+/dev/ttyHSUSB1                                 0600    system system
+
+# NFC
+/dev/pn544                0600   nfc        nfc
+
+#Usb Stuff
+/dev/bus/usb/*            0660   root       usb
+/dev/mtp_usb              0660   root       mtp
+/dev/usb_accessory        0660   root       usb
+/dev/usb/lp*              0660   system     usb

@@ -1,0 +1,271 @@
+# Common HTC 8960 init script
+
+import init.qcom.usb.rc
+
+on early-init
+    mkdir /mnt/usbdisk 0755 system system
+
+on init
+    mkdir /devlog 0700 root root
+
+on fs
+    mkdir /tombstones 0771 system system
+    mkdir /tombstones/lpass 0771 system system
+
+on post-fs-data
+    # double check perms and set owner
+    chown root root /devlog
+    chmod 0700 /devlog
+
+    # Set indication (checked by vold) that we have finished this action
+    setprop vold.post_fs_done 1
+
+    # prepare kernel for wifi module
+    setprop ro.product.wireless WCN3660
+    write /dev/wcnss_wlan 1
+
+on boot
+    # mount debugfs for systrace
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+
+    chown system system /persist
+    chmod 0771 /persist
+
+    # Chown polling nodes as needed from UI running on system server
+    chmod 0664 /sys/devices/platform/msm_sdcc.1/polling
+    chmod 0664 /sys/devices/platform/msm_sdcc.2/polling
+    chmod 0664 /sys/devices/platform/msm_sdcc.3/polling
+    chmod 0664 /sys/devices/platform/msm_sdcc.4/polling
+
+    chown system system /sys/devices/platform/msm_sdcc.1/polling
+    chown system system /sys/devices/platform/msm_sdcc.2/polling
+    chown system system /sys/devices/platform/msm_sdcc.3/polling
+    chown system system /sys/devices/platform/msm_sdcc.4/polling
+
+    # bluetooth
+    mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
+    chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    chown bluetooth bluetooth /proc/bluetooth/sleep/proto
+    chown system system /sys/module/sco/parameters/disable_esco
+    chown bluetooth bluetooth /sys/module/hci_smd/parameters/hcismd_set
+    chmod 0660 /sys/module/bluetooth_power/parameters/power
+    chmod 0660 /sys/module/hci_smd/parameters/hcismd_set
+    chmod 0660 /sys/class/rfkill/rfkill0/state
+    chmod 0660 /proc/bluetooth/sleep/proto
+    chown bluetooth bluetooth /sys/devices/platform/msm_serial_hs.0/clock
+    chmod 0660 /sys/devices/platform/msm_serial_hs.0/clock
+
+    # for modem link
+    chown system system /sys/module/serial/parameters/modem_enabled
+
+    # wifi
+    mkdir /data/misc/wifi 0770 wifi wifi
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    mkdir /data/misc/wifi/hostapd 0770 wifi wifi
+    mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
+
+    # for ST R3GD20
+    chown system system /sys/class/htc_gyro/gyro/enable_device
+    chown system system /sys/class/htc_gyro/gyro/pollrate_ms
+    chown system system /sys/class/htc_gyro/gyro/range
+    chown system system /sys/class/htc_gyro/gyro/enable_polling
+    chown system system /sys/class/htc_gyro/gyro/fifo_samples
+    chown system system /sys/class/htc_gyro/gyro/fifo_mode
+    chown system system /sys/class/htc_gyro/gyro/reg_value
+    chown system system /sys/class/htc_gyro/gyro/reg_addr
+
+    # create symlink to qcn wpa_supplicant folder
+    symlink /data/misc/wifi/wpa_supplicant /data/system/wpa_supplicant
+    symlink /dev/socket/wpa_wlan0 /data/system/wpa_supplicant/wlan0
+
+    # node for USB service
+    mkdir /dev/bus/ 755 root root
+    mkdir /dev/bus/usb 755 root root
+
+    # symlink for HDMI
+    symlink /dev/graphics/fb1 /dev/graphics/hdmi
+
+    # audio
+    mkdir /data/audio 0775 media audio
+
+    # radio
+    mkdir /data/radio 0770 radio radio
+
+    # time-services
+    mkdir /data/time 0700 system system
+
+    # liblights
+    chown system system /sys/class/leds/green/brightness
+    chown system system /sys/class/leds/green/blink
+    chown system system /sys/class/leds/amber/brightness
+    chown system system /sys/class/leds/amber/blink
+    chown system system /sys/class/leds/button-backlight/brightness
+    chown system system /sys/class/leds/lcd-backlight/brightness
+
+    # flashlight
+    chown system system /sys/class/leds/flashlight/brightness
+    chmod 0666          /sys/class/leds/flashlight/brightness
+
+    # low charge current in voice call
+    chown radio radio /sys/class/power_supply/battery/phone_call
+    chown radio radio /sys/class/power_supply/battery/network_search
+
+    # allow interfaces to get v6 address when tethering is enabled
+    write /proc/sys/net/ipv6/conf/rmnet0/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet1/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet2/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet3/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet4/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet5/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet6/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet7/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio0/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio1/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio2/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio3/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio4/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio5/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio6/accept_ra 2
+    write /proc/sys/net/ipv6/conf/rmnet_sdio7/accept_ra 2
+
+    # Define TCP buffer sizes for various networks
+    setprop net.tcp.buffersize.hspa 4096,174760,3145728,4096,16384,110208
+    setprop net.tcp.buffersize.hsupa 4096,174760,1572864,4096,16384,110208
+    setprop net.tcp.buffersize.hsdpa 4096,174760,1572864,4096,16384,110208
+    setprop net.tcp.buffersize.umts 4096,174760,1572864,4096,16384,110208
+    setprop net.tcp.buffersize.edge 4096,174760,1572864,4096,16384,35040
+    setprop net.tcp.buffersize.gprs 4096,174760,1572864,4096,8760,11680
+
+    # load kineto_gan.ko
+    insmod /system/lib/modules/kineto_gan.ko
+
+    # cyttsp update
+    write /sys/devices/i2c-3/3-0024/cyttsp_update_fw 1
+
+# Services start here
+
+service abld /system/bin/mm-abl-daemon
+    disabled
+
+service dhcpcd_wlan0 /system/bin/dhcpcd -ABKLG
+    disabled
+    oneshot
+
+service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
+    user root
+    group system qcom_oncrpc
+    disabled
+    oneshot
+
+service hciattach /system/bin/sh /system/etc/init.qcom.bt.sh
+    user bluetooth
+    group qcom_oncrpc bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service hdmid /system/bin/hdmid
+    socket hdmid stream 0660 root system graphics
+    disabled
+
+service iprenew_wlan0 /system/bin/dhcpcd -n
+    disabled
+    oneshot
+
+service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
+    user root
+    disabled
+
+service netmgrd /system/bin/netmgrd
+    class main
+
+service p2p_supplicant /system/bin/wpa_supplicant -Dnl80211 -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+    user root
+    group wifi inet
+    socket wpa_wlan0 dgram 0660 wifi wifi
+    disabled
+    oneshot
+
+service qcamerasvr /system/bin/mm-qcamera-daemon
+    class main
+    user system
+    group system camera inet
+
+service qcom-post-boot /system/bin/sh /system/etc/init.qcom.post_boot.sh
+    user root
+    disabled
+    oneshot
+
+service qcom-sh /system/bin/sh /init.qcom.sh
+    class main
+    user root
+    oneshot
+
+service qmuxd /system/bin/qmuxd
+    class main
+    user radio
+    group radio
+
+service rmt_storage /system/bin/rmt_storage modem_st1 modem_st2 recovery radio_config
+    class core
+    user root
+
+service thermald /system/bin/thermald
+    user root
+    group root
+    disabled
+
+service time_daemon /system/bin/time_daemon
+    user root
+    group root
+    oneshot
+    disabled
+
+service wpa_supplicant /system/bin/wpa_supplicant -Dnl80211 -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+    user root
+    group wifi inet
+    socket wpa_wlan0 dgram 0660 wifi wifi
+    disabled
+    oneshot
+
+service zchgd_offmode /system/bin/zchgd -pseudooffmode
+    user root
+    group root graphics
+    disabled
+
+service zchgd_onmode /system/bin/zchgd -onmode
+    user root
+    group root graphics
+    oneshot
+
+on property:init.svc.bootanim=stopped
+    start qcom-post-boot
+
+on property:init.svc.wpa_supplicant=stopped
+    stop dhcpcd_wlan0
+
+on property:persist.thermal.monitor=true
+    start thermald
+
+on property:persist.timed.enable=true
+    start time_daemon
+
+on property:ro.hdmi.enable=true
+    start hdmid
+
+on property:ro.qualcomm.cabl=1
+    start abld
+
+on property:ro.qualcomm.cabl=0
+    stop abld
+
+on property:ro.use_data_netmgrd=false
+    stop netmgrd
+
+on property:service.adb.root=1
+    write /sys/class/android_usb/android0/enable 0
+    restart adbd
+    write /sys/class/android_usb/android0/enable 1
