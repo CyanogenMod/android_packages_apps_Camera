@@ -20,7 +20,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 # common msm8960 configs
 $(call inherit-product, device/htc/msm8960-common/msm8960.mk)
 
-DEVICE_PACKAGE_OVERLAYS += device/htc/m7/overlay
+DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Boot ramdisk setup
 PRODUCT_PACKAGES += \
@@ -29,56 +29,56 @@ PRODUCT_PACKAGES += \
 
 # Custom recovery charging
 PRODUCT_COPY_FILES += \
-    device/htc/m7/recovery/sbin/choice_fn:recovery/root/sbin/choice_fn \
-    device/htc/m7/recovery/sbin/offmode_charging:recovery/root/sbin/offmode_charging \
-    device/htc/m7/recovery/sbin/detect_key:recovery/root/sbin/detect_key \
-    device/htc/m7/recovery/sbin/power_test:recovery/root/sbin/power_test
+    $(LOCAL_PATH)/recovery/sbin/choice_fn:recovery/root/sbin/choice_fn \
+    $(LOCAL_PATH)/recovery/sbin/offmode_charging:recovery/root/sbin/offmode_charging \
+    $(LOCAL_PATH)/recovery/sbin/detect_key:recovery/root/sbin/detect_key \
+    $(LOCAL_PATH)/recovery/sbin/power_test:recovery/root/sbin/power_test
 
 # Vold config
 PRODUCT_COPY_FILES += \
-    device/htc/m7/configs/vold.fstab:system/etc/vold.fstab
+    $(LOCAL_PATH)/configs/vold.fstab:system/etc/vold.fstab
 
 # Sound configs
 PRODUCT_COPY_FILES += \
-    device/htc/m7/dsp/soundimage/srs_bypass.cfg:system/etc/soundimage/srs_bypass.cfg \
-    device/htc/m7/dsp/soundimage/srsfx_trumedia_51.cfg:system/etc/soundimage/srsfx_trumedia_51.cfg \
-    device/htc/m7/dsp/soundimage/srsfx_trumedia_movie.cfg:system/etc/soundimage/srsfx_trumedia_movie.cfg \
-    device/htc/m7/dsp/soundimage/srsfx_trumedia_music.cfg:system/etc/soundimage/srsfx_trumedia_music.cfg \
-    device/htc/m7/dsp/soundimage/srsfx_trumedia_voice.cfg:system/etc/soundimage/srsfx_trumedia_voice.cfg \
-    device/htc/m7/dsp/soundimage/srs_geq10.cfg:system/etc/soundimage/srs_geq10.cfg \
-    device/htc/m7/dsp/soundimage/srs_global.cfg:system/etc/soundimage/srs_global.cfg
+    $(LOCAL_PATH)/dsp/soundimage/srs_bypass.cfg:system/etc/soundimage/srs_bypass.cfg \
+    $(LOCAL_PATH)/dsp/soundimage/srsfx_trumedia_51.cfg:system/etc/soundimage/srsfx_trumedia_51.cfg \
+    $(LOCAL_PATH)/dsp/soundimage/srsfx_trumedia_movie.cfg:system/etc/soundimage/srsfx_trumedia_movie.cfg \
+    $(LOCAL_PATH)/dsp/soundimage/srsfx_trumedia_music.cfg:system/etc/soundimage/srsfx_trumedia_music.cfg \
+    $(LOCAL_PATH)/dsp/soundimage/srsfx_trumedia_voice.cfg:system/etc/soundimage/srsfx_trumedia_voice.cfg \
+    $(LOCAL_PATH)/dsp/soundimage/srs_geq10.cfg:system/etc/soundimage/srs_geq10.cfg \
+    $(LOCAL_PATH)/dsp/soundimage/srs_global.cfg:system/etc/soundimage/srs_global.cfg
 	
 # Media config
 PRODUCT_COPY_FILES += \
-    device/htc/m7/configs/audio_policy.conf:system/etc/audio_policy.conf \
-    device/htc/m7/configs/AudioBTID.csv:system/etc/AudioBTID.csv \
-    device/htc/m7/configs/AudioBTIDnew.csv:system/etc/AudioBTIDnew.csvs \
-    device/htc/m7/configs/media_profiles.xml:system/etc/media_profiles.xml \
-    device/htc/m7/configs/media_codecs.xml:system/etc/media_codecs.xml \
-    device/htc/m7/dsp/snd_soc_msm/snd_soc_msm_2x_Fusion3:system/etc/snd_soc_msm/snd_soc_msm_2x_Fusion3
+    $(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf \
+    $(LOCAL_PATH)/configs/AudioBTID.csv:system/etc/AudioBTID.csv \
+    $(LOCAL_PATH)/configs/AudioBTIDnew.csv:system/etc/AudioBTIDnew.csvs \
+    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
+    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
+    $(LOCAL_PATH)/dsp/snd_soc_msm/snd_soc_msm_2x_Fusion3:system/etc/snd_soc_msm/snd_soc_msm_2x_Fusion3
 	
 # Keylayouts and Keychars
 PRODUCT_COPY_FILES += \
-    device/htc/m7/keylayout/AVRCP.kl:system/usr/keylayout/AVRCP.kl \
-    device/htc/m7/keylayout/Generic.kl:system/usr/keylayout/Generic.kl \
-    device/htc/m7/keylayout/h2w_headset.kl:system/usr/keylayout/h2w_headset.kl \
-    device/htc/m7/keylayout/keypad_8960.kl:system/usr/keylayout/keypad_8960.kl \
-    device/htc/m7/keylayout/projector-Keypad.kl:system/usr/keylayout/projector-Keypad.kl \
-    device/htc/m7/keylayout/qwerty.kl:system/usr/keylayout/qwerty.kl \
-    device/htc/m7/keylayout/synaptics-rmi-touchscreen.kl:system/usr/keylayout/synaptics-rmi-touchscreen.kl \
+    $(LOCAL_PATH)/keylayout/AVRCP.kl:system/usr/keylayout/AVRCP.kl \
+    $(LOCAL_PATH)/keylayout/Generic.kl:system/usr/keylayout/Generic.kl \
+    $(LOCAL_PATH)/keylayout/h2w_headset.kl:system/usr/keylayout/h2w_headset.kl \
+    $(LOCAL_PATH)/keylayout/keypad_8960.kl:system/usr/keylayout/keypad_8960.kl \
+    $(LOCAL_PATH)/keylayout/projector-Keypad.kl:system/usr/keylayout/projector-Keypad.kl \
+    $(LOCAL_PATH)/keylayout/qwerty.kl:system/usr/keylayout/qwerty.kl \
+    $(LOCAL_PATH)/keylayout/synaptics-rmi-touchscreen.kl:system/usr/keylayout/synaptics-rmi-touchscreen.kl \
 	
 # Input device config
 PRODUCT_COPY_FILES += \
-    device/htc/m7/idc/projector_input.idc:system/usr/idc/projector_input.idc \
-    device/htc/m7/idc/qwerty2.idc:system/usr/idc/qwerty2.idc \
-    device/htc/m7/idc/qwerty.idc:system/usr/idc/qwerty.idc \
-    device/htc/m7/idc/synaptics-rmi-touchscreen.idc:system/usr/idc/synaptics-rmi-touchscreen.idc
+    $(LOCAL_PATH)/idc/projector_input.idc:system/usr/idc/projector_input.idc \
+    $(LOCAL_PATH)/idc/qwerty2.idc:system/usr/idc/qwerty2.idc \
+    $(LOCAL_PATH)/idc/qwerty.idc:system/usr/idc/qwerty.idc \
+    $(LOCAL_PATH)/idc/synaptics-rmi-touchscreen.idc:system/usr/idc/synaptics-rmi-touchscreen.idc
 
 # NFCEE access control
 ifeq ($(TARGET_BUILD_VARIANT),user)
-    NFCEE_ACCESS_PATH := device/htc/m7/configs/nfcee_access.xml
+    NFCEE_ACCESS_PATH := $(LOCAL_PATH)/configs/nfcee_access.xml
 else
-    NFCEE_ACCESS_PATH := device/htc/m7/configs/nfcee_access_debug.xml
+    NFCEE_ACCESS_PATH := $(LOCAL_PATH)/configs/nfcee_access_debug.xml
 endif
 PRODUCT_COPY_FILES += \
     $(NFCEE_ACCESS_PATH):system/etc/nfcee_access.xml
@@ -110,17 +110,10 @@ PRODUCT_COPY_FILES += \
 
 ## CDMA Sprint stuffs
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.com.google.clientidbase=android-sprint-us \
+    ro.setupwizard.enable_bypass=1 \
+    dalvik.vm.lockprof.threshold=500 \
     ro.com.google.locationfeatures=1 \
-    ro.cdma.home.operator.numeric=310120 \
-    ro.cdma.home.operator.alpha=Sprint \
-    gsm.sim.operator.alpha = sprint \
-    gsm.sim.operator.numeric = 310120 \
-    gsm.sim.operator.iso-country = us \
-    gsm.operator.alpha = sprint \
-    gsm.operator.numeric = 310120 \
-    gsm.operator.iso-country = us \
-    ro.carrier=Sprint
+    dalvik.vm.dexopt-flags=m=y
 
 # We have enough space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
@@ -131,11 +124,17 @@ PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 # Device uses high-density artwork where available
 PRODUCT_AAPT_CONFIG := normal hdpi xhdpi xxhdpi
 PRODUCT_AAPT_PREF_CONFIG := xhdpi xxhdpi
-PRODUCT_NAME := full_m7
-PRODUCT_DEVICE := m7
+PRODUCT_LOCALES += en_US xhdpi
 
 # call the proprietary setup
 $(call inherit-product-if-exists, vendor/htc/m7/m7-vendor.mk)
 
 # call dalvik heap config
 $(call inherit-product-if-exists, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
+
+# Discard inherited values and use our own instead.
+PRODUCT_NAME := m7
+PRODUCT_DEVICE := m7
+PRODUCT_BRAND := htc
+PRODUCT_MODEL := HTC One
+PRODUCT_MANUFACTURER := HTC
