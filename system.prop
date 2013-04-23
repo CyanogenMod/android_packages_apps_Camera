@@ -38,4 +38,4 @@ ro.nfc.port=I2C
 persist.timed.enable=true
 
 # UMS
-persist.sys.usb.config=mtp
+persist.sys.usb.config=mtp,adb
