@@ -3,7 +3,7 @@
 # This is a common source of Android security bugs
 
 import /init.m7.rc
-import /init.usb.rc
+import /init.m7.usb.rc
 import /init.trace.rc
 
 on early-init
