@@ -90,6 +90,9 @@ case "$target" in
         chown system /sys/power/cpufreq_ceiling
 	chown system /sys/power/cpunum_floor
 	chown system /sys/power/cpunum_ceiling
+	echo 1 > /sys/module/rmnet_usb/parameters/rmnet_data_init
+	# Allow QMUX daemon to assign port open wait time
+	chown radio.radio /sys/devices/virtual/hsicctl/hsicctl0/modem_wait
     ;;
 esac
 
