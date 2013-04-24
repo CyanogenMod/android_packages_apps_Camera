@@ -46,6 +46,9 @@ PRODUCT_COPY_FILES += device/htc/m7/configs/thermald.conf:system/etc/thermald.co
 PRODUCT_COPY_FILES += \
     device/htc/m7/configs/vold.fstab:system/etc/vold.fstab
 
+PRODUCT_PACKAGES += \
+    libnetcmdiface
+
 # Wifi config
 PRODUCT_COPY_FILES += \
     device/htc/m7/configs/calibration:/system/etc/calibration \
