@@ -16,7 +16,9 @@
 
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
+
+# common msm8960 configs
+$(call inherit-product, device/htc/msm8960-common/msm8960.mk)
 
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
@@ -29,21 +31,6 @@ PRODUCT_COPY_FILES += \
     device/htc/m7/ramdisk/init.usb.rc:root/init.usb.rc \
     device/htc/m7/ramdisk/init.rc:root/init.rc \
     device/htc/m7/ramdisk/ueventd.m7.rc:root/ueventd.m7.rc \
-
-# QCOM Boot ramdisk setup
-PRODUCT_PACKAGES += \
-    init.qcom.sh \
-    init.qcom.usb.rc \
-    init.qcom.rc \
-    ueventd.qcom.rc
-
-# Qualcomm scripts
-PRODUCT_COPY_FILES += \
-    device/htc/m7/configs/init.qcom.bt.sh:/system/etc/init.qcom.bt.sh \
-    device/htc/m7/configs/init.qcom.fm.sh:/system/etc/init.qcom.fm.sh \
-    device/htc/m7/configs/init.qcom.post_boot.sh:/system/etc/init.qcom.post_boot.sh \
-    device/htc/m7/configs/init.qcom.sdio.sh:/system/etc/init.qcom.sdio.sh \
-    device/htc/m7/configs/init.qcom.wifi.sh:/system/etc/init.qcom.wifi.sh
 
 # Custom recovery charging
 PRODUCT_COPY_FILES += \
