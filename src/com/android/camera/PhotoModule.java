@@ -153,6 +153,7 @@ public class PhotoModule
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
     private List<Integer> mZoomRatios;
+    private boolean mZoomSetByKey = false;
 
     private Parameters mInitialParams;
     private boolean mFocusAreaSupported;
@@ -687,9 +688,16 @@ public class PhotoModule
         }
     }
 
-    private void processZoomValueChanged(int index) {
+    private void processZoomValueChanged(int index){
         if (index >= 0 && index <= mZoomMax) {
-            mZoomRenderer.setZoom(index);
+            processZoomValueChanged(index,true);
+            mZoomSetByKey = true;
+        }
+    }
+
+    private void processZoomValueChanged(int index,boolean fromKey) {
+
+        if(fromKey || (!fromKey && !mZoomSetByKey)){
             // Not useful to change zoom value when the activity is paused.
             if (mPaused) return;
             mZoomValue = index;
@@ -701,13 +709,15 @@ public class PhotoModule
                 Parameters p = mCameraDevice.getParameters();
                 mZoomRenderer.setZoomValue(mZoomRatios.get(p.getZoom()));
             }
+        }else{
+            mZoomSetByKey = false;
         }
     }
 
     private class ZoomChangeListener implements ZoomRenderer.OnZoomChangedListener {
         @Override
         public void onZoomValueChanged(int index) {
-            processZoomValueChanged(index);
+            processZoomValueChanged(index,false);
         }
 
         @Override
