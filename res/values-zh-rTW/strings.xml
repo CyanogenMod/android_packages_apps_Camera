@@ -183,7 +183,7 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"完成"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"設定時間間隔"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"延時攝影功能已關閉，請開啟以設定時間間格。"</string>
-    <string name="set_timer_help" msgid="5007708849404589472">"倒數計時器目前為關閉狀態，開啓即可在拍照前倒數計時。"</string>
+    <string name="set_timer_help" msgid="5007708849404589472">"倒數計時器目前為關閉狀態，開啟即可在拍照前倒數計時。"</string>
     <string name="set_duration" msgid="5578035312407161304">"設定倒數時間 (以秒為單位)"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"拍照倒數計時中"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"記錄拍攝地點？"</string>
