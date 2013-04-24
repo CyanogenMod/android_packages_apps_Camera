@@ -24,13 +24,13 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/ramdisk/fstab.m7:root/fstab.m7 \
-    $(LOCAL_PATH)/ramdisk/init:root/init \
-    $(LOCAL_PATH)/ramdisk/init.m7.rc:root/init.m7.rc \
-    $(LOCAL_PATH)/ramdisk/init.post_mount.sh:root/init.post_mount.sh \
-    $(LOCAL_PATH)/ramdisk/init.m7.usb.rc:root/init.m7.usb.rc \
-    $(LOCAL_PATH)/ramdisk/init.rc:root/init.rc \
-    $(LOCAL_PATH)/ramdisk/ueventd.m7.rc:root/ueventd.m7.rc \
+    $(LOCAL_PATH)/ramdisk/root/fstab.m7:root/fstab.m7 \
+    $(LOCAL_PATH)/ramdisk/root/init:root/init \
+    $(LOCAL_PATH)/ramdisk/root/init.m7.rc:root/init.m7.rc \
+    $(LOCAL_PATH)/ramdisk/root/init.post_mount.sh:root/init.post_mount.sh \
+    $(LOCAL_PATH)/ramdisk/root/init.m7.usb.rc:root/init.m7.usb.rc \
+    $(LOCAL_PATH)/ramdisk/root/init.rc:root/init.rc \
+    $(LOCAL_PATH)/ramdisk/root/ueventd.m7.rc:root/ueventd.m7.rc \
 
 # Custom recovery charging
 PRODUCT_COPY_FILES += \
