@@ -1,0 +1,10 @@
+Change-Id: Id49bee219977c4883e813041e95337fb03e7f7f9
+Code-Review+2: Marco Brohet <therbom@gmail.com>
+Code-Review+1: Dmitriy Chermenev <chdiman86@gmail.com>
+Verified+1: Cid
+Code-Review+1: Vladimir Belkov <belladimir@gmail.com>
+Submitted-by: Marco Brohet <therbom@gmail.com>
+Submitted-at: Wed, 24 Apr 2013 11:02:36 -0700
+Reviewed-on: http://review.cyanogenmod.org/36155
+Project: CyanogenMod/android_packages_apps_Camera
+Branch: refs/heads/cm-10.1
