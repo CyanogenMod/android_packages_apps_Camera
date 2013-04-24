@@ -31,6 +31,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/ramdisk/root/init.m7.usb.rc:root/init.m7.usb.rc \
     $(LOCAL_PATH)/ramdisk/root/init.rc:root/init.rc \
     $(LOCAL_PATH)/ramdisk/root/ueventd.m7.rc:root/ueventd.m7.rc \
+    $(LOCAL_PATH)/configs/init.post_boot.sh:/system/etc/init.post_boot.sh
 
 # Custom recovery charging
 PRODUCT_COPY_FILES += \
