@@ -233,6 +233,7 @@ public class VideoModule implements CameraModule,
     private int mZoomValue;  // The current zoom value.
     private int mZoomMax;
     private List<Integer> mZoomRatios;
+    private boolean mZoomSetByKey = false;
     private boolean mRestoreFlash;  // This is used to check if we need to restore the flash
                                     // status when going back from gallery.
 
@@ -2509,24 +2510,35 @@ public class VideoModule implements CameraModule,
         return false;
     }
 
-    private void processZoomValueChanged(int index) {
+    private void processZoomValueChanged(int index){
         if (index >= 0 && index <= mZoomMax) {
-            mZoomRenderer.setZoom(index);
+             processZoomValueChanged(index,true);
+             mZoomSetByKey = true;
+        }
+    }
+
+    private void processZoomValueChanged(int index, boolean fromKey) {
+
+        if(fromKey || (!fromKey && !mZoomSetByKey)){
             // Not useful to change zoom value when the activity is paused.
             if (mPaused) return;
             mZoomValue = index;
             // Set zoom parameters asynchronously
             mParameters.setZoom(mZoomValue);
             mActivity.mCameraDevice.setParametersAsync(mParameters);
-            Parameters p = mActivity.mCameraDevice.getParameters();
-            mZoomRenderer.setZoomValue(mZoomRatios.get(p.getZoom()));
+            if (mZoomRenderer != null) {
+                Parameters p = mActivity.mCameraDevice.getParameters();
+                mZoomRenderer.setZoomValue(mZoomRatios.get(p.getZoom()));
+            }
+        }else{
+            mZoomSetByKey = false;
         }
     }
 
     private class ZoomChangeListener implements ZoomRenderer.OnZoomChangedListener {
         @Override
         public void onZoomValueChanged(int index) {
-            processZoomValueChanged(index);
+            processZoomValueChanged(index,false);
         }
 
         @Override
