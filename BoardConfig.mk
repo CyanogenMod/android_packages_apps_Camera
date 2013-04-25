@@ -25,7 +25,7 @@
 # against the traditional rules of inheritance).
 
 # inherit from common apq8064
-# -include device/htc/apq8064-common/BoardConfigCommon.mk
+-include device/htc/msm8960-common/BoardConfigCommon.mk
 BOARD_VENDOR := htc
 
 # Include path
@@ -68,26 +68,9 @@ TARGET_KERNEL_VERSION := 3.4
 TARGET_KERNEL_CONFIG := m7_defconfig
 TARGET_KERNEL_SOURCE := kernel/htc/msm8960
 
-# Audio
-BOARD_USES_ALSA_AUDIO:= true
-BOARD_USES_FLUENCE_INCALL := true
-BOARD_USES_SEPERATED_AUDIO_INPUT := true
-TARGET_QCOM_AUDIO_VARIANT := caf
-
 # Bluetooth
-BOARD_HAVE_BLUETOOTH := true
-BOARD_HAVE_BLUETOOTH_BCM := true
-BLUETOOTH_HCI_USE_MCT := true
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/htc/m7/bluetooth
 BOARD_BLUEDROID_VENDOR_CONF := device/htc/m7/configs/libbt_vndcfg.txt
-
-# Camera
-TARGET_PROVIDES_CAMERA_HAL := false
-USE_CAMERA_STUB := true
-
-# Ril
-BOARD_RIL_CLASS := "../../../device/htc/m7/libril/"
-BOARD_PROVIDES_LIBRIL := true
 
 # HTClog
 COMMON_GLOBAL_CFLAGS += -DHTCLOG
@@ -98,12 +81,6 @@ TARGET_USES_C2D_COMPOSITION := true
 TARGET_USES_ION := true
 TARGET_QCOM_DISPLAY_VARIANT := caf
 BOARD_EGL_CFG := device/htc/m7/configs/egl.cfg
-
-# Lights
-TARGET_PROVIDES_LIBLIGHTS := true
-
-# Power
-TARGET_PROVIDES_POWERHAL := true
 
 # USB
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
@@ -125,10 +102,6 @@ WIFI_DRIVER_FW_PATH_STA := "/system/etc/firmware/fw_bcm4335.bin"
 WIFI_DRIVER_FW_PATH_AP := "/system/etc/firmware/fw_bcm4335_apsta.bin"
 WIFI_DRIVER_FW_PATH_P2P := "/system/etc/firmware/fw_bcm4335_p2p.bin"
 
-# GPS
-BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := $(TARGET_BOARD_PLATFORM)
-TARGET_NO_RPC := true
-
 # Filesystem
 BOARD_BOOTIMAGE_PARTITION_SIZE := 16777216
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 16776704
@@ -143,10 +116,6 @@ TARGET_RECOVERY_INITRC := device/htc/m7/recovery/init.rc
 BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_HAS_LARGE_FILESYSTEM := true
 TARGET_USERIMAGES_USE_EXT4 := true
-
-# Webkit
-ENABLE_WEBGL := true
-TARGET_FORCE_CPU_UPLOAD := true
 
 # cat /proc/emmc:
 # dev:        size     erasesize name
