@@ -1,0 +1,1287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<!-- Note that IconMode can be only 0, ON or 1, FLASHING
+     The icon is turned OFF if then IconIndex = 1 -->
+
+<EriFile VersionNumber="1358"
+         NumberOfEriEntries="179"
+         EriFileType="1">
+
+         <CallPromptId Id="0"
+                       CallPromptText="CallPromptId0"/>
+
+         <CallPromptId Id="1"
+                       CallPromptText="CallPromptId1"/>
+
+         <CallPromptId Id="2"
+                       CallPromptText="CallPromptId2"/>
+
+         <EriInfo RoamingIndicator="0"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Sprint"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="1"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Sprint"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="2"
+                  IconIndex="2"
+                  IconMode="0"
+                  EriText="Sprint"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="64"
+                  IconIndex="64"
+                  IconMode="0"
+                  EriText="Preferred System"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="65"
+                  IconIndex="65"
+                  IconMode="0"
+                  EriText="Available System"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="66"
+                  IconIndex="66"
+                  IconMode="0"
+                  EriText="Alliance Partner"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="67"
+                  IconIndex="67"
+                  IconMode="0"
+                  EriText="Premium Partner"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="68"
+                  IconIndex="68"
+                  IconMode="0"
+                  EriText="Full Service Functionality"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="69"
+                  IconIndex="69"
+                  IconMode="0"
+                  EriText="Partial Service Functionality"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="70"
+                  IconIndex="70"
+                  IconMode="0"
+                  EriText="Analog A"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="71"
+                  IconIndex="71"
+                  IconMode="0"
+                  EriText="Analog B"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="72"
+                  IconIndex="72"
+                  IconMode="0"
+                  EriText="CDMA 800 A"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="73"
+                  IconIndex="73"
+                  IconMode="0"
+                  EriText="CDMA 800 B"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="74"
+                  IconIndex="74"
+                  IconMode="0"
+                  EriText="International Roaming"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="75"
+                  IconIndex="75"
+                  IconMode="0"
+                  EriText="Extended Network"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="76"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Campus"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="77"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="In Building"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="78"
+                  IconIndex="78"
+                  IconMode="0"
+                  EriText="Regional"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="79"
+                  IconIndex="79"
+                  IconMode="0"
+                  EriText="Community"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="80"
+                  IconIndex="80"
+                  IconMode="0"
+                  EriText="Business"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="81"
+                  IconIndex="81"
+                  IconMode="0"
+                  EriText="Zone 1"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="82"
+                  IconIndex="82"
+                  IconMode="0"
+                  EriText="Zone 2"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="83"
+                  IconIndex="83"
+                  IconMode="0"
+                  EriText="National"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="84"
+                  IconIndex="84"
+                  IconMode="0"
+                  EriText="Local"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="85"
+                  IconIndex="85"
+                  IconMode="0"
+                  EriText="City"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="86"
+                  IconIndex="86"
+                  IconMode="0"
+                  EriText="Government"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="87"
+                  IconIndex="87"
+                  IconMode="0"
+                  EriText="USA"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="88"
+                  IconIndex="88"
+                  IconMode="0"
+                  EriText="State"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="89"
+                  IconIndex="89"
+                  IconMode="0"
+                  EriText="Resort"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="90"
+                  IconIndex="90"
+                  IconMode="0"
+                  EriText="Headquarters"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="91"
+                  IconIndex="91"
+                  IconMode="0"
+                  EriText="Personal"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="92"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Home"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="93"
+                  IconIndex="93"
+                  IconMode="0"
+                  EriText="Residential"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="94"
+                  IconIndex="94"
+                  IconMode="0"
+                  EriText="University"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="95"
+                  IconIndex="95"
+                  IconMode="0"
+                  EriText="College"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="96"
+                  IconIndex="96"
+                  IconMode="0"
+                  EriText="Hotel Guest"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="97"
+                  IconIndex="97"
+                  IconMode="0"
+                  EriText="Rental"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="98"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Corporate"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="99"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Sprint"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="100"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Campus"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="101"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="In Building"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="102"
+                  IconIndex="102"
+                  IconMode="0"
+                  EriText="Regional"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="103"
+                  IconIndex="103"
+                  IconMode="0"
+                  EriText="Community"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="104"
+                  IconIndex="104"
+                  IconMode="0"
+                  EriText="Business"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="105"
+                  IconIndex="105"
+                  IconMode="0"
+                  EriText="Zone 1"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="106"
+                  IconIndex="106"
+                  IconMode="0"
+                  EriText="Zone 2"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="107"
+                  IconIndex="107"
+                  IconMode="0"
+                  EriText="National"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="108"
+                  IconIndex="108"
+                  IconMode="0"
+                  EriText="Local"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="109"
+                  IconIndex="109"
+                  IconMode="0"
+                  EriText="City"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="110"
+                  IconIndex="110"
+                  IconMode="0"
+                  EriText="Government"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="111"
+                  IconIndex="111"
+                  IconMode="0"
+                  EriText="USA"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="112"
+                  IconIndex="112"
+                  IconMode="0"
+                  EriText="State"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="113"
+                  IconIndex="113"
+                  IconMode="0"
+                  EriText="Resort"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="114"
+                  IconIndex="114"
+                  IconMode="0"
+                  EriText="Headquarters"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="115"
+                  IconIndex="115"
+                  IconMode="0"
+                  EriText="Personal"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="116"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Home"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="117"
+                  IconIndex="117"
+                  IconMode="0"
+                  EriText="Residential"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="118"
+                  IconIndex="118"
+                  IconMode="0"
+                  EriText="University"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="119"
+                  IconIndex="119"
+                  IconMode="0"
+                  EriText="College"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="120"
+                  IconIndex="120"
+                  IconMode="0"
+                  EriText="Hotel Guest"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="121"
+                  IconIndex="121"
+                  IconMode="0"
+                  EriText="Rental"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="122"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Corporate"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="123"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Sprint"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="124"
+                  IconIndex="124"
+                  IconMode="0"
+                  EriText="International"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="125"
+                  IconIndex="125"
+                  IconMode="0"
+                  EriText="International"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="126"
+                  IconIndex="126"
+                  IconMode="0"
+                  EriText="International"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="127"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Premium Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="128"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Enhanced Service "
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="129"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Enhanced Digital"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="130"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Enhanced Roaming"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="131"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Alliance Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="132"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Alliance Network"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="133"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Vision Roaming"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="134"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="135"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Expanded Services"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="136"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Expanded Network"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="137"
+                  IconIndex="137"
+                  IconMode="0"
+                  EriText="Premium Service "
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="138"
+                  IconIndex="138"
+                  IconMode="0"
+                  EriText="Enhanced Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="139"
+                  IconIndex="139"
+                  IconMode="0"
+                  EriText="Enhanced Digital"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="140"
+                  IconIndex="140"
+                  IconMode="0"
+                  EriText="Enhanced Roaming"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="141"
+                  IconIndex="141"
+                  IconMode="0"
+                  EriText="Alliance Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="142"
+                  IconIndex="142"
+                  IconMode="0"
+                  EriText="Alliance Network"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="143"
+                  IconIndex="143"
+                  IconMode="0"
+                  EriText="Vision Roaming"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="144"
+                  IconIndex="144"
+                  IconMode="0"
+                  EriText="Extended Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="145"
+                  IconIndex="145"
+                  IconMode="0"
+                  EriText="Expanded Services"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="146"
+                  IconIndex="146"
+                  IconMode="0"
+                  EriText="Expanded Network"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="147"
+                  IconIndex="147"
+                  IconMode="1"
+                  EriText="Premium Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="148"
+                  IconIndex="148"
+                  IconMode="1"
+                  EriText="Enhanced Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="149"
+                  IconIndex="149"
+                  IconMode="1"
+                  EriText="Enhanced Digital"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="150"
+                  IconIndex="150"
+                  IconMode="1"
+                  EriText="Enhanced Roaming"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="151"
+                  IconIndex="151"
+                  IconMode="1"
+                  EriText="Alliance Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="152"
+                  IconIndex="152"
+                  IconMode="1"
+                  EriText="Alliance Network"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="153"
+                  IconIndex="153"
+                  IconMode="1"
+                  EriText="Vision Roaming"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="154"
+                  IconIndex="154"
+                  IconMode="1"
+                  EriText="Extended Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="155"
+                  IconIndex="155"
+                  IconMode="1"
+                  EriText="Expanded Services"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="156"
+                  IconIndex="156"
+                  IconMode="1"
+                  EriText="Expanded Network"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="157"
+                  IconIndex="157"
+                  IconMode="0"
+                  EriText="Premium International"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="158"
+                  IconIndex="158"
+                  IconMode="0"
+                  EriText="Premium International"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="159"
+                  IconIndex="159"
+                  IconMode="0"
+                  EriText="Premium International"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="160"
+                  IconIndex="160"
+                  IconMode="0"
+                  EriText=""
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="161"
+                  IconIndex="161"
+                  IconMode="0"
+                  EriText=""
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="162"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText=""
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="163"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText=""
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="164"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Ext Voice/Data Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="165"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Ext Voice/Data Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="166"
+                  IconIndex="166"
+                  IconMode="0"
+                  EriText="Ext Voice/Data Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="167"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Broadband"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="168"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Broadband"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="169"
+                  IconIndex="169"
+                  IconMode="0"
+                  EriText="Extended Broadband"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="170"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="171"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="172"
+                  IconIndex="172"
+                  IconMode="0"
+                  EriText="Extended Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="173"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Data Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="174"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Data Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="175"
+                  IconIndex="175"
+                  IconMode="0"
+                  EriText="Extended Data Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="176"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Network"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="177"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Network"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="178"
+                  IconIndex="178"
+                  IconMode="0"
+                  EriText="Extended Network"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="179"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="180"
+                  IconIndex="180"
+                  IconMode="0"
+                  EriText="Extended Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="181"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Voice"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="182"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Voice"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="183"
+                  IconIndex="183"
+                  IconMode="0"
+                  EriText="Extended Voice"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="184"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Voice &amp; Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="185"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Voice &amp; Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="186"
+                  IconIndex="186"
+                  IconMode="0"
+                  EriText="Extended Voice &amp; Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="187"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Voice Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="188"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Voice Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="189"
+                  IconIndex="189"
+                  IconMode="0"
+                  EriText="Extended Voice Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="190"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Voice/Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="191"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Voice/Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="192"
+                  IconIndex="192"
+                  IconMode="0"
+                  EriText="Extended Voice/Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="193"
+                  IconIndex="193"
+                  IconMode="0"
+                  EriText="International"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="194"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="International Services"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="195"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="International Voice"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="196"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Int'l Voice/Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="197"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Int'l Voice/Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="198"
+                  IconIndex="198"
+                  IconMode="0"
+                  EriText="Int'l Voice/Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="199"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Ext Voice/Data Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="200"
+                  IconIndex="200"
+                  IconMode="0"
+                  EriText="Ext Voice/Data Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="201"
+                  IconIndex="201"
+                  IconMode="0"
+                  EriText="Ext Voice/Data Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="202"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Broadband"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="203"
+                  IconIndex="203"
+                  IconMode="0"
+                  EriText="Extended Broadband"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="204"
+                  IconIndex="204"
+                  IconMode="0"
+                  EriText="Extended Broadband"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="205"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="206"
+                  IconIndex="206"
+                  IconMode="0"
+                  EriText="Extended Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="207"
+                  IconIndex="207"
+                  IconMode="0"
+                  EriText="Extended Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="208"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Data Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="209"
+                  IconIndex="209"
+                  IconMode="0"
+                  EriText="Extended Data Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="210"
+                  IconIndex="210"
+                  IconMode="0"
+                  EriText="Extended Data Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="211"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Network"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="212"
+                  IconIndex="212"
+                  IconMode="0"
+                  EriText="Extended Network"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="213"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="214"
+                  IconIndex="214"
+                  IconMode="0"
+                  EriText="Extended Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="215"
+                  IconIndex="215"
+                  IconMode="0"
+                  EriText="Extended Service"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="216"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Voice"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="217"
+                  IconIndex="217"
+                  IconMode="0"
+                  EriText="Extended Voice"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="218"
+                  IconIndex="218"
+                  IconMode="0"
+                  EriText="Extended Voice"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="219"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Voice &amp; Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="220"
+                  IconIndex="220"
+                  IconMode="0"
+                  EriText="Extended Voice &amp; Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="221"
+                  IconIndex="221"
+                  IconMode="0"
+                  EriText="Extended Voice &amp; Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="222"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Voice Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="223"
+                  IconIndex="223"
+                  IconMode="0"
+                  EriText="Extended Voice Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="224"
+                  IconIndex="224"
+                  IconMode="0"
+                  EriText="Extended Voice Ntwk"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="225"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Extended Voice/Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="226"
+                  IconIndex="226"
+                  IconMode="0"
+                  EriText="Extended Voice/Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="227"
+                  IconIndex="227"
+                  IconMode="0"
+                  EriText="Extended Voice/Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="228"
+                  IconIndex="228"
+                  IconMode="0"
+                  EriText="International"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="229"
+                  IconIndex="229"
+                  IconMode="0"
+                  EriText="International"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="230"
+                  IconIndex="230"
+                  IconMode="0"
+                  EriText="International Services"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="231"
+                  IconIndex="231"
+                  IconMode="0"
+                  EriText="International Voice"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="232"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText="Int'l Voice/Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="233"
+                  IconIndex="233"
+                  IconMode="0"
+                  EriText="Int'l Voice/Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="234"
+                  IconIndex="234"
+                  IconMode="0"
+                  EriText="Int'l Voice/Data"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="235"
+                  IconIndex="235"
+                  IconMode="0"
+                  EriText="Premium International"
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="236"
+                  IconIndex="236"
+                  IconMode="0"
+                  EriText=""
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="237"
+                  IconIndex="237"
+                  IconMode="0"
+                  EriText=""
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="238"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText=""
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+         <EriInfo RoamingIndicator="239"
+                  IconIndex="1"
+                  IconMode="0"
+                  EriText=""
+                  CallPromptId="0"
+                  AlertId="0"/>
+
+</EriFile>

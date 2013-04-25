@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2009 The Android Open Source Project
+<!-- Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,16 +14,14 @@
      limitations under the License.
 -->
 
-<!-- device-specific phone app resources. -->
-<resources>
-
-    <!-- This device implements a noise suppression device for in call audio-->
-    <bool name="has_in_call_noise_suppression">true</bool>
-
-    <!-- Flag indicating if the tty is enabled -->
-    <bool name="tty_enabled">true</bool>
-
-    <!-- Sprint Message Wait Indicator Quirk -->
-    <bool name="sprint_mwi_quirk">true</bool>
-
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Mobile network settings, network mode choices for a device supporting CDMA and LTE [CHAR LIMIT=25] -->
+    <string-array name="preferred_network_mode_choices_lte">
+        <item>LTE/CDMA/EvDo</item>
+        <item>CDMA/EvDo auto</item>
+    </string-array>
+    <string-array name="preferred_network_mode_values_lte" translatable="false">
+        <item>"8"</item>
+        <item>"4"</item>
+    </string-array>
 </resources>
