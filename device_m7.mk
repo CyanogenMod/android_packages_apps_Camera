@@ -223,7 +223,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.product.wireless=WCN3660 \
     ro.qc.sdk.audio.fluencetype=fluence \
     ro.qualcomm.bt.hci_transport=smd \
-    ro.telephony.ril_class=HTC8960RIL \
     ro.use_data_netmgrd=true \
     wifi.interface=wlan0 \
     dalvik.vm.dexopt-data-only=1
