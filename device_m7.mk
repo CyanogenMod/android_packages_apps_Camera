@@ -24,13 +24,11 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/ramdisk/root/fstab.m7:root/fstab.m7 \
-    $(LOCAL_PATH)/ramdisk/root/init:root/init \
-    $(LOCAL_PATH)/ramdisk/root/init.m7.rc:root/init.m7.rc \
-    $(LOCAL_PATH)/ramdisk/root/init.post_mount.sh:root/init.post_mount.sh \
-    $(LOCAL_PATH)/ramdisk/root/init.m7.usb.rc:root/init.m7.usb.rc \
-    $(LOCAL_PATH)/ramdisk/root/init.rc:root/init.rc \
-    $(LOCAL_PATH)/ramdisk/root/ueventd.m7.rc:root/ueventd.m7.rc \
+    $(LOCAL_PATH)/root/fstab.m7:root/fstab.m7 \
+    $(LOCAL_PATH)/root/init.m7.rc:root/init.m7.rc \
+    $(LOCAL_PATH)/root/init.post_mount.sh:root/init.post_mount.sh \
+    $(LOCAL_PATH)/root/init.m7.usb.rc:root/init.m7.usb.rc \
+    $(LOCAL_PATH)/root/ueventd.m7.rc:root/ueventd.m7.rc \
     $(LOCAL_PATH)/configs/init.post_boot.sh:/system/etc/init.post_boot.sh
 
 # Custom recovery charging
@@ -80,19 +78,14 @@ PRODUCT_COPY_FILES += \
 
 # Keylayouts and Keychars
 PRODUCT_COPY_FILES += \
-    device/htc/m7/keylayout/AVRCP.kl:system/usr/keylayout/AVRCP.kl \
-    device/htc/m7/keylayout/Generic.kl:system/usr/keylayout/Generic.kl \
     device/htc/m7/keylayout/h2w_headset.kl:system/usr/keylayout/h2w_headset.kl \
     device/htc/m7/keylayout/keypad_8960.kl:system/usr/keylayout/keypad_8960.kl \
     device/htc/m7/keylayout/projector-Keypad.kl:system/usr/keylayout/projector-Keypad.kl \
-    device/htc/m7/keylayout/qwerty.kl:system/usr/keylayout/qwerty.kl \
     device/htc/m7/keylayout/synaptics-rmi-touchscreen.kl:system/usr/keylayout/synaptics-rmi-touchscreen.kl \
 
 # Input device config
 PRODUCT_COPY_FILES += \
     device/htc/m7/idc/projector_input.idc:system/usr/idc/projector_input.idc \
-    device/htc/m7/idc/qwerty2.idc:system/usr/idc/qwerty2.idc \
-    device/htc/m7/idc/qwerty.idc:system/usr/idc/qwerty.idc \
     device/htc/m7/idc/synaptics-rmi-touchscreen.idc:system/usr/idc/synaptics-rmi-touchscreen.idc
 
 # Audio
@@ -228,7 +221,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.product.wireless=WCN3660 \
     ro.qc.sdk.audio.fluencetype=fluence \
     ro.qualcomm.bt.hci_transport=smd \
-    ro.telephony.ril_class=HTC8960RIL \
     ro.use_data_netmgrd=true \
     wifi.interface=wlan0 \
     dalvik.vm.dexopt-data-only=1

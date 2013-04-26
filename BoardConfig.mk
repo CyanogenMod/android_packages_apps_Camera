@@ -31,9 +31,6 @@ BOARD_VENDOR := htc
 # Include path
 TARGET_SPECIFIC_HEADER_PATH := device/htc/m7/include
 
-# inherit from the proprietary version
--include vendor/htc/m7/BoardConfigVendor.mk
-
 # Flags
 TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
@@ -68,10 +65,12 @@ TARGET_KERNEL_VERSION := 3.4
 TARGET_KERNEL_CONFIG := m7_defconfig
 TARGET_KERNEL_SOURCE := kernel/htc/msm8960
 
+# RIL
+BOARD_PROVIDES_LIBRIL := true
 
 # Bluetooth
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/htc/m7/bluetooth
-BOARD_BLUEDROID_VENDOR_CONF := device/htc/m7/configs/libbt_vndcfg.txt
+BOARD_BLUEDROID_VENDOR_CONF := device/htc/m7/bluetooth/libbt_vndcfg.txt
 
 # HTClog
 COMMON_GLOBAL_CFLAGS += -DHTCLOG
@@ -141,3 +140,6 @@ TARGET_USERIMAGES_USE_EXT4 := true
 # mmcblk0p30: 034ffa00 00000200 "reserve_2"
 # mmcblk0p32: 05fffc00 00000200 "reserve_3"
 # mmcblk0p29: 06069e00 00000200 "reserve"
+
+# inherit from the proprietary version
+-include vendor/htc/m7/BoardConfigVendor.mk
