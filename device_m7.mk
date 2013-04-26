@@ -80,19 +80,14 @@ PRODUCT_COPY_FILES += \
 
 # Keylayouts and Keychars
 PRODUCT_COPY_FILES += \
-    device/htc/m7/keylayout/AVRCP.kl:system/usr/keylayout/AVRCP.kl \
-    device/htc/m7/keylayout/Generic.kl:system/usr/keylayout/Generic.kl \
     device/htc/m7/keylayout/h2w_headset.kl:system/usr/keylayout/h2w_headset.kl \
     device/htc/m7/keylayout/keypad_8960.kl:system/usr/keylayout/keypad_8960.kl \
     device/htc/m7/keylayout/projector-Keypad.kl:system/usr/keylayout/projector-Keypad.kl \
-    device/htc/m7/keylayout/qwerty.kl:system/usr/keylayout/qwerty.kl \
     device/htc/m7/keylayout/synaptics-rmi-touchscreen.kl:system/usr/keylayout/synaptics-rmi-touchscreen.kl \
 
 # Input device config
 PRODUCT_COPY_FILES += \
     device/htc/m7/idc/projector_input.idc:system/usr/idc/projector_input.idc \
-    device/htc/m7/idc/qwerty2.idc:system/usr/idc/qwerty2.idc \
-    device/htc/m7/idc/qwerty.idc:system/usr/idc/qwerty.idc \
     device/htc/m7/idc/synaptics-rmi-touchscreen.idc:system/usr/idc/synaptics-rmi-touchscreen.idc
 
 # Audio
