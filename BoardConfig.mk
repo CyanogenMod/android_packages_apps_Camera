@@ -31,9 +31,6 @@ BOARD_VENDOR := htc
 # Include path
 TARGET_SPECIFIC_HEADER_PATH := device/htc/m7/include
 
-# inherit from the proprietary version
--include vendor/htc/m7/BoardConfigVendor.mk
-
 # Flags
 TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
@@ -143,3 +140,6 @@ TARGET_USERIMAGES_USE_EXT4 := true
 # mmcblk0p30: 034ffa00 00000200 "reserve_2"
 # mmcblk0p32: 05fffc00 00000200 "reserve_3"
 # mmcblk0p29: 06069e00 00000200 "reserve"
+
+# inherit from the proprietary version
+-include vendor/htc/m7/BoardConfigVendor.mk
