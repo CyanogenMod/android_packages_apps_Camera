@@ -175,21 +175,10 @@ on init
     chown irda irda /sys/class/htc_cir/cir/reset_cir
     chmod 0660 /sys/class/htc_cir/cir/reset_cir
 
-    # Setup the global environment
-    export EXTERNAL_STORAGE /storage/sdcard0
-    export EXTERNAL_STORAGE4 /storage/usb
-    export EXTERNAL_STORAGE5 /storage/usb
-
-    # Create mountpoints
-        rm /sdcard
-        symlink /storage/sdcard0 /sdcard
-        symlink /storage/sdcard0 /mnt/sdcard
-        symlink /storage/usb     /mnt/usb
-
     # NETWORK: NAT setting
     # To prevent out of WINDOW ACK from making
     # connection tracking to treat them as INVALID packet
-        write /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal 1
+    write /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal 1
 
     # For pnp thermal condition
     write sys/power/pnpmgr/thermal/thermal_c0 1728000
@@ -243,9 +232,10 @@ on fs
    # Link widevine drm library path
    symlink /system/vendor/lib /vendor/lib
 
-   mkdir /storage 0050 system sdcard_r
-   mkdir /storage/sdcard0 0000 system system
-   mkdir /storage/usb 0000 system system
+   # Symlink firmwares
+   exec /system/bin/sh /init.qcom.firmware_links.sh /firmware/mdm/image /vendor/firmware "*.mbn *.img"
+   exec /system/bin/sh /init.qcom.firmware_links.sh /firmware/q6 /vendor/firmware "q6.*"
+   mount ext4 /dev/block/mmcblk0p35 /system ro remount
 
 on post-fs-data
     mkdir /data/radio 0770 radio radio
