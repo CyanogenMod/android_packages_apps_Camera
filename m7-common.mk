@@ -23,7 +23,6 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/root/init.m7.rc:root/init.m7.rc \
     $(LOCAL_PATH)/root/init.post_mount.sh:root/init.post_mount.sh \
     $(LOCAL_PATH)/root/init.m7.usb.rc:root/init.m7.usb.rc \
     $(LOCAL_PATH)/root/ueventd.m7.rc:root/ueventd.m7.rc \
