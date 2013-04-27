@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pref_camera_storage_title">Lagring</string>
+    <string name="pref_camera_picturesize_entry_13mp">13 MP</string>
+    <string name="pref_camera_picturesize_entry_12_8mp">12.8 MP</string>
+    <string name="pref_camera_picturesize_entry_11_5mp">11.5 MP</string>
+    <string name="pref_camera_picturesize_entry_9mp">9 MP</string>
+    <string name="pref_camera_picturesize_entry_6_4mp">6.4 MP</string>
+    <string name="pref_camera_picturesize_entry_4mp">4 MP</string>
+    <string name="pref_camera_picturesize_entry_2_5mp">2.5 MP</string>
+    <string name="pref_camera_picturesize_entry_2_1mp">2.1 MP</string>
+    <string name="pref_camera_picturesize_entry_1_5mp">1.5 MP</string>
+    <string name="pref_camera_picturesize_entry_xga">XGA</string>
+    <string name="pref_camera_picturesize_entry_svga">SVGA</string>
+    <string name="pref_camera_picturesize_entry_wvga">WVGA</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">Kontinuerlig bilde</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Kontinuerlig video</string>
+    <string name="pref_camera_focusmode_entry_extended">Utvidet</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Ansiktsgjenkjenning</string>
+    <string name="pref_camera_focusmode_entry_facepriority">Ansiktsprioritet</string>
+    <string name="pref_camera_focusmode_entry_fixed">Fikset</string>
+    <string name="pref_camera_focusmode_entry_portrait">Portrett</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Hyperfokal</string>
+    <string name="pref_camera_scenemode_entry_nightportrait">Nattportrett</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">Natt innendørs</string>
+    <string name="pref_camera_scenemode_entry_supernight">Svart natt</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Solnedgang</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Levende lys</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Høstfarge</string>
+    <string name="pref_camera_scenemode_entry_closeup">Nærbilde</string>
+    <string name="pref_camera_scenemode_entry_landscape">Landskap</string>
+    <string name="pref_camera_scenemode_entry_aqua">Vann</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_mood">Stemning</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Fyrverkeri</string>
+    <string name="pref_camera_scenemode_entry_cine">Kino</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">Gammel film</string>
+    <string name="pref_camera_scenemode_entry_beach">Strand</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portrett</string>
+    <string name="pref_camera_scenemode_entry_snow">Snø</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Stødig foto</string>
+    <string name="pref_camera_scenemode_entry_theatre">Teater</string>
+    <string name="pref_camera_scenemode_entry_backlight">Motlys</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Portrett i motlys</string>
+    <string name="pref_camera_scenemode_entry_document">Dokument</string>
+    <string name="pref_camera_scenemode_entry_barcode">Strekkode</string>
+    <string name="pref_camera_scenemode_entry_text">Tekst</string>
+    <string name="pref_camera_scenemode_entry_beauty">Vakkert</string>
+    <string name="pref_camera_scenemode_entry_flowers">Blomster</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Tavle</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Bakgrunnsuskarphet</string>
+    <string name="pref_camera_power_shutter_title">Strømknapp lukker</string>
+    <string name="pref_camera_iso_entry_auto">Auto</string>
+    <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">Sport</string>
+    <string name="pref_camera_iso_entry_isonight">Natt</string>
+    <string name="pref_camera_iso_entry_isomovie">Film</string>
+    <string name="pref_camera_jpeg_title">JPEG Kvalitet</string>
+    <string name="pref_camera_jpeg_entry_super">Ekstra høy</string>
+    <string name="pref_camera_jpeg_entry_high">Høy</string>
+    <string name="pref_camera_jpeg_entry_medium">Medium</string>
+    <string name="pref_camera_jpeg_entry_low">Lav</string>
+    <string name="pref_camera_coloreffect_title">Fargeeffekt</string>
+    <string name="pref_camera_coloreffect_entry_none">Ingen</string>
+    <string name="pref_camera_coloreffect_entry_mono">Monokrom</string>
+    <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
+    <string name="pref_camera_coloreffect_entry_negative">Negativ</string>
+    <string name="pref_camera_coloreffect_entry_solarize">Overeksponer</string>
+    <string name="pref_camera_coloreffect_entry_posterize">Posteriser</string>
+    <string name="pref_camera_coloreffect_entry_aqua">Vann</string>
+    <string name="pref_camera_coloreffect_entry_emboss">Emboss</string>
+    <string name="pref_camera_coloreffect_entry_sketch">Skisse</string>
+    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
+    <string name="pref_camera_coloreffect_entry_pastel">Pastell</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">Mosaikk</string>
+    <string name="pref_camera_coloreffect_entry_redtint">Rødlig nyanse</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">Blålig nyanse</string>
+    <string name="pref_camera_coloreffect_entry_greentint">Grønnlig nyanse</string>
+    <string name="pref_camera_burst_title">Høyhastighetsmodus</string>
+    <string name="pref_camera_burst_entry_off">Av</string>
+    <string name="pref_camera_burst_entry_5">5 bilder</string>
+    <string name="pref_camera_burst_entry_10">10 bilder</string>
+    <string name="pref_camera_burst_entry_15">15 bilder</string>
+    <string name="pref_camera_burst_entry_20">20 bilder</string>
+    <string name="pref_camera_focustime_title">Varighet på berøringsfokus</string>
+    <string name="pref_camera_focustime_summary">Velg varighet på berøringsfokus</string>
+    <string name="pref_camera_focustime_entry_5">5s</string>
+    <string name="pref_camera_focustime_entry_10">10s</string>
+    <string name="pref_camera_focustime_entry_15">15s</string>
+    <string name="pref_camera_focustime_entry_20">20s</string>
+    <string name="pref_camera_focustime_entry_30">30s</string>
+    <string name="pref_camera_focustime_entry_infinite">Uendelig</string>
+</resources>
