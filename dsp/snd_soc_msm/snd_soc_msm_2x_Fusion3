@@ -1959,15 +1959,23 @@ SectionDevice
 	Comment "Speaker Tx device"
 
 	EnableSequence
-		'SLIM_0_TX Channels':0:One
 		'SLIM TX7 MUX':0:DEC7
 		'DEC7 MUX':0:DMIC1
+        'DEC7 Volume':1:84
+		'SLIM TX8 MUX':0:DEC8
+		'DEC8 MUX':0:DMIC2
+        'DEC8 Volume':1:84
 		'MICBIAS1 CAPLESS Switch':1:1
+		'SLIM_0_TX Channels':0:Two
 	EndSequence
 
 	DisableSequence
 		'SLIM TX7 MUX':0:ZERO
 		'DEC7 MUX':0:ZERO
+        'DEC7 Volume':1:0
+		'SLIM TX8 MUX':0:ZERO
+		'DEC8 MUX':0:ZERO
+        'DEC8 Volume':1:0
 		'MICBIAS1 CAPLESS Switch':1:0
 	EndSequence
 
