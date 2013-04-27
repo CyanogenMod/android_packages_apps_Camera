@@ -25,7 +25,7 @@
 # against the traditional rules of inheritance).
 
 # inherit from common msm8960
--include device/htc/msm8960-common/BoardConfigCommon.mk
+-include device/htc/apq8064-common/BoardConfigCommon.mk
 
 # Flags
 TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp

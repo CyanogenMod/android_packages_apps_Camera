@@ -228,4 +228,4 @@ PRODUCT_AAPT_PREF_CONFIG := xhdpi xxhdpi
 $(call inherit-product-if-exists, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 
 # common msm8960 configs
-$(call inherit-product, device/htc/msm8960-common/msm8960.mk)
+$(call inherit-product, device/htc/apq8064-common/apq8064.mk)
