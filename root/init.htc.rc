@@ -199,36 +199,37 @@ on fs
 
     mount_all ./fstab.htc
 
-   # Load Mocana FIPS module. Add here since it can make sure system is mounted
-   insmod /system/lib/modules/moc_platform_mod.ko
-   insmod /system/lib/modules/moc_crypto.ko
-   insmod /system/lib/modules/dm-crypt.ko
-   insmod /system/lib/modules/wp_mod.ko
+    # Load Mocana FIPS module. Add here since it can make sure system is mounted
+    insmod /system/lib/modules/moc_platform_mod.ko
+    insmod /system/lib/modules/moc_crypto.ko
+    insmod /system/lib/modules/dm-crypt.ko
+    insmod /system/lib/modules/wp_mod.ko
 
-   mkdir /data/tombstones 0771 system system
-   symlink /data/tombstones /tombstones
-   mkdir /tombstones/mdm 0771 system system
-   mkdir /tombstones/modem 0771 system system
-   mkdir /tombstones/lpass 0771 system system
-   mkdir /tombstones/dsps 0771 system system
+    mkdir /data/tombstones 0771 system system
+    symlink /data/tombstones /tombstones
+    mkdir /tombstones/mdm 0771 system system
+    mkdir /tombstones/modem 0771 system system
+    mkdir /tombstones/lpass 0771 system system
+    mkdir /tombstones/dsps 0771 system system
 
-   mkdir /data/qcks 0700 root system
-   mount tmpfs tmpfs /data/qcks size=20m,mode=0750,gid=1000
+    mkdir /data/qcks 0700 root system
+    mount tmpfs tmpfs /data/qcks size=20m,mode=0750,gid=1000
 
-   mkdir /data/efs 0700 root system
-   mount tmpfs tmpfs /data/efs size=20m,mode=0750,gid=1000
+    mkdir /data/efs 0700 root system
+    mount tmpfs tmpfs /data/efs size=20m,mode=0750,gid=1000
 
-   # 8064 need to created this folder for CSD-QMI usage
-   mkdir /data/audio 0775 media audio
-   chmod 2775 /data/audio
+    # 8064 need to created this folder for CSD-QMI usage
+    mkdir /data/audio 0775 media audio
+    chmod 2775 /data/audio
 
-   # Link widevine drm library path
-   symlink /system/vendor/lib /vendor/lib
+    # Link widevine drm library path
+    symlink /system/vendor/lib /vendor/lib
 
-   # Symlink firmwares
-   exec /system/bin/sh /init.qcom.firmware_links.sh /firmware/mdm/image /vendor/firmware "*.mbn *.img"
-   exec /system/bin/sh /init.qcom.firmware_links.sh /firmware/q6 /vendor/firmware "q6.*"
-   mount ext4 /dev/block/mmcblk0p35 /system ro remount
+    # Symlink firmwares
+    exec /system/bin/sh /init.qcom.firmware_links.sh /firmware/mdm/image /vendor/firmware "*.mbn *.img"
+    exec /system/bin/sh /init.qcom.firmware_links.sh /firmware/q6 /vendor/firmware "q6.*"
+
+    mount_all ./remount.htc
 
 on post-fs-data
     mkdir /data/radio 0770 radio radio
