@@ -567,10 +567,8 @@ service usf-post-boot /system/bin/sh /system/etc/usf_post_boot.sh
     disabled
     oneshot
 
-# create virtual SD card at /mnt/sdcard, based on the /data/media directory
-# daemon will drop to user/group system/media_rw after initializing
-# underlying files in /data/media will be created with user and group media_rw (1023)
-service sdcard /system/bin/sdcard /data/media /storage/sdcard0 1023 1023
+# virtual sdcard daemon running as media_rw (1023)
+service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
     class late_start
 
 # wifi ++
