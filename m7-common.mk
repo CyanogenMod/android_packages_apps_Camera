@@ -44,6 +44,8 @@ PRODUCT_COPY_FILES += $(LOCAL_PATH)/configs/thermald.conf:system/etc/thermald.co
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/vold.fstab:system/etc/vold.fstab
 
+PRODUCT_CHARACTERISTICS := nosdcard
+
 PRODUCT_PACKAGES += \
     libnetcmdiface
 
