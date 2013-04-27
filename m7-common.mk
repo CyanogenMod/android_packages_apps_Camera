@@ -20,7 +20,8 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/root/init.m7.usb.rc:root/init.m7.usb.rc \
+    $(LOCAL_PATH)/root/init.htc.rc:root/init.htc.rc \
+    $(LOCAL_PATH)/root/init.htc.usb.rc:root/init.htc.usb.rc \
     $(LOCAL_PATH)/root/init.qcom.firmware_links.sh:root/init.qcom.firmware_links.sh \
     $(LOCAL_PATH)/configs/init.post_boot.sh:/system/etc/init.post_boot.sh
 
