@@ -215,34 +215,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.qualcomm.bt.hci_transport=smd \
     ro.use_data_netmgrd=true \
     wifi.interface=wlan0 \
-    dalvik.vm.dexopt-data-only=1 \
-    ro.sf.lcd_density=480 \
-    rild.libargs=-d /dev/smd0 \
-    rild.libpath=/system/lib/libril-qc-qmi-1.so \
-    ro.vendor.extension_library=/system/lib/libqc-opt.so \
-    ril.subscription.types=NV,RUIM \
-    ro.telephony.ril.v3=subscriptionFromSource,skipCdmaSubcription \
-    keyguard.no_require_sim=true \
-    DEVICE_PROVISIONED=1 \
-    ro.config.svlte1x=true \
-    ro.cdma.subscribe_on_ruim_ready=true \
-    persist.radio.no_wait_for_card=1 \
-    ro.ril.gprsclass=10 \
-    ro.ril.hsxpa=1 \
-    persist.radio.add_power_save=1 \
-    persist.radio.snapshot_disabled=1 \
-    persist.radio.apm_sim_not_pwdn=1 \
-    ro.telephony.call_ring.multiple=0 \
-    ro.ril.transmitpower=true \
-    ro.use_data_netmgrd=true \
-    persist.data_netmgrd_nint=16 \
-    persist.cne.UseCne=false \
-    ro.baseband.arch = mdm \
-    debug.nfc.fw_download=true \
-    debug.nfc.fw_boot_download=false \
-    debug.nfc.se=true \
-    ro.nfc.port=I2C \
-    persist.timed.enable=true
+    dalvik.vm.dexopt-data-only=1
 
 # Set build date
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
