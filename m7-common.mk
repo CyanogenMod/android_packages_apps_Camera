@@ -16,9 +16,6 @@
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
-# common msm8960 configs
-$(call inherit-product, device/htc/msm8960-common/msm8960.mk)
-
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Ramdisk
@@ -256,3 +253,6 @@ PRODUCT_AAPT_PREF_CONFIG := xhdpi xxhdpi
 
 # call dalvik heap config
 $(call inherit-product-if-exists, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
+
+# common msm8960 configs
+$(call inherit-product, device/htc/msm8960-common/msm8960.mk)
