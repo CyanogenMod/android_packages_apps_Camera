@@ -353,6 +353,7 @@ on boot
 
     # Create symlink for fb1 as HDMI
     symlink /dev/graphics/fb1 /dev/graphics/hdmi
+
     # Remove write permissions to video related nodes
     chmod 0664 /sys/devices/virtual/graphics/fb1/hpd
     chmod 0664 /sys/devices/virtual/graphics/fb1/video_mode
@@ -360,6 +361,7 @@ on boot
 
     # Change owner and group for media server and surface flinger
     chown system system /sys/devices/virtual/graphics/fb1/format_3d
+    chown system system /sys/devices/virtual/graphics/fb1/hpd
 
 # ++SSD_GPS
     mkdir /dev/socket/qmux_gps 0770 gps gps
