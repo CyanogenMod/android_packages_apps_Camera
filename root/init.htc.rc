@@ -516,11 +516,6 @@ service adaptive /system/bin/adaptive -c 0 -s 150 -b 210
     user root
     disabled
 
-service kickstart /system/bin/qcks -1 modem_st1 -2 modem_st2 -3 radio_config -4 cdma_record -i /firmware/mdm/image/ -u
-    class core
-    user root
-    oneshot
-
 service memlock /system/bin/memlock
     class main
     user root
