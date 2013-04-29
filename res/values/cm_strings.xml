@@ -178,5 +178,5 @@
 
     <!-- Persistent remote shutter -->
     <string name="pref_nohands_persistent_title">Persistent handsfree</string>
-    <string name="pref_nohands_persistent_default">@string/setting_off_value</string>
+    <string name="pref_nohands_persistent_default" translatable="false">@string/setting_off_value</string>
 </resources>
