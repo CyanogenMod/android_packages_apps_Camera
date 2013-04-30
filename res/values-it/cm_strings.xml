@@ -101,4 +101,14 @@
     <string name="pref_camera_focustime_entry_20">20s</string>
     <string name="pref_camera_focustime_entry_30">30s</string>
     <string name="pref_camera_focustime_entry_infinite">Infinito</string>
+    <string name="pref_camera_nohands_title">Scatto senza mani</string>
+    <string name="pref_camera_timer_entry_0">Off</string>
+    <string name="pref_camera_timer_entry_10">10s</string>
+    <string name="pref_camera_timer_entry_20">20s</string>
+    <string name="pref_camera_timer_entry_30">30s</string>
+    <string name="pref_camera_timer_entry_40">40s</string>
+    <string name="pref_camera_timer_entry_50">50s</string>
+    <string name="pref_camera_timer_entry_60">60s</string>
+    <string name="voice_hint">Scatta una foto a distanza pronunciando una parola per l\'attivazione: Puoi usare \'Cattura\', \'Scatta\', \'Sorriso\' e ovviamente \'Cheese\'</string>
+    <string name="pref_nohands_persistent_title">Senza mani persistente</string>
 </resources>
