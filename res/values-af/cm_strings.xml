@@ -16,21 +16,33 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
     <string name="pref_camera_picturesize_entry_13mp">"13M pixels"</string>
+    <string name="pref_camera_picturesize_entry_11_5mp">11.5M pixels</string>
+    <string name="pref_camera_picturesize_entry_9mp">9M pixels</string>
     <string name="pref_camera_picturesize_entry_6_4mp">"6.4M pixels"</string>
+    <string name="pref_camera_picturesize_entry_4mp">4M pixels</string>
     <string name="pref_camera_picturesize_entry_2_5mp">"2.5M pixels"</string>
     <string name="pref_camera_picturesize_entry_2_1mp">"2.1m pixels"</string>
+    <string name="pref_camera_picturesize_entry_1_5mp">1.5M pixels</string>
+    <string name="pref_camera_picturesize_entry_xga">XGA</string>
+    <string name="pref_camera_picturesize_entry_svga">SVGA</string>
+    <string name="pref_camera_picturesize_entry_wvga">WVGA</string>
+
     <string name="pref_camera_power_shutter_title">Krag sluiter</string>
+
     <string name="pref_camera_iso_entry_auto">Outo</string>
     <string name="pref_camera_iso_entry_isodeblur">Outo (HJR)</string>
     <string name="pref_camera_iso_entry_isosports">Sport</string>
     <string name="pref_camera_iso_entry_isonight">Nag</string>
     <string name="pref_camera_iso_entry_isomovie">Fliek</string>
+
     <string name="pref_camera_jpeg_title">JPEG kwaliteit</string>
     <string name="pref_camera_jpeg_entry_super">Super</string>
     <string name="pref_camera_jpeg_entry_high">Hoë</string>
     <string name="pref_camera_jpeg_entry_medium">Middel</string>
     <string name="pref_camera_jpeg_entry_low">Laag</string>
+
     <string name="pref_camera_coloreffect_title">Kleur effek</string>
     <string name="pref_camera_coloreffect_entry_none">Geen</string>
     <string name="pref_camera_coloreffect_entry_mono">Mono</string>
@@ -47,12 +59,14 @@
     <string name="pref_camera_coloreffect_entry_redtint">Rooi skynsel</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Blou skynsel</string>
     <string name="pref_camera_coloreffect_entry_greentint">Groen skynsel</string>
-    <string name="pref_camera_burst_title">Sarsie mode</string>
+
+    <string name="pref_camera_burst_title">Sarsie-modus</string>
     <string name="pref_camera_burst_entry_off">Af</string>
     <string name="pref_camera_burst_entry_5">5 fotos</string>
     <string name="pref_camera_burst_entry_10">10 fotos</string>
     <string name="pref_camera_burst_entry_15">15 fotos</string>
     <string name="pref_camera_burst_entry_20">20 fotos</string>
+
     <string name="pref_camera_focustime_title">Raak-fokus tydsduur</string>
     <string name="pref_camera_focustime_summary">Kies tydsduur vir raak-fokus</string>
     <string name="pref_camera_focustime_entry_5">5s</string>
@@ -61,4 +75,45 @@
     <string name="pref_camera_focustime_entry_20">20s</string>
     <string name="pref_camera_focustime_entry_30">30s</string>
     <string name="pref_camera_focustime_entry_infinite">Oneindig</string>
+
+    <string name="pref_camera_storage_title">Berging</string>
+
+    <string name="pref_camera_focusmode_entry_continuouspicture">Deurlopende Foto</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Deurlopende Video</string>
+    <string name="pref_camera_focusmode_entry_extended">Uitgebreide</string>
+    <string name="pref_camera_focusmode_entry_facedetect">Gesig bespeuring</string>
+    <string name="pref_camera_focusmode_entry_facepriority">Gesig prioriteit</string>
+    <string name="pref_camera_focusmode_entry_fixed">Vas</string>
+    <string name="pref_camera_focusmode_entry_portrait">Portret</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Hiper-brandpunt</string>
+
+    <string name="pref_camera_scenemode_entry_nightportrait">Nag portret</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">Nag binnenshuis</string>
+    <string name="pref_camera_scenemode_entry_supernight">Donker nag</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Skemerdagbreek</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Kerslig</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">Herfskleur</string>
+    <string name="pref_camera_scenemode_entry_closeup">Nabyskoot</string>
+    <string name="pref_camera_scenemode_entry_landscape">Landskap</string>
+    <string name="pref_camera_scenemode_entry_aqua">Aqua</string>
+    <string name="pref_camera_scenemode_entry_sports">Sport</string>
+    <string name="pref_camera_scenemode_entry_mood">Stemming</string>
+    <string name="pref_camera_scenemode_entry_fireworks">Vuurwerke</string>
+    <string name="pref_camera_scenemode_entry_cine">Rolprent</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">Ou film</string>
+    <string name="pref_camera_scenemode_entry_beach">Strand</string>
+    <string name="pref_camera_scenemode_entry_portrait">Portret</string>
+    <string name="pref_camera_scenemode_entry_snow">Sneeu</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">Bestendigefoto</string>
+    <string name="pref_camera_scenemode_entry_theatre">Teater</string>
+    <string name="pref_camera_scenemode_entry_backlight">Agtergrondlig</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Agtergrondlig portret</string>
+    <string name="pref_camera_scenemode_entry_document">Dokument</string>
+    <string name="pref_camera_scenemode_entry_barcode">Strepieskode</string>
+    <string name="pref_camera_scenemode_entry_text">Teks</string>
+    <string name="pref_camera_scenemode_entry_beauty">Skoonheid</string>
+    <string name="pref_camera_scenemode_entry_flowers">Blomme</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Witbord</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Vervaag agtergrond</string>
+
 </resources>
