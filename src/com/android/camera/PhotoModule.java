@@ -1963,7 +1963,9 @@ public class PhotoModule
         waitCameraStartUpThread();
 
         // Disable no-hands mode, and kill any pending voice listeners
-        mPhotoControl.resetNoHandsShutter(true);
+        if (mPhotoControl != null) {
+            mPhotoControl.resetNoHandsShutter(true);
+        }
 
         // When camera is started from secure lock screen for the first time
         // after screen on, the activity gets onCreate->onResume->onPause->onResume.
