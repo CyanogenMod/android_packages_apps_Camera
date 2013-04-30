@@ -39,6 +39,8 @@
     <bool name="ignorePreferredPreviewSizeForVideo">false</bool>
     <!-- Disable face detection on the front camera -->
     <bool name="noFaceDetectOnFrontCamera">false</bool>
+    <!-- Disable face detection on the back camera -->
+    <bool name="noFaceDetectOnBackCamera">false</bool>
     <!-- Use ZSL mode for Qualcomm cameras -->
     <bool name="enableZSL">false</bool>
     <!-- Disable software HDR on non-hw HDR devices -->
