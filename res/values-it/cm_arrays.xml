@@ -15,9 +15,9 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string-array name="pref_camera_voiceshutter_triggerwords">
-        <item>Cattura</item>
-        <item>Scatta</item>
-        <item>Sorriso</item>
-        <item>Cheese</item>
+        <item>cattura</item>
+        <item>scatta</item>
+        <item>scatto</item>
+        <item>sorriso</item>
     </string-array>
 </resources>
