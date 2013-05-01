@@ -90,7 +90,6 @@ BOARD_HOSTAPD_DRIVER := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_bcmdhd
 BOARD_WLAN_DEVICE := bcmdhd
 
-WIFI_DRIVER_MODULE_PATH := "/system/lib/modules/bcmdhd.ko"
 WIFI_DRIVER_MODULE_NAME := "bcmdhd"
 WIFI_DRIVER_MODULE_ARG := "firmware_path=/system/etc/firmware/fw_bcm4335.bin nvram_path=/system/etc/calibration"
 WIFI_DRIVER_MODULE_AP_ARG := "firmware_path=/system/etc/firmware/fw_bcm4335_apsta.bin nvram_path=/system/etc/calibration"
