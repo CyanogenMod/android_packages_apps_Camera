@@ -2534,7 +2534,7 @@ public class PhotoModule
         String hdr = mPreferences.getString(CameraSettings.KEY_CAMERA_HDR,
                 mActivity.getString(R.string.pref_camera_hdr_default));
         if (mActivity.getString(R.string.setting_on_value).equals(hdr)) {
-            if (!Util.useSoftwareHDR())
+            if (Util.isCameraHdrSupported(mParameters) && !Util.useSoftwareHDR())
                 mSceneMode = Util.SCENE_MODE_HDR;
             else {
                 mSceneMode = Parameters.SCENE_MODE_AUTO;
