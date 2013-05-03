@@ -67,6 +67,7 @@ BOARD_PROVIDES_LIBRIL := true
 # Bluetooth
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/htc/m7-common/bluetooth
 BOARD_BLUEDROID_VENDOR_CONF := device/htc/m7-common/bluetooth/libbt_vndcfg.txt
+BOARD_BLUETOOTH_USES_HCIATTACH_PROPERTY := false 
 
 # HTClog
 COMMON_GLOBAL_CFLAGS += -DHTCLOG
