@@ -30,28 +30,6 @@
 # Flags
 TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
-COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE -DNEW_ION_API
-
-# QCOM hardware
-BOARD_USES_QCOM_HARDWARE := true
-
-# Platform
-TARGET_BOARD_PLATFORM := msm8960
-TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
-
-# Architecture
-TARGET_ARCH := arm
-TARGET_ARCH_VARIANT := armv7-a-neon
-TARGET_ARCH_VARIANT_CPU := cortex-a9
-TARGET_CPU_ABI := armeabi-v7a
-TARGET_CPU_ABI2 := armeabi
-TARGET_CPU_SMP := true
-TARGET_USE_KRAIT_BIONIC_OPTIMIZATION := true
-
-BOARD_VENDOR := htc
-
-# Bootloader
-TARGET_NO_BOOTLOADER := true
 
 # Kernel
 BOARD_KERNEL_BASE := 0x80600000
@@ -71,13 +49,6 @@ BOARD_BLUETOOTH_USES_HCIATTACH_PROPERTY := false
 
 # HTClog
 COMMON_GLOBAL_CFLAGS += -DHTCLOG
-
-# Graphics
-USE_OPENGL_RENDERER := true
-TARGET_USES_C2D_COMPOSITION := true
-TARGET_USES_ION := true
-TARGET_QCOM_DISPLAY_VARIANT := caf
-BOARD_EGL_CFG := device/htc/m7-common/configs/egl.cfg
 
 # USB
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
