@@ -122,4 +122,20 @@
     <!-- More Settings screen, storage title -->
     <string name="pref_camera_storage_title">Хранилище</string>
 
+    <string name="pref_camera_nohands_title">Автоспуск</string>
+
+    <!-- Settings screen, Timer mode entries -->
+    <string name="pref_camera_timer_entry_0">Выкл</string>
+    <string name="pref_camera_timer_entry_10">10 сек.</string>
+    <string name="pref_camera_timer_entry_20">20 сек.</string>
+    <string name="pref_camera_timer_entry_30">30 сек.</string>
+    <string name="pref_camera_timer_entry_40">40 сек.</string>
+    <string name="pref_camera_timer_entry_50">50 сек.</string>
+    <string name="pref_camera_timer_entry_60">60 сек.</string>
+
+    <string name="voice_hint">Делайте фотографии на расстоянии, произнося слова: \"Cid\", \"Whisky\" и, конечно, \"Cheese!\"</string>
+
+    <!-- Persistent remote shutter -->
+    <string name="pref_nohands_persistent_title">Всегда использовать автоспуск</string>
+
 </resources>
