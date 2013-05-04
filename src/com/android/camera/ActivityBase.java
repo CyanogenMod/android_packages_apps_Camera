@@ -411,9 +411,6 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         data.putParcelable(PhotoPage.KEY_APP_BRIDGE, mAppBridge);
         if (getStateManager().getStateCount() == 0) {
             getStateManager().startState(PhotoPage.class, data);
-        } else {
-            getStateManager().switchState(getStateManager().getTopState(),
-                    PhotoPage.class, data);
         }
         mCameraScreenNail = mAppBridge.getCameraScreenNail();
         return mCameraScreenNail;
@@ -427,7 +424,7 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         if (getPictures) {
             if (mSecureCamera) {
                 path = "/secure/all/" + sSecureAlbumId;
-            } else {
+            } else {c
                 path = "/local/all/" + Storage.getStorage().generateBucketIdInt();
             }
         } else {
@@ -444,6 +441,8 @@ public abstract class ActivityBase extends AbstractGalleryActivity
         data.putParcelable(PhotoPage.KEY_APP_BRIDGE, mAppBridge);
         if (getStateManager().getStateCount() == 0) {
             getStateManager().startState(PhotoPage.class, data);
+        } else {
+            getStateManager().startStateNow(PhotoPage.class, data);
         }
         mCameraScreenNail = mAppBridge.getCameraScreenNail();
         return mCameraScreenNail;
