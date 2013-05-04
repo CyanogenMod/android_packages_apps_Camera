@@ -45,8 +45,9 @@
     <bool name="disableSoftwareHDR">false</bool>
     <!-- Time needed for exposure change to be effective for Software HDR (ms) -->
     <integer name="softwareHDRExposureSettleTime">800</integer>
-
     <!-- Stay in continuous focus even if touch-to-focus is used
          This option doesn't make sense if wantsFocusModes is on -->
     <bool name="useContinuosFocusForTouch">false</bool>
+    <!-- Magic for enabling ZSL on Samsung cameras -->
+    <bool name="sendMagicSamsungZSLCommand">false</bool>
 </resources>

@@ -2566,6 +2566,9 @@ public class PhotoModule
         }
 
         if (Util.enableZSL()) {
+            if (Util.sendMagicSamsungZSLCommand()) {
+                mCameraDevice.sendMagicSamsungZSLCommand();
+            }
             // Switch on ZSL mode
             mParameters.set("camera-mode", "1");
         } else {
