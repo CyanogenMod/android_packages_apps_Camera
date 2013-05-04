@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pref_camera_power_shutter_title">"Decl. buton pornire"</string>
+    <string name="pref_camera_jpeg_title">"Calitate JPEG"</string>
+    <string name="pref_camera_jpeg_entry_super">"Super"</string>
+    <string name="pref_camera_jpeg_entry_high">"Înaltă"</string>
+    <string name="pref_camera_jpeg_entry_medium">"Medie"</string>
+    <string name="pref_camera_jpeg_entry_low">"Scăzută"</string>
+    <string name="pref_camera_coloreffect_title">"Efect de culoare"</string>
+    <string name="pref_camera_coloreffect_entry_none">"Niciunul"</string>
+    <string name="pref_camera_coloreffect_entry_mono">"Alb/negru"</string>
+    <string name="pref_camera_coloreffect_entry_negative">"Negativ"</string>
+    <string name="pref_camera_coloreffect_entry_solarize">"Supraexpunere"</string>
+    <string name="pref_camera_coloreffect_entry_aqua">"Apă"</string>
+    <string name="pref_camera_coloreffect_entry_emboss">"Relief"</string>
+    <string name="pref_camera_coloreffect_entry_sketch">"Schiță"</string>
+    <string name="pref_camera_coloreffect_entry_neon">"Neon"</string>
+    <string name="pref_camera_coloreffect_entry_pastel">"Pastel"</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">"Mozaic"</string>
+    <string name="pref_camera_coloreffect_entry_redtint">"Nuanță roșie"</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">"Nuanță albastră"</string>
+    <string name="pref_camera_coloreffect_entry_greentint">"Nuanță verde"</string>
+    <string name="pref_camera_burst_title">"Serie de fotografii"</string>
+    <string name="pref_camera_burst_entry_off">"Oprită"</string>
+    <string name="pref_camera_burst_entry_5">"5 fotografii"</string>
+    <string name="pref_camera_burst_entry_10">"10 fotografii"</string>
+    <string name="pref_camera_burst_entry_15">"15 fotografii"</string>
+    <string name="pref_camera_burst_entry_20">"20 fotografii"</string>
+    <string name="pref_camera_focustime_title">Durată focalizare</string>
+    <string name="pref_camera_focustime_summary">Alege durata pentru focalizare</string>
+</resources>
