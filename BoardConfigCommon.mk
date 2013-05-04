@@ -27,6 +27,8 @@
 # inherit from common msm8960
 -include device/htc/apq8064-common/BoardConfigCommon.mk
 
+TARGET_SPECIFIC_HEADER_PATH := device/htc/m7-common/include
+
 # Flags
 TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
@@ -49,6 +51,9 @@ COMMON_GLOBAL_CFLAGS += -DHTCLOG
 
 # USB
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
+
+# We have the new GPS driver
+BOARD_HAVE_NEW_QC_GPS := true
 
 # Wifi
 BOARD_WLAN_DEVICE                := bcmdhd
