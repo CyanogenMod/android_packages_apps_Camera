@@ -77,6 +77,8 @@ public class CameraManager {
     private static final int SET_PREVIEW_CALLBACK = 24;
     private static final int ENABLE_SHUTTER_SOUND = 25;
 
+    private static final int ENABLE_SAMSUNG_ZSL_MODE = 30;
+
     private Handler mCameraHandler;
     private CameraProxy mCameraProxy;
     private android.hardware.Camera mCamera;
@@ -244,6 +246,12 @@ public class CameraManager {
 
                     case WAIT_FOR_IDLE:
                         // do nothing
+                        break;
+
+                    case ENABLE_SAMSUNG_ZSL_MODE:
+                        // I don't know the significance of 1508, it was discovered
+                        // by reading logs and reverse engineering.
+                        mCamera.sendRawCommand(1508, 0, 0);
                         break;
 
                     default:
@@ -484,6 +492,12 @@ public class CameraManager {
         public void waitForIdle() {
             mSig.close();
             mCameraHandler.sendEmptyMessage(WAIT_FOR_IDLE);
+            mSig.block();
+        }
+
+        public void sendMagicSamsungZSLCommand() {
+            mSig.close();
+            mCameraHandler.sendEmptyMessage(ENABLE_SAMSUNG_ZSL_MODE);
             mSig.block();
         }
     }
