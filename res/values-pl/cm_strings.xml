@@ -15,7 +15,6 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="pref_camera_storage_title">Pamięć</string>
-
     <string name="pref_camera_picturesize_entry_13mp">13 Mpix</string>
     <string name="pref_camera_picturesize_entry_12_8mp">12.8 Mpix</string>
     <string name="pref_camera_picturesize_entry_11_5mp">11.5 Mpix</string>
@@ -28,7 +27,6 @@
     <string name="pref_camera_picturesize_entry_xga">XGA</string>
     <string name="pref_camera_picturesize_entry_svga">SVGA</string>
     <string name="pref_camera_picturesize_entry_wvga">WVGA</string>
-
     <string name="pref_camera_focusmode_entry_continuouspicture">Ciągły</string>
     <string name="pref_camera_focusmode_entry_continuousvideo">Ciągły (wideo)</string>
     <string name="pref_camera_focusmode_entry_extended">Rozszerzony</string>
@@ -37,7 +35,6 @@
     <string name="pref_camera_focusmode_entry_fixed">Stały</string>
     <string name="pref_camera_focusmode_entry_portrait">Portret</string>
     <string name="pref_camera_focusmode_entry_hyperfocal">Hiperfokalny</string>
-
     <string name="pref_camera_scenemode_entry_nightportrait">Portret nocny</string>
     <string name="pref_camera_scenemode_entry_nightindoor">Noc w pomieszczeniach</string>
     <string name="pref_camera_scenemode_entry_supernight">Ciemna noc</string>
@@ -66,24 +63,18 @@
     <string name="pref_camera_scenemode_entry_flowers">Kwiaty</string>
     <string name="pref_camera_scenemode_entry_whiteboard">Biała tablica</string>
     <string name="pref_camera_scenemode_entry_backgroundblur">Rozmyte tło</string>
-
     <string name="pref_camera_power_shutter_title">Spust przyciskiem zasilania</string>
-
     <string name="pref_camera_iso_entry_auto">Auto</string>
     <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
     <string name="pref_camera_iso_entry_isosports">Sport</string>
     <string name="pref_camera_iso_entry_isonight">Noc</string>
     <string name="pref_camera_iso_entry_isomovie">Film</string>
-
     <string name="pref_camera_jpeg_title">Jakość JPEG</string>
-
     <string name="pref_camera_jpeg_entry_super">Super</string>
     <string name="pref_camera_jpeg_entry_high">Wysoka</string>
     <string name="pref_camera_jpeg_entry_medium">Średnia</string>
     <string name="pref_camera_jpeg_entry_low">Niska</string>
-
     <string name="pref_camera_coloreffect_title">Efekt kolorystyczny</string>
-
     <string name="pref_camera_coloreffect_entry_none">Brak</string>
     <string name="pref_camera_coloreffect_entry_mono">Czarno-biały</string>
     <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
@@ -99,27 +90,21 @@
     <string name="pref_camera_coloreffect_entry_redtint">Czerwony odcień</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Niebieski odcień</string>
     <string name="pref_camera_coloreffect_entry_greentint">Zielony odcień</string>
-
     <string name="pref_camera_burst_title">Zdjęcia seryjne</string>
-
     <string name="pref_camera_burst_entry_off">Wyłączone</string>
     <string name="pref_camera_burst_entry_5">5 zdjęć</string>
     <string name="pref_camera_burst_entry_10">10 zdjęć</string>
     <string name="pref_camera_burst_entry_15">15 zdjęć</string>
     <string name="pref_camera_burst_entry_20">20 zdjęć</string>
-
     <string name="pref_camera_focustime_title">Ust. ostrości dotknięciem</string>
     <string name="pref_camera_focustime_summary">Czas ustawiania ostrości dotknięciem</string>
-
     <string name="pref_camera_focustime_entry_5">5 s</string>
     <string name="pref_camera_focustime_entry_10">10 s</string>
     <string name="pref_camera_focustime_entry_15">15 s</string>
     <string name="pref_camera_focustime_entry_20">20 s</string>
     <string name="pref_camera_focustime_entry_30">30 s</string>
     <string name="pref_camera_focustime_entry_infinite">Nieograniczony</string>
-
     <string name="pref_camera_nohands_title">Bezdotykowy spust migawki</string>
-
     <string name="pref_camera_timer_entry_0">Wyłączony</string>
     <string name="pref_camera_timer_entry_10">10 s</string>
     <string name="pref_camera_timer_entry_20">20 s</string>
@@ -127,8 +112,6 @@
     <string name="pref_camera_timer_entry_40">40 s</string>
     <string name="pref_camera_timer_entry_50">50 s</string>
     <string name="pref_camera_timer_entry_60">60 s</string>
-
     <string name="voice_hint">Wykonaj zdjęcie na odległość za pomocą komendy głosowej w języku angielskim: Możesz użyć \'Cid\', \'Whisky\' lub \'Cheese!\'</string>
-
     <string name="pref_nohands_persistent_title">Trwały tryb bezdotykowy</string>
 </resources>
