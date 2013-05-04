@@ -177,37 +177,4 @@
     <string name="remember_location_prompt" msgid="724592331305808098">"Etichetaţi-vă fotografiile şi videoclipurile cu locaţiile în care acestea au fost create."\n\n"Alte aplicaţii pot accesa aceste informaţii, împreună cu imaginile salvate."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Nu, mulţumesc"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Da"</string>
-
-    <string name="pref_camera_power_shutter_title">"Decl. buton pornire"</string>
-
-    <string name="pref_camera_jpeg_title">"Calitate JPEG"</string>
-    <string name="pref_camera_jpeg_entry_super">"Super"</string>
-    <string name="pref_camera_jpeg_entry_high">"Înaltă"</string>
-    <string name="pref_camera_jpeg_entry_medium">"Medie"</string>
-    <string name="pref_camera_jpeg_entry_low">"Scăzută"</string>
-
-    <string name="pref_camera_coloreffect_title">"Efect de culoare"</string>
-    <string name="pref_camera_coloreffect_entry_none">"Niciunul"</string>
-    <string name="pref_camera_coloreffect_entry_mono">"Alb/negru"</string>
-    <string name="pref_camera_coloreffect_entry_negative">"Negativ"</string>
-    <string name="pref_camera_coloreffect_entry_solarize">"Supraexpunere"</string>
-    <string name="pref_camera_coloreffect_entry_aqua">"Apă"</string>
-    <string name="pref_camera_coloreffect_entry_emboss">"Relief"</string>
-    <string name="pref_camera_coloreffect_entry_sketch">"Schiță"</string>
-    <string name="pref_camera_coloreffect_entry_neon">"Neon"</string>
-    <string name="pref_camera_coloreffect_entry_pastel">"Pastel"</string>
-    <string name="pref_camera_coloreffect_entry_mosaic">"Mozaic"</string>
-    <string name="pref_camera_coloreffect_entry_redtint">"Nuanță roșie"</string>
-    <string name="pref_camera_coloreffect_entry_bluetint">"Nuanță albastră"</string>
-    <string name="pref_camera_coloreffect_entry_greentint">"Nuanță verde"</string>
-
-    <string name="pref_camera_burst_title">"Serie de fotografii"</string>
-    <string name="pref_camera_burst_entry_off">"Oprită"</string>
-    <string name="pref_camera_burst_entry_5">"5 fotografii"</string>
-    <string name="pref_camera_burst_entry_10">"10 fotografii"</string>
-    <string name="pref_camera_burst_entry_15">"15 fotografii"</string>
-    <string name="pref_camera_burst_entry_20">"20 fotografii"</string>
-
-    <string name="pref_camera_focustime_title">Durată focalizare</string>
-    <string name="pref_camera_focustime_summary">Alege durata pentru focalizare</string>
 </resources>

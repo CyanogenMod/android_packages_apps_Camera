@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (C) 2012-2013 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,9 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
- -->
-
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="pref_camera_storage_title">存储</string>
-
     <string name="pref_camera_picturesize_entry_13mp">1300 万像素</string>
     <string name="pref_camera_picturesize_entry_12_8mp">1280 万像素</string>
     <string name="pref_camera_picturesize_entry_11_5mp">1150 万像素</string>
@@ -27,7 +24,6 @@
     <string name="pref_camera_picturesize_entry_2_5mp">250 万像素</string>
     <string name="pref_camera_picturesize_entry_2_1mp">210 万像素</string>
     <string name="pref_camera_picturesize_entry_1_5mp">150 万像素</string>
-
     <string name="pref_camera_focusmode_entry_continuouspicture">持续性 (图像)</string>
     <string name="pref_camera_focusmode_entry_continuousvideo">持续性 (影像)</string>
     <string name="pref_camera_focusmode_entry_extended">扩展</string>
@@ -36,7 +32,6 @@
     <string name="pref_camera_focusmode_entry_fixed">固定</string>
     <string name="pref_camera_focusmode_entry_portrait">肖像</string>
     <string name="pref_camera_focusmode_entry_hyperfocal">超焦距</string>
-
     <string name="pref_camera_scenemode_entry_nightportrait">夜晚肖像</string>
     <string name="pref_camera_scenemode_entry_nightindoor">夜晚室内</string>
     <string name="pref_camera_scenemode_entry_supernight">漆黑夜晚</string>
@@ -65,21 +60,17 @@
     <string name="pref_camera_scenemode_entry_flowers">花朵</string>
     <string name="pref_camera_scenemode_entry_whiteboard">白板</string>
     <string name="pref_camera_scenemode_entry_backgroundblur">背景虚化</string>
-
     <string name="pref_camera_power_shutter_title">电源键快门</string>
-
     <string name="pref_camera_iso_entry_auto">自动</string>
     <string name="pref_camera_iso_entry_isodeblur">自动 (HJR)</string>
     <string name="pref_camera_iso_entry_isosports">体育</string>
     <string name="pref_camera_iso_entry_isonight">夜晚</string>
     <string name="pref_camera_iso_entry_isomovie">电影</string>
-
     <string name="pref_camera_jpeg_title">JPEG 质量</string>
     <string name="pref_camera_jpeg_entry_super">无损</string>
     <string name="pref_camera_jpeg_entry_high">高</string>
     <string name="pref_camera_jpeg_entry_medium">中</string>
     <string name="pref_camera_jpeg_entry_low">低</string>
-
     <string name="pref_camera_coloreffect_title">色彩效果</string>
     <string name="pref_camera_coloreffect_entry_none">无</string>
     <string name="pref_camera_coloreffect_entry_mono">黑白</string>
@@ -96,14 +87,12 @@
     <string name="pref_camera_coloreffect_entry_redtint">偏红</string>
     <string name="pref_camera_coloreffect_entry_bluetint">偏蓝</string>
     <string name="pref_camera_coloreffect_entry_greentint">偏绿</string>
-
     <string name="pref_camera_burst_title">连拍模式</string>
     <string name="pref_camera_burst_entry_off">关闭</string>
     <string name="pref_camera_burst_entry_5">5 张</string>
     <string name="pref_camera_burst_entry_10">10 张</string>
     <string name="pref_camera_burst_entry_15">15 张</string>
     <string name="pref_camera_burst_entry_20">20 张</string>
-
     <string name="pref_camera_focustime_title">触摸对焦持续时间</string>
     <string name="pref_camera_focustime_summary">选择触摸对焦的持续时间</string>
     <string name="pref_camera_focustime_entry_5">5 秒</string>
@@ -112,9 +101,7 @@
     <string name="pref_camera_focustime_entry_20">20 秒</string>
     <string name="pref_camera_focustime_entry_30">30 秒</string>
     <string name="pref_camera_focustime_entry_infinite">永久</string>
-
     <string name="pref_camera_nohands_title">语音快门</string>
-
     <string name="pref_camera_timer_entry_0">关闭</string>
     <string name="pref_camera_timer_entry_10">10 秒</string>
     <string name="pref_camera_timer_entry_20">20 秒</string>
@@ -122,8 +109,6 @@
     <string name="pref_camera_timer_entry_40">40 秒</string>
     <string name="pref_camera_timer_entry_50">50 秒</string>
     <string name="pref_camera_timer_entry_60">60 秒</string>
-
     <string name="voice_hint">通过说出关键词进行远程拍照 (关键词包括 \"Cid\", \"威士忌\", 和 \"茄子\"!)</string>
-
     <string name="pref_nohands_persistent_title">持续性语音快门</string>
 </resources>
