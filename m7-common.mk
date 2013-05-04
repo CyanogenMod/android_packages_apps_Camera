@@ -79,8 +79,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/idc/projector_input.idc:system/usr/idc/projector_input.idc \
     $(LOCAL_PATH)/idc/synaptics-rmi-touchscreen.idc:system/usr/idc/synaptics-rmi-touchscreen.idc
-    
-    
+
 # GPS
 PRODUCT_PACKAGES += \
     gps.msm8960
