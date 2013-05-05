@@ -143,7 +143,9 @@ public class VibratorTuningPreference extends DialogPreference implements SeekBa
     }
 
     public static void restore(Context context) {
-        if (!isSupported()) {
+        FILE_PATH = context.getResources().getString(R.string.vibrator_sysfs_file);
+
+        if (!isSupported(FILE_PATH)) {
             return;
         }
 
@@ -156,8 +158,8 @@ public class VibratorTuningPreference extends DialogPreference implements SeekBa
         }
     }
 
-    public static boolean isSupported() {
-        return Utils.fileExists(FILE_PATH);
+    public static boolean isSupported(String filePath) {
+        return Utils.fileExists(filePath);
     }
 
     @Override
