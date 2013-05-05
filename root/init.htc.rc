@@ -324,7 +324,6 @@ on boot
     chown system system /sys/class/leds/charming-led/brightness
     chown system system /sys/class/leds/charming-led/blink
     chown system system /sys/class/leds/charming-led/off_timer
-    chown system system /sys/class/leds/flashlight/brightness
     chown system system /sys/class/leds/caps/brightness
     chown system system /sys/class/leds/func/brightness
     chown media media /sys/class/leds/green-camera/brightness
@@ -334,6 +333,10 @@ on boot
     chown system system /sys/class/state_helper/proximity/psensor_release_wakelock_event
     chown system system /sys/class/state_helper/phone/phone_event
 # HTC SSD Peripheral UI - END
+
+    # Torch
+    chown system system /sys/class/leds/flashlight/brightness
+    chmod 0666 /sys/class/leds/flashlight/brightness
 
 # Permissions for NFC
     chmod 0600 /dev/pn544
