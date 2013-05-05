@@ -63,7 +63,7 @@
     <string name="pref_camera_scenemode_entry_flowers">Blomster</string>
     <string name="pref_camera_scenemode_entry_whiteboard">Tavle</string>
     <string name="pref_camera_scenemode_entry_backgroundblur">Bakgrunnsuskarphet</string>
-    <string name="pref_camera_power_shutter_title">Strømknapp lukker</string>
+    <string name="pref_camera_power_shutter_title">Strømknapp-lukker</string>
     <string name="pref_camera_iso_entry_auto">Auto</string>
     <string name="pref_camera_iso_entry_isodeblur">Auto (HJR)</string>
     <string name="pref_camera_iso_entry_isosports">Sport</string>
@@ -98,10 +98,20 @@
     <string name="pref_camera_burst_entry_20">20 bilder</string>
     <string name="pref_camera_focustime_title">Varighet på berøringsfokus</string>
     <string name="pref_camera_focustime_summary">Velg varighet på berøringsfokus</string>
-    <string name="pref_camera_focustime_entry_5">5s</string>
-    <string name="pref_camera_focustime_entry_10">10s</string>
-    <string name="pref_camera_focustime_entry_15">15s</string>
-    <string name="pref_camera_focustime_entry_20">20s</string>
-    <string name="pref_camera_focustime_entry_30">30s</string>
+    <string name="pref_camera_focustime_entry_5">5 sek</string>
+    <string name="pref_camera_focustime_entry_10">10 sek</string>
+    <string name="pref_camera_focustime_entry_15">15 sek</string>
+    <string name="pref_camera_focustime_entry_20">20 sek</string>
+    <string name="pref_camera_focustime_entry_30">30 sek</string>
     <string name="pref_camera_focustime_entry_infinite">Uendelig</string>
+    <string name="pref_camera_nohands_title">Selvutløser</string>
+    <string name="pref_camera_timer_entry_0">Av</string>
+    <string name="pref_camera_timer_entry_10">10 sek</string>
+    <string name="pref_camera_timer_entry_20">20 sek</string>
+    <string name="pref_camera_timer_entry_30">30 sek</string>
+    <string name="pref_camera_timer_entry_40">40 sek</string>
+    <string name="pref_camera_timer_entry_50">50 sek</string>
+    <string name="pref_camera_timer_entry_60">60 sek</string>
+    <string name="voice_hint">Ta et bilde ved å rope et utløsende ord: Du kan bruke \'Cid\', \'Whisky\', og selvfølgelig \'Cheese!\'</string>
+    <string name="pref_nohands_persistent_title">Vedvarende selvutløser</string>
 </resources>
