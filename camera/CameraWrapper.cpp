@@ -22,7 +22,7 @@
 */
 
 #define LOG_NDEBUG 0
-//#define LOG_PARAMETERS
+#define LOG_PARAMETERS
 
 #define LOG_TAG "CameraWrapper"
 #include <cutils/log.h>
@@ -90,8 +90,6 @@ static int check_vendor_module()
     return rv;
 }
 
-const static char * iso_values[] = {"auto,ISO100,ISO200,ISO400,ISO800","auto"};
-
 static char * camera_fixup_getparams(int id, const char * settings)
 {
     android::CameraParameters params;
@@ -112,6 +110,7 @@ char * camera_fixup_setparams(int id, const char * settings)
     params.unflatten(android::String8(settings));
 
     // fix params here
+    params.set(android::CameraParameters::KEY_GPU_EFFECT, "0"); // Bypass
 
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
