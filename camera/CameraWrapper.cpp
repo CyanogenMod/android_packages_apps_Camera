@@ -116,6 +116,15 @@ char * camera_fixup_setparams(int id, const char * settings)
     params.set(android::CameraParameters::KEY_GPU_EFFECT_PARAM_2, "");
     params.set(android::CameraParameters::KEY_GPU_EFFECT_PARAM_3, "0,0,0,0");
 
+    params.set(android::CameraParameters::KEY_PREVIEW_SIZE, "1920x1088");
+    
+    if(!params.get(android::CameraParameters::KEY_CAPTURE_MODE))
+        params.set(android::CameraParameters::KEY_CAPTURE_MODE, "normal");
+
+    params.set(android::CameraParameters::KEY_CONTIBURST_TYPE, "unlimited");
+    params.set(android::CameraParameters::KEY_OIS_SUPPORT, "false");
+    params.set(android::CameraParameters::KEY_OIS_MODE, "off");
+
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
 
