@@ -110,7 +110,11 @@ char * camera_fixup_setparams(int id, const char * settings)
     params.unflatten(android::String8(settings));
 
     // fix params here
-    params.set(android::CameraParameters::KEY_GPU_EFFECT, "0"); // Bypass
+    params.set(android::CameraParameters::KEY_GPU_EFFECT, "0_bypass"); // Bypass
+    params.set(android::CameraParameters::KEY_GPU_EFFECT_PARAM_0, "0,0,0,0");
+    params.set(android::CameraParameters::KEY_GPU_EFFECT_PARAM_1, "0,0,0,0");
+    params.set(android::CameraParameters::KEY_GPU_EFFECT_PARAM_2, "");
+    params.set(android::CameraParameters::KEY_GPU_EFFECT_PARAM_3, "0,0,0,0");
 
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
