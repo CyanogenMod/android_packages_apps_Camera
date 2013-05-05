@@ -331,6 +331,8 @@ on boot
     chown system system /sys/devices/virtual/htc_accessory/fm/flag
     chown system system /sys/devices/virtual/htc_accessory/tty/flag
     chown system system /sys/class/leds/indicator/ModeRGB
+    chown system system /sys/class/state_helper/proximity/psensor_release_wakelock_event
+    chown system system /sys/class/state_helper/phone/phone_event
 # HTC SSD Peripheral UI - END
 
 # Permissions for NFC
@@ -397,6 +399,7 @@ on boot
 
 # For Flashlight Restriction
     chown system system /sys/camera_led_status/led_hotspot_status
+    chown radio system /sys/camera_led_status/led_ril_status
 
 # HTC set radio_feedback permissions
     chown radio radio /dev/radio_feedback
