@@ -185,6 +185,9 @@ on init
     write sys/power/pnpmgr/thermal/thermal_g0 450000000
     write /sys/power/pnpmgr/apps/media_mode "booting"
 
+    # Vibrator
+    chown system system /sys/class/timed_output/vibrator/voltage_level
+
 # On emmc mount the partition containing firmware
 on fs
     mkdir /devlog 0700 root root

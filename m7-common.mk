@@ -96,8 +96,9 @@ PRODUCT_PACKAGES += \
     Tag \
     com.android.nfc_extras
 
-# Torch
+# Misc Packages
 PRODUCT_PACKAGES += \
+	DeviceSettings \
     Torch
 
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \

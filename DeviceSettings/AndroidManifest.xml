@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.cyanogenmod.settings.device"
+    android:sharedUserId="android.uid.system" >
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+
+    <application android:label="@string/app_name">
+        <activity
+            android:name="com.cyanogenmod.settings.device.DeviceSettings"
+            android:icon="@drawable/ic_launcher_cmdevicesettings"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.cyanogenmod.action.LAUNCH_DEVICE_SETTINGS" />
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".Startup">
+            <intent-filter android:priority="100">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".HapticFragmentActivity" />
+
+    </application>
+</manifest>
