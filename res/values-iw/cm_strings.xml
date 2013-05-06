@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pref_camera_focusmode_entry_continuouspicture">רציף</string>
+    <string name="pref_camera_focusmode_entry_extended">מורחב</string>
+    <string name="pref_camera_focusmode_entry_facedetect">זיהוי פנים</string>
+    <string name="pref_camera_focusmode_entry_facepriority">עדיפות לפנים</string>
+    <string name="pref_camera_focusmode_entry_fixed">קבוע</string>
+    <string name="pref_camera_focusmode_entry_portrait">דיוקן</string>
+    <string name="pref_camera_scenemode_entry_nightportrait">דיוקן לילה</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">לילה בבית</string>
+    <string name="pref_camera_scenemode_entry_supernight">לילה אפל</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">עלות השחר</string>
+    <string name="pref_camera_scenemode_entry_candlelight">אור נרות</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">צבעי הסתיו</string>
+    <string name="pref_camera_scenemode_entry_closeup">תקריב</string>
+    <string name="pref_camera_scenemode_entry_landscape">נוף</string>
+    <string name="pref_camera_scenemode_entry_aqua">מים</string>
+    <string name="pref_camera_scenemode_entry_sports">ספורט</string>
+    <string name="pref_camera_scenemode_entry_mood">מצב רוח</string>
+    <string name="pref_camera_scenemode_entry_fireworks">זיקוקים</string>
+    <string name="pref_camera_scenemode_entry_cine">Cine</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">סרט ישן</string>
+    <string name="pref_camera_scenemode_entry_beach">חוף</string>
+    <string name="pref_camera_scenemode_entry_portrait">דיוקן</string>
+    <string name="pref_camera_scenemode_entry_snow">שלג</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">תמונה יציבה</string>
+    <string name="pref_camera_scenemode_entry_theatre">קולנוע</string>
+    <string name="pref_camera_scenemode_entry_backlight">תאורה אחורית</string>
+    <string name="pref_camera_scenemode_entry_document">מסמך</string>
+    <string name="pref_camera_scenemode_entry_barcode">ברקוד</string>
+    <string name="pref_camera_scenemode_entry_text">מלל</string>
+    <string name="pref_camera_power_shutter_title">צילום בכפתור הכיבוי</string>
+    <string name="pref_camera_iso_entry_auto">אוטומטי</string>
+    <string name="pref_camera_iso_entry_isodeblur">אוטומטי (HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">ספורט</string>
+    <string name="pref_camera_iso_entry_isonight">לילה</string>
+    <string name="pref_camera_iso_entry_isomovie">סרט</string>
+    <string name="pref_camera_jpeg_title">איכות JPEG</string>
+    <string name="pref_camera_jpeg_entry_super">הכי גבוהה</string>
+    <string name="pref_camera_jpeg_entry_high">גבוהה</string>
+    <string name="pref_camera_jpeg_entry_medium">בינונית</string>
+    <string name="pref_camera_jpeg_entry_low">נמוכה</string>
+    <string name="pref_camera_coloreffect_title">אפקט צבע</string>
+    <string name="pref_camera_coloreffect_entry_none">ללא</string>
+    <string name="pref_camera_coloreffect_entry_mono">מונו</string>
+    <string name="pref_camera_coloreffect_entry_sepia">גווני חום</string>
+    <string name="pref_camera_coloreffect_entry_negative">נגטיב</string>
+    <string name="pref_camera_coloreffect_entry_solarize">חשיפה לשמש</string>
+    <string name="pref_camera_coloreffect_entry_posterize">הפיכה לפוסטר</string>
+    <string name="pref_camera_coloreffect_entry_aqua">מים</string>
+    <string name="pref_camera_coloreffect_entry_emboss">תבליט</string>
+    <string name="pref_camera_coloreffect_entry_sketch">רישום</string>
+    <string name="pref_camera_coloreffect_entry_neon">נאון</string>
+    <string name="pref_camera_coloreffect_entry_pastel">פסטל</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">פסיפס</string>
+    <string name="pref_camera_coloreffect_entry_redtint">גווני אדום</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">גווני כחול</string>
+    <string name="pref_camera_coloreffect_entry_greentint">גווני ירוק</string>
+    <string name="pref_camera_burst_title">צילום ברצף</string>
+    <string name="pref_camera_burst_entry_off">כבוי</string>
+    <string name="pref_camera_burst_entry_5">5 תמונות</string>
+    <string name="pref_camera_burst_entry_10">10 תמונות</string>
+    <string name="pref_camera_burst_entry_15">15 תמונות</string>
+    <string name="pref_camera_burst_entry_20">20 תמונות</string>
+    <string name="pref_camera_focustime_title">משך מיקוד במגע</string>
+    <string name="pref_camera_focustime_summary">בחר את משך הזמן המוקצה להתמקדות בעת מגע</string>
+    <string name="pref_camera_focustime_entry_5">5ש\'</string>
+    <string name="pref_camera_focustime_entry_10">10ש\'</string>
+    <string name="pref_camera_focustime_entry_15">15ש\'</string>
+    <string name="pref_camera_focustime_entry_20">20ש\'</string>
+    <string name="pref_camera_focustime_entry_30">30ש\'</string>
+    <string name="pref_camera_focustime_entry_infinite">אינסופי</string>
+</resources>

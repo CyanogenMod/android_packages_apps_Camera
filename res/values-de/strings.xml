@@ -44,36 +44,18 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Kameraeinstellungen"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Camcordereinstellungen"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Bildgröße"</string>
-    <string name="pref_camera_picturesize_entry_13mp">"13 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_12_8mp">"12,8 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_11_5mp">"11,5 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_9mp">"9 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_6_4mp">"6,4 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_4mp">"4 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_2_5mp">"2,5 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_2_1mp">"2,1 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_1_5mp">"1,5 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_1_3mp" msgid="829109608140747258">"1,3 Megapixel"</string>
     <string name="pref_camera_picturesize_entry_1mp" msgid="1669725616780375066">"1 Megapixel"</string>
-    <string name="pref_camera_picturesize_entry_xga">"XGA"</string>
-    <string name="pref_camera_picturesize_entry_svga">"SVGA"</string>
-    <string name="pref_camera_picturesize_entry_wvga">"WVGA"</string>
     <string name="pref_camera_picturesize_entry_vga" msgid="806934254162981919">"VGA"</string>
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Fokussierungsmodus"</string>
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Automatisch"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Unendlich"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
-    <string name="pref_camera_focusmode_entry_continuouspicture">"Kontinuierlich"</string>
-    <string name="pref_camera_focusmode_entry_extended">"Erweitert"</string>
-    <string name="pref_camera_focusmode_entry_facedetect">"Gesichtserkennung"</string>
-    <string name="pref_camera_focusmode_entry_facepriority">"Gesichter bevorzugen"</string>
-    <string name="pref_camera_focusmode_entry_fixed">"Fixiert"</string>
-    <string name="pref_camera_focusmode_entry_portrait">"Porträt"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Blitzmodus"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatisch"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"An"</string>
@@ -89,31 +71,12 @@
     <string name="pref_camera_scenemode_entry_hdr" msgid="2923388802899511784">"HDR"</string>
     <string name="pref_camera_scenemode_entry_action" msgid="616748587566110484">"Action"</string>
     <string name="pref_camera_scenemode_entry_night" msgid="7606898503102476329">"Nachtaufnahme"</string>
-    <string name="pref_camera_scenemode_entry_nightportrait">"Nachtporträt"</string>
-    <string name="pref_camera_scenemode_entry_nightindoor">"Nacht-Innenraum"</string>
-    <string name="pref_camera_scenemode_entry_supernight">"Dunkle Nacht"</string>
     <string name="pref_camera_scenemode_entry_sunset" msgid="181661154611507212">"Sonnenuntergang"</string>
-    <string name="pref_camera_scenemode_entry_fallcolor">"Herbst"</string>
-    <string name="pref_camera_scenemode_entry_closeup">"Nahaufnahme"</string>
-    <string name="pref_camera_scenemode_entry_landscape">"Landschaft"</string>
-    <string name="pref_camera_scenemode_entry_aqua">"Unterwasser"</string>
-    <string name="pref_camera_scenemode_entry_sports">"Sport"</string>
-    <string name="pref_camera_scenemode_entry_mood">"Stimmungsvoll"</string>
-    <string name="pref_camera_scenemode_entry_fireworks">"Feuerwerk"</string>
-    <string name="pref_camera_scenemode_entry_cine">"Kino"</string>
-    <string name="pref_camera_scenemode_entry_oldfilm">"Alter Film"</string>
-    <string name="pref_camera_scenemode_entry_beach">"Strand"</string>
-    <string name="pref_camera_scenemode_entry_portrait">"Porträt"</string>
-    <string name="pref_camera_scenemode_entry_snow">"Schnee"</string>
-    <string name="pref_camera_scenemode_entry_steadyphoto">"Standbild"</string>
-    <string name="pref_camera_scenemode_entry_theatre">"Theater"</string>
-    <string name="pref_camera_scenemode_entry_backlight">"Hintergrundlicht"</string>
-    <string name="pref_camera_scenemode_entry_document">"Dokument"</string>
-    <string name="pref_camera_scenemode_entry_barcode">"Barcode"</string>
-    <string name="pref_camera_scenemode_entry_text">"Text"</string>
     <string name="pref_camera_scenemode_entry_party" msgid="907053529286788253">"Party"</string>
     <string name="not_selectable_in_scene_mode" msgid="2970291701448555126">"Diese Einstellung kann im Szenenmodus nicht ausgewählt werden."</string>
     <string name="pref_exposure_title" msgid="1229093066434614811">"Belichtung"</string>
+    <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
+    <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
     <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Ihr USB-Speicher bietet nicht mehr genug Speicherplatz. Ändern Sie die Qualitätseinstellung oder löschen Sie Bilder oder andere Dateien."</string>
     <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Auf Ihrer SD-Karte ist nicht mehr genügend Speicherplatz vorhanden. Ändern Sie die Qualitätseinstellung oder löschen Sie Bilder oder andere Dateien."</string>
@@ -138,11 +101,12 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"Im All"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Sonnenuntergang"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Mein Video"</string>
-    <string name="effect_silly_faces" msgid="8107732405347155777">"Lustige Gesichter"</string>
-    <string name="effect_background" msgid="6579360207378171022">"Hintergrund"</string>
-    <string name="clear_effects" msgid="5485339175014139481">"Effekte löschen"</string>
+    <string name="bg_replacement_message" msgid="9184270738916564608">"Legen Sie Ihr Gerät ab."\n"Treten Sie für einen kurzen Moment aus dem Aufnahmebereich."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Berühren, um ein Foto während der Aufnahme zu machen."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Video-Schnappschüsse sind bei Verwendung von Spezialeffekten nicht möglich."</string>
+    <string name="clear_effects" msgid="5485339175014139481">"Effekte löschen"</string>
+    <string name="effect_silly_faces" msgid="8107732405347155777">"Lustige Gesichter"</string>
+    <string name="effect_background" msgid="6579360207378171022">"Hintergrund"</string>
     <string name="accessibility_shutter_button" msgid="2664037763232556307">"Auslöseknopf"</string>
     <string name="accessibility_menu_button" msgid="7140794046259897328">"Menüschaltfläche"</string>
     <string name="accessibility_review_thumbnail" msgid="8961275263537513017">"Neuestes Foto"</string>
@@ -213,35 +177,4 @@
     <string name="remember_location_prompt" msgid="724592331305808098">"Taggen Sie Ihre Fotos und Videos mit den Standorten, an denen sie aufgenommen wurden."\n\n"Andere Apps können auf diese Informationen und Ihre gespeicherten Bilder zugreifen."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Nein"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ja"</string>
-    <string name="pref_camera_power_shutter_title">Ein/Aus-Auslöser</string>
-    <string name="pref_camera_jpeg_title">JPEG-Qualität</string>
-    <string name="pref_camera_jpeg_entry_super">Super</string>
-    <string name="pref_camera_jpeg_entry_high">Hoch</string>
-    <string name="pref_camera_jpeg_entry_medium">Mittel</string>
-    <string name="pref_camera_jpeg_entry_low">Niedrig</string>
-    <string name="pref_camera_coloreffect_title">Farbeffekt</string>
-    <string name="pref_camera_coloreffect_entry_none">Keiner</string>
-    <string name="pref_camera_coloreffect_entry_mono">Monochrom</string>
-    <string name="pref_camera_coloreffect_entry_sepia">Sepia</string>
-    <string name="pref_camera_coloreffect_entry_negative">Negativ</string>
-    <string name="pref_camera_coloreffect_entry_solarize">Solarisiert</string>
-    <string name="pref_camera_coloreffect_entry_posterize">Posterisation</string>
-    <string name="pref_camera_coloreffect_entry_aqua">Aquarell</string>
-    <string name="pref_camera_coloreffect_entry_emboss">Prägen</string>
-    <string name="pref_camera_coloreffect_entry_sketch">Skizze</string>
-    <string name="pref_camera_coloreffect_entry_neon">Neon</string>
-    <string name="pref_camera_coloreffect_entry_pastel">Pastell</string>
-    <string name="pref_camera_coloreffect_entry_mosaic">Mosaik</string>
-    <string name="pref_camera_coloreffect_entry_redtint">Rötlich</string>
-    <string name="pref_camera_coloreffect_entry_bluetint">Bläulich</string>
-    <string name="pref_camera_coloreffect_entry_greentint">Grünlich</string>
-    <string name="pref_camera_burst_title">Serienaufnahme</string>
-    <string name="pref_camera_burst_entry_off">Aus</string>
-    <string name="pref_camera_burst_entry_5">5 Aufnahmen</string>
-    <string name="pref_camera_burst_entry_10">10 Aufnahmen</string>
-    <string name="pref_camera_burst_entry_15">15 Aufnahmen</string>
-    <string name="pref_camera_burst_entry_20">20 Aufnahmen</string>
-    <string name="pref_camera_focustime_title">Touch-Fokus-Dauer</string>
-    <string name="pref_camera_focustime_summary">Fokussierdauer festlegen</string>
-    <string name="pref_camera_focustime_entry_infinite">Unbegrenzt</string>
 </resources>
