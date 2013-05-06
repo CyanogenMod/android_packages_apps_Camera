@@ -24,6 +24,6 @@
     <string name="intensity_max_value">3100</string>
     <string name="intensity_warning_threshold">2700</string>
     <string name="intensity_default_value">1700</string>
-    <string name="intensity_min_value">1700</string>
+    <string name="intensity_min_value">1200</string>
 
 </resources>
