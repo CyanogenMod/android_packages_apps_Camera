@@ -266,23 +266,33 @@ on post-fs-data
     setprop vold.post_fs_data_done 1
 
 on boot
-   # We will remap this as /mnt/sdcard with the sdcard fuse tool
-   mkdir /data/media 0775 media_rw media_rw
-   chown media_rw media_rw /data/media
-   setprop ro.crypto.fuse_sdcard true
-   # Give system access to wpa_supplicant.conf for backup and restore
-   mkdir /data/misc/wifi/sockets 0771 wifi wifi
-   mkdir /data/misc/dhcp 0755 wifi wifi
-   chown dhcp dhcp /data/misc/dhcp
-   chmod 0770 /data/misc/wifi
-   write /sys/module/perflock/parameters/legacy_mode 0
-   write /sys/devices/i2c-3/3-0024/cyttsp_update_fw 1
-   start qcamerasvr
-#BT +
+    # We will remap this as /mnt/sdcard with the sdcard fuse tool
+    mkdir /data/media 0775 media_rw media_rw
+    chown media_rw media_rw /data/media
+
+    setprop ro.crypto.fuse_sdcard true
+
+    # Give system access to wpa_supplicant.conf for backup and restore
+    mkdir /data/misc/wifi/sockets 0771 wifi wifi
+    mkdir /data/misc/dhcp 0755 wifi wifi
+    chown dhcp dhcp /data/misc/dhcp
+    chmod 0770 /data/misc/wifi
+    write /sys/module/perflock/parameters/legacy_mode 0
+    write /sys/devices/i2c-3/3-0024/cyttsp_update_fw 1
+    start qcamerasvr
+   
+    # Bluetooth
+    chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    chown bluetooth bluetooth /proc/bluetooth/sleep/proto
+    chown system system /sys/module/sco/parameters/disable_esco
+    chown bluetooth bluetooth /sys/module/hci_smd/parameters/hcismd_set
+    chmod 0660 /sys/module/bluetooth_power/parameters/power
+    chmod 0660 /sys/module/hci_smd/parameters/hcismd_set
     chmod 0660 /sys/class/rfkill/rfkill0/state
     chmod 0660 /proc/bluetooth/sleep/proto
+    chown bluetooth bluetooth /sys/devices/platform/msm_serial_hs.0/clock
     chmod 0660 /sys/devices/platform/msm_serial_hs.0/clock
 
     # bluetooth LPM
@@ -290,7 +300,6 @@ on boot
     chmod 0220 /proc/bluetooth/sleep/btwrite
     chown bluetooth net_bt_stack /proc/bluetooth/sleep/lpm
     chown bluetooth net_bt_stack /proc/bluetooth/sleep/btwrite
-#BT -
 
 # simlock +
     chown radio radio /dev/simlock
