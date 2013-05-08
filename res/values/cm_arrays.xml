@@ -162,7 +162,7 @@
 
     <string-array name="pref_camera_nohands_entries" translatable="false">
         <item>@string/pref_camera_timer_entry_0</item>
-        <item>@string/pref_camera_nohands_voice</item>
+        <item>@string/pref_camera_nohands_voice_entry</item>
         <item>@string/pref_camera_timer_entry_10</item>
         <item>@string/pref_camera_timer_entry_20</item>
         <item>@string/pref_camera_timer_entry_30</item>
