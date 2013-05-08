@@ -171,6 +171,9 @@ public class Util {
     // Send magic command to hardware for Samsung ZSL
     private static boolean sSendMagicSamsungZSLCommand;
 
+    // Whether the camera supports orientation resize preview
+    private static boolean sSupportsOrientationResizePreview;
+
     private static SpeechRecognizer mSpeechRecognizer;
     private static Intent mSpeechRecognizerIntent;
     private static String[] mShutterWords;
@@ -211,6 +214,9 @@ public class Util {
 
         sSendMagicSamsungZSLCommand = context.getResources().getBoolean(
                 R.bool.sendMagicSamsungZSLCommand);
+
+        sSupportsOrientationResizePreview = context.getResources().getBoolean(
+                R.bool.supportsOrientationResizePreview);
 
         /* Voice Shutter */
         mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
@@ -281,6 +287,10 @@ public class Util {
 
     public static boolean sendMagicSamsungZSLCommand() {
         return sSendMagicSamsungZSLCommand;
+    }
+
+    public static boolean supportsOrientationResizePreview() {
+        return sSupportsOrientationResizePreview;
     }
 
     public static void enableSpeechRecognition(boolean enable, PhotoModule module) {
