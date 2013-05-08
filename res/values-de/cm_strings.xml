@@ -27,10 +27,12 @@
     <string name="pref_camera_picturesize_entry_svga">"SVGA"</string>
     <string name="pref_camera_picturesize_entry_wvga">"WVGA"</string>
     <string name="pref_camera_focusmode_entry_continuouspicture">"Kontinuierlich"</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">Kontinuierlich (Video)</string>
     <string name="pref_camera_focusmode_entry_extended">"Erweitert"</string>
     <string name="pref_camera_focusmode_entry_facedetect">"Gesichtserkennung"</string>
     <string name="pref_camera_focusmode_entry_facepriority">"Gesichter bevorzugen"</string>
     <string name="pref_camera_focusmode_entry_fixed">"Fixiert"</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">Hyperfokal</string>
     <string name="pref_camera_focusmode_entry_portrait">"Porträt"</string>
     <string name="pref_camera_scenemode_entry_nightportrait">"Nachtporträt"</string>
     <string name="pref_camera_scenemode_entry_nightindoor">"Nacht-Innenraum"</string>
@@ -53,6 +55,13 @@
     <string name="pref_camera_scenemode_entry_document">"Dokument"</string>
     <string name="pref_camera_scenemode_entry_barcode">"Barcode"</string>
     <string name="pref_camera_scenemode_entry_text">"Text"</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">Dämmerung</string>
+    <string name="pref_camera_scenemode_entry_candlelight">Kerzenschein</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">Porträt mit Hintergrundlicht</string>
+    <string name="pref_camera_scenemode_entry_beauty">Beauty</string>
+    <string name="pref_camera_scenemode_entry_flowers">Blumen</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">Tafel</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">Unscharfer Hintergrund</string>
     <string name="pref_camera_power_shutter_title">Ein/Aus-Auslöser</string>
     <string name="pref_camera_jpeg_title">JPEG-Qualität</string>
     <string name="pref_camera_jpeg_entry_super">Super</string>
@@ -84,4 +93,15 @@
     <string name="pref_camera_focustime_title">Touch-Fokus-Dauer</string>
     <string name="pref_camera_focustime_summary">Fokussierdauer festlegen</string>
     <string name="pref_camera_focustime_entry_infinite">Unbegrenzt</string>
+    <string name="pref_camera_iso_entry_auto">Automatisch</string>
+    <string name="pref_camera_iso_entry_isodeblur">Automatisch (HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">Sport</string>
+    <string name="pref_camera_iso_entry_isonight">Nacht</string>
+    <string name="pref_camera_iso_entry_isomovie">Film</string>
+    <string name="pref_camera_storage_title">Speicherort</string>
+    <string name="pref_camera_nohands_title">Selbstauslöser</string>
+    <string name="pref_camera_nohands_voice_entry">Sprache</string>
+    <string name="pref_camera_timer_entry_0">Aus</string>
+    <string name="voice_hint">Zum Auslösen aus der Ferne einfach \'Cheese\' sagen.</string>
+    <string name="pref_nohands_persistent_title">Selbstausl. speichern</string>
 </resources>
