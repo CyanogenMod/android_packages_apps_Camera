@@ -85,11 +85,8 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
             ratio = 1 / ratio;
         }
 
-        if (mAspectRatio != ratio) {
+        if (mAspectRatio != ratio || mOrientationResize != mPrevOrientationResize) {
             mAspectRatio = ratio;
-            requestLayout();
-        }
-        if(mOrientationResize != mPrevOrientationResize) {
             requestLayout();
         }
     }
@@ -106,29 +103,29 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
     protected void onMeasure(int widthSpec, int heightSpec) {
         int previewWidth = MeasureSpec.getSize(widthSpec);
         int previewHeight = MeasureSpec.getSize(heightSpec);
-        int originalWidth = previewWidth;
-        int originalHeight = previewHeight;
-
-        // Get the padding of the border background.
-        int hPadding = getPaddingLeft() + getPaddingRight();
-        int vPadding = getPaddingTop() + getPaddingBottom();
-
-        // Resize the preview frame with correct aspect ratio.
-        previewWidth -= hPadding;
-        previewHeight -= vPadding;
 
         if (mOrientationResize) {
-            previewHeight = (int) (previewWidth * mAspectRatio);
+            int originalWidth = previewWidth;
+            int originalHeight = previewHeight;
 
+            // Get the padding of the border background.
+            int hPadding = getPaddingLeft() + getPaddingRight();
+            int vPadding = getPaddingTop() + getPaddingBottom();
+
+            // Resize the preview frame with correct aspect ratio.
+            previewWidth -= hPadding;
+            previewHeight -= vPadding;
+
+            previewHeight = (int) (previewWidth * mAspectRatio);
             if (previewHeight > originalHeight) {
                 previewWidth = (int)(((double)originalHeight / (double)previewHeight) * previewWidth);
                 previewHeight = originalHeight;
             }
-        }
 
-        // Add the padding of the border.
-        previewWidth += hPadding;
-        previewHeight += vPadding;
+            // Add the padding of the border.
+            previewWidth += hPadding;
+            previewHeight += vPadding;
+        }
 
         // Ask children to follow the new preview dimension.
         super.onMeasure(MeasureSpec.makeMeasureSpec(previewWidth, MeasureSpec.EXACTLY),
