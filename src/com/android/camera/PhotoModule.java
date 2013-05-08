@@ -2711,12 +2711,6 @@ public class PhotoModule
             mUpdateSet = 0;
             return;
         } else if (isCameraIdle()) {
-            if (mRestartPreview) {
-                Log.d(TAG, "Restarting preview");
-                startPreview();
-                mRestartPreview = false;
-                mHandler.sendEmptyMessage(START_PREVIEW_DONE);
-            }
             setCameraParameters(mUpdateSet);
             updateSceneModeUI();
             mUpdateSet = 0;
@@ -2726,10 +2720,11 @@ public class PhotoModule
                         SET_CAMERA_PARAMETERS_WHEN_IDLE, 1000);
             }
         }
-        if (mAspectRatioChanged) {
+        if (mAspectRatioChanged || mRestartPreview) {
             Log.e(TAG, "Aspect ratio changed, restarting preview");
             startPreview();
             mAspectRatioChanged = false;
+            mRestartPreview = false;
             mHandler.sendEmptyMessage(START_PREVIEW_DONE);
         }
     }
