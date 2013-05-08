@@ -65,6 +65,7 @@ PRODUCT_COPY_FILES += \
 # Media config
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf \
+    $(LOCAL_PATH)/configs/audio_effects.conf:system/etc/audio_effects.conf \
     $(LOCAL_PATH)/configs/AudioBTID.csv:system/etc/AudioBTID.csv \
     $(LOCAL_PATH)/configs/AudioBTIDnew.csv:system/etc/AudioBTIDnew.csvs \
     $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
