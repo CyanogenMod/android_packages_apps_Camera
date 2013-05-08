@@ -162,6 +162,8 @@
     <string name="pref_camera_focustime_entry_infinite">Infinite</string>
 
     <string name="pref_camera_nohands_title">Hands-free shutter</string>
+    <string name="pref_camera_nohands_voice_entry">Voice</string>
+
     <string name="pref_camera_nohands_voice" translatable="false">voice</string>
     <string name="pref_camera_nohands_default" translatable="false">0</string>
 
