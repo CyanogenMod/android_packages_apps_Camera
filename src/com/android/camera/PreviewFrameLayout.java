@@ -1,9 +1,5 @@
 /*
  * Copyright (C) 2009 The Android Open Source Project
- * Copyright (c) 2013, Linux Foundation. All rights reserved.
- *
- * Not a Contribution. Apache license notifications and license are
- * retained for attribution purposes only
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,15 +43,11 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
     private View mBorder;
     private OnSizeChangedListener mListener;
     private LayoutChangeHelper mLayoutChangeHelper;
-    private boolean mOrientationResize;
-    private boolean mPrevOrientationResize;
 
     public PreviewFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setAspectRatio(4.0 / 3.0);
         mLayoutChangeHelper = new LayoutChangeHelper(this);
-        mOrientationResize = false;
-        mPrevOrientationResize = false;
     }
 
     @Override
@@ -72,11 +64,6 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
         }
     }
 
-    public void cameraOrientationPreviewResize(boolean orientation){
-         mPrevOrientationResize = mOrientationResize;
-         mOrientationResize = orientation;
-    }
-
     public void setAspectRatio(double ratio) {
         if (ratio <= 0.0) throw new IllegalArgumentException();
 
@@ -85,7 +72,7 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
             ratio = 1 / ratio;
         }
 
-        if (mAspectRatio != ratio || mOrientationResize != mPrevOrientationResize) {
+        if (mAspectRatio != ratio) {
             mAspectRatio = ratio;
             requestLayout();
         }
@@ -104,28 +91,17 @@ public class PreviewFrameLayout extends RelativeLayout implements LayoutChangeNo
         int previewWidth = MeasureSpec.getSize(widthSpec);
         int previewHeight = MeasureSpec.getSize(heightSpec);
 
-        if (mOrientationResize) {
-            int originalWidth = previewWidth;
-            int originalHeight = previewHeight;
+        // Get the padding of the border background.
+        int hPadding = getPaddingLeft() + getPaddingRight();
+        int vPadding = getPaddingTop() + getPaddingBottom();
 
-            // Get the padding of the border background.
-            int hPadding = getPaddingLeft() + getPaddingRight();
-            int vPadding = getPaddingTop() + getPaddingBottom();
+        // Resize the preview frame with correct aspect ratio.
+        previewWidth -= hPadding;
+        previewHeight -= vPadding;
 
-            // Resize the preview frame with correct aspect ratio.
-            previewWidth -= hPadding;
-            previewHeight -= vPadding;
-
-            previewHeight = (int) (previewWidth * mAspectRatio);
-            if (previewHeight > originalHeight) {
-                previewWidth = (int)(((double)originalHeight / (double)previewHeight) * previewWidth);
-                previewHeight = originalHeight;
-            }
-
-            // Add the padding of the border.
-            previewWidth += hPadding;
-            previewHeight += vPadding;
-        }
+        // Add the padding of the border.
+        previewWidth += hPadding;
+        previewHeight += vPadding;
 
         // Ask children to follow the new preview dimension.
         super.onMeasure(MeasureSpec.makeMeasureSpec(previewWidth, MeasureSpec.EXACTLY),

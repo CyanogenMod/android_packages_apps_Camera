@@ -99,6 +99,7 @@ public class PhotoModule
     private static final String TAG = "CAM_PhotoModule";
 
     private boolean mRestartPreview = false;
+    private boolean mAspectRatioChanged = false;
 
     // We number the request code from 1000 to avoid collision with Gallery.
     private static final int REQUEST_CROP = 1000;
@@ -2150,7 +2151,6 @@ public class PhotoModule
             mFaceView.resume();
             mFocusManager.setFaceView(mFaceView);
         }
-        setPreviewFrameLayoutAspectRatio();
         initializeRenderOverlay();
         onFullScreenChanged(mActivity.isInCameraApp());
         if (mJpegImageData != null) {  // Jpeg data found, picture has been taken.
@@ -2375,7 +2375,7 @@ public class PhotoModule
 
         setDisplayOrientation();
 
-        if (!mSnapshotOnIdle && !mRestartPreview) {
+        if (!mSnapshotOnIdle && !mAspectRatioChanged) {
             // If the focus mode is continuous autofocus, call cancelAutoFocus to
             // resume it because it may have been paused by autoFocus call.
             if (Util.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusManager.getFocusMode())) {
@@ -2387,20 +2387,13 @@ public class PhotoModule
 
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
             CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
-            int oldWidth = screenNail.getTextureWidth();
-            int oldHeight = screenNail.getTextureHeight();
-            Size size = mParameters.getPreviewSize();
-            int previewWidth = size.width;
-            int previewHeight = size.height;
-            if (mCameraDisplayOrientation % 180 != 0) {
-               previewWidth = size.height;
-               previewHeight = size.width;
-            }
-
-            if ( ( mSurfaceTexture == null ) ||
-                  (previewWidth != oldWidth) ||
-                  (previewHeight != oldHeight) ) {
-                screenNail.setSize(previewWidth, previewHeight);
+            if (mSurfaceTexture == null) {
+                Size size = mParameters.getPreviewSize();
+                if (mCameraDisplayOrientation % 180 == 0) {
+                    screenNail.setSize(size.width, size.height);
+                } else {
+                    screenNail.setSize(size.height, size.width);
+                }
                 screenNail.enableAspectRatioClamping();
                 mActivity.notifyScreenNailChanged();
                 screenNail.acquireSurfaceTexture();
@@ -2513,7 +2506,8 @@ public class PhotoModule
             if (oldSize != null && size != null) {
                 if(!size.equals(oldSize) && mCameraState != PREVIEW_STOPPED) {
                     Log.d(TAG, "Picture size changed. Restart preview");
-                    mRestartPreview = true;
+                    mAspectRatioChanged = true;
+                    stopPreview();
                 }
             }
         }
@@ -2532,8 +2526,6 @@ public class PhotoModule
             // sizes, so set and read the parameters to get latest values
             mCameraDevice.setParameters(mParameters);
             mParameters = mCameraDevice.getParameters();
-            Log.v(TAG, "Preview Size changed. Restart Preview");
-            mRestartPreview = true;
         }
         Log.v(TAG, "Preview size is " + optimalSize.width + "x" + optimalSize.height);
 
@@ -2709,6 +2701,11 @@ public class PhotoModule
             mUpdateSet = 0;
             return;
         } else if (isCameraIdle()) {
+            if (mRestartPreview) {
+                Log.d(TAG, "Restarting preview");
+                startPreview();
+                mRestartPreview = false;
+            }
             setCameraParameters(mUpdateSet);
             updateSceneModeUI();
             mUpdateSet = 0;
@@ -2718,10 +2715,10 @@ public class PhotoModule
                         SET_CAMERA_PARAMETERS_WHEN_IDLE, 1000);
             }
         }
-        if (mRestartPreview) {
-            Log.e(TAG, "Restarting preview now.");
+        if (mAspectRatioChanged) {
+            Log.e(TAG, "Aspect ratio changed, restarting preview");
             startPreview();
-            mRestartPreview = false;
+            mAspectRatioChanged = false;
             mHandler.sendEmptyMessage(START_PREVIEW_DONE);
         }
     }
@@ -2837,7 +2834,6 @@ public class PhotoModule
         mFocusManager.setParameters(mInitialParams);
         setupPreview();
         loadCameraPreferences();
-        setPreviewFrameLayoutAspectRatio();
         initializePhotoControl();
 
         // from initializeFirstTime
@@ -2942,26 +2938,10 @@ public class PhotoModule
     // PreviewFrameLayout size has changed.
     @Override
     public void onSizeChanged(int width, int height) {
-        if (mFocusManager != null) {
-            mFocusManager.setPreviewSize(width, height);
-       }
-    }
-
-    void setPreviewFrameLayoutCameraOrientation(){
-       //if camera mount angle is 0 or 180, we want to resize preview
-       if (Util.supportsOrientationResizePreview()) {
-           CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-           if(info.orientation % 180 == 0){
-               mPreviewFrameLayout.cameraOrientationPreviewResize(true);
-           } else{
-               mPreviewFrameLayout.cameraOrientationPreviewResize(false);
-           }
-       }
+        if (mFocusManager != null) mFocusManager.setPreviewSize(width, height);
     }
 
     void setPreviewFrameLayoutAspectRatio() {
-        setPreviewFrameLayoutCameraOrientation();
-
         // Set the preview frame aspect ratio according to the picture size.
         Size size = mParameters.getPictureSize();
         mPreviewFrameLayout.setAspectRatio((double) size.width / size.height);
