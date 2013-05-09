@@ -99,7 +99,6 @@ public class PhotoModule
     private static final String TAG = "CAM_PhotoModule";
 
     private boolean mRestartPreview = false;
-    private boolean mAspectRatioChanged = false;
 
     // We number the request code from 1000 to avoid collision with Gallery.
     private static final int REQUEST_CROP = 1000;
@@ -2376,7 +2375,7 @@ public class PhotoModule
 
         setDisplayOrientation();
 
-        if (!mSnapshotOnIdle && !mAspectRatioChanged) {
+        if (!mSnapshotOnIdle && !mRestartPreview) {
             // If the focus mode is continuous autofocus, call cancelAutoFocus to
             // resume it because it may have been paused by autoFocus call.
             if (Util.FOCUS_MODE_CONTINUOUS_PICTURE.equals(mFocusManager.getFocusMode())) {
@@ -2514,8 +2513,7 @@ public class PhotoModule
             if (oldSize != null && size != null) {
                 if(!size.equals(oldSize) && mCameraState != PREVIEW_STOPPED) {
                     Log.d(TAG, "Picture size changed. Restart preview");
-                    mAspectRatioChanged = true;
-                    stopPreview();
+                    mRestartPreview = true;
                 }
             }
         }
@@ -2720,10 +2718,9 @@ public class PhotoModule
                         SET_CAMERA_PARAMETERS_WHEN_IDLE, 1000);
             }
         }
-        if (mAspectRatioChanged || mRestartPreview) {
-            Log.e(TAG, "Aspect ratio changed, restarting preview");
+        if (mRestartPreview) {
+            Log.e(TAG, "Restarting preview now.");
             startPreview();
-            mAspectRatioChanged = false;
             mRestartPreview = false;
             mHandler.sendEmptyMessage(START_PREVIEW_DONE);
         }
