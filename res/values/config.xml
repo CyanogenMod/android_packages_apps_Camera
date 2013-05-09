@@ -50,6 +50,4 @@
     <bool name="useContinuosFocusForTouch">false</bool>
     <!-- Magic for enabling ZSL on Samsung cameras -->
     <bool name="sendMagicSamsungZSLCommand">false</bool>
-    <!-- Whether the camera support orientation resize preview -->
-    <bool name="supportsOrientationResizePreview">true</bool>
 </resources>

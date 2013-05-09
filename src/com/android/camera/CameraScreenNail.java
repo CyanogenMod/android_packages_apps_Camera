@@ -126,11 +126,11 @@ public class CameraScreenNail extends SurfaceTextureScreenNail {
         return mEnableAspectRatioClamping ? mRenderHeight : getTextureHeight();
     }
 
-    public int getTextureWidth() {
+    private int getTextureWidth() {
         return super.getWidth();
     }
 
-    public int getTextureHeight() {
+    private int getTextureHeight() {
         return super.getHeight();
     }
 

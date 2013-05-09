@@ -1,9 +1,5 @@
 /*
  * Copyright (C) 2012 The Android Open Source Project
- * Copyright (c) 2013, Linux Foundation. All rights reserved.
- *
- * Not a Contribution. Apache license notifications and license are
- * retained for attribution purposes only
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -827,21 +823,7 @@ public class VideoModule implements CameraModule,
                 ". mDesiredPreviewHeight=" + mDesiredPreviewHeight);
     }
 
-    void setPreviewFrameLayoutCameraOrientation(){
-       //if camera mount angle is 0 or 180, we want to resize preview
-       if (Util.supportsOrientationResizePreview()) {
-           CameraInfo info = CameraHolder.instance().getCameraInfo()[mCameraId];
-           if(info.orientation % 180 == 0){
-               mPreviewFrameLayout.cameraOrientationPreviewResize(true);
-           } else{
-               mPreviewFrameLayout.cameraOrientationPreviewResize(false);
-           }
-       }
-    }
-
     private void resizeForPreviewAspectRatio() {
-        setPreviewFrameLayoutCameraOrientation();
-
         mPreviewFrameLayout.setAspectRatio(
                 (double) mProfile.videoFrameWidth / mProfile.videoFrameHeight);
     }
