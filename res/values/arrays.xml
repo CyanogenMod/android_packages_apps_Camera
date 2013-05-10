@@ -164,10 +164,15 @@
         <item>@string/pref_camera_picturesize_entry_5mp</item>
         <item>@string/pref_camera_picturesize_entry_5mp</item>
         <item>@string/pref_camera_picturesize_entry_4mp</item>
+        <item>@string/pref_camera_picturesize_entry_4mp</item>
+        <item>@string/pref_camera_picturesize_entry_3mp</item>
         <item>@string/pref_camera_picturesize_entry_3mp</item>
         <item>@string/pref_camera_picturesize_entry_2_5mp</item>
+        <item>@string/pref_camera_picturesize_entry_2_5mp</item>
+        <item>@string/pref_camera_picturesize_entry_2_1mp</item>
         <item>@string/pref_camera_picturesize_entry_2_1mp</item>
         <item>@string/pref_camera_picturesize_entry_2mp</item>
+        <item>@string/pref_camera_picturesize_entry_1_5mp</item>
         <item>@string/pref_camera_picturesize_entry_1_5mp</item>
         <item>@string/pref_camera_picturesize_entry_1_3mp</item>
         <item>@string/pref_camera_picturesize_entry_1mp</item>
@@ -182,28 +187,33 @@
          size to the first one in the list that is also supported by the
          driver -->
     <string-array name="pref_camera_picturesize_entryvalues" translatable="false">
-        <item>4208x3120</item>
-        <item>4128x3096</item>
-        <item>3920x2940</item>
-        <item>3920x2204</item>
-        <item>3264x2448</item>
-        <item>3264x1968</item>
-        <item>2592x1944</item>
-        <item>2592x1936</item>
-        <item>2560x1920</item>
-        <item>2560x1536</item>
-        <item>2048x1536</item>
-        <item>2048x1232</item>
-        <item>1920x1080</item>
-        <item>1600x1200</item>
-        <item>1600x960</item>
-        <item>1280x960</item>
-        <item>1024x768</item>
-        <item>1024x600</item>
-        <item>800x600</item>
-        <item>800x480</item>
-        <item>640x480</item>
-        <item>320x240</item>
+        <item>4208x3120</item> <!-- 13 -->
+        <item>4128x3096</item> <!-- 12.8 -->
+        <item>3920x2940</item> <!-- 11.5 -->
+        <item>3920x2204</item> <!-- 9 -->
+        <item>3264x2448</item> <!-- 8 -->
+        <item>3264x1968</item> <!-- 6.4 -->
+        <item>2592x1944</item> <!-- 5 -->
+        <item>2592x1936</item> <!-- 5 -->
+        <item>2560x1920</item> <!-- 5 -->
+        <item>2688x1520</item> <!-- 4 -->
+        <item>2560x1536</item> <!-- 4 -->
+        <item>2048x1536</item> <!-- 3 -->
+        <item>2048x1520</item> <!-- 3 -->
+        <item>2048x1232</item> <!-- 2.5 -->
+        <item>2048x1216</item> <!-- 2.5 -->
+        <item>1920x1088</item> <!-- 2.1 -->
+        <item>1920x1080</item> <!-- 2.1 -->
+        <item>1600x1200</item> <!-- 2 -->
+        <item>1600x960</item> <!-- 1.5 -->
+        <item>1600x896</item> <!-- 1.5 -->
+        <item>1280x960</item> <!-- 1.3 -->
+        <item>1024x768</item> <!-- 1 -->
+        <item>1024x600</item> <!-- xga -->
+        <item>800x600</item> <!-- svga -->
+        <item>800x480</item> <!-- wvga -->
+        <item>640x480</item> <!-- vga -->
+        <item>320x240</item> <!-- qvga -->
     </string-array>
 
     <!-- Camera Preferences focus mode dialog box entries -->
