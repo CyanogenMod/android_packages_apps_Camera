@@ -115,8 +115,6 @@ char * camera_fixup_setparams(int id, const char * settings)
     params.set(android::CameraParameters::KEY_GPU_EFFECT_PARAM_1, "0,0,0,0");
     params.set(android::CameraParameters::KEY_GPU_EFFECT_PARAM_2, "");
     params.set(android::CameraParameters::KEY_GPU_EFFECT_PARAM_3, "0,0,0,0");
-
-    params.set(android::CameraParameters::KEY_PREVIEW_SIZE, "1920x1088");
     
     if(!params.get(android::CameraParameters::KEY_CAPTURE_MODE))
         params.set(android::CameraParameters::KEY_CAPTURE_MODE, "normal");
