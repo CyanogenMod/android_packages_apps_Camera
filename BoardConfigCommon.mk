@@ -25,13 +25,9 @@
 # against the traditional rules of inheritance).
 
 # inherit from common msm8960
--include device/htc/apq8064-common/BoardConfigCommon.mk
+-include device/htc/msm8960-common/BoardConfigCommon.mk
 
 TARGET_SPECIFIC_HEADER_PATH := device/htc/m7-common/include
-
-# Flags
-TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
-TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
 
 # Kernel
 BOARD_KERNEL_BASE := 0x80600000
@@ -41,6 +37,19 @@ BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01400000
 TARGET_KERNEL_CONFIG := cyanogenmod_m7_defconfig
 TARGET_KERNEL_SOURCE := kernel/htc/m7
 
+# Flags
+COMMON_GLOBAL_CFLAGS += -DNEW_ION_API=1
+COMMON_GLOBAL_CFLAGS += -DHTCLOG
+
+# Audio
+BOARD_AUDIO_CAF_LEGACY_INPUT_BUFFERSIZE := true
+
+# Bluetooth
+BOARD_HAVE_BLUETOOTH_BCM := true
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/htc/m7-common/bluetooth
+BOARD_BLUEDROID_VENDOR_CONF := device/htc/m7-common/bluetooth/libbt_vndcfg.txt
+BOARD_BLUETOOTH_USES_HCIATTACH_PROPERTY := false
+
 # Camera
 USE_CAMERA_STUB := false
 TARGET_PROVIDES_CAMERA_HAL := true
@@ -49,16 +58,6 @@ COMMON_GLOBAL_CFLAGS += -DQCOM_BSP_CAMERA_ABI_HACK
 COMMON_GLOBAL_CFLAGS += -DMR0_CAMERA_BLOB
 COMMON_GLOBAL_CFLAGS += -DDISABLE_HW_ID_MATCH_CHECK
 COMMON_GLOBAL_CFLAGS += -DHTC_CAMERA_HARDWARE
-
-# Bluetooth
-BOARD_HAVE_BLUETOOTH := true
-BOARD_HAVE_BLUETOOTH_BCM := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/htc/m7-common/bluetooth
-BOARD_BLUEDROID_VENDOR_CONF := device/htc/m7-common/bluetooth/libbt_vndcfg.txt
-BOARD_BLUETOOTH_USES_HCIATTACH_PROPERTY := false
-
-# HTClog
-COMMON_GLOBAL_CFLAGS += -DHTCLOG
 
 # USB
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/file

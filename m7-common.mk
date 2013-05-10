@@ -16,9 +16,10 @@
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
-# common apq8064 configs
-$(call inherit-product, device/htc/apq8064-common/apq8064.mk)
+# common msm8960 configs
+$(call inherit-product, device/htc/msm8960-common/msm8960.mk)
 
+# overlays
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Ramdisk
@@ -53,7 +54,7 @@ PRODUCT_PACKAGES += \
 # Wifi config
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/calibration:/system/etc/calibration \
-    $(LOCAL_PATH)/configs/calibration_EMEA:/system/etc/calibration_EMEA	
+    $(LOCAL_PATH)/configs/calibration_EMEA:/system/etc/calibration_EMEA
 
 # Sound configs
 PRODUCT_COPY_FILES += \
@@ -65,14 +66,10 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/dsp/soundimage/srs_geq10.cfg:system/etc/soundimage/srs_geq10.cfg \
     $(LOCAL_PATH)/dsp/soundimage/srs_global.cfg:system/etc/soundimage/srs_global.cfg
 
-# Media config
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf \
     $(LOCAL_PATH)/configs/audio_effects.conf:system/etc/audio_effects.conf \
     $(LOCAL_PATH)/configs/AudioBTID.csv:system/etc/AudioBTID.csv \
     $(LOCAL_PATH)/configs/AudioBTIDnew.csv:system/etc/AudioBTIDnew.csvs \
-    $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
-    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
     $(LOCAL_PATH)/dsp/snd_soc_msm/snd_soc_msm_2x_Fusion3:system/etc/snd_soc_msm/snd_soc_msm_2x_Fusion3
 
 # Keylayouts and Keychars
@@ -86,6 +83,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/idc/projector_input.idc:system/usr/idc/projector_input.idc \
     $(LOCAL_PATH)/idc/synaptics-rmi-touchscreen.idc:system/usr/idc/synaptics-rmi-touchscreen.idc
+
+# Camera
+PRODUCT_PACKAGES += \
+    camera.msm8960
 
 # GPS
 PRODUCT_PACKAGES += \
@@ -105,7 +106,7 @@ PRODUCT_PACKAGES += \
 
 # Misc Packages
 PRODUCT_PACKAGES += \
-	DeviceSettings \
+    DeviceSettings \
     Torch
 
 # Permissions
@@ -122,7 +123,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
     debug.nfc.fw_boot_download=false \
     debug.nfc.se=true \
     ro.nfc.port=I2C \
-    persist.timed.enable=true
+    persist.timed.enable=true \
+    persist.gps.qmienabled=true \
+    ro.baseband.arch=mdm
 
 # Set build date
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
