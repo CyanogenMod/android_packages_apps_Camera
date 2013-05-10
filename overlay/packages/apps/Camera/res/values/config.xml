@@ -23,5 +23,5 @@
          exists. Use this option to change that behavior -->
     <bool name="wantsFocusModes">true</bool>
     <!-- Use ZSL mode for Qualcomm cameras -->
-    <bool name="enableZSL">true</bool>
+    <bool name="enableZSL">false</bool>
 </resources>

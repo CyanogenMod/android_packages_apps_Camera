@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (C) 2008 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+<resources>
+
+    <!-- Camera Preferences Picture size dialog box entries -->
+    <string-array name="pref_camera_picturesize_entries" translatable="false">
+        <item>@string/pref_camera_picturesize_entry_4mp</item>
+        <item>@string/pref_camera_picturesize_entry_3mp</item>
+        <item>@string/pref_camera_picturesize_entry_2_5mp</item>
+        <item>@string/pref_camera_picturesize_entry_2_1mp</item>
+        <item>@string/pref_camera_picturesize_entry_1_5mp</item>
+        <item>@string/pref_camera_picturesize_entry_1mp</item>
+        <item>@string/pref_camera_picturesize_entry_xga</item>
+        <item>@string/pref_camera_picturesize_entry_svga</item>
+        <item>@string/pref_camera_picturesize_entry_wvga</item>
+        <item>@string/pref_camera_picturesize_entry_vga</item>
+        <item>@string/pref_camera_picturesize_entry_qvga</item>
+    </string-array>
+
+    <!-- When launching the camera app first time, we will set the picture
+         size to the first one in the list that is also supported by the
+         driver -->
+    <string-array name="pref_camera_picturesize_entryvalues" translatable="false">
+        <item>2688x1520</item>
+        <item>2048x1520</item>
+        <item>2048x1216</item>
+        <item>1920x1088</item>
+        <item>1440x1088</item>
+        <item>1280x768</item>
+        <item>1024x768</item>
+        <item>800x600</item>
+        <item>800x480</item>
+        <item>640x480</item>
+        <item>320x240</item>
+    </string-array>
+
+</resources>

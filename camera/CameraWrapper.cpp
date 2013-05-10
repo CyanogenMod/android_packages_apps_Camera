@@ -96,6 +96,8 @@ static char * camera_fixup_getparams(int id, const char * settings)
     params.unflatten(android::String8(settings));
 
     // fix params here
+    /* Some preview sizes are crashing our Camera HAL */
+    params.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "1280x720,960x720,960x544,800x480,768x464,768x432,720x480,640x480,640x384,640x368,576x432,480x320,384x288,352x288,320x240,240x160,176x144");
 
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
@@ -126,9 +128,9 @@ char * camera_fixup_setparams(int id, const char * settings)
         params.set(android::CameraParameters::KEY_OIS_MODE, "off");
     }
 
-    /* Preview Size 1920x1088 crashes Camera HAL while doing a Shot */
+    /* Some preview sizes are crashing our Camera HAL */
     const char* previewSize = params.get(android::CameraParameters::KEY_PREVIEW_SIZE);
-    if(strcmp(previewSize, "1920x1088") == 0)
+    if(strcmp(previewSize, "1920x1088") == 0 || strcmp(previewSize, "1440x1088") == 0 || strcmp(previewSize, "1088x1088") == 0)
         params.set(android::CameraParameters::KEY_PREVIEW_SIZE, "1280x720");
 
     android::String8 strParams = params.flatten();
