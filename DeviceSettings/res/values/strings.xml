@@ -29,4 +29,14 @@
     <string name="vibrator_tuning_summary_head">Adjust the strength of the vibration feedback</string>
     <string name="vibrator_warning">Values higher than %1$d are not recommended</string>
 
+    <!-- Touchscreen Preference -->
+    <string name="category_touchscreen_title">Touchscreen</string>
+    <string name="logo2menu_title">Logo To Menu</string>
+    <string name="logo2menu_switch_title_head">Enable</string>
+    <string name="logo2menu_switch_summary_head">Enables the HTC logo\'s upper part to act as hardware Menu button.</string>
+
+    <string name="wake_title">Wake</string>
+    <string name="wake_method_title_head">Wake Method</string>
+    <string name="wake_method_summary_head">Select which touchpad wake method you prefer to use.</string>
+
 </resources>

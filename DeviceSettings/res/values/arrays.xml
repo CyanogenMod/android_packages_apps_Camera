@@ -1,0 +1,17 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string-array name="wake_method_entries">
+        <item>None</item>
+        <item>Home button</item>
+        <item>Logo button</item>
+        <item>Sweep over buttons</item>
+    </string-array>
+
+    <string-array name="wake_method_entries_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+</resources>

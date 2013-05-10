@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+            android:title="@string/logo2menu_title">
+                <CheckBoxPreference
+                android:key="logo2menu_switch"
+                android:title="@string/logo2menu_switch_title_head"
+                android:summary="@string/logo2menu_switch_summary_head"
+                android:defaultValue="1" />
+    </PreferenceCategory>
+    <PreferenceCategory
+            android:title="@string/wake_title">
+            <ListPreference
+                android:key="wake_method"
+                android:title="@string/wake_method_title_head"
+                android:summary="@string/wake_method_summary_head"
+                android:entries="@array/wake_method_entries"
+                android:entryValues="@array/wake_method_entries_values"
+                android:defaultValue="0" />
+    </PreferenceCategory>
+</PreferenceScreen>
