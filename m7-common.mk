@@ -22,11 +22,14 @@ $(call inherit-product, device/htc/apq8064-common/apq8064.mk)
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Ramdisk
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/root/init.htc.rc:root/init.htc.rc \
-    $(LOCAL_PATH)/root/init.htc.usb.rc:root/init.htc.usb.rc \
-    $(LOCAL_PATH)/root/init.qcom.firmware_links.sh:root/init.qcom.firmware_links.sh \
-    $(LOCAL_PATH)/configs/init.post_boot.sh:/system/etc/init.post_boot.sh
+PRODUCT_PACKAGES += \
+    fstab.target \
+    init.qcom.firmware_links.sh \
+    init.qcom.rc \
+    init.qcom.usb.rc \
+    init.target.rc \
+    remount.target \
+    ueventd.qcom.rc
 
 # Custom recovery charging
 PRODUCT_COPY_FILES += \
