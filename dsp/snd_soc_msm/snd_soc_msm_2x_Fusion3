@@ -2326,7 +2326,23 @@ SectionVerb
 EndSection
 
 SectionVerb
-	Name "Voice CallHeadphones Voice"
+	Name "Voice CallVoice Headset"
+
+	EnableSequence
+		'Voice Stub Tx Mixer STUB_TX_HL':1:1
+		'Voice Stub Tx Mixer STUB_1_TX_HL':1:1
+	EndSequence
+
+	DisableSequence
+		'Voice Stub Tx Mixer STUB_TX_HL':1:0
+		'Voice Stub Tx Mixer STUB_1_TX_HL':1:0
+	EndSequence
+	CapturePCM  9
+	PlaybackPCM  9
+EndSection
+
+SectionVerb
+	Name "Voice CallVoice Headphones"
 
 	EnableSequence
 		'STUB_RX Mixer Voice Stub':1:1
@@ -3479,14 +3495,14 @@ SectionDevice
 		'RX5 MIX1 INP2':0:RX7
 		'RX4 DSM MUX':0:DSM_INV
 		'RX6 DSM MUX':0:DSM_INV
-		'RX3 Digital Volume':2:53
-		'RX4 Digital Volume':2:53
-		'RX5 Digital Volume':2:53
-		'RX6 Digital Volume':2:53
-		'LINEOUT1 Volume':1:55
-		'LINEOUT2 Volume':1:55
-		'LINEOUT3 Volume':1:55
-		'LINEOUT4 Volume':1:55
+		'RX3 Digital Volume':2:55
+		'RX4 Digital Volume':2:55
+		'RX5 Digital Volume':2:55
+		'RX6 Digital Volume':2:55
+		'LINEOUT1 Volume':1:66
+		'LINEOUT2 Volume':1:66
+		'LINEOUT3 Volume':1:66
+		'LINEOUT4 Volume':1:66
 		'HS AMP EN Switch':1:1
 	EndSequence
 
@@ -3512,6 +3528,55 @@ SectionDevice
 EndSection
 
 SectionDevice
+	Name "Voice Headphones"
+
+	EnableSequence
+		'SLIM_0_RX Channels':0:One
+		'RX7 MIX1 INP1':0:RX1
+		'RX7 MIX1 INP2':0:RX6
+		'RX3 MIX1 INP1':0:RX1
+		'RX3 MIX1 INP2':0:RX6
+		'RX5 MIX1 INP1':0:RX1
+		'RX5 MIX1 INP2':0:RX6
+		'RX4 DSM MUX':0:DSM_INV
+		'RX6 DSM MUX':0:DSM_INV
+		'RX3 Digital Volume':1:67
+		'RX4 Digital Volume':1:67
+		'RX5 Digital Volume':1:67
+		'RX6 Digital Volume':1:67
+		'LINEOUT1 Volume':1:66
+		'LINEOUT2 Volume':1:66
+		'LINEOUT3 Volume':1:66
+		'LINEOUT4 Volume':1:66
+		'SLIM TX3 MUX':0:RMIX7
+		'HS AMP EN Switch':1:1
+	EndSequence
+
+	DisableSequence
+		'RX7 MIX1 INP1':0:ZERO
+		'RX7 MIX1 INP2':0:ZERO
+		'HS AMP EN Switch':1:0
+		'RX3 MIX1 INP1':0:ZERO
+		'RX3 MIX1 INP2':0:ZERO
+		'RX5 MIX1 INP1':0:ZERO
+		'RX5 MIX1 INP2':0:ZERO
+		'RX4 DSM MUX':0:CIC_OUT
+		'RX6 DSM MUX':0:CIC_OUT
+		'LINEOUT1 Volume':1:0
+		'LINEOUT2 Volume':1:0
+		'LINEOUT3 Volume':1:0
+		'LINEOUT4 Volume':1:0
+		'RX3 Digital Volume':1:0
+		'RX4 Digital Volume':1:0
+		'RX5 Digital Volume':1:0
+		'RX6 Digital Volume':1:0
+		'SLIM TX3 MUX':0:ZERO
+	EndSequence
+
+	ACDBID  10:1
+EndSection
+
+SectionDevice
 	Name "Headset"
 
 	EnableSequence
@@ -3529,7 +3594,28 @@ SectionDevice
 		'ADC2 Volume':1:0
 	EndSequence
 
-	ACDBID  304:2
+	ACDBID  8:2
+EndSection
+
+SectionDevice
+	Name "Voice Headset"
+
+	EnableSequence
+		'SLIM_0_TX Channels':0:One
+		'SLIM TX7 MUX':0:DEC5
+		'DEC5 MUX':0:ADC2
+		'DEC5 Volume':2:54
+		'ADC2 Volume':1:100
+	EndSequence
+
+	DisableSequence
+		'SLIM TX7 MUX':0:ZERO
+		'DEC5 MUX':0:ZERO
+		'DEC5 Volume':2:0
+		'ADC2 Volume':1:0
+	EndSequence
+
+	ACDBID  8:2
 EndSection
 
 SectionDevice
