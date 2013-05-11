@@ -26,7 +26,7 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-import init.htc.usb.rc
+import init.qcom.usb.rc
 
 on init
     mkdir /mnt/shell/emulated 0700 shell shell
@@ -192,7 +192,7 @@ on init
 on fs
     mkdir /devlog 0700 root root
     mkdir /ramdump 0700 root root
-    
+
     # For firmwares
     mkdir /firmware 0771 system system
     mkdir /vendor 0771 system system
@@ -200,7 +200,7 @@ on fs
     mkdir /firmware/mdm 0771 system system
     mkdir /firmware/q6 0771 system system
 
-    mount_all ./fstab.htc
+    mount_all ./fstab.target
 
     # Load Mocana FIPS module. Add here since it can make sure system is mounted
     insmod /system/lib/modules/moc_platform_mod.ko
@@ -232,7 +232,7 @@ on fs
     exec /system/bin/sh /init.qcom.firmware_links.sh /firmware/mdm/image /vendor/firmware "*.mbn *.img"
     exec /system/bin/sh /init.qcom.firmware_links.sh /firmware/q6 /vendor/firmware "q6.*"
 
-    mount_all ./remount.htc
+    mount_all ./remount.target
 
 on post-fs-data
     mkdir /data/radio 0770 radio radio
