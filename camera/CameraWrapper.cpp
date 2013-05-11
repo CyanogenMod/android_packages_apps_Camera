@@ -34,6 +34,8 @@
 #include <camera/Camera.h>
 #include <camera/CameraParameters.h>
 
+static const char KEY_HTC_CAMERA_MODE[] = "cam-mode";
+
 static android::Mutex gCameraWrapperLock;
 static camera_module_t *gVendorModule = 0;
 
@@ -92,20 +94,35 @@ static int check_vendor_module()
 
 static char * camera_fixup_getparams(int id, const char * settings)
 {
+    const char* camMode = NULL;
+
     android::CameraParameters params;
     params.unflatten(android::String8(settings));
 
     // fix params here
+    if(params.get(KEY_HTC_CAMERA_MODE))
+        camMode = params.get(KEY_HTC_CAMERA_MODE);
 
-    /* Back Camera */
-    if (id == 0) {
-        params.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "1280x720,960x720,800x480,768x464,768x432,720x480,640x480,640x384,640x368,576x432,480x320,384x288,352x288,320x240,240x160,176x144");
-        params.set(android::CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "2688x1520,2592x1456,2048x1520,2048x1216,2048x1152,1600x1200,1600x896,1280x960,1280x768,1280x720,1024x768,800x600,800x480,640x480,640x384,640x368,352x288,320x240,176x144");
+    /* Photo */
+    if (camMode != NULL && strcmp(camMode, "0") == 0) {
+        /* Back Camera */
+        if (id == 0) {
+            params.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "1280x720,960x720,800x480,768x464,768x432,720x480,640x480,640x384,640x368,576x432,480x320,384x288,352x288,320x240,240x160,176x144");
+            params.set(android::CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "2688x1520,2592x1456,2048x1520,2048x1216,2048x1152,1600x1200,1600x896,1280x960,1280x768,1280x720,1024x768,800x600,800x480,640x480,640x384,640x368,352x288,320x240,176x144");
 
-    /* Front Camera */
-    } else {
-        params.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "1280x720,960x720,800x480,768x464,768x432,720x480,640x480,640x384,640x368,576x432,480x320,384x288,352x288,320x240,240x160,176x144");
-        params.set(android::CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "1600x896,1280x960,1280x768,1280x720,1024x768,800x600,800x480,640x480,640x384,640x368,352x288,320x240,176x144");
+        /* Front Camera */
+        } else {
+            params.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "1280x720,960x720,800x480,768x464,768x432,720x480,640x480,640x384,640x368,576x432,480x320,384x288,352x288,320x240,240x160,176x144");
+            params.set(android::CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "1600x896,1280x960,1280x768,1280x720,1024x768,800x600,800x480,640x480,640x384,640x368,352x288,320x240,176x144");
+        }
+
+    /* Video recording */
+    } else if (camMode != NULL && strcmp(camMode, "1") == 0) {
+        /* Back Camera */
+        if (id == 0) {
+            params.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "1920x1088,1280x720,720x480,640x480,640x384,640x368,576x432,480x320,384x288,352x288,320x240,240x160,176x144");
+            params.set(android::CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "1920x1088,1280x720,1024x768,800x600,800x480,640x480,640x384,640x368,352x288,320x240,176x144");
+        }
     }
 
     android::String8 strParams = params.flatten();
@@ -117,7 +134,7 @@ static char * camera_fixup_getparams(int id, const char * settings)
 
 char * camera_fixup_setparams(int id, const char * settings)
 {
-    const char KEY_HTC_CAMERA_MODE[] = "cam-mode";
+    const char* camMode = NULL;
 
     android::CameraParameters params;
     params.unflatten(android::String8(settings));
@@ -125,6 +142,9 @@ char * camera_fixup_setparams(int id, const char * settings)
     // fix params here
     const char* previewSize = params.get(android::CameraParameters::KEY_PREVIEW_SIZE);
     const char* pictureSize = params.get(android::CameraParameters::KEY_PICTURE_SIZE);
+
+    if(params.get(KEY_HTC_CAMERA_MODE))
+        camMode = params.get(KEY_HTC_CAMERA_MODE);
 
     params.set(android::CameraParameters::KEY_GPU_EFFECT, "0_bypass"); // Bypass
     params.set(android::CameraParameters::KEY_GPU_EFFECT_PARAM_0, "0,0,0,0");
@@ -142,21 +162,21 @@ char * camera_fixup_setparams(int id, const char * settings)
         params.set(android::CameraParameters::KEY_OIS_MODE, "off");
 
         /* ZSL */
-        if(params.get(KEY_HTC_CAMERA_MODE)) {
-            const char* camMode = params.get(KEY_HTC_CAMERA_MODE);
-            if(strcmp(camMode, "0") == 0) {
-                ALOGI("ZSL mode enabled.");
-                params.set(android::CameraParameters::KEY_ZSL, "on");
-                params.set(android::CameraParameters::KEY_CAMERA_MODE, "1");
-            }
+        if(camMode != NULL && strcmp(camMode, "0") == 0) {
+            ALOGI("ZSL mode enabled.");
+            params.set(android::CameraParameters::KEY_ZSL, "on");
+            params.set(android::CameraParameters::KEY_CAMERA_MODE, "1");
         }
-    } 
+    }
 
-    if(strcmp(previewSize, "1920x1088") == 0 || strcmp(previewSize, "1440x1088") == 0 || strcmp(previewSize, "1088x1088") == 0)
-        params.set(android::CameraParameters::KEY_PREVIEW_SIZE, "1280x720");
+    /* Apply hacks only in photo mode */
+    if (camMode != NULL && strcmp(camMode, "0") == 0) {
+        if(strcmp(previewSize, "1920x1088") == 0 || strcmp(previewSize, "1440x1088") == 0 || strcmp(previewSize, "1088x1088") == 0)
+            params.set(android::CameraParameters::KEY_PREVIEW_SIZE, "1280x720");
 
-    if(strcmp(previewSize, "960x544") == 0)
-        params.set(android::CameraParameters::KEY_PREVIEW_SIZE, "960x720");
+        if(strcmp(previewSize, "960x544") == 0)
+            params.set(android::CameraParameters::KEY_PREVIEW_SIZE, "960x720");
+    }
 
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
