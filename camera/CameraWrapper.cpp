@@ -102,12 +102,14 @@ static char * camera_fixup_getparams(int id, const char * settings)
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
 
-    ALOGD("%s: get parameters fixed up", __FUNCTION__);
+    ALOGI("%s: get parameters fixed up", __FUNCTION__);
     return ret;
 }
 
 char * camera_fixup_setparams(int id, const char * settings)
 {
+    const char KEY_HTC_CAMERA_MODE[] = "cam-mode";
+
     android::CameraParameters params;
     params.unflatten(android::String8(settings));
 
@@ -126,6 +128,16 @@ char * camera_fixup_setparams(int id, const char * settings)
         params.set(android::CameraParameters::KEY_CONTIBURST_TYPE, "unlimited");
         params.set(android::CameraParameters::KEY_OIS_SUPPORT, "false");
         params.set(android::CameraParameters::KEY_OIS_MODE, "off");
+
+        /* ZSL */
+        if(params.get(KEY_HTC_CAMERA_MODE)) {
+            const char* camMode = params.get(KEY_HTC_CAMERA_MODE);
+            if(strcmp(camMode, "0") == 0) {
+                ALOGI("ZSL mode enabled.");
+                params.set(android::CameraParameters::KEY_ZSL, "on");
+                params.set(android::CameraParameters::KEY_CAMERA_MODE, "1");
+            }
+        }
     }
 
     /* Some preview sizes are crashing our Camera HAL */
@@ -136,7 +148,7 @@ char * camera_fixup_setparams(int id, const char * settings)
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
 
-    ALOGD("%s: set parameters fixed up", __FUNCTION__);
+    ALOGI("%s: set parameters fixed up", __FUNCTION__);
     return ret;
 }
 
