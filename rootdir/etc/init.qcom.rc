@@ -446,7 +446,7 @@ service adaptive /system/bin/adaptive -c 0 -s 150 -b 210
 service akmd /system/bin/akmd
     class main
     user system
-    eroup system misc input
+    group system misc input
 
 # Bluetooth
 service btld /system/bin/btld -lpm 1 -hb 3000000

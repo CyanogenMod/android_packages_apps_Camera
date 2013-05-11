@@ -100,7 +100,7 @@
 /dev/msm_dsps             0660  system       system
 
 # cir
-/dev/ttyHSL3              0660  irda         irda
+/dev/ttyHSL3              0660  system       system
 
 # HtcCarGPS
 /dev/ttyHSUSB1            0600  system       system
