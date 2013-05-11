@@ -24,6 +24,7 @@
         <item>@string/pref_camera_picturesize_entry_2_5mp</item>
         <item>@string/pref_camera_picturesize_entry_2_1mp</item>
         <item>@string/pref_camera_picturesize_entry_1_5mp</item>
+        <item>@string/pref_camera_picturesize_entry_1_3mp</item>
         <item>@string/pref_camera_picturesize_entry_1mp</item>
         <item>@string/pref_camera_picturesize_entry_xga</item>
         <item>@string/pref_camera_picturesize_entry_svga</item>
@@ -41,6 +42,7 @@
         <item>2048x1216</item>
         <item>1920x1088</item>
         <item>1440x1088</item>
+        <item>1280x960</item>
         <item>1280x768</item>
         <item>1024x768</item>
         <item>800x600</item>
