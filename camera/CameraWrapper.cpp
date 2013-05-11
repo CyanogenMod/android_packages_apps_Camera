@@ -92,18 +92,34 @@ static int check_vendor_module()
 
 static char * camera_fixup_getparams(int id, const char * settings)
 {
+    const char* recordingHint = "false";
+
     android::CameraParameters params;
     params.unflatten(android::String8(settings));
 
-    /* Back Camera */
-    if (id == 0) {
-        params.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "1920x1088,1280x720,960x720,800x480,768x464,768x432,720x480,640x480,640x384,640x368,576x432,480x320,384x288,352x288,320x240,240x160,176x144");
-        params.set(android::CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "2688x1520,2592x1456,2048x1520,2048x1216,2048x1152,1920x1088,1600x1200,1600x896,1280x960,1280x768,1280x720,1024x768,800x600,800x480,640x480,640x384,640x368,352x288,320x240,176x144");
+    if(params.get(android::CameraParameters::KEY_RECORDING_HINT))
+        recordingHint = params.get(android::CameraParameters::KEY_RECORDING_HINT);
 
-    /* Front Camera */
-    } else {
+    /* Photo Mode */
+    if(strcmp(recordingHint, "false") == 0) {
         params.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "1280x720,960x720,800x480,768x464,768x432,720x480,640x480,640x384,640x368,576x432,480x320,384x288,352x288,320x240,240x160,176x144");
-        params.set(android::CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "1600x896,1280x960,1280x768,1280x720,1024x768,800x600,800x480,640x480,640x384,640x368,352x288,320x240,176x144");
+        /* Back Camera */
+        if(id == 0) {
+            params.set(android::CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "2688x1520,2592x1456,2048x1520,2048x1216,2048x1152,1920x1088,1600x1200,1600x896,1280x960,1280x768,1280x720,1024x768,800x600,800x480,640x480,640x384,640x368,352x288,320x240,176x144");
+        /* Front Camera */
+        } else {
+            params.set(android::CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "1600x896,1280x960,1280x768,1280x720,1024x768,800x600,800x480,640x480,640x384,640x368,352x288,320x240,176x144");
+        }
+    /* Recording Mode */
+    } else if(strcmp(recordingHint, "true") == 0) {
+        params.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, "1920x1088,1280x720,960x720,800x480,768x464,768x432,720x480,640x480,640x384,640x368,576x432,480x320,384x288,352x288,320x240,240x160,176x144");
+        /* Back Camera */
+        if(id == 0) {
+            params.set(android::CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "1920x1088,1280x720,1024x768,800x600,800x480,640x480,640x384,640x368,352x288,320x240,176x144");
+        /* Front Camera */
+        } else {
+            params.set(android::CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "1600x896,1280x960,1280x768,1280x720,1024x768,800x600,800x480,640x480,640x384,640x368,352x288,320x240,176x144");
+        }
     }
 
     android::String8 strParams = params.flatten();
@@ -136,9 +152,10 @@ char * camera_fixup_setparams(int id, const char * settings)
     params.set(android::CameraParameters::KEY_GPU_EFFECT_PARAM_2, "");
     params.set(android::CameraParameters::KEY_GPU_EFFECT_PARAM_3, "0,0,0,0");
 
+    /* Photo Mode */
     if(strcmp(recordingHint, "false") == 0) {
         /* Back Camera */
-        if (id == 0) {
+        if(id == 0) {
             if(!params.get(android::CameraParameters::KEY_CAPTURE_MODE))
                 params.set(android::CameraParameters::KEY_CAPTURE_MODE, "normal");
 
@@ -151,13 +168,11 @@ char * camera_fixup_setparams(int id, const char * settings)
             params.set(android::CameraParameters::KEY_ZSL, "on");
             params.set(android::CameraParameters::KEY_CAMERA_MODE, "1");
         }
-
-        if(strcmp(previewSize, "1920x1088") == 0 || strcmp(previewSize, "1440x1088") == 0 || strcmp(previewSize, "1088x1088") == 0)
-            params.set(android::CameraParameters::KEY_PREVIEW_SIZE, "1280x720");
-
-        if(strcmp(previewSize, "960x544") == 0)
-            params.set(android::CameraParameters::KEY_PREVIEW_SIZE, "960x720");
     }
+
+    /* For 1080p videosnapshot feature */
+    if(strcmp(previewSize, "1920x1088") == 0)
+        params.set(android::CameraParameters::KEY_PICTURE_SIZE, "1920x1088");
 
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
