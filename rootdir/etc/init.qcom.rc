@@ -45,14 +45,8 @@ on init
     symlink /storage/usbdisk /usbdisk
     symlink /storage/usbdisk /mnt/usbdisk
 
-    # For Invense MPU3050
-    chmod 0664 /dev/mpu
-    chmod 0664 /dev/mpuirq
-    chmod 0664 /dev/timerirq
+    # For Invensense MPU3050
     chmod 0664 /sys/class/gyro_sensors/gyro/mpu_lpm_flag
-    chown system system /dev/mpu
-    chown system system /dev/mpuirq
-    chown system system /dev/timerirq
     chown system system /sys/class/gyro_sensors/gyro/mpu_lpm_flag
 
     # For ST R3GD20
@@ -74,7 +68,6 @@ on init
     chmod 0664 /sys/class/htc_gyro/gyro/reg_addr
 
     # For AKM8963
-    chown system system /dev/akm8963_dev
     chown system system /sys/class/compass/akm8963/enable_acc
     chown system system /sys/class/compass/akm8963/enable_mag
     chown system system /sys/class/compass/akm8963/enable_ori
@@ -82,7 +75,6 @@ on init
     chown system system /sys/class/compass/akm8963/delay_mag
     chown system system /sys/class/compass/akm8963/delay_ori
     chown system system /sys/class/compass/akm8963/accel
-    chmod 0660 /dev/akm8963_dev
     chmod 0660 /sys/class/compass/akm8963/enable_acc
     chmod 0660 /sys/class/compass/akm8963/enable_mag
     chmod 0660 /sys/class/compass/akm8963/enable_ori
@@ -162,6 +154,8 @@ on init
     chmod 0660 /sys/class/htc_g_sensor/g_sensor/tap_threshold
     chmod 0660 /sys/class/htc_g_sensor/g_sensor/enable_cir_interrupt
     chmod 0660 /sys/class/bma250/bma250/enable
+
+
 
     # P-sensor
     chown radio radio /sys/class/optical_sensors/proximity/PhoneApp_status
@@ -293,20 +287,6 @@ on boot
     chown bluetooth net_bt_stack /proc/bluetooth/sleep/lpm
     chown bluetooth net_bt_stack /proc/bluetooth/sleep/btwrite
 
-# simlock +
-    chown radio radio /dev/simlock
-    chmod 0660 /dev/simlock
-# simlock -
-
-#DRM +
-    chown drm system /dev/htcdrm
-    chmod 0660 /dev/htcdrm
-#DRM -
-
-# Remote kill
-    chown system system /dev/htc_msgservice
-# Remote kill
-
 # HTC SSD Peripheral UI - BEGIN
     chown system system /sys/class/leds/red/brightness
     chown system system /sys/class/leds/red/blink
@@ -348,12 +328,6 @@ on boot
     chown system system /sys/class/leds/flashlight/brightness
     chmod 0666 /sys/class/leds/flashlight/brightness
 
-# Permissions for NFC
-    chmod 0600 /dev/pn544
-    chown nfc nfc /dev/pn544
-    setprop debug.nfc.fw_download "true"
-    setprop debug.nfc.fw_boot_download "false"
-
     # disable L27 S3 static pull down disable
     write /sys/kernel/debug/pm8921-dbg/addr 0x0E3
     write /sys/kernel/debug/pm8921-dbg/data 0xA0
@@ -393,13 +367,6 @@ on boot
     mkdir /data/misc/gpsone_d 0770 system gps
 # --SSD_GPS
 
-# ++SSD_AUDIO
-    chown system audio /dev/tfa9887
-    chmod 0664 /dev/tfa9887
-    chown system audio /dev/tfa9887l
-    chmod 0664 /dev/tfa9887l
-# --SSD_AUDIO
-
 # Set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 8 268435456 268435456
 
@@ -413,10 +380,6 @@ on boot
 # For Flashlight Restriction
     chown system system /sys/camera_led_status/led_hotspot_status
     chown radio system /sys/camera_led_status/led_ril_status
-
-# HTC set radio_feedback permissions
-    chown radio radio /dev/radio_feedback
-    chmod 0660 /dev/radio_feedback
 
 # For RIL to set htc_monitor_param permission
     chown radio radio /sys/htc_monitor_status/htc_monitor_param
