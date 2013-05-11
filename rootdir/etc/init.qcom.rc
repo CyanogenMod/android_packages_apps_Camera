@@ -462,20 +462,7 @@ on property:dev.zcharge=true
 on property:dev.zcharge=false
     stop zchgd_onmode
 
-service clockd /system/bin/clockd
-    class main
-
-service qb_offmode_alarm /system/bin/qb_offmode_alarm
-    class main
-    user root
-    disabled
-    oneshot
-
 service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
-    class main
-    user root
-
-service pnpmgr /system/bin/pnpmgr
     class main
     user root
 
@@ -483,41 +470,6 @@ service adaptive /system/bin/adaptive -c 0 -s 150 -b 210
     class main
     user root
     disabled
-
-service memlock /system/bin/memlock
-    class main
-    user root
-
-service usf_tester /system/bin/usf_tester
-    user system
-    group system inet
-    disabled
-
-service usf_epos /system/bin/usf_epos
-    user system
-    group system inet
-    disabled
-
-service usf_gesture /system/bin/usf_gesture
-    user system
-    group system inet
-    disabled
-
-service usf_p2p /system/bin/usf_p2p
-    user system
-    group system inet
-    disabled
-
-service usf_hovering /system/bin/usf_hovering
-    user system
-    group system inet
-    disabled
-
-service usf-post-boot /system/bin/sh /system/etc/usf_post_boot.sh
-    class late_start
-    user root
-    disabled
-    oneshot
 
 # virtual sdcard daemon running as media_rw (1023)
 service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
@@ -561,14 +513,11 @@ service iprenew_p2p /system/bin/dhcpcd -n
 # wifi--
 
 on property:init.svc.bootanim=stopped
-    start usf-post-boot
     start post-boot
     # Overwrite ActivityManager's low memory killer settings
     write /sys/module/lowmemorykiller/parameters/adj 0,2,4,7,9,12
     stop thermald_boot
     start thermald
-    stop pnpmgr
-    start pnpmgr
 
 service post-boot /system/bin/sh /system/etc/init.post_boot.sh
     user root
@@ -587,13 +536,6 @@ service dhcpcd_brcm-pan /system/bin/dhcpcd -ABKL
     oneshot
 # --SSD_BT
 
-# DMagent
-service dmagent /system/bin/dmagent -N
-    class late_start
-    socket dmagent stream 660 root inet
-    user root
-    oneshot
-
 # ++SSD_RIL
 
 # QMUX must be in multiple groups to support external process connections
@@ -606,20 +548,6 @@ service netmgrd /system/bin/netmgrd
     class core
 
 # --SSD_RIL
-
-# ++SSD_GPS
-service quipc_igsn /system/bin/quipc_igsn
-    class late_start
-    user gps
-    group inet gps
-    disabled
-
-service quipc_main /system/bin/quipc_main
-    class late_start
-    user gps
-    group gps net_admin wifi inet
-    disabled
-# --SSD_GPS
 
 # HDMI
 service hdmid /system/bin/hdmid
@@ -634,11 +562,6 @@ service tpd /sbin/tpd
     class core
     user root
 
-# For USB internet sharing
-service udhcpd /system/bin/udhcpd
-    disabled
-    oneshot
-
 service netsharing_on /system/bin/netsharing net on
     disabled
     oneshot
@@ -651,24 +574,8 @@ service netsharing_pass /system/bin/netsharing net_pass on
     disabled
     oneshot
 
-service hdf /sbin/hdf
-    class core
-    oneshot
-
 on property:dev.bootcomplete=1
-    start bootcomplete
     write /sys/power/pnpmgr/apps/media_mode " "
-
-service bootcomplete /system/bin/bootcomplete
-    user root
-    group root
-    disabled
-    oneshot
-
-# Discretix DRM change start
-service dx_drm_server /system/bin/DxDrmServerIpc -f -o allow_other /data/DxDrm/fuse
-    class main
-# Discretix DRM change end
 
 # Widevine DRM start
 service qseecomd /system/bin/qseecomd
@@ -676,40 +583,8 @@ service qseecomd /system/bin/qseecomd
     user system
     group system drm
 
-service hcheck /system/bin/hcheck
-    class late_start
-    user system
-    group system
-    oneshot
-# Widevine DRM end
-
 # Compass/accelerometer daemon
 service akmd /system/bin/akmd
     class main
     user system
     group system misc input
-
-# HTC Automotive - BEGIN
-service cand /system/bin/cand
-    class main
-    user root
-# HTC Automotive - END
-
-# HTC CIR firmware update - BEGIN
-service cir_fw_update /system/bin/cir_fw_update -u cir.img
-    class main
-    user root
-    group root
-    oneshot
-# HTC CIR firmware update - END
-
-service L2PE /system/bin/l2_profile_exchange handset softap.0
-    user root
-    group root
-    disabled
-    oneshot
-
-service priorityd /system/bin/sh /system/etc/priorityd.sh
-    user root
-    disabled
-    oneshot
