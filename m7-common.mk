@@ -116,6 +116,14 @@ PRODUCT_COPY_FILES += \
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mtp,adb
 
+# Common build properties
+PRODUCT_PROPERTY_OVERRIDES += \
+    debug.nfc.fw_download=true \
+    debug.nfc.fw_boot_download=false \
+    debug.nfc.se=true \
+    ro.nfc.port=I2C \
+    persist.timed.enable=true
+
 # Set build date
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 

@@ -68,7 +68,7 @@
 /dev/tty_sdio_00          0660   system     system
 /dev/block/mmcblk0p17     0660   system     system
 /dev/block/mmcblk0p18     0660   system     system
-/dev/video*	              0660   system     camera 
+/dev/video*               0660   system     camera
 #regular apps need to be able to open ion
 /dev/ion                  0664   system     system
 
@@ -100,20 +100,47 @@
 /dev/msm_dsps             0660  system       system
 
 # felica device file nodes
-/dev/felica            0666   felicaclient   felicaclient
-/dev/felica_pon        0666   felicaclient   felicaclient
-/dev/felica_cen        0666   felicalock     felicalock
-/dev/felica_rfs        0444   felicaclient   felicaclient
-/dev/felica_rws        0666   felicaclient   felicaclient
-/dev/felica_int        0444   felicaclient   felicaclient
-/dev/felica_int_poll   0400   felicaclient   felicaclient
-/dev/felica_uid        0222   felicaclient   felicaclient
+/dev/felica               0666   felicaclient   felicaclient
+/dev/felica_pon           0666   felicaclient   felicaclient
+/dev/felica_cen           0666   felicalock     felicalock
+/dev/felica_rfs           0444   felicaclient   felicaclient
+/dev/felica_rws           0666   felicaclient   felicaclient
+/dev/felica_int           0444   felicaclient   felicaclient
+/dev/felica_int_poll      0400   felicaclient   felicaclient
+/dev/felica_uid           0222   felicaclient   felicaclient
 
 # cir
 /dev/ttyHSL3              0660   irda       irda
 
 # HtcCarGPS
-/dev/ttyHSUSB1                                 0600    system  system
+/dev/ttyHSUSB1            0600   system     system
 
 # for autobot car pc
-/dev/ttyHSUSB3                                 0660    autobot_access autobot_access
+/dev/ttyHSUSB3            0660   autobot_access autobot_access
+
+# simlock
+/dev/simlock              0660  radio        radio
+
+# HTC drm
+/dev/htcdrm               0660  drm          system
+
+# remote kill
+/dev/htc_msgservice       0600  system       system
+
+# NFC
+/dev/pn544                0600  nfc          nfc
+
+# Audio
+/dev/tfa9887              0664  system       audio
+/dev/tfa9887l             0664  system       audio
+
+# Radio
+/dev/radio_feedback       0660  radio        radio
+
+# MPU3050
+/dev/mpu                  0664  system       system
+/dev/mpuirq               0664  system       system
+/dev/timerirq             0644  system       system
+
+# AKM8963
+/dev/akm8963_dev          0660  system       system
