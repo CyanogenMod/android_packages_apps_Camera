@@ -486,11 +486,6 @@ service post-boot /system/bin/sh /system/etc/init.post_boot.sh
     disabled
     oneshot
 
-service qseecomd /system/bin/qseecomd
-    class late_start
-    user system
-    group system drm
-
 # Radio
 # QMUX must be in multiple groups to support external process connections
 service qmuxd /system/bin/qmuxd

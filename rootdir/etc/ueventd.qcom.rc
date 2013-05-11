@@ -22,7 +22,7 @@
 /dev/oncrpc/*             0660   radio      system
 /dev/gss                  0660   gps        gps
 /dev/msm_camera/*         0660   system     camera
-/dev/radio0               0644   fm_radio   fm_radio
+/dev/radio0               0644   audio      audio
 /dev/i2c-0                0664   root       system
 /dev/i2c-1                0664   root       system
 /dev/i2c-2                0664   root       system
@@ -99,24 +99,11 @@
 #permissions for sensors
 /dev/msm_dsps             0660  system       system
 
-# felica device file nodes
-/dev/felica               0666   felicaclient   felicaclient
-/dev/felica_pon           0666   felicaclient   felicaclient
-/dev/felica_cen           0666   felicalock     felicalock
-/dev/felica_rfs           0444   felicaclient   felicaclient
-/dev/felica_rws           0666   felicaclient   felicaclient
-/dev/felica_int           0444   felicaclient   felicaclient
-/dev/felica_int_poll      0400   felicaclient   felicaclient
-/dev/felica_uid           0222   felicaclient   felicaclient
-
 # cir
-/dev/ttyHSL3              0660   irda       irda
+/dev/ttyHSL3              0660  irda         irda
 
 # HtcCarGPS
-/dev/ttyHSUSB1            0600   system     system
-
-# for autobot car pc
-/dev/ttyHSUSB3            0660   autobot_access autobot_access
+/dev/ttyHSUSB1            0600  system       system
 
 # simlock
 /dev/simlock              0660  radio        radio
