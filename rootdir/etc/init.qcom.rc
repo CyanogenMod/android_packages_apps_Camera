@@ -202,11 +202,7 @@ on fs
 
     mount_all ./fstab.target
 
-    # Load Mocana FIPS module. Add here since it can make sure system is mounted
-    insmod /system/lib/modules/moc_platform_mod.ko
-    insmod /system/lib/modules/moc_crypto.ko
     insmod /system/lib/modules/dm-crypt.ko
-    insmod /system/lib/modules/wp_mod.ko
 
     mkdir /data/tombstones 0771 system system
     symlink /data/tombstones /tombstones
@@ -246,11 +242,6 @@ on post-fs-data
     chmod 2770 /dev/socket/qmux_bluetooth
 #-SSD_RIL: from Qualcomm socket path
 
-    # HTC add: 3LM setting on ICS
-    setprop ro.3lm.production 1
-
-    # HTC add: 3LM encryption on ICS
-    setprop ro.3lm.legacy_encryption 1
     mkdir /data/secure 0755 system system
     mkdir /data/secure/data 0755 system system
     mount tmpfs tmpfs /data/secure/data mode=0755,gid=1000
@@ -277,10 +268,11 @@ on boot
     mkdir /data/misc/dhcp 0755 wifi wifi
     chown dhcp dhcp /data/misc/dhcp
     chmod 0770 /data/misc/wifi
-    write /sys/module/perflock/parameters/legacy_mode 0
+
     write /sys/devices/i2c-3/3-0024/cyttsp_update_fw 1
+
     start qcamerasvr
-   
+
     # Bluetooth
     chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
@@ -474,21 +466,6 @@ on boot
 # Increased technology maximums should be reflected here.
     write /proc/sys/net/core/rmem_max  1220608
     write /proc/sys/net/core/wmem_max  1220608
-    
-    # Discretix DRM change start
-    mkdir /data/DxDrm
-    mkdir /data/DxDrm/fuse
-    chmod 555 /data/DxDrm
-    mkdir /sdcard/download
-    # Discretix DRM change end
-
-# To prevent out of order acknowledgements from making
-# connection tracking to treat them as not belonging to
-# the connection they belong to.
-# Otherwise, a weird issue happens in which some long
-# connections on high-throughput links get dropped when
-# an ack packet comes out of order
-    write /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal 1
 
 # Start camera server as daemon
 service qcamerasvr /system/bin/mm-qcamera-daemon
@@ -500,6 +477,7 @@ service thermald_boot /system/bin/thermald -c /system/etc/thermald_boot.conf
     class main
     user root
     group root
+
 service thermald /system/bin/thermald
     class main
     user root
