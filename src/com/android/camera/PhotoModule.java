@@ -1964,7 +1964,7 @@ public class PhotoModule
         waitCameraStartUpThread();
 
         // Disable no-hands mode, and kill any pending voice listeners
-        if (mPhotoControl != null) {
+        if (mPhotoControl != null && !mActivity.isSecureCamera()) {
             mPhotoControl.resetNoHandsShutter(true);
         }
 
