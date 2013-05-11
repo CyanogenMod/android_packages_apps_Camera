@@ -26,4 +26,6 @@
     <bool name="enableZSL">false</bool>
     <!-- Disable face detection on the front camera -->
     <bool name="noFaceDetectOnFrontCamera">true</bool>
+    <!-- Force use of profile video size -->
+    <bool name="useProfileVideoSize">true</bool>
 </resources>
