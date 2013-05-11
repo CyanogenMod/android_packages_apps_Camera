@@ -430,16 +430,80 @@ on boot
     write /proc/sys/net/core/rmem_max  1220608
     write /proc/sys/net/core/wmem_max  1220608
 
-# Start camera server as daemon
+service adaptive /system/bin/adaptive -c 0 -s 150 -b 210
+    class main
+    user root
+    disabled
+
+# Compass/accelerometer daemon
+service akmd /system/bin/akmd
+    class main
+    user system
+    eroup system misc input
+
+# Bluetooth
+service btld /system/bin/btld -lpm 1 -hb 3000000
+    user root
+    group bluetooth net_bt_admin
+    disabled
+    onrestart restart bluetoothd
+
+service dhcpcd_brcm-pan /system/bin/dhcpcd -ABKL
+    disabled
+    oneshot
+
+# Camera server
 service qcamerasvr /system/bin/mm-qcamera-daemon
     class late_start
     user system
     group system camera inet graphics
 
-service thermald_boot /system/bin/thermald -c /system/etc/thermald_boot.conf
+# HDMI
+service hdmid /system/bin/hdmid
+    class late_start
+    socket displayd stream 0660 root system graphics
+    disabled
+
+service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
     class main
     user root
-    group root
+
+# Netsharing
+service netsharing_on /system/bin/netsharing net on
+    disabled
+    oneshot
+
+service netsharing_off /system/bin/netsharing net off
+    disabled
+    oneshot
+
+service netsharing_pass /system/bin/netsharing net_pass on
+    disabled
+    oneshot
+
+service post-boot /system/bin/sh /system/etc/init.post_boot.sh
+    user root
+    disabled
+    oneshot
+
+service qseecomd /system/bin/qseecomd
+    class late_start
+    user system
+    group system drm
+
+# Radio
+# QMUX must be in multiple groups to support external process connections
+service qmuxd /system/bin/qmuxd
+    class core
+    user radio
+    group radio audio gps
+
+service netmgrd /system/bin/netmgrd
+    class core
+
+# virtual sdcard daemon running as media_rw (1023)
+service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
+    class late_start
 
 service thermald /system/bin/thermald
     class main
@@ -447,33 +511,9 @@ service thermald /system/bin/thermald
     group root
     disabled
 
-service zchgd_offmode /system/bin/zchgd -pseudooffmode
+service tpd /sbin/tpd
+    class core
     user root
-    group root graphics
-    disabled
-
-service zchgd_onmode /system/bin/zchgd -onmode
-    user root
-    group root graphics
-
-on property:dev.zcharge=true
-    start zchgd_onmode
-
-on property:dev.zcharge=false
-    stop zchgd_onmode
-
-service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
-    class main
-    user root
-
-service adaptive /system/bin/adaptive -c 0 -s 150 -b 210
-    class main
-    user root
-    disabled
-
-# virtual sdcard daemon running as media_rw (1023)
-service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
-    class late_start
 
 # wifi ++
 service p2p_supplicant /system/bin/wpa_supplicant \
@@ -512,6 +552,24 @@ service iprenew_p2p /system/bin/dhcpcd -n
     oneshot
 # wifi--
 
+service zchgd_offmode /system/bin/zchgd -pseudooffmode
+    user root
+    group root graphics
+    disabled
+
+service zchgd_onmode /system/bin/zchgd -onmode
+    user root
+    group root graphics
+
+on property:dev.bootcomplete=1
+    write /sys/power/pnpmgr/apps/media_mode " "
+
+on property:dev.zcharge=true
+    start zchgd_onmode
+
+on property:dev.zcharge=false
+    stop zchgd_onmode
+
 on property:init.svc.bootanim=stopped
     start post-boot
     # Overwrite ActivityManager's low memory killer settings
@@ -519,72 +577,5 @@ on property:init.svc.bootanim=stopped
     stop thermald_boot
     start thermald
 
-service post-boot /system/bin/sh /system/etc/init.post_boot.sh
-    user root
-    disabled
-    oneshot
-
-# ++SSD_BT
-service btld /system/bin/btld -lpm 1 -hb 3000000
-    user root
-    group bluetooth net_bt_admin
-    disabled
-    onrestart restart bluetoothd
-
-service dhcpcd_brcm-pan /system/bin/dhcpcd -ABKL
-    disabled
-    oneshot
-# --SSD_BT
-
-# ++SSD_RIL
-
-# QMUX must be in multiple groups to support external process connections
-service qmuxd /system/bin/qmuxd
-    class core
-    user radio
-    group radio audio gps
-
-service netmgrd /system/bin/netmgrd
-    class core
-
-# --SSD_RIL
-
-# HDMI
-service hdmid /system/bin/hdmid
-    class late_start
-    socket displayd stream 0660 root system graphics
-    disabled
-
 on property:ro.hdmi.enable=true
     start hdmid
-
-service tpd /sbin/tpd
-    class core
-    user root
-
-service netsharing_on /system/bin/netsharing net on
-    disabled
-    oneshot
-
-service netsharing_off /system/bin/netsharing net off
-    disabled
-    oneshot
-
-service netsharing_pass /system/bin/netsharing net_pass on
-    disabled
-    oneshot
-
-on property:dev.bootcomplete=1
-    write /sys/power/pnpmgr/apps/media_mode " "
-
-# Widevine DRM start
-service qseecomd /system/bin/qseecomd
-    class late_start
-    user system
-    group system drm
-
-# Compass/accelerometer daemon
-service akmd /system/bin/akmd
-    class main
-    user system
-    group system misc input
