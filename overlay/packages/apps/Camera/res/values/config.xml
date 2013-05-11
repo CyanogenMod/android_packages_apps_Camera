@@ -24,4 +24,6 @@
     <bool name="wantsFocusModes">true</bool>
     <!-- Use ZSL mode for Qualcomm cameras -->
     <bool name="enableZSL">false</bool>
+    <!-- Disable face detection on the front camera -->
+    <bool name="noFaceDetectOnFrontCamera">true</bool>
 </resources>
