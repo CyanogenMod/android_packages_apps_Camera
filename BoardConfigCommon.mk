@@ -92,7 +92,6 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 # Custom Recovery
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_23x41.h\"
 BOARD_HAS_NO_SELECT_BUTTON := true
-BOARD_HAS_LARGE_FILESYSTEM := true
 TARGET_USERIMAGES_USE_EXT4 := true
 
 # inherit from the proprietary version
