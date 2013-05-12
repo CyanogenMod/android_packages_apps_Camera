@@ -36,11 +36,13 @@ public class TouchscreenFragmentActivity extends PreferenceFragment {
 
     private static final String TAG = "DeviceSettings_Touchscreen";
     public static final String KEY_LOGO2MENU_SWITCH = "logo2menu_switch";
+    public static final String KEY_LONGTAPLOGOSLEEP_SWITCH = "longtaplogosleep_switch";
     public static final String KEY_WAKE_METHOD = "wake_method";
 
     private static boolean sLogo2Menu;
     private static boolean sWake;
     private TwoStatePreference mLogo2MenuSwitch;
+    private TwoStatePreference mLongTapLogoSleepSwitch;
     private ListPreference mWakeMethod;
 
     @Override
@@ -57,6 +59,9 @@ public class TouchscreenFragmentActivity extends PreferenceFragment {
             mLogo2MenuSwitch = (TwoStatePreference) findPreference(KEY_LOGO2MENU_SWITCH);
             mLogo2MenuSwitch.setEnabled(Logo2MenuSwitch.isSupported());
             mLogo2MenuSwitch.setOnPreferenceChangeListener(new Logo2MenuSwitch());
+            mLongTapLogoSleepSwitch = (TwoStatePreference) findPreference(KEY_LONGTAPLOGOSLEEP_SWITCH);
+            mLongTapLogoSleepSwitch.setEnabled(LongTapLogoSleepSwitch.isSupported());
+            mLongTapLogoSleepSwitch.setOnPreferenceChangeListener(new LongTapLogoSleepSwitch());
         }
         if (sWake) {
             mWakeMethod = (ListPreference) findPreference(KEY_WAKE_METHOD);

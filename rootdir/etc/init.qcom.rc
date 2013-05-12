@@ -188,6 +188,7 @@ on init
     chown system system /sys/android_touch/home2wake
     chown system system /sys/android_touch/logo_delay
     chown system system /sys/android_touch/sleep_wake_vibration_time
+    chown system system /sys/android_touch/l2m_2_phase
 
 # On emmc mount the partition containing firmware
 on fs

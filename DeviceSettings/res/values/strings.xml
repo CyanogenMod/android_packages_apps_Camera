@@ -34,6 +34,8 @@
     <string name="logo2menu_title">Logo To Menu</string>
     <string name="logo2menu_switch_title_head">Enable</string>
     <string name="logo2menu_switch_summary_head">Enables the HTC logo\'s upper part to act as hardware Menu button.</string>
+    <string name="longtaplogosleep_switch_title_head">Longtap Sleep</string>
+    <string name="longtaplogosleep_switch_summary_head">If checked, long tapping the HTC logo\'s upper part will put the phone to sleep. If checked, it overrides System/Hardware Keys - Menu button long tap setting.</string>
 
     <string name="wake_title">Wake</string>
     <string name="wake_method_title_head">Wake Method</string>
