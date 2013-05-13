@@ -72,6 +72,9 @@
 #regular apps need to be able to open ion
 /dev/ion                  0664   system     system
 
+# wifi
+/dev/rfkill               0660  root         wifi
+
 #permissions for video
 /dev/msm_vidc_reg         0660  system       audio
 /dev/msm_vidc_dec         0660  system       audio
