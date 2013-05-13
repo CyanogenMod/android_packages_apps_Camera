@@ -342,10 +342,6 @@ on boot
     write /sys/kernel/debug/pm8921-dbg/addr 0x1F5
     write /sys/kernel/debug/pm8921-dbg/data 0xE1
 
-    # Load bcmdhd.ko while booting
-    chmod 0444 /system/lib/modules/bcmdhd.ko
-    insmod /system/lib/modules/bcmdhd.ko
-
     write /proc/sys/net/ipv6/conf/p2p0/disable_ipv6 1
 
     # Create symlink for fb1 as HDMI
