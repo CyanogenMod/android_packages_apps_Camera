@@ -93,12 +93,21 @@ static int check_vendor_module()
 static char * camera_fixup_getparams(int id, const char * settings)
 {
     const char* recordingHint = "false";
+    const char* captureMode = "normal";
 
     android::CameraParameters params;
     params.unflatten(android::String8(settings));
 
     if(params.get(android::CameraParameters::KEY_RECORDING_HINT))
         recordingHint = params.get(android::CameraParameters::KEY_RECORDING_HINT);
+    if(params.get(android::CameraParameters::KEY_CAPTURE_MODE))
+        captureMode = params.get(android::CameraParameters::KEY_CAPTURE_MODE);
+
+    /* Hardware HDR */
+    if(strcmp(captureMode, "hdr") == 0) {
+        ALOGI("Scene-Mode: HDR.");
+        params.set(android::CameraParameters::KEY_SCENE_MODE, "hdr");
+    }
 
     /* Photo Mode */
     if(strcmp(recordingHint, "false") == 0) {
@@ -106,6 +115,7 @@ static char * camera_fixup_getparams(int id, const char * settings)
         /* Back Camera */
         if(id == 0) {
             params.set(android::CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "2688x1520,2592x1456,2048x1520,2048x1216,2048x1152,1920x1088,1600x1200,1600x896,1280x960,1280x768,1280x720,1024x768,800x600,800x480,640x480,640x384,640x368,352x288,320x240,176x144");
+            params.set(android::CameraParameters::KEY_SUPPORTED_SCENE_MODES, "off,auto,action,portrait,landscape,night,night-portrait,theatre,beach,snow,sunset,steadyphoto,fireworks,sports,party,candlelight,backlight,flowers,AR,text,hdr");
         /* Front Camera */
         } else {
             params.set(android::CameraParameters::KEY_SUPPORTED_PICTURE_SIZES, "1600x896,1280x960,1280x768,1280x720,1024x768,800x600,800x480,640x480,640x384,640x368,352x288,320x240,176x144");
@@ -134,6 +144,7 @@ char * camera_fixup_setparams(int id, const char * settings)
     const char* previewSize = "0x0";
     const char* pictureSize = "0x0";
     const char* recordingHint = "false";
+    const char* sceneMode = "auto";
 
     android::CameraParameters params;
     params.unflatten(android::String8(settings));
@@ -145,6 +156,8 @@ char * camera_fixup_setparams(int id, const char * settings)
         pictureSize = params.get(android::CameraParameters::KEY_PICTURE_SIZE);
     if(params.get(android::CameraParameters::KEY_RECORDING_HINT))
         recordingHint = params.get(android::CameraParameters::KEY_RECORDING_HINT);
+    if(params.get(android::CameraParameters::KEY_SCENE_MODE))
+        sceneMode = params.get(android::CameraParameters::KEY_SCENE_MODE);
 
     params.set(android::CameraParameters::KEY_GPU_EFFECT, "0_bypass"); // Bypass
     params.set(android::CameraParameters::KEY_GPU_EFFECT_PARAM_0, "0,0,0,0");
@@ -156,17 +169,24 @@ char * camera_fixup_setparams(int id, const char * settings)
     if(strcmp(recordingHint, "false") == 0) {
         /* Back Camera */
         if(id == 0) {
-            if(!params.get(android::CameraParameters::KEY_CAPTURE_MODE))
-                params.set(android::CameraParameters::KEY_CAPTURE_MODE, "normal");
-
             params.set(android::CameraParameters::KEY_CONTIBURST_TYPE, "unlimited");
             params.set(android::CameraParameters::KEY_OIS_SUPPORT, "false");
             params.set(android::CameraParameters::KEY_OIS_MODE, "off");
 
-            /* ZSL */
-            ALOGI("ZSL mode enabled.");
-            params.set(android::CameraParameters::KEY_ZSL, "on");
-            params.set(android::CameraParameters::KEY_CAMERA_MODE, "1");
+            /* Hardware HDR */
+            if(strcmp(sceneMode, "hdr") == 0) {
+                ALOGI("Capture-Mode: HDR.");
+                params.set(android::CameraParameters::KEY_SCENE_MODE, "off");
+                params.set(android::CameraParameters::KEY_CAPTURE_MODE, "hdr");
+            } else {
+                ALOGI("Capture-Mode: Normal.");
+                params.set(android::CameraParameters::KEY_CAPTURE_MODE, "normal");
+
+                /* ZSL */
+                ALOGI("ZSL-Mode: enabled");
+                params.set(android::CameraParameters::KEY_ZSL, "on");
+                params.set(android::CameraParameters::KEY_CAMERA_MODE, "1");
+            }
         }
     }
 
