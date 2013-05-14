@@ -118,6 +118,7 @@
     <string name="pref_camera_focustime_entry_infinite">Uendelig</string>
 
     <string name="pref_camera_nohands_title">Håndfri udløser</string>
+    <string name="pref_camera_nohands_voice_entry">Stemme</string>
 
     <string name="pref_camera_timer_entry_0">Fra</string>
     <string name="pref_camera_timer_entry_10">10s</string>
