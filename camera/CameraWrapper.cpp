@@ -94,6 +94,7 @@ static char * camera_fixup_getparams(int id, const char * settings)
 {
     const char* recordingHint = "false";
     const char* captureMode = "normal";
+    const char* rotation = "0";
 
     android::CameraParameters params;
     params.unflatten(android::String8(settings));
@@ -102,6 +103,8 @@ static char * camera_fixup_getparams(int id, const char * settings)
         recordingHint = params.get(android::CameraParameters::KEY_RECORDING_HINT);
     if(params.get(android::CameraParameters::KEY_CAPTURE_MODE))
         captureMode = params.get(android::CameraParameters::KEY_CAPTURE_MODE);
+    if(params.get(android::CameraParameters::KEY_ROTATION))
+        rotation = params.get(android::CameraParameters::KEY_ROTATION);
 
     /* Hardware HDR */
     if(strcmp(captureMode, "hdr") == 0) {
@@ -116,6 +119,14 @@ static char * camera_fixup_getparams(int id, const char * settings)
             params.set(android::CameraParameters::KEY_SUPPORTED_SCENE_MODES, "off,auto,action,portrait,landscape,night,night-portrait,theatre,beach,snow,sunset,steadyphoto,fireworks,sports,party,candlelight,backlight,flowers,AR,text,hdr");
         }
     }
+
+    /* Fix rotation missmatch */
+    if(strcmp(rotation, "90") == 0)
+        params.set(android::CameraParameters::KEY_ROTATION, "0");
+    else if(strcmp(rotation, "180") == 0)
+        params.set(android::CameraParameters::KEY_ROTATION, "90");
+    else if(strcmp(rotation, "270") == 0)
+        params.set(android::CameraParameters::KEY_ROTATION, "180");
 
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
