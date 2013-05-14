@@ -157,10 +157,6 @@ system/etc/firmware/tzapps.b02
 system/etc/firmware/tzapps.b03
 system/etc/firmware/tzapps.mdt
 
-# NFC
-system/vendor/firmware/libpn544_fw.so
-system/vendor/firmware/mfg.bin
-
 # Qualcomm/HTC common libs
 system/lib/libdiag.so
 system/lib/libdsi_netctrl.so
