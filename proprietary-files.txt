@@ -1,6 +1,9 @@
+# Recovery files
 sbin/mfgsrv
 sbin/sfc
 sbin/tpd
+
+# Executables
 system/bin/adaptive
 system/bin/akmd
 system/bin/awb_camera
@@ -24,6 +27,8 @@ system/bin/qmuxd
 system/bin/test_gemini
 system/bin/thermald
 system/bin/zchgd
+
+# Configuration files
 system/etc/agps_rm
 system/etc/ar0260_1
 system/etc/cir.img
@@ -32,45 +37,15 @@ system/etc/hltof.bin
 system/etc/hltrd.bin
 system/etc/ov2722_1
 system/etc/RT5501
-system/etc/firmware/a225p5_pm4.fw
-system/etc/firmware/a225_pfp.fw
-system/etc/firmware/a225_pm4.fw
-system/etc/firmware/a300_pfp.fw
-system/etc/firmware/a300_pm4.fw
-system/etc/firmware/BCM4335B0_002.001.006.0042.0044.hcd
-system/etc/firmware/fw_bcm4335_apsta_b0.bin
-system/etc/firmware/fw_bcm4335_b0.bin
-system/etc/firmware/fw_bcm4335_p2p_b0.bin
-system/etc/firmware/hcheck.b00
-system/etc/firmware/hcheck.b01
-system/etc/firmware/hcheck.b02
-system/etc/firmware/hcheck.b03
-system/etc/firmware/hcheck.mdt
-system/etc/firmware/ILP0100_IPM_Code_out.bin
-system/etc/firmware/ILP0100_IPM_Data_out.bin
-system/etc/firmware/leia_pfp_470.fw
-system/etc/firmware/leia_pm4_470.fw
-system/etc/firmware/lscbuffer_rev2.bin
-system/etc/firmware/tzapps.b00
-system/etc/firmware/tzapps.b01
-system/etc/firmware/tzapps.b02
-system/etc/firmware/tzapps.b03
-system/etc/firmware/tzapps.mdt
-system/etc/firmware/vidc.b00
-system/etc/firmware/vidc.b01
-system/etc/firmware/vidc.b02
-system/etc/firmware/vidc.b03
-system/etc/firmware/vidc.mdt
-system/etc/firmware/vidc_1080p.fw
-system/etc/firmware/vidcfw.elf
-system/etc/firmware/yamato_pfp.fw
-system/etc/firmware/yamato_pm4.fw
+
+# Audio
 system/lib/libacdbloader.so
 system/lib/libaudcal.so
+system/lib/libcsd-client.so
+
+# Camera
+system/lib/hw/vendor-camera.msm8960.so
 system/lib/libBeautyChat.so
-system/lib/libc2d2_a3xx.so
-system/lib/libc2d2_z180.so
-system/lib/libC2D2.so
 system/lib/libcameraasd.so
 system/lib/libcameraface.so
 system/lib/libcamerapp.so
@@ -102,26 +77,13 @@ system/lib/libchromatix_vd6869_preview.so
 system/lib/libchromatix_vd6869_video_hdr.so
 system/lib/libchromatix_vd6869_zoe.so
 system/lib/libchromatix_vd6869_zsl.so
-system/lib/libcsd-client.so
-system/lib/libdiag.so
-system/lib/libdsi_netctrl.so
-system/lib/libdsutils.so
 system/lib/libgemini.so
-system/lib/libgsl.so
 system/lib/libhtccamera.so
 system/lib/libhtccamera_yushaniiproc.so
 system/lib/libHTC_DIS.so
-system/lib/libhtc_rilhook.so
-system/lib/libidl.so
 system/lib/libimage-jpeg-dec-omx-comp.so
 system/lib/libimage-jpeg-enc-omx-comp.so
 system/lib/libimage-omx-common.so
-system/lib/libimu.so
-system/lib/libllvm-a3xx.so
-system/lib/libllvm-arm.so
-system/lib/libloc_api_v02.so
-system/lib/libmllite.so
-system/lib/libmlplatform.so
 system/lib/libmm-abl.so
 system/lib/libmm-abl-oem.so
 system/lib/libmmcamera_aec.so
@@ -140,16 +102,78 @@ system/lib/libmmjpeg.so
 system/lib/libmmosal.so
 system/lib/libmmparser.so
 system/lib/libmmstillomx.so
-system/lib/libmpl.so
-system/lib/libmpl_jni.so
-system/lib/libnetmgr.so
 system/lib/liboemcamera.so
 system/lib/libOlaEngineNew.so
+system/lib/libposteffect.so
+system/lib/libyuvimage.so
+
+# Camera firmware
+system/etc/firmware/ILP0100_IPM_Code_out.bin
+system/etc/firmware/ILP0100_IPM_Data_out.bin
+
+# GPS
+system/lib/libloc_api_v02.so
+
+# Graphics
+system/lib/egl/eglsubAndroid.so
+system/lib/egl/libEGL_adreno200.so
+system/lib/egl/libGLESv1_CM_adreno200.so
+system/lib/egl/libGLESv2_adreno200.so
+system/lib/egl/libGLESv2S3D_adreno200.so
+system/lib/egl/libplayback_adreno200.so
+system/lib/egl/libq3dtools_adreno200.so
+system/lib/libc2d2_a3xx.so
+system/lib/libc2d2_z180.so
+system/lib/libC2D2.so
+system/lib/libgsl.so
+system/lib/libllvm-a3xx.so
+system/lib/libllvm-arm.so
 system/lib/libOpenCL.so
 system/lib/libOpenVG.so
-system/lib/libposteffect.so
+system/lib/libsc-a2xx.so
+system/lib/libsc-a3xx.so
+
+# Graphics firmware
+system/etc/firmware/a225p5_pm4.fw
+system/etc/firmware/a225_pfp.fw
+system/etc/firmware/a225_pm4.fw
+system/etc/firmware/a300_pfp.fw
+system/etc/firmware/a300_pm4.fw
+system/etc/firmware/leia_pfp_470.fw
+system/etc/firmware/leia_pm4_470.fw
+system/etc/firmware/vidc.b00
+system/etc/firmware/vidc.b01
+system/etc/firmware/vidc.b02
+system/etc/firmware/vidc.b03
+system/etc/firmware/vidc.mdt
+system/etc/firmware/vidc_1080p.fw
+system/etc/firmware/vidcfw.elf
+system/etc/firmware/yamato_pfp.fw
+system/etc/firmware/yamato_pm4.fw
+
+# Modem firmware
+system/etc/firmware/hcheck.b00
+system/etc/firmware/hcheck.b01
+system/etc/firmware/hcheck.b02
+system/etc/firmware/hcheck.b03
+system/etc/firmware/hcheck.mdt
+system/etc/firmware/lscbuffer_rev2.bin
+system/etc/firmware/tzapps.b00
+system/etc/firmware/tzapps.b01
+system/etc/firmware/tzapps.b02
+system/etc/firmware/tzapps.b03
+system/etc/firmware/tzapps.mdt
+
+# NFC
+system/vendor/firmware/libpn544_fw.so
+system/vendor/firmware/mfg.bin
+
+# Qualcomm/HTC common libs
+system/lib/libdiag.so
+system/lib/libdsi_netctrl.so
+system/lib/libdsutils.so
+system/lib/libidl.so
 system/lib/libqcci_legacy.so
-system/lib/libqc-opt.so
 system/lib/libqdi.so
 system/lib/libqdp.so
 system/lib/libqmi.so
@@ -159,16 +183,21 @@ system/lib/libqmi_common_so.so
 system/lib/libqmi_csi.so
 system/lib/libqmi_encdec.so
 system/lib/libqmiservices.so
-system/lib/libsc-a2xx.so
-system/lib/libsc-a3xx.so
-system/lib/libyuvimage.so
-system/lib/egl/eglsubAndroid.so
-system/lib/egl/libEGL_adreno200.so
-system/lib/egl/libGLESv1_CM_adreno200.so
-system/lib/egl/libGLESv2_adreno200.so
-system/lib/egl/libGLESv2S3D_adreno200.so
-system/lib/egl/libplayback_adreno200.so
-system/lib/egl/libq3dtools_adreno200.so
-system/lib/hw/vendor-camera.msm8960.so
-system/vendor/firmware/libpn544_fw.so
-system/vendor/firmware/mfg.bin
+
+# Radio
+system/lib/libhtc_rilhook.so
+system/lib/libnetmgr.so
+system/lib/libqc-opt.so
+
+# Sensors
+system/lib/libimu.so
+system/lib/libmllite.so
+system/lib/libmlplatform.so
+system/lib/libmpl.so
+system/lib/libmpl_jni.so
+
+# WLAN firmware
+system/etc/firmware/BCM4335B0_002.001.006.0042.0044.hcd
+system/etc/firmware/fw_bcm4335_apsta_b0.bin
+system/etc/firmware/fw_bcm4335_b0.bin
+system/etc/firmware/fw_bcm4335_p2p_b0.bin
