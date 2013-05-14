@@ -105,6 +105,7 @@
     <string name="pref_camera_focustime_entry_30">30 s</string>
     <string name="pref_camera_focustime_entry_infinite">Infini</string>
     <string name="pref_camera_nohands_title">Déclenchement différé</string>
+    <string name="pref_camera_nohands_voice_entry">Voix</string>
     <string name="pref_camera_timer_entry_0">Désactivé</string>
     <string name="pref_camera_timer_entry_10">10 s</string>
     <string name="pref_camera_timer_entry_20">20 s</string>
