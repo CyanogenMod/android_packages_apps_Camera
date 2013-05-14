@@ -162,7 +162,6 @@ system/lib/libqmiservices.so
 system/lib/libsc-a2xx.so
 system/lib/libsc-a3xx.so
 system/lib/libyuvimage.so
-system/lib/egl/egl.cfg
 system/lib/egl/eglsubAndroid.so
 system/lib/egl/libEGL_adreno200.so
 system/lib/egl/libGLESv1_CM_adreno200.so
