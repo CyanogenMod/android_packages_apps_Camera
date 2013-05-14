@@ -57,9 +57,6 @@ done
 LOCAL_PATH := vendor/__VENDOR__/__COMMON__
 
 PRODUCT_COPY_FILES += \\
-    \$(LOCAL_PATH)/proprietary/system/lib/libmmjpeg.so:obj/lib/libmmjpeg.so
-
-PRODUCT_COPY_FILES += \\
     \$(LOCAL_PATH)/proprietary/sbin/mfgsrv:root/sbin/mfgsrv \\
     \$(LOCAL_PATH)/proprietary/sbin/sfc:root/sbin/sfc \\
     \$(LOCAL_PATH)/proprietary/sbin/tpd:root/sbin/tpd
