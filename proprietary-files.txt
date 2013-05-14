@@ -134,13 +134,8 @@ system/lib/libsc-a2xx.so
 system/lib/libsc-a3xx.so
 
 # Graphics firmware
-system/etc/firmware/a225p5_pm4.fw
-system/etc/firmware/a225_pfp.fw
-system/etc/firmware/a225_pm4.fw
 system/etc/firmware/a300_pfp.fw
 system/etc/firmware/a300_pm4.fw
-system/etc/firmware/leia_pfp_470.fw
-system/etc/firmware/leia_pm4_470.fw
 system/etc/firmware/vidc.b00
 system/etc/firmware/vidc.b01
 system/etc/firmware/vidc.b02
@@ -148,8 +143,6 @@ system/etc/firmware/vidc.b03
 system/etc/firmware/vidc.mdt
 system/etc/firmware/vidc_1080p.fw
 system/etc/firmware/vidcfw.elf
-system/etc/firmware/yamato_pfp.fw
-system/etc/firmware/yamato_pm4.fw
 
 # Modem firmware
 system/etc/firmware/hcheck.b00
