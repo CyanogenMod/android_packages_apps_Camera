@@ -28,4 +28,6 @@
     <bool name="noFaceDetectOnFrontCamera">true</bool>
     <!-- Force use of profile video size -->
     <bool name="useProfileVideoSize">true</bool>
+    <!-- Disable face detection on the rear camera -->
+    <bool name="noFaceDetectOnBackCamera">true</bool>
 </resources>
