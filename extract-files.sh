@@ -38,4 +38,4 @@ for FILE in `cat $COMMONPROPS | grep -v ^# | grep -v ^$`; do
     adb pull /$FILE $COMMONBASE/$FILE
 done
 
-./../../../device/${VENDOR}/${DEVICE}-common/setup-makefiles.sh
+./../../../device/${VENDOR}/${COMMON}/setup-makefiles.sh
