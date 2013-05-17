@@ -86,8 +86,8 @@
     <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
     <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"ठीक"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"आपके USB संग्रहण में स्थान कम है. गुणवत्ता सेटिंग बदलें या कुछ छवियां या अन्य फ़ाइलें हटाएं."</string>
-    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"आपके SD कार्ड में स्थान कम है. गुणवत्ता सेटिंग बदलें या कुछ छवियां या अन्य फ़ाइलें हटाएं."</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"आपके USB संग्रहण में स्थान कम है. गुणवत्ता सेटिंग बदलें या कुछ चित्र या अन्य फ़ाइलें हटाएं."</string>
+    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"आपके SD कार्ड में स्थान कम है. गुणवत्ता सेटिंग बदलें या कुछ चित्र या अन्य फ़ाइलें हटाएं."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"आकार सीमा पहुंची."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"बहुत तेज़"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"पैनोरामा तैयार हो रहा है"</string>
