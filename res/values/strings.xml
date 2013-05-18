@@ -85,8 +85,8 @@
 
     <!-- The Video quality settings in preference [CHAR LIMIT=21] -->
     <string name="pref_video_quality_title">Video quality</string>
-    <!-- The default quality value is 5 (720p) -->
-    <string name="pref_video_quality_default" translatable="false">5</string>
+    <!-- The default quality value is 6 (1080p) -->
+    <string name="pref_video_quality_default" translatable="false">6</string>
     <!-- Video quality setting entry. Videos will be recorded in 1080p quality. [CHAR LIMIT=24] -->
     <string name="pref_video_quality_entry_1080p" translatable="false">HD 1080p</string>
     <!-- Video quality setting entry. Videos will be recorded in 720p quality. [CHAR LIMIT=24] -->
