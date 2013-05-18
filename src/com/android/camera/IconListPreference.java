@@ -45,6 +45,7 @@ public class IconListPreference extends ListPreference {
         mImageIds = getIds(res, a.getResourceId(
                 R.styleable.IconListPreference_images, 0));
         a.recycle();
+        setUseSingleIcon(mSingleIconId != 0);
     }
 
     public int getSingleIcon() {
