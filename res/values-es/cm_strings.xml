@@ -105,6 +105,7 @@
     <string name="pref_camera_focustime_entry_30">30 segundos</string>
     <string name="pref_camera_focustime_entry_infinite">Infinita</string>
     <string name="pref_camera_nohands_title">Disparador manos libres</string>
+    <string name="pref_camera_nohands_voice_entry">Voz</string>
     <string name="pref_camera_timer_entry_0">Apagado</string>
     <string name="pref_camera_timer_entry_10">10 segundos</string>
     <string name="pref_camera_timer_entry_20">20 segundos</string>
