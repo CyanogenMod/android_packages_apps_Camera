@@ -53,7 +53,7 @@
             camera:largeIcons="@array/camera_recordlocation_largeicons"
             camera:entries="@array/pref_switch_entries"
             camera:entryValues="@array/pref_switch_entryvalues" />
-    <ListPreference
+   <ListPreference
             camera:key="pref_power_shutter"
             camera:defaultValue="@string/pref_camera_power_shutter_default"
             camera:title="@string/pref_camera_power_shutter_title"

@@ -472,7 +472,6 @@ public class CameraSettings {
             editor.remove("pref_camera_videoquality_key");
             editor.remove("pref_camera_video_duration_key");
         }
-
         editor.putInt(KEY_VERSION, CURRENT_VERSION);
         editor.apply();
     }

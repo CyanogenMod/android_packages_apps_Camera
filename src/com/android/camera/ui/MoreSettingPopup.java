@@ -144,6 +144,9 @@ public class MoreSettingPopup extends AbstractSettingPopup
             ListPreference pref = mListItem.get(j);
             if (pref != null && key.equals(pref.getKey())) {
                 mEnabled[j] = enable;
+                if (mSettingList.getChildCount() > j) {
+                    mSettingList.getChildAt(j).setEnabled(enable);
+                }
                 break;
             }
         }
@@ -156,7 +159,7 @@ public class MoreSettingPopup extends AbstractSettingPopup
     }
 
     // Scene mode can override other camera settings (ex: flash mode).
-    public void overrideSettings(final String ... keyvalues) {
+    public void overrideSettings(final String... keyvalues) {
         int count = mEnabled == null ? 0 : mEnabled.length;
         for (int i = 0; i < keyvalues.length; i += 2) {
             String key = keyvalues[i];

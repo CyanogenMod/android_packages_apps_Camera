@@ -22,7 +22,7 @@ import android.content.SharedPreferences;
 import android.util.AttributeSet;
 
 /**
- * {@code RecordLocationPreference} is used to keep the "store locaiton"
+ * {@code RecordLocationPreference} is used to keep the "store location"
  * option in {@code SharedPreference}.
  */
 public class RecordLocationPreference extends IconListPreference {
