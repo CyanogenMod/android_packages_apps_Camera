@@ -122,6 +122,7 @@
             camera:entries="@array/pref_camera_nohands_entries"
             camera:defaultValue="@string/pref_camera_nohands_default"
             camera:entryValues="@array/pref_camera_nohands_entryvalues"
+            camera:singleIcon="@drawable/ic_timer"
             camera:largeIcons="@array/camera_nohands_icons" />
     <ListPreference
             camera:key="pref_nohands_persistent_key"
