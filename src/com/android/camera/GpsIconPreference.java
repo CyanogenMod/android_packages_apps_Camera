@@ -22,25 +22,26 @@ import android.content.SharedPreferences;
 import android.util.AttributeSet;
 
 /**
- * {@code RecordLocationPreference} is used to keep the "store location"
- * option in {@code SharedPreference}.
+ * {@code RecordLocationPreference} is used to keep the "show GPS icon" option
+ * in {@code SharedPreference}.
  */
-public class RecordLocationPreference extends IconListPreference {
+public class GpsIconPreference extends IconListPreference {
 
-    public static final String KEY = "pref_camera_recordlocation_key";
+    public static final String KEY = "pref_camera_gpsicon_key";
 
     public static final String VALUE_NONE = "none";
 
     private final ContentResolver mResolver;
 
-    public RecordLocationPreference(Context context, AttributeSet attrs) {
+    public GpsIconPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         mResolver = context.getContentResolver();
     }
 
     @Override
     public String getValue() {
-        return get(getSharedPreferences(), mResolver) ? CameraSettings.VALUE_ON : CameraSettings.VALUE_OFF;
+        return get(getSharedPreferences(), mResolver) ? CameraSettings.VALUE_ON
+                : CameraSettings.VALUE_OFF;
     }
 
     public static boolean get(

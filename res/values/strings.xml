@@ -73,6 +73,11 @@
 
     <string name="pref_camera_recordlocation_default" translatable="false">none</string>
 
+    <!-- Settings screen, setting GPS icon visibility on/off -->
+    <string name="pref_camera_gpsicon_title">Show GPS icon</string>
+
+    <string name="pref_camera_gpsicon_default" translatable="false">none</string>
+
     <!-- Entry of a on/off setting. The setting is turned off. [CHAR LIMIT=15] -->
     <string name="setting_off">Off</string>
     <!-- Entry of a on/off setting. The setting is turned on. [CHAR LIMIT=15] -->

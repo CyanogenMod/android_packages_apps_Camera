@@ -100,6 +100,7 @@ public class PhotoController extends PieController
                 CameraSettings.KEY_STORAGE,
                 CameraSettings.KEY_SCENE_MODE,
                 CameraSettings.KEY_RECORD_LOCATION,
+                CameraSettings.KEY_GPS_ICON,
                 CameraSettings.KEY_POWER_SHUTTER,
                 CameraSettings.KEY_PICTURE_SIZE,
                 CameraSettings.KEY_FOCUS_MODE,
@@ -165,6 +166,18 @@ public class PhotoController extends PieController
             // Prevent location preference from getting changed in secure camera mode
             popup.setPreferenceEnabled(CameraSettings.KEY_RECORD_LOCATION, false);
         }
+        ListPreference prefRecordLocation = mPreferenceGroup
+                .findPreference(CameraSettings.KEY_RECORD_LOCATION);
+        if (prefRecordLocation != null) {
+            popup.setPreferenceEnabled(CameraSettings.KEY_GPS_ICON,
+                    prefRecordLocation.getValue().equals(CameraSettings.VALUE_ON));
+            if (prefRecordLocation.getValue().equals(CameraSettings.VALUE_OFF)) {
+                ListPreference prefGpsIcon = popup.getPreference(CameraSettings.KEY_GPS_ICON);
+                if (prefGpsIcon != null) {
+                    prefGpsIcon.setValue(CameraSettings.VALUE_OFF);
+                }
+            }
+        }
         mPopup = popup;
     }
 
@@ -194,6 +207,16 @@ public class PhotoController extends PieController
     public void onSettingChanged(ListPreference pref) {
         // Reset the scene mode if HDR is set to on. Reset HDR if scene mode is
         // set to non-auto.
+        if (pref.getKey().equals(CameraSettings.KEY_RECORD_LOCATION)) {
+            mPopup.setPreferenceEnabled(CameraSettings.KEY_GPS_ICON,
+                    pref.getValue().equals(CameraSettings.VALUE_ON));
+            if (pref.getValue().equals(CameraSettings.VALUE_OFF)) {
+                ListPreference prefGpsIcon = mPopup.getPreference(CameraSettings.KEY_GPS_ICON);
+                if (prefGpsIcon != null) {
+                    prefGpsIcon.setValue(CameraSettings.VALUE_OFF);
+                }
+            }
+        }
         if (notSame(pref, CameraSettings.KEY_CAMERA_HDR, mSettingOff)) {
             setPreference(CameraSettings.KEY_SCENE_MODE, Parameters.SCENE_MODE_AUTO);
         } else if (notSame(pref, CameraSettings.KEY_SCENE_MODE, Parameters.SCENE_MODE_AUTO)) {
