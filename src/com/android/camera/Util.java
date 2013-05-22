@@ -160,6 +160,9 @@ public class Util {
     // Workaround for QC cameras with broken face detection on front camera
     private static boolean sNoFaceDetectOnFrontCamera;
 
+    // Workaround for cameras with broken face detection on back camera
+    private static boolean sNoFaceDetectOnBackCamera;
+
     // Software HDR based on manual shots with multiple exposure
     private static boolean sEnableSoftwareHDR;
     private static boolean sDoSoftwareHDRShot;
@@ -200,6 +203,8 @@ public class Util {
         sEnableZSL = context.getResources().getBoolean(R.bool.enableZSL);
         sNoFaceDetectOnFrontCamera = context.getResources().getBoolean(
                 R.bool.noFaceDetectOnFrontCamera);
+        sNoFaceDetectOnBackCamera = context.getResources().getBoolean(
+                R.bool.noFaceDetectOnBackCamera);
 
         sEnableSoftwareHDR = !context.getResources().getBoolean(R.bool.disableSoftwareHDR);
         sSoftwareHDRExposureSettleTime = context.getResources().getInteger(
@@ -273,6 +278,10 @@ public class Util {
 
     public static boolean noFaceDetectOnFrontCamera() {
         return sNoFaceDetectOnFrontCamera;
+    }
+
+    public static boolean noFaceDetectOnBackCamera() {
+        return sNoFaceDetectOnBackCamera;
     }
 
     public static boolean noFocusModeChangeForTouch() {

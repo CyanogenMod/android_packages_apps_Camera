@@ -776,8 +776,10 @@ public class PhotoModule
         if (!ApiHelper.HAS_FACE_DETECTION) return;
 
         // Workaround for a buggy camera library
-        if (Util.noFaceDetectOnFrontCamera()
-                && (CameraHolder.instance().getCameraInfo()[mCameraId].facing == CameraInfo.CAMERA_FACING_FRONT)) {
+        if ((Util.noFaceDetectOnFrontCamera()
+                && (CameraHolder.instance().getCameraInfo()[mCameraId].facing == CameraInfo.CAMERA_FACING_FRONT))
+            || (Util.noFaceDetectOnBackCamera()
+                && (CameraHolder.instance().getCameraInfo()[mCameraId].facing == CameraInfo.CAMERA_FACING_BACK))) {
             return;
         }
 
