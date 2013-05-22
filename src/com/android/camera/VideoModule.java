@@ -881,7 +881,10 @@ public class VideoModule implements CameraModule,
         // Initialize location service.
         boolean recordLocation = RecordLocationPreference.get(mPreferences,
                 mContentResolver);
-        mLocationManager.recordLocation(recordLocation);
+        boolean showGpsIcon = GpsIconPreference.get(
+                mPreferences, mContentResolver);
+
+        mLocationManager.recordLocation(recordLocation, showGpsIcon);
 
         if (mPreviewing) {
             mOnResumeTime = SystemClock.uptimeMillis();
@@ -1049,7 +1052,7 @@ public class VideoModule implements CameraModule,
         }
         resetScreenOn();
 
-        if (mLocationManager != null) mLocationManager.recordLocation(false);
+        if (mLocationManager != null) mLocationManager.recordLocation(false, mLocationManager.isShowGpsIcon());
 
         mHandler.removeMessages(CHECK_DISPLAY_ROTATION);
         mHandler.removeMessages(SWITCH_CAMERA);
@@ -2339,7 +2342,9 @@ public class VideoModule implements CameraModule,
 
             boolean recordLocation = RecordLocationPreference.get(
                     mPreferences, mContentResolver);
-            mLocationManager.recordLocation(recordLocation);
+            boolean showGpsIcon = GpsIconPreference.get(
+                    mPreferences, mContentResolver);
+            mLocationManager.recordLocation(recordLocation, showGpsIcon);
 
             // Check if the current effects selection has changed
             if (updateEffectSelection()) return;
