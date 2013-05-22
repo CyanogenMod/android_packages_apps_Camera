@@ -73,11 +73,12 @@ public class MoreSettingPopup extends AbstractSettingPopup
 
         private boolean isOnOffPreference(ListPreference pref) {
             CharSequence[] entries = pref.getEntries();
-            if (entries.length != 2) return false;
+            if (entries.length != 2)
+                return false;
             String str1 = entries[0].toString();
             String str2 = entries[1].toString();
-            return ((str1.equals(mOnString) && str2.equals(mOffString)) ||
-                    (str1.equals(mOffString) && str2.equals(mOnString)));
+            return ((str1.equals(mOnString) && str2.equals(mOffString)) || (str1.equals(mOffString) && str2
+                    .equals(mOnString)));
         }
 
         @Override
@@ -121,7 +122,8 @@ public class MoreSettingPopup extends AbstractSettingPopup
         // Prepare the setting items.
         for (int i = 0; i < keys.length; ++i) {
             ListPreference pref = group.findPreference(keys[i]);
-            if (pref != null) mListItem.add(pref);
+            if (pref != null)
+                mListItem.add(pref);
         }
 
         ArrayAdapter<ListPreference> mListItemAdapter = new MoreSettingAdapter();
@@ -136,7 +138,8 @@ public class MoreSettingPopup extends AbstractSettingPopup
     }
 
     // When preferences are disabled, we will display them grayed out. Users
-    // will not be able to change the disabled preferences, but they can still see
+    // will not be able to change the disabled preferences, but they can still
+    // see
     // the current value of the preferences
     public void setPreferenceEnabled(String key, boolean enable) {
         int count = mEnabled == null ? 0 : mEnabled.length;
@@ -144,6 +147,9 @@ public class MoreSettingPopup extends AbstractSettingPopup
             ListPreference pref = mListItem.get(j);
             if (pref != null && key.equals(pref.getKey())) {
                 mEnabled[j] = enable;
+                if (mSettingList.getChildCount() > j) {
+                    mSettingList.getChildAt(j).setEnabled(enable);
+                }
                 break;
             }
         }
@@ -156,7 +162,7 @@ public class MoreSettingPopup extends AbstractSettingPopup
     }
 
     // Scene mode can override other camera settings (ex: flash mode).
-    public void overrideSettings(final String ... keyvalues) {
+    public void overrideSettings(final String... keyvalues) {
         int count = mEnabled == null ? 0 : mEnabled.length;
         for (int i = 0; i < keyvalues.length; i += 2) {
             String key = keyvalues[i];
@@ -165,7 +171,8 @@ public class MoreSettingPopup extends AbstractSettingPopup
                 ListPreference pref = mListItem.get(j);
                 if (pref != null && key.equals(pref.getKey())) {
                     // Change preference
-                    if (value != null) pref.setValue(value);
+                    if (value != null)
+                        pref.setValue(value);
                     // If the preference is overridden, disable the preference
                     boolean enable = value == null;
                     mEnabled[j] = enable;
@@ -198,5 +205,14 @@ public class MoreSettingPopup extends AbstractSettingPopup
                 settingItem.reloadPreference();
             }
         }
+    }
+
+    public ListPreference getPreference(String key)
+    {
+        for (ListPreference pref : mListItem) {
+            if (pref.getKey().equals(key))
+                return pref;
+        }
+        return null;
     }
 }
