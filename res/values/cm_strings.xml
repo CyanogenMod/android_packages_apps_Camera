@@ -183,4 +183,9 @@
     <!-- Persistent remote shutter -->
     <string name="pref_nohands_persistent_title">Persistent handsfree</string>
     <string name="pref_nohands_persistent_default" translatable="false">@string/setting_off_value</string>
+
+    <!-- Settings screen, setting GPS icon visibility on/off -->
+    <string name="pref_camera_gpsicon_title">Show GPS icon</string>
+    <string name="pref_camera_gpsicon_default" translatable="false">none</string>
+
 </resources>

@@ -51,6 +51,7 @@ public class CameraSettings {
     public static final String KEY_VERSION = "pref_version_key";
     public static final String KEY_LOCAL_VERSION = "pref_local_version_key";
     public static final String KEY_RECORD_LOCATION = RecordLocationPreference.KEY;
+    public static final String KEY_GPS_ICON = GpsIconPreference.KEY;
     public static final String KEY_VIDEO_QUALITY = "pref_video_quality_key";
     public static final String KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL = "pref_video_time_lapse_frame_interval_key";
     public static final String KEY_PICTURE_SIZE = "pref_camera_picturesize_key";
@@ -83,7 +84,7 @@ public class CameraSettings {
     public static final String VALUE_ON = "on";
     public static final String VALUE_OFF = "off";
 
-    public static final int CURRENT_VERSION = 5;
+    public static final int CURRENT_VERSION = 6;
     public static final int CURRENT_LOCAL_VERSION = 2;
 
     private static final String TAG = "CameraSettings";
@@ -472,7 +473,13 @@ public class CameraSettings {
             editor.remove("pref_camera_videoquality_key");
             editor.remove("pref_camera_video_duration_key");
         }
-
+        if (version == 5)
+        {
+            editor.putString(KEY_GPS_ICON,
+                    pref.getBoolean(KEY_GPS_ICON, false)
+                            ? CameraSettings.VALUE_ON
+                            : GpsIconPreference.VALUE_NONE);
+        }
         editor.putInt(KEY_VERSION, CURRENT_VERSION);
         editor.apply();
     }
