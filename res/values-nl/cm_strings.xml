@@ -105,6 +105,7 @@
     <string name="pref_camera_focustime_entry_30">30 sec.</string>
     <string name="pref_camera_focustime_entry_infinite">Oneindig</string>
     <string name="pref_camera_nohands_title">Handsfree-foto</string>
+    <string name="pref_camera_nohands_voice_entry">Stem</string>
     <string name="pref_camera_timer_entry_0">Uit</string>
     <string name="pref_camera_timer_entry_10">10 sec.</string>
     <string name="pref_camera_timer_entry_20">20 sec.</string>
