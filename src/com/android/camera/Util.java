@@ -114,6 +114,7 @@ public class Util {
         List<String> supported = params.getSupportedSceneModes();
         boolean ret = (supported != null) && supported.contains(SCENE_MODE_HDR);
         if (ret && sEnableSoftwareHDR) { sEnableSoftwareHDR = false; }
+        if (ret && sSendMagicSamsungHDRCommand) { sSendMagicSamsungHDRCommand = false; }
         return ret;
     }
 
@@ -171,6 +172,10 @@ public class Util {
     // Send magic command to hardware for Samsung ZSL
     private static boolean sSendMagicSamsungZSLCommand;
 
+    // Send magic command to hardware for Samsung HDR
+    private static boolean sSendMagicSamsungHDRCommand;
+    private static boolean sDoSamsungHDRShot;
+
     private static SpeechRecognizer mSpeechRecognizer;
     private static Intent mSpeechRecognizerIntent;
     private static String[] mShutterWords;
@@ -205,12 +210,16 @@ public class Util {
         sSoftwareHDRExposureSettleTime = context.getResources().getInteger(
                 R.integer.softwareHDRExposureSettleTime);
         sDoSoftwareHDRShot = false;
+        sDoSamsungHDRShot = false;
 
         sNoFocusModeChangeForTouch = context.getResources().getBoolean(
                 R.bool.useContinuosFocusForTouch);
 
         sSendMagicSamsungZSLCommand = context.getResources().getBoolean(
                 R.bool.sendMagicSamsungZSLCommand);
+
+        sSendMagicSamsungHDRCommand = context.getResources().getBoolean(
+                R.bool.sendMagicSamsungHDRCommand);
 
         /* Voice Shutter */
         mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
@@ -256,7 +265,10 @@ public class Util {
     }
 
     public static boolean useSoftwareHDR() {
-        return sEnableSoftwareHDR;
+        if (!sendMagicSamsungHDRCommand())
+            return sEnableSoftwareHDR;
+        else
+            return false;
     }
 
     public static void setDoSoftwareHDRShot(boolean enable) {
@@ -271,6 +283,14 @@ public class Util {
         return sSoftwareHDRExposureSettleTime;
     }
 
+    public static void setDoSamsungHDRShot(boolean enable) {
+        sDoSamsungHDRShot = enable;
+    }
+
+    public static boolean getDoSamsungHDRShot() {
+        return sDoSamsungHDRShot;
+    }
+
     public static boolean noFaceDetectOnFrontCamera() {
         return sNoFaceDetectOnFrontCamera;
     }
@@ -281,6 +301,10 @@ public class Util {
 
     public static boolean sendMagicSamsungZSLCommand() {
         return sSendMagicSamsungZSLCommand;
+    }
+
+    public static boolean sendMagicSamsungHDRCommand() {
+        return sSendMagicSamsungHDRCommand;
     }
 
     public static void enableSpeechRecognition(boolean enable, PhotoModule module) {

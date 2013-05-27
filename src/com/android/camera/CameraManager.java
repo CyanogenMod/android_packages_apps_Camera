@@ -78,6 +78,8 @@ public class CameraManager {
     private static final int ENABLE_SHUTTER_SOUND = 25;
 
     private static final int ENABLE_SAMSUNG_ZSL_MODE = 30;
+    private static final int ENABLE_SAMSUNG_HDR_MODE = 31;
+    private static final int DISABLE_SAMSUNG_HDR_MODE = 32;
 
     private Handler mCameraHandler;
     private CameraProxy mCameraProxy;
@@ -252,6 +254,18 @@ public class CameraManager {
                         // I don't know the significance of 1508, it was discovered
                         // by reading logs and reverse engineering.
                         mCamera.sendRawCommand(1508, 0, 0);
+                        break;
+
+                    case ENABLE_SAMSUNG_HDR_MODE:
+                        mCamera.sendRawCommand(1271, 0x1, 0x0); // HDR Mode Level
+                        mCamera.sendRawCommand(1272, 0x1, 0x0); // HDR YUV Mode
+                        mCamera.sendRawCommand(1273, 0x1, 0x0); // HDR Picture Mode
+                        break;
+
+                    case DISABLE_SAMSUNG_HDR_MODE:
+                        mCamera.sendRawCommand(1271, 0x0, 0x0); // HDR Mode Level
+                        mCamera.sendRawCommand(1272, 0x0, 0x0); // HDR YUV Mode
+                        mCamera.sendRawCommand(1273, 0x0, 0x0); // HDR Picture Mode
                         break;
 
                     default:
@@ -498,6 +512,15 @@ public class CameraManager {
         public void sendMagicSamsungZSLCommand() {
             mSig.close();
             mCameraHandler.sendEmptyMessage(ENABLE_SAMSUNG_ZSL_MODE);
+            mSig.block();
+        }
+
+        public void sendMagicSamsungHDRCommand(boolean enable) {
+            mSig.close();
+            if (enable)
+                mCameraHandler.sendEmptyMessage(ENABLE_SAMSUNG_HDR_MODE);
+            else
+                mCameraHandler.sendEmptyMessage(DISABLE_SAMSUNG_HDR_MODE);
             mSig.block();
         }
     }

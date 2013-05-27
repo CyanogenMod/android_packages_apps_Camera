@@ -246,7 +246,8 @@ public class CameraSettings {
         }
         if (cameraHdr != null && (!ApiHelper.HAS_CAMERA_HDR
                     || !Util.isCameraHdrSupported(mParameters))
-                    && !Util.useSoftwareHDR()) {
+                    && !Util.useSoftwareHDR()
+                    && !Util.sendMagicSamsungHDRCommand()) {
             removePreference(group, cameraHdr.getKey());
         }
         if (isoMode != null) {

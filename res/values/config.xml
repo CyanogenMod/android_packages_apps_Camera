@@ -50,4 +50,6 @@
     <bool name="useContinuosFocusForTouch">false</bool>
     <!-- Magic for enabling ZSL on Samsung cameras -->
     <bool name="sendMagicSamsungZSLCommand">false</bool>
+    <!-- Magic for enabling HDR on Samsung cameras -->
+    <bool name="sendMagicSamsungHDRCommand">true</bool>
 </resources>

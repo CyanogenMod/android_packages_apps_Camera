@@ -908,7 +908,7 @@ public class PhotoModule
         if (mHdrIndicator == null) {
             return;
         }
-        if ((value != null) && (Parameters.SCENE_MODE_HDR.equals(value) || Util.getDoSoftwareHDRShot())) {
+        if ((value != null) && (Parameters.SCENE_MODE_HDR.equals(value) || Util.getDoSoftwareHDRShot() || Util.getDoSamsungHDRShot())) {
             mHdrIndicator.setImageResource(R.drawable.ic_indicator_hdr_on);
         } else {
             mHdrIndicator.setImageResource(R.drawable.ic_indicator_hdr_off);
@@ -2535,15 +2535,26 @@ public class PhotoModule
         String hdr = mPreferences.getString(CameraSettings.KEY_CAMERA_HDR,
                 mActivity.getString(R.string.pref_camera_hdr_default));
         if (mActivity.getString(R.string.setting_on_value).equals(hdr)) {
-            if (Util.isCameraHdrSupported(mParameters) && !Util.useSoftwareHDR())
+            if (Util.isCameraHdrSupported(mParameters) && !Util.useSoftwareHDR() && !Util.sendMagicSamsungHDRCommand())
                 mSceneMode = Util.SCENE_MODE_HDR;
             else {
                 mSceneMode = Parameters.SCENE_MODE_AUTO;
-                Util.setDoSoftwareHDRShot(true);
+                if (Util.sendMagicSamsungHDRCommand()) {
+                    Log.i(TAG, "Samsung HDR");
+                    Util.setDoSamsungHDRShot(true);
+                    mCameraDevice.sendMagicSamsungHDRCommand(true); 
+                } else {
+                    Log.i(TAG, "Software HDR");
+                    Util.setDoSoftwareHDRShot(true);
+                }
             }
         } else {
             if (Util.useSoftwareHDR()) {
                 Util.setDoSoftwareHDRShot(false);
+            }
+            if (Util.sendMagicSamsungHDRCommand()) {
+                Util.setDoSamsungHDRShot(false);
+                mCameraDevice.sendMagicSamsungHDRCommand(false); 
             }
             mSceneMode = mPreferences.getString(
                 CameraSettings.KEY_SCENE_MODE,
