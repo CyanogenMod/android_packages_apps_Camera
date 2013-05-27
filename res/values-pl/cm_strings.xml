@@ -114,5 +114,4 @@
     <string name="pref_camera_timer_entry_60">60 s</string>
     <string name="voice_hint">Wykonaj zdjęcie na odległość za pomocą komendy głosowej w języku angielskim: Możesz użyć \'Cid\', \'Whisky\' lub \'Cheese!\'</string>
     <string name="pref_nohands_persistent_title">Trwały tryb bezdotykowy</string>
-    <string name="pref_camera_timer_title">Opóźniony spust migawki</string>
 </resources>
