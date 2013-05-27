@@ -15,10 +15,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string-array name="pref_camera_voiceshutter_triggerwords">
-        <item>cid</item>
-        <item>civ</item>
-        <item>whisky</item>
-        <item>whiskey</item>
-        <item>cheese</item>
+        <item>smil</item>
+        <item>appelsin</item>
     </string-array>
 </resources>

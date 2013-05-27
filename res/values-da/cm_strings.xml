@@ -118,6 +118,7 @@
     <string name="pref_camera_focustime_entry_infinite">Uendelig</string>
 
     <string name="pref_camera_nohands_title">Håndfri udløser</string>
+    <string name="pref_camera_nohands_voice_entry">Stemme</string>
 
     <string name="pref_camera_timer_entry_0">Fra</string>
     <string name="pref_camera_timer_entry_10">10s</string>
@@ -127,7 +128,7 @@
     <string name="pref_camera_timer_entry_50">50s</string>
     <string name="pref_camera_timer_entry_60">60s</string>
 
-    <string name="voice_hint">Tag et foto fra afstand ved sige et udløser-ord. Du kan bruge \'Cid\', \'Whisky\', og selvfølgelig \'Cheese!\'</string>
+    <string name="voice_hint">Tag et foto fra afstand ved sige et udløser-ord. Du kan bruge \'smil\' og \'Appelsin\'</string>
 
     <string name="pref_nohands_persistent_title">Vedvarende håndfri</string>
 </resources>
