@@ -34,7 +34,7 @@
     <string name="pref_camera_id_title" msgid="4040791582294635851">"Zvolit fotoaparát"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Zadní"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Přední"</string>
-    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Úložiště"</string>
+    <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Ukládat polohu"</string>
     <string name="setting_off" msgid="4480039384202951946">"Vypnuto"</string>
     <string name="setting_on" msgid="8602246224465348901">"Zapnuto"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Kvalita videa"</string>
@@ -125,8 +125,8 @@
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Zrušit"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"Hotovo"</string>
     <string name="accessibility_review_retake" msgid="659300290054705484">"Pořídit další"</string>
-    <string name="capital_on" msgid="5491353494964003567">"ZAPNUTO"</string>
-    <string name="capital_off" msgid="7231052688467970897">"VYPNUTO"</string>
+    <string name="capital_on" msgid="5491353494964003567">"ZAP"</string>
+    <string name="capital_off" msgid="7231052688467970897">"VYP"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Vypnuto"</string>
     <string name="pref_video_time_lapse_frame_interval_500" msgid="2949719376111679816">"0,5 sekundy"</string>
     <string name="pref_video_time_lapse_frame_interval_1000" msgid="1672458758823855874">"1 sekunda"</string>
