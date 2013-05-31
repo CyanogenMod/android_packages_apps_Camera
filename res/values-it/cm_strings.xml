@@ -102,6 +102,7 @@
     <string name="pref_camera_focustime_entry_30">30s</string>
     <string name="pref_camera_focustime_entry_infinite">Infinito</string>
     <string name="pref_camera_nohands_title">Scatto senza mani</string>
+    <string name="pref_camera_nohands_voice_entry">Voce</string>
     <string name="pref_camera_timer_entry_0">Off</string>
     <string name="pref_camera_timer_entry_10">10s</string>
     <string name="pref_camera_timer_entry_20">20s</string>
