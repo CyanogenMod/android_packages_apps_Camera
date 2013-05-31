@@ -18,11 +18,17 @@
     <string name="pref_camera_picturesize_entry_13mp">1300 万像素</string>
     <string name="pref_camera_picturesize_entry_12_8mp">1280 万像素</string>
     <string name="pref_camera_picturesize_entry_11_5mp">1150 万像素</string>
-    <string name="pref_camera_picturesize_entry_9mp">900 像素</string>
+    <string name="pref_camera_picturesize_entry_9mp">900 万像素</string>
+    <string name="pref_camera_picturesize_entry_7mp">700 万像素</string>
     <string name="pref_camera_picturesize_entry_6_4mp">640 万像素</string>
+    <string name="pref_camera_picturesize_entry_6mp">600 万像素</string>
+    <string name="pref_camera_picturesize_entry_4_5mp">450 万像素</string>
     <string name="pref_camera_picturesize_entry_4mp">400 万像素</string>
+    <string name="pref_camera_picturesize_entry_3_7mp">370 万像素</string>
     <string name="pref_camera_picturesize_entry_2_5mp">250 万像素</string>
+    <string name="pref_camera_picturesize_entry_2_4mp">240 万像素</string>
     <string name="pref_camera_picturesize_entry_2_1mp">210 万像素</string>
+    <string name="pref_camera_picturesize_entry_1_9mp">190 万像素</string>
     <string name="pref_camera_picturesize_entry_1_5mp">150 万像素</string>
     <string name="pref_camera_focusmode_entry_continuouspicture">持续性 (图像)</string>
     <string name="pref_camera_focusmode_entry_continuousvideo">持续性 (影像)</string>
@@ -102,6 +108,7 @@
     <string name="pref_camera_focustime_entry_30">30 秒</string>
     <string name="pref_camera_focustime_entry_infinite">永久</string>
     <string name="pref_camera_nohands_title">语音快门</string>
+    <string name="pref_camera_nohands_voice_entry">语音</string>
     <string name="pref_camera_timer_entry_0">关闭</string>
     <string name="pref_camera_timer_entry_10">10 秒</string>
     <string name="pref_camera_timer_entry_20">20 秒</string>
