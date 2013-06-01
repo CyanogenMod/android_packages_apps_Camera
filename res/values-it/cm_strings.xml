@@ -19,10 +19,14 @@
     <string name="pref_camera_picturesize_entry_12_8mp">12,8 MP</string>
     <string name="pref_camera_picturesize_entry_11_5mp">11,5 MP</string>
     <string name="pref_camera_picturesize_entry_9mp">9 MP</string>
+    <string name="pref_camera_picturesize_entry_7mp">7 MP</string>
     <string name="pref_camera_picturesize_entry_6_4mp">6,4 MP</string>
+    <string name="pref_camera_picturesize_entry_6mp">6 MP</string>
     <string name="pref_camera_picturesize_entry_4mp">4 MP</string>
     <string name="pref_camera_picturesize_entry_2_5mp">2,5 MP</string>
+    <string name="pref_camera_picturesize_entry_2_4mp">2,4 MP</string>
     <string name="pref_camera_picturesize_entry_2_1mp">2,1 MP</string>
+    <string name="pref_camera_picturesize_entry_1_9mp">1,9 MP</string>
     <string name="pref_camera_picturesize_entry_1_5mp">1,5 MP</string>
     <string name="pref_camera_focusmode_entry_continuouspicture">Scatti continui</string>
     <string name="pref_camera_focusmode_entry_continuousvideo">Video continuo</string>
@@ -102,6 +106,7 @@
     <string name="pref_camera_focustime_entry_30">30s</string>
     <string name="pref_camera_focustime_entry_infinite">Infinito</string>
     <string name="pref_camera_nohands_title">Scatto senza mani</string>
+    <string name="pref_camera_nohands_voice_entry">Voce</string>
     <string name="pref_camera_timer_entry_0">Off</string>
     <string name="pref_camera_timer_entry_10">10s</string>
     <string name="pref_camera_timer_entry_20">20s</string>
