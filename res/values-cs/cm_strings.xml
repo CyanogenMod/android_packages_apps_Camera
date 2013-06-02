@@ -20,10 +20,14 @@
     <string name="pref_camera_picturesize_entry_12_8mp">12.8Mpx</string>
     <string name="pref_camera_picturesize_entry_11_5mp">11.5Mpx</string>
     <string name="pref_camera_picturesize_entry_9mp">9Mpx</string>
+    <string name="pref_camera_picturesize_entry_7mp">7Mpx</string>
     <string name="pref_camera_picturesize_entry_6_4mp">6.4Mpx</string>
+    <string name="pref_camera_picturesize_entry_6mp">6Mpx</string>
     <string name="pref_camera_picturesize_entry_4mp">4Mpx</string>
     <string name="pref_camera_picturesize_entry_2_5mp">2.5Mpx</string>
+    <string name="pref_camera_picturesize_entry_2_4mp">2.4Mpx</string>
     <string name="pref_camera_picturesize_entry_2_1mp">2.1Mpx</string>
+    <string name="pref_camera_picturesize_entry_1_9mp">1.9Mpx</string>
     <string name="pref_camera_picturesize_entry_1_5mp">1.5Mpx</string>
 
     <string name="pref_camera_focusmode_entry_continuouspicture">Průběžné foto</string>
