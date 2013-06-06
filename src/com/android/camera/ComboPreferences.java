@@ -80,6 +80,7 @@ public class ComboPreferences implements SharedPreferences, OnSharedPreferenceCh
                 || key.equals(CameraSettings.KEY_CAMERA_FIRST_USE_HINT_SHOWN)
                 || key.equals(CameraSettings.KEY_VIDEO_FIRST_USE_HINT_SHOWN)
                 || key.equals(CameraSettings.KEY_VIDEO_EFFECT)
+                || key.equals(CameraSettings.KEY_POWER_SHUTTER)
                 || key.equals(CameraSettings.KEY_STORAGE);
     }
 
