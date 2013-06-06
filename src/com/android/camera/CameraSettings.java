@@ -190,6 +190,7 @@ public class CameraSettings {
         ListPreference colorEffect = group.findPreference(KEY_COLOR_EFFECT);
         ListPreference videoColorEffect = group.findPreference(KEY_VIDEOCAMERA_COLOR_EFFECT);
         ListPreference storage = group.findPreference(KEY_STORAGE);
+        ListPreference powerShutter = group.findPreference(KEY_POWER_SHUTTER);
 
         // Since the screen could be loaded from different resources, we need
         // to check if the preference is available here
@@ -263,6 +264,9 @@ public class CameraSettings {
         }
         if (storage != null) {
             buildStorage(group, storage);
+        }
+        if (powerShutter != null && mCameraId != CameraHolder.instance().getBackCameraId()) {
+            removePreference(group, powerShutter.getKey());
         }
     }
 

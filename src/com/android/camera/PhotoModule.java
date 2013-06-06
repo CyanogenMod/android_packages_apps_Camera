@@ -2845,6 +2845,7 @@ public class PhotoModule
         setupPreview();
         loadCameraPreferences();
         initializePhotoControl();
+        mActivity.initPowerShutter(mPreferences);
 
         // from initializeFirstTime
         initializeZoom();

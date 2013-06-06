@@ -2415,6 +2415,7 @@ public class VideoModule implements CameraModule,
         initializeVideoSnapshot();
         resizeForPreviewAspectRatio();
         initializeVideoControl();
+        mActivity.initPowerShutter(mPreferences);
 
         // From onResume
         initializeZoom();
