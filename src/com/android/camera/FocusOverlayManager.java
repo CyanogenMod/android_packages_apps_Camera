@@ -563,7 +563,6 @@ public class FocusOverlayManager {
         String focusMode = getFocusMode();
         return !(focusMode.equals(Parameters.FOCUS_MODE_INFINITY)
                 || focusMode.equals(Parameters.FOCUS_MODE_FIXED)
-                || focusMode.equals(Parameters.FOCUS_MODE_EDOF)
-                || focusMode.equals(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE));
+                || focusMode.equals(Parameters.FOCUS_MODE_EDOF));
     }
 }
