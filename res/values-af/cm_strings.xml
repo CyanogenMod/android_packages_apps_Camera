@@ -21,14 +21,22 @@
     <string name="pref_camera_picturesize_entry_12_8mp">12.8M pixels</string>
     <string name="pref_camera_picturesize_entry_11_5mp">11.5M pixels</string>
     <string name="pref_camera_picturesize_entry_9mp">9M pixels</string>
+    <string name="pref_camera_picturesize_entry_7mp">7M pixels</string>
     <string name="pref_camera_picturesize_entry_6_4mp">6.4M pixels</string>
+    <string name="pref_camera_picturesize_entry_6mp">6M pixels</string>
+    <string name="pref_camera_picturesize_entry_4_5mp">4.5M pixels</string>
     <string name="pref_camera_picturesize_entry_4mp">4M pixels</string>
+    <string name="pref_camera_picturesize_entry_3_7mp">3.7M pixels</string>
     <string name="pref_camera_picturesize_entry_2_5mp">2.5M pixels</string>
+    <string name="pref_camera_picturesize_entry_2_4mp">2.4M pixels</string>
     <string name="pref_camera_picturesize_entry_2_1mp">2.1m pixels</string>
+    <string name="pref_camera_picturesize_entry_1_9mp">1.9M pixels</string>
     <string name="pref_camera_picturesize_entry_1_5mp">1.5M pixels</string>
+    <string name="pref_camera_picturesize_entry_wxga">WXGA</string>
     <string name="pref_camera_picturesize_entry_xga">XGA</string>
     <string name="pref_camera_picturesize_entry_svga">SVGA</string>
     <string name="pref_camera_picturesize_entry_wvga">WVGA</string>
+    <string name="pref_camera_picturesize_entry_wqvga">WQVGA</string>
 
     <string name="pref_camera_power_shutter_title">Krag sluiter</string>
 
@@ -78,6 +86,7 @@
     <string name="pref_camera_focustime_entry_infinite">Oneindig</string>
 
     <string name="pref_camera_nohands_title">Hand-vrye sluiter</string>
+    <string name="pref_camera_nohands_voice_entry">Stem</string>
 
     <string name="pref_camera_timer_entry_0">Af</string>
     <string name="pref_camera_timer_entry_10">10s</string>
