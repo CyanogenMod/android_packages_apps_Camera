@@ -884,10 +884,14 @@ public class PhotoModule
         } else {
             if (Parameters.FLASH_MODE_AUTO.equals(value)) {
                 mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_auto);
-            } else if (Parameters.FLASH_MODE_ON.equals(value)) {
-                mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_on);
             } else {
-                mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_off);
+                if (Parameters.FLASH_MODE_ON.equals(value)) {
+                    mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_on);
+                } else if (Parameters.FLASH_MODE_RED_EYE.equals(value)) {
+                    mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_redeye);
+                } else {
+                    mFlashIndicator.setImageResource(R.drawable.ic_indicator_flash_off);
+                }
             }
         }
     }

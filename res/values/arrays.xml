@@ -254,24 +254,28 @@
         <item>@string/pref_camera_flashmode_entry_off</item>
         <item>@string/pref_camera_flashmode_entry_auto</item>
         <item>@string/pref_camera_flashmode_entry_on</item>
+        <item>@string/pref_camera_flashmode_entry_redeye</item>
     </string-array>
 
     <string-array name="pref_camera_flashmode_entryvalues" translatable="false">
         <item>off</item>
         <item>auto</item>
         <item>on</item>
+        <item>red-eye</item>
     </string-array>
 
     <array name="camera_flashmode_icons" translatable="false">
         <item>@drawable/ic_flash_off_holo_light</item>
         <item>@drawable/ic_flash_auto_holo_light</item>
         <item>@drawable/ic_flash_on_holo_light</item>
+        <item>@drawable/ic_flash_redeye_holo_light</item>
     </array>
 
     <array name="camera_flashmode_largeicons" translatable="false">
         <item>@drawable/ic_flash_off_holo_light</item>
         <item>@drawable/ic_flash_auto_holo_light</item>
         <item>@drawable/ic_flash_on_holo_light</item>
+        <item>@drawable/ic_flash_redeye_holo_light</item>
     </array>
 
     <!-- Videocamera Preferences flash mode dialog box entries -->
