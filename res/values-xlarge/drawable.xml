@@ -19,6 +19,7 @@
     <item name="ic_flash_auto_holo_light" type="drawable">@drawable/ic_flash_auto_holo_light_xlarge</item>
     <item name="ic_flash_off_holo_light" type="drawable">@drawable/ic_flash_off_holo_light_xlarge</item>
     <item name="ic_flash_on_holo_light" type="drawable">@drawable/ic_flash_on_holo_light_xlarge</item>
+    <item name="ic_flash_redeye_holo_light" type="drawable">@drawable/ic_flash_redeye_holo_light_xlarge</item>
     <item name="ic_pan_border_fast" type="drawable">@drawable/ic_pan_border_fast_xlarge</item>
     <item name="ic_pan_left_indicator_fast" type="drawable">@drawable/ic_pan_left_indicator_fast_xlarge</item>
     <item name="ic_pan_left_indicator" type="drawable">@drawable/ic_pan_left_indicator_xlarge</item>
