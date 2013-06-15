@@ -294,6 +294,9 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
 
     private int mSnapshotMode;
     private boolean zslrestartPreview;
+	
+	// D710 restat startPreview
+	private int second_chance = 0;
 
     /**
      * This Handler is used to post message back onto the main thread of the
@@ -2118,9 +2121,17 @@ public class Camera extends ActivityBase implements FocusManager.Listener,
             Log.v(TAG, "startPreview");
             mCameraDevice.startPreview();
         } catch (Throwable ex) {
+			if (getResources().getBoolean(R.bool.needsSecondChance)) {
+				if (second_chance < 2) {
+					second_chance++;
+					startPreview();
+					return;
+				}
+			}
             closeCamera();
             throw new RuntimeException("startPreview failed", ex);
         }
+		second_chance = 0;
 
         mZoomState = ZOOM_STOPPED;
         setCameraState(IDLE);
