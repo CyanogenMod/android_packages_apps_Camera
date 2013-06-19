@@ -17,7 +17,7 @@
         style="@style/SettingPopupWindow">
 
     <LinearLayout android:orientation="vertical"
-            android:background="@color/popup_background"
+            android:background="@color/transparent_background"
             android:layout_height="wrap_content"
             android:layout_width="@dimen/setting_popup_window_width">
 
