@@ -206,6 +206,8 @@ public class PhotoModule
     private ImageView mNoHandsIndicator;
     private TextView mTimerCountdown;
 
+    private ImageView mGpsIndicator;
+
     // We use a thread in ImageSaver to do the work of saving images. This
     // reduces the shot-to-shot time.
     private ImageSaver mImageSaver;
@@ -832,14 +834,33 @@ public class PhotoModule
         mSceneIndicator = (ImageView) mOnScreenIndicators.findViewById(R.id.menu_scenemode_indicator);
         mHdrIndicator = (ImageView) mOnScreenIndicators.findViewById(R.id.menu_hdr_indicator);
         mNoHandsIndicator = (ImageView) mRootView.findViewById(R.id.indicator_nohandsshot);
+        mGpsIndicator = (ImageView) mRootView.findViewById(R.id.indicator_gps);
         mTimerCountdown = (TextView) mRootView.findViewById(R.id.timer_countdown);
     }
 
     @Override
-    public void showGpsOnScreenIndicator(boolean hasSignal) { }
+    public void showGpsOnScreenIndicator(boolean enabled, boolean hasSignal) {
+        if (mGpsIndicator == null || !mActivity.isInCameraApp()) {
+            return;
+        }
+
+        if (!enabled) {
+            mGpsIndicator.setImageResource(R.drawable.ic_viewfinder_gps_off);
+        } else if (hasSignal) {
+            mGpsIndicator.setImageResource(R.drawable.ic_viewfinder_gps_on);
+        } else {
+            mGpsIndicator.setImageResource(R.drawable.ic_viewfinder_gps_no_signal);
+        }
+        mGpsIndicator.setVisibility(View.VISIBLE);
+    }
 
     @Override
-    public void hideGpsOnScreenIndicator() { }
+    public void hideGpsOnScreenIndicator() {
+        if (mGpsIndicator == null) {
+            return;
+        }
+        mGpsIndicator.setVisibility(View.GONE);
+    }
 
     private void updateExposureOnScreenIndicator(int value) {
         if (mExposureIndicator == null) {
@@ -1463,6 +1484,7 @@ public class PhotoModule
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
             if (mActivity.mCameraScreenNail != null) {
                 ((CameraScreenNail) mActivity.mCameraScreenNail).setFullScreen(full);
+                hideGpsOnScreenIndicator();
             }
             return;
         }
@@ -1562,6 +1584,9 @@ public class PhotoModule
         if (mHandler.hasMessages(SHOW_TAP_TO_FOCUS_TOAST)) {
             mHandler.removeMessages(SHOW_TAP_TO_FOCUS_TOAST);
             showTapToFocusToast();
+        }
+        if (mLocationManager != null) {
+            mLocationManager.updateGpsIndicator();
         }
     }
 
@@ -2344,6 +2369,7 @@ public class PhotoModule
             mCameraDevice = null;
             setCameraState(PREVIEW_STOPPED);
             mFocusManager.onCameraReleased();
+            hideGpsOnScreenIndicator();
         }
     }
 
