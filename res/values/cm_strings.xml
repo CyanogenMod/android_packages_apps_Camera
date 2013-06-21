@@ -120,11 +120,12 @@
      <string name="pref_camera_iso_entry_iso100" translatable="false">100</string>
      <string name="pref_camera_iso_entry_iso50" translatable="false">50</string>
 
-    <!-- Settings screen, JPEG Quality -->
-    <string name="pref_camera_jpeg_title">JPEG Quality</string>
+    <!-- Settings screen, JPEG/Video Quality -->
+    <string name="pref_camera_jpeg_title">JPEG quality</string>
+    <string name="pref_camera_video_jpeg_title">Video quality</string>
     <string name="pref_camera_jpeg_default" translatable="false">90</string>
 
-    <!-- Settings screen, JPEG dialog radio button choices -->
+    <!-- Settings screen, JPEG/Video dialog radio button choices -->
     <string name="pref_camera_jpeg_entry_super">Super</string>
     <string name="pref_camera_jpeg_entry_high">High</string>
     <string name="pref_camera_jpeg_entry_medium">Medium</string>
