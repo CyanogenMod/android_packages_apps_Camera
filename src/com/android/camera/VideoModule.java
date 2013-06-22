@@ -2042,6 +2042,14 @@ public class VideoModule implements CameraModule,
             Log.w(TAG, "invalid exposure range: " + value);
         }
 
+        // HDR
+        if (Util.isVideoHdrSupported(mParameters)) {
+            String videohdr = mPreferences.getString(
+                    CameraSettings.KEY_VIDEO_HDR,
+                    mActivity.getString(R.string.pref_video_hdr_default));
+            mParameters.set(CameraSettings.KEY_VIDEO_HDR, videohdr);
+        }
+
         CameraSettings.dumpParameters(mParameters);
 
         mActivity.mCameraDevice.setParameters(mParameters);

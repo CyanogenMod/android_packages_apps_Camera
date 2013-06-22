@@ -79,6 +79,25 @@ public class VideoController extends PieController
             });
             mRenderer.addItem(item);
         }
+        if (group.findPreference(CameraSettings.KEY_VIDEO_HDR) != null) {
+            PieItem hdr = makeItem(R.drawable.ic_hdr);
+            hdr.setFixedSlice(FLOAT_PI_DIVIDED_BY_TWO, sweep);
+            hdr.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(PieItem item) {
+                    // Find the index of next camera.
+                    ListPreference pref = mPreferenceGroup
+                            .findPreference(CameraSettings.KEY_VIDEO_HDR);
+                    if (pref != null) {
+                        // toggle hdr value
+                        int index = (pref.findIndexOfValue(pref.getValue()) + 1) % 2;
+                        pref.setValueIndex(index);
+                        onSettingChanged(pref);
+                    }
+                }
+            });
+            mRenderer.addItem(hdr);
+        }
         mOtherKeys = new String[] {
                 CameraSettings.KEY_STORAGE,
                 CameraSettings.KEY_VIDEO_EFFECT,
@@ -160,6 +179,26 @@ public class VideoController extends PieController
             mPopupStatus = POPUP_FIRST_LEVEL;
             if (topPopupOnly) mModule.showPopup(mPopup);
         }
+    }
+
+    private void setPreference(String key, String value) {
+        ListPreference pref = mPreferenceGroup.findPreference(key);
+        if (pref != null && !value.equals(pref.getValue())) {
+            pref.setValue(value);
+            reloadPreferences();
+        }
+    }
+
+    @Override
+    public void onSettingChanged(ListPreference pref) {
+        if (pref.getKey().equals(CameraSettings.KEY_VIDEO_HDR)) {
+            if (!pref.getValue().equals(mActivity.getString(R.string.setting_on_value))) {
+                setPreference(CameraSettings.KEY_VIDEO_HDR, mActivity.getString(R.string.setting_off_value));
+            } else {
+                setPreference(CameraSettings.KEY_VIDEO_HDR, mActivity.getString(R.string.setting_on_value));
+            }
+        }
+        super.onSettingChanged(pref);
     }
 
     @Override
