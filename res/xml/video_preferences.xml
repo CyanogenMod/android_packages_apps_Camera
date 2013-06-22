@@ -58,6 +58,12 @@
             camera:icons="@array/camera_id_icons"
             camera:entries="@array/camera_id_entries"
             camera:largeIcons="@array/camera_id_largeicons"/>
+    <ListPreference
+            camera:key="pref_video_hdr_key"
+            camera:defaultValue="@string/pref_video_hdr_default"
+            camera:title="@string/pref_video_hdr"
+            camera:entries="@array/pref_video_hdr_entries"
+            camera:entryValues="@array/pref_video_hdr_entryvalues" />
     <IconListPreference
             camera:key="pref_video_effect_key"
             camera:defaultValue="@string/pref_video_effect_default"

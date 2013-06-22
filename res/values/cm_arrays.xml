@@ -201,4 +201,14 @@
         <item>@drawable/ic_viewfinder_gps_off</item>
         <item>@drawable/ic_viewfinder_gps_on</item>
     </array>
+
+    <string-array name="pref_video_hdr_entries" translatable="false">
+        <item>@string/setting_off</item>
+        <item>@string/setting_on</item>
+    </string-array>
+
+    <string-array name="pref_video_hdr_entryvalues" translatable="false">
+        <item>@string/setting_off_value</item>
+        <item>@string/setting_on_value</item>
+    </string-array>
 </resources>
