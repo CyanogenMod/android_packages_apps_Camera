@@ -51,4 +51,6 @@
     <!-- Magic for enabling ZSL on Samsung cameras -->
     <bool name="sendMagicSamsungZSLCommand">false</bool>
     <string name="videoHdrParam" translatable="false">video-hdr</string>
+    <!-- Enable to allow changing shutter speed -->
+    <bool name="enableShutterSpeed">false</bool>
 </resources>

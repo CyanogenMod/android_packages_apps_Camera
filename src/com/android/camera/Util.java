@@ -124,6 +124,10 @@ public class Util {
         return TRUE.equals(params.get(VIDEO_HDR_SUPPORTED));
     }
 
+    public static boolean isShutterSpeedSupported(Parameters params) {
+         return (sShutterSpeed && params.get("shutter-speed") != null);
+    }
+
     @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static boolean isMeteringAreaSupported(Parameters params) {
         if (ApiHelper.HAS_CAMERA_METERING_AREA) {
@@ -178,6 +182,8 @@ public class Util {
     // Send magic command to hardware for Samsung ZSL
     private static boolean sSendMagicSamsungZSLCommand;
 
+    private static boolean sShutterSpeed;
+
     private static SpeechRecognizer mSpeechRecognizer;
     private static Intent mSpeechRecognizerIntent;
     private static String[] mShutterWords;
@@ -219,6 +225,9 @@ public class Util {
 
         sSendMagicSamsungZSLCommand = context.getResources().getBoolean(
                 R.bool.sendMagicSamsungZSLCommand);
+
+        sShutterSpeed = context.getResources().getBoolean(
+                R.bool.enableShutterSpeed);
 
         /* Voice Shutter */
         mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
