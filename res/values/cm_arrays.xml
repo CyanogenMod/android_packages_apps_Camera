@@ -201,4 +201,36 @@
         <item>@drawable/ic_viewfinder_gps_off</item>
         <item>@drawable/ic_viewfinder_gps_on</item>
     </array>
+
+    <!--<string-array name="pref_shutter_speed_entries" translatable="false">
+        <item>@string/pref_shutter_speed_entry_0</item>
+        <item>@string/pref_shutter_speed_entry_1</item>
+        <item>@string/pref_shutter_speed_entry_2</item>
+        <item>@string/pref_shutter_speed_entry_3</item>
+        <item>@string/pref_shutter_speed_entry_4</item>
+        <item>@string/pref_shutter_speed_entry_5</item>
+        <item>@string/pref_shutter_speed_entry_6</item>
+        <item>@string/pref_shutter_speed_entry_7</item>
+        <item>@string/pref_shutter_speed_entry_8</item>
+        <item>@string/pref_shutter_speed_entry_9</item>
+        <item>@string/pref_shutter_speed_entry_10</item>
+        <item>@string/pref_shutter_speed_entry_11</item>
+        <item>@string/pref_shutter_speed_entry_12</item>
+    </string-array>-->
+
+    <string-array name="pref_shutter_speed_entryvalues" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
 </resources>

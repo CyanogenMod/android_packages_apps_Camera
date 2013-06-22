@@ -130,4 +130,10 @@
             camera:entries="@array/pref_nohands_persistent_entries"
             camera:defaultValue="@string/pref_nohands_persistent_default"
             camera:entryValues="@array/pref_nohands_persistent_entryvalues" />
+    <ListPreference
+            camera:key="pref_shutter_speed_key"
+            camera:title="@string/pref_shutter_speed_title"
+            camera:entries="@array/pref_shutter_speed_entryvalues"
+            camera:defaultValue="@string/pref_shutter_speed_default"
+            camera:entryValues="@array/pref_shutter_speed_entryvalues" />
 </PreferenceGroup>

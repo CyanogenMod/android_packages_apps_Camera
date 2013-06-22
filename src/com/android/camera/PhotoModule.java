@@ -2635,6 +2635,12 @@ public class PhotoModule
             mParameters.setColorEffect(colorEffect);
         }
 
+        // Set shutter speed
+        String shutterSpeed = mPreferences.getString(
+                CameraSettings.KEY_SHUTTER_SPEED,
+                mActivity.getString(R.string.pref_shutter_speed_default));
+        mParameters.set("sony-shutter-speed", shutterSpeed);
+
         // Set exposure compensation
         if (!mHDRShotInProgress) {
             int value = CameraSettings.readExposure(mPreferences);
