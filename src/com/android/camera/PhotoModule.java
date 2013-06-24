@@ -206,6 +206,9 @@ public class PhotoModule
     private ImageView mNoHandsIndicator;
     private TextView mTimerCountdown;
 
+    private ImageView mBurstShotIndicator;
+    private TextView mBurstShotProgressIndicator;
+
     private ImageView mGpsIndicator;
 
     // We use a thread in ImageSaver to do the work of saving images. This
@@ -836,6 +839,8 @@ public class PhotoModule
         mNoHandsIndicator = (ImageView) mRootView.findViewById(R.id.indicator_nohandsshot);
         mGpsIndicator = (ImageView) mRootView.findViewById(R.id.indicator_gps);
         mTimerCountdown = (TextView) mRootView.findViewById(R.id.timer_countdown);
+        mBurstShotIndicator = (ImageView) mRootView.findViewById(R.id.indicator_burst_shot);
+        mBurstShotProgressIndicator = (TextView) mRootView.findViewById(R.id.burst_shot_progress);
     }
 
     @Override
@@ -1744,6 +1749,11 @@ public class PhotoModule
         }
     }
 
+    private void updateBurstShotProgress(int shots) {
+        int nbBurstShots = Integer.valueOf(mPreferences.getString(CameraSettings.KEY_BURST_MODE, "1"));
+        mBurstShotProgressIndicator.setText(String.format("%d / %d", shots, nbBurstShots));
+    }
+
     @Override
     public void onShutterButtonClick() {
         int nbBurstShots = Integer.valueOf(mPreferences.getString(CameraSettings.KEY_BURST_MODE, "1"));
@@ -1916,6 +1926,20 @@ public class PhotoModule
             // queue a new shot until we done all our shots
             mSnapshotOnIdle = true;
             mBurstShotInProgress = true;
+        }
+
+        if (mBurstShotInProgress) {
+            mActivity.hideSwitcher();
+            mActivity.setSwipingEnabled(false);
+            mBurstShotIndicator.setImageResource(R.drawable.ic_viewfinder_gps_no_signal);
+            mBurstShotIndicator.setVisibility(View.VISIBLE);
+            mBurstShotProgressIndicator.setVisibility(View.VISIBLE);
+            updateBurstShotProgress(mBurstShotsDone);
+        } else if (nbBurstShots > 1 && !mBurstShotInProgress) {
+            mActivity.showSwitcher();
+            mActivity.setSwipingEnabled(true);
+            mBurstShotIndicator.setVisibility(View.GONE);
+            mBurstShotProgressIndicator.setVisibility(View.GONE);
         }
     }
 
