@@ -308,6 +308,7 @@ public class PhotoModule
     // Burst mode
     private int mBurstShotsDone = 0;
     private boolean mBurstShotInProgress = false;
+    private ProgressDialog mBurstShotProgressDialog = null;
 
     // Software HDR mode
     private boolean mHDRShotInProgress = false;
@@ -1916,6 +1917,21 @@ public class PhotoModule
             // queue a new shot until we done all our shots
             mSnapshotOnIdle = true;
             mBurstShotInProgress = true;
+        }
+
+        if (mBurstShotsDone > 0) {
+            if (mBurstShotProgressDialog == null) {
+                mBurstShotProgressDialog = ProgressDialog.show(mActivity,
+                        mActivity.getString(R.string.pref_camera_burst_title),
+                        mActivity.getString(R.string.wait),
+                        true);
+            }
+            mActivity.hideSwitcher();
+            mActivity.setSwipingEnabled(false);
+        } else if (nbBurstShots > 1) {
+            mBurstShotProgressDialog.dismiss();
+            mActivity.showSwitcher();
+            mActivity.setSwipingEnabled(true);
         }
     }
 
