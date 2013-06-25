@@ -925,8 +925,7 @@ public class VideoModule implements CameraModule,
         try {
             if (!effectsActive()) {
                 if (ApiHelper.HAS_SURFACE_TEXTURE) {
-                    mActivity.mCameraDevice.setPreviewTextureAsync(
-                            ((CameraScreenNail) mActivity.mCameraScreenNail).getSurfaceTexture());
+                    mActivity.mCameraDevice.setPreviewTextureAsync(PhotoModule.newSurfaceLayer(mCameraDisplayOrientation, mParameters, mActivity));
                 } else {
                     mActivity.mCameraDevice.setPreviewDisplayAsync(mPreviewSurfaceView.getHolder());
                 }

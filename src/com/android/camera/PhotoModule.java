@@ -2395,6 +2395,20 @@ public class PhotoModule
         startFaceDetection();
     }
 
+    public static SurfaceTexture newSurfaceLayer(int mCameraDisplayOrientation, Parameters mParameters, CameraActivity mActivity){
+        CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
+        Size size = mParameters.getPreviewSize();
+        if (mCameraDisplayOrientation % 180 == 0) {
+            screenNail.setSize(size.width, size.height);
+        } else {
+            screenNail.setSize(size.height, size.width);
+        }
+        screenNail.enableAspectRatioClamping();
+        mActivity.notifyScreenNailChanged();
+        screenNail.acquireSurfaceTexture();
+        return (SurfaceTexture)screenNail.getSurfaceTexture();
+    }
+
     // This can be called by UI Thread or CameraStartUpThread. So this should
     // not modify the views.
     private void startPreview() {
@@ -2422,21 +2436,8 @@ public class PhotoModule
         setCameraParameters(UPDATE_PARAM_ALL);
 
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
-            CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
-            if (mSurfaceTexture == null) {
-                Size size = mParameters.getPreviewSize();
-                if (mCameraDisplayOrientation % 180 == 0) {
-                    screenNail.setSize(size.width, size.height);
-                } else {
-                    screenNail.setSize(size.height, size.width);
-                }
-                screenNail.enableAspectRatioClamping();
-                mActivity.notifyScreenNailChanged();
-                screenNail.acquireSurfaceTexture();
-                mSurfaceTexture = screenNail.getSurfaceTexture();
-            }
             mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
-            mCameraDevice.setPreviewTextureAsync((SurfaceTexture) mSurfaceTexture);
+            mCameraDevice.setPreviewTextureAsync(newSurfaceLayer(mCameraDisplayOrientation, mParameters, mActivity));
         } else {
             mCameraDevice.setDisplayOrientation(mDisplayOrientation);
             mCameraDevice.setPreviewDisplayAsync(mCameraSurfaceHolder);
