@@ -199,6 +199,6 @@
     <string name="pref_nohands_persistent_default" translatable="false">@string/setting_off_value</string>
 
     <!-- Default HDR Video entry value -->
-    <string name="pref_video_hdr_default">@string/setting_off_value</string>
+    <string name="pref_video_hdr_default" translatable="false">@string/setting_off_value</string>
     <string name="pref_video_hdr">HDR</string>
 </resources>
