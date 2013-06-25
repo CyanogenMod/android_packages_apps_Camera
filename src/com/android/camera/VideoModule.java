@@ -28,6 +28,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
@@ -225,6 +226,7 @@ public class VideoModule implements CameraModule,
     private ImageView mFlashIndicator;
     private ImageView mExposureIndicator;
     private ImageView mHdrIndicator;
+    private boolean mPreviewNotReady = true;
 
     private final Handler mHandler = new MainHandler();
 
@@ -926,8 +928,12 @@ public class VideoModule implements CameraModule,
         try {
             if (!effectsActive()) {
                 if (ApiHelper.HAS_SURFACE_TEXTURE) {
-                    mActivity.mCameraDevice.setPreviewTextureAsync(
-                            ((CameraScreenNail) mActivity.mCameraScreenNail).getSurfaceTexture());
+                    SurfaceTexture sT = null;
+                    if (PhotoModule.mSwitchCamera)
+                        sT = PhotoModule.newSurfaceLayer(mCameraDisplayOrientation, mParameters, mActivity);
+                    else
+                        sT = ((CameraScreenNail) mActivity.mCameraScreenNail).getSurfaceTexture();
+                    mActivity.mCameraDevice.setPreviewTextureAsync(sT);
                 } else {
                     mActivity.mCameraDevice.setPreviewDisplayAsync(mPreviewSurfaceView.getHolder());
                 }
@@ -2434,6 +2440,8 @@ public class VideoModule implements CameraModule,
         CameraSettings.upgradeLocalPreferences(mPreferences.getLocal());
         openCamera();
         readVideoPreferences();
+        if (mPreviewNotReady)
+            PhotoModule.mSwitchCamera=true;
         startPreview();
         initializeVideoSnapshot();
         resizeForPreviewAspectRatio();

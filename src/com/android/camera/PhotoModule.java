@@ -135,6 +135,7 @@ public class PhotoModule
     private int mCameraId;
     private Parameters mParameters;
     private boolean mPaused;
+    public static boolean mPreviewNotReady = false;
     private AbstractSettingPopup mPopup;
 
     // these are only used by Camera
@@ -175,7 +176,7 @@ public class PhotoModule
     private boolean mFaceDetectionStarted = false;
 
     private PreviewFrameLayout mPreviewFrameLayout;
-    private Object mSurfaceTexture;
+    private static Object mSurfaceTexture;
 
     // for API level 10
     private PreviewSurfaceView mPreviewSurfaceView;
@@ -282,6 +283,7 @@ public class PhotoModule
     private long mJpegPictureCallbackTime;
     private long mOnResumeTime;
     private byte[] mJpegImageData;
+    public static boolean mSwitchCamera=false;
 
     // These latency time are for the CameraLatency test.
     public long mAutoFocusTime;
@@ -1963,6 +1965,7 @@ public class PhotoModule
         keepScreenOnAwhile();
         // Dismiss open menu if exists.
         PopupManager.getInstance(mActivity).notifyShowPopup(null);
+        mPreviewNotReady = false;
     }
 
     void waitCameraStartUpThread() {
@@ -1985,6 +1988,7 @@ public class PhotoModule
 
     @Override
     public void onPauseAfterSuper() {
+        mPreviewNotReady = true;
         // Wait the camera start up thread to finish.
         waitCameraStartUpThread();
 
@@ -2395,6 +2399,24 @@ public class PhotoModule
         startFaceDetection();
     }
 
+    public static SurfaceTexture newSurfaceLayer(int mCameraDisplayOrientation, Parameters mParameters, CameraActivity mActivity){
+        CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
+        if (mSurfaceTexture == null || mSwitchCamera) {
+            mSwitchCamera=false;
+            Size size = mParameters.getPreviewSize();
+            if (mCameraDisplayOrientation % 180 == 0) {
+                screenNail.setSize(size.width, size.height);
+            } else {
+                screenNail.setSize(size.height, size.width);
+            }
+            screenNail.enableAspectRatioClamping();
+            mActivity.notifyScreenNailChanged();
+            screenNail.acquireSurfaceTexture();
+            return screenNail.getSurfaceTexture();
+        }
+        return (SurfaceTexture)mSurfaceTexture;
+    }
+
     // This can be called by UI Thread or CameraStartUpThread. So this should
     // not modify the views.
     private void startPreview() {
@@ -2422,21 +2444,8 @@ public class PhotoModule
         setCameraParameters(UPDATE_PARAM_ALL);
 
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
-            CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
-            if (mSurfaceTexture == null) {
-                Size size = mParameters.getPreviewSize();
-                if (mCameraDisplayOrientation % 180 == 0) {
-                    screenNail.setSize(size.width, size.height);
-                } else {
-                    screenNail.setSize(size.height, size.width);
-                }
-                screenNail.enableAspectRatioClamping();
-                mActivity.notifyScreenNailChanged();
-                screenNail.acquireSurfaceTexture();
-                mSurfaceTexture = screenNail.getSurfaceTexture();
-            }
             mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
-            mCameraDevice.setPreviewTextureAsync((SurfaceTexture) mSurfaceTexture);
+            mCameraDevice.setPreviewTextureAsync(newSurfaceLayer(mCameraDisplayOrientation, mParameters, mActivity));
         } else {
             mCameraDevice.setDisplayOrientation(mDisplayOrientation);
             mCameraDevice.setPreviewDisplayAsync(mCameraSurfaceHolder);
@@ -2868,6 +2877,8 @@ public class PhotoModule
         boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
         mFocusManager.setMirror(mirror);
         mFocusManager.setParameters(mInitialParams);
+        if (!mPreviewNotReady)
+            mSwitchCamera=true;
         setupPreview();
         loadCameraPreferences();
         initializePhotoControl();
