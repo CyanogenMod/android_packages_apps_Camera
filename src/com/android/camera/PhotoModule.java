@@ -2423,7 +2423,7 @@ public class PhotoModule
 
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
             CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
-            if (mSurfaceTexture == null) {
+            //if (mSurfaceTexture == null) {
                 Size size = mParameters.getPreviewSize();
                 if (mCameraDisplayOrientation % 180 == 0) {
                     screenNail.setSize(size.width, size.height);
@@ -2434,7 +2434,7 @@ public class PhotoModule
                 mActivity.notifyScreenNailChanged();
                 screenNail.acquireSurfaceTexture();
                 mSurfaceTexture = screenNail.getSurfaceTexture();
-            }
+            //}
             mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
             mCameraDevice.setPreviewTextureAsync((SurfaceTexture) mSurfaceTexture);
         } else {
