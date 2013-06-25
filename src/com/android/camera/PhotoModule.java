@@ -175,7 +175,6 @@ public class PhotoModule
     private boolean mFaceDetectionStarted = false;
 
     private PreviewFrameLayout mPreviewFrameLayout;
-    private Object mSurfaceTexture;
 
     // for API level 10
     private PreviewSurfaceView mPreviewSurfaceView;
@@ -2010,9 +2009,9 @@ public class PhotoModule
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
-        if (mSurfaceTexture != null) {
+        if (Util.mSurfaceTexture != null) {
             ((CameraScreenNail) mActivity.mCameraScreenNail).releaseSurfaceTexture();
-            mSurfaceTexture = null;
+            Util.mSurfaceTexture = null;
         }
         resetScreenOn();
 
@@ -2422,21 +2421,8 @@ public class PhotoModule
         setCameraParameters(UPDATE_PARAM_ALL);
 
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
-            CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
-            if (mSurfaceTexture == null) {
-                Size size = mParameters.getPreviewSize();
-                if (mCameraDisplayOrientation % 180 == 0) {
-                    screenNail.setSize(size.width, size.height);
-                } else {
-                    screenNail.setSize(size.height, size.width);
-                }
-                screenNail.enableAspectRatioClamping();
-                mActivity.notifyScreenNailChanged();
-                screenNail.acquireSurfaceTexture();
-                mSurfaceTexture = screenNail.getSurfaceTexture();
-            }
             mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
-            mCameraDevice.setPreviewTextureAsync((SurfaceTexture) mSurfaceTexture);
+            mCameraDevice.setPreviewTextureAsync(Util.newSurfaceLayer(mCameraDisplayOrientation, mParameters, mActivity));
         } else {
             mCameraDevice.setDisplayOrientation(mDisplayOrientation);
             mCameraDevice.setPreviewDisplayAsync(mCameraSurfaceHolder);
