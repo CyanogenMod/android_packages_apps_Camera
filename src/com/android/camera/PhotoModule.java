@@ -175,7 +175,7 @@ public class PhotoModule
     private boolean mFaceDetectionStarted = false;
 
     private PreviewFrameLayout mPreviewFrameLayout;
-    private Object mSurfaceTexture;
+    private static Object mSurfaceTexture;
 
     // for API level 10
     private PreviewSurfaceView mPreviewSurfaceView;
@@ -282,6 +282,7 @@ public class PhotoModule
     private long mJpegPictureCallbackTime;
     private long mOnResumeTime;
     private byte[] mJpegImageData;
+    public static boolean mSwitchCamera=false;
 
     // These latency time are for the CameraLatency test.
     public long mAutoFocusTime;
@@ -2395,6 +2396,26 @@ public class PhotoModule
         startFaceDetection();
     }
 
+    public static SurfaceTexture newSurfaceLayer(int mCameraDisplayOrientation, Parameters mParameters, CameraActivity mActivity){
+        CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
+        if (mSurfaceTexture == null || mSwitchCamera) {
+            mSwitchCamera=false;
+            Size size = mParameters.getPreviewSize();
+            if (mCameraDisplayOrientation % 180 == 0) {
+                screenNail.setSize(size.width, size.height);
+            } else {
+                screenNail.setSize(size.height, size.width);
+            }
+            screenNail.enableAspectRatioClamping();
+            mActivity.notifyScreenNailChanged();
+            screenNail.acquireSurfaceTexture();
+
+            mSurfaceTexture = screenNail.getSurfaceTexture();
+
+        }
+        return (SurfaceTexture)mSurfaceTexture;
+    }
+
     // This can be called by UI Thread or CameraStartUpThread. So this should
     // not modify the views.
     private void startPreview() {
@@ -2422,21 +2443,8 @@ public class PhotoModule
         setCameraParameters(UPDATE_PARAM_ALL);
 
         if (ApiHelper.HAS_SURFACE_TEXTURE) {
-            CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
-            if (mSurfaceTexture == null) {
-                Size size = mParameters.getPreviewSize();
-                if (mCameraDisplayOrientation % 180 == 0) {
-                    screenNail.setSize(size.width, size.height);
-                } else {
-                    screenNail.setSize(size.height, size.width);
-                }
-                screenNail.enableAspectRatioClamping();
-                mActivity.notifyScreenNailChanged();
-                screenNail.acquireSurfaceTexture();
-                mSurfaceTexture = screenNail.getSurfaceTexture();
-            }
             mCameraDevice.setDisplayOrientation(mCameraDisplayOrientation);
-            mCameraDevice.setPreviewTextureAsync((SurfaceTexture) mSurfaceTexture);
+            mCameraDevice.setPreviewTextureAsync(newSurfaceLayer(mCameraDisplayOrientation, mParameters, mActivity));
         } else {
             mCameraDevice.setDisplayOrientation(mDisplayOrientation);
             mCameraDevice.setPreviewDisplayAsync(mCameraSurfaceHolder);
