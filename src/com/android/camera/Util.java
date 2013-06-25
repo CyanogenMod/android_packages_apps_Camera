@@ -31,6 +31,7 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
@@ -94,6 +95,7 @@ public class Util {
     public static final String VIDEO_HDR_SUPPORTED = "video-hdr-supported";
     public static final String TRUE = "true";
     public static final String FALSE = "false";
+    public static boolean mSwitchCamera = false;
 
     public static boolean isSupported(String value, List<String> supported) {
         return supported == null ? false : supported.indexOf(value) >= 0;
@@ -184,6 +186,7 @@ public class Util {
     private static boolean mIsCountDownOn;
     private static AudioManager mAudioManager;
     private static boolean mIsMuted = false;
+    public static Object mSurfaceTexture;
 
     private Util() {
     }
@@ -909,6 +912,28 @@ public class Util {
                 loc = null;
             }
         }
+    }
+
+    public static SurfaceTexture newSurfaceLayer(int mCameraDisplayOrientation,
+            Parameters mParameters, CameraActivity mActivity) {
+        CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
+
+        if (mSurfaceTexture == null || mSwitchCamera) {
+            mSwitchCamera = false;
+            Size size = mParameters.getPreviewSize();
+
+            if (mCameraDisplayOrientation % 180 == 0) {
+                screenNail.setSize(size.width, size.height);
+            } else {
+                screenNail.setSize(size.height, size.width);
+            }
+            screenNail.enableAspectRatioClamping();
+            mActivity.notifyScreenNailChanged();
+            screenNail.acquireSurfaceTexture();
+
+            mSurfaceTexture = screenNail.getSurfaceTexture();
+        }
+        return (SurfaceTexture)mSurfaceTexture;
     }
 
     private static class ImageFileNamer {

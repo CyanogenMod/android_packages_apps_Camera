@@ -65,6 +65,7 @@ public class PhotoController extends PieController
                     ListPreference camPref = mPreferenceGroup
                             .findPreference(CameraSettings.KEY_CAMERA_ID);
                     if (camPref != null) {
+                        Util.mSwitchCamera = true;
                         int index = camPref.findIndexOfValue(camPref.getValue());
                         CharSequence[] values = camPref.getEntryValues();
                         index = (index + 1) % values.length;
