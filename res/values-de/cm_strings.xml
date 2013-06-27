@@ -123,4 +123,5 @@
     <string name="pref_camera_timer_entry_60">60 Sek.</string>
     <string name="voice_hint">Zum Auslösen aus der Ferne einfach \"Cheese\" sagen.</string>
     <string name="pref_nohands_persistent_title">Selbstausl. speichern</string>
+    <string name="pref_video_hdr">HDR</string>
 </resources>
