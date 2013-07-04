@@ -75,6 +75,20 @@ import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomRenderer;
 import com.android.gallery3d.app.CropImage;
 import com.android.gallery3d.common.ApiHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import java.io.ByteArrayOutputStream;
+import android.renderscript.RenderScript;
+import android.renderscript.Type;
+import android.renderscript.Type.Builder;
+import android.content.Context;
+import android.renderscript.ScriptIntrinsicYuvToRGB;
+import android.renderscript.Element;
+import android.renderscript.Allocation;
+import android.os.Build;
+import android.graphics.ImageFormat;
+import android.graphics.YuvImage;
+import android.graphics.Rect;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -1006,6 +1020,129 @@ public class PhotoModule
         }
     }
 
+ public static Bitmap decodeYUV420SP(Context context, byte[] yuv420sp, int width, int height)
+            throws NullPointerException, IllegalArgumentException {
+
+        Bitmap bmp = null;
+
+        if (Build.VERSION.SDK_INT >= 17) {
+            final RenderScript rs = RenderScript.create(context);
+            final ScriptIntrinsicYuvToRGB script = ScriptIntrinsicYuvToRGB.create(rs, Element.RGBA_8888(rs));
+            Type.Builder tb = new Type.Builder(rs, Element.RGBA_8888(rs));
+            tb.setX(width);
+            tb.setY(height);
+
+            Allocation allocationOut = Allocation.createTyped(rs, tb.create());
+            Allocation allocationIn = Allocation.createSized(rs, Element.U8(rs), (height * width) +
+                    ((height / 2) * (width / 2) * 2));
+
+            script.setInput(allocationIn);
+
+            bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            allocationIn.copyFrom(yuv420sp);
+            script.forEach(allocationOut);
+            allocationOut.copyTo(bmp);
+        } else {
+            final int frameSize = width * height;
+            int[] rgb = new int[frameSize];
+
+            for (int j = 0, yp = 0; j < height; j++) {
+                int uvp = frameSize + (j >> 1) * width, u = 0, v = 0;
+                for (int i = 0; i < width; i++, yp++) {
+                    int y = (0xff & ((int) yuv420sp[yp])) - 16;
+                    if (y < 0)
+                        y = 0;
+                    if ((i & 1) == 0) {
+                        v = (0xff & yuv420sp[uvp++]) - 128;
+                        u = (0xff & yuv420sp[uvp++]) - 128;
+                    }
+
+                    int y1192 = 1192 * y;
+                    int r = (y1192 + 1634 * v);
+                    int g = (y1192 - 833 * v - 400 * u);
+                    int b = (y1192 + 2066 * u);
+
+                    if (r < 0)
+                        r = 0;
+                    else if (r > 262143)
+                        r = 262143;
+                    if (g < 0)
+                        g = 0;
+                    else if (g > 262143)
+                        g = 262143;
+                    if (b < 0)
+                        b = 0;
+                    else if (b > 262143)
+                        b = 262143;
+
+                    rgb[yp] = 0xff000000 | ((r << 6) & 0xff0000) | ((g >> 2) & 0xff00) | ((b >> 10) & 0xff);
+                }
+            }
+
+            bmp = Bitmap.createBitmap(rgb, width, height, Bitmap.Config.ARGB_8888);
+        }
+
+        return bmp;
+    }
+// decode Y, U, and V values on the YUV 420 buffer described as YCbCr_422_SP by Android
+// David Manpearl 081201 
+public static Bitmap decodeYUV(byte[] fg, int width, int height)
+        throws NullPointerException, IllegalArgumentException {
+    int sz = width * height;
+    int[] out = new int[sz];
+    if (out == null)
+        throw new NullPointerException("buffer out is null");
+    if (out.length < sz)
+        throw new IllegalArgumentException("buffer out size " + out.length
+                + " < minimum " + sz);
+    if (fg == null)
+        throw new NullPointerException("buffer 'fg' is null");
+    if (fg.length < sz)
+        throw new IllegalArgumentException("buffer fg size " + fg.length
+                + " < minimum " + sz * 3 / 2);
+    int i, j;
+    int Y, Cr = 0, Cb = 0;
+    for (j = 0; j < height; j++) {
+        int pixPtr = j * width;
+        final int jDiv2 = j >> 1;
+        for (i = 0; i < width; i++) {
+            Y = fg[pixPtr];
+            if (Y < 0)
+                Y += 255;
+            if ((i & 0x1) != 1) {
+                final int cOff = sz + jDiv2 * width + (i >> 1) * 2;
+                Cb = fg[cOff];
+                if (Cb < 0)
+                    Cb += 127;
+                else
+                    Cb -= 128;
+                Cr = fg[cOff + 1];
+                if (Cr < 0)
+                    Cr += 127;
+                else
+                    Cr -= 128;
+            }
+            int R = Y + Cr + (Cr >> 2) + (Cr >> 3) + (Cr >> 5);
+            if (R < 0)
+                R = 0;
+            else if (R > 255)
+                R = 255;
+            int G = Y - (Cb >> 2) + (Cb >> 4) + (Cb >> 5) - (Cr >> 1)
+                    + (Cr >> 3) + (Cr >> 4) + (Cr >> 5);
+            if (G < 0)
+                G = 0;
+            else if (G > 255)
+                G = 255;
+            int B = Y + Cb + (Cb >> 1) + (Cb >> 2) + (Cb >> 6);
+            if (B < 0)
+                B = 0;
+            else if (B > 255)
+                B = 255;
+            out[pixPtr++] = 0xff000000 + (B << 16) + (G << 8) + R;
+            }
+        }
+        return Bitmap.createBitmap(out, width, height, Bitmap.Config.ARGB_8888);
+    }
     private final class JpegPictureCallback implements PictureCallback {
         Location mLocation;
 
@@ -1015,13 +1152,34 @@ public class PhotoModule
 
         @Override
         public void onPictureTaken(
-                final byte [] jpegData, final android.hardware.Camera camera) {
+                byte [] jpegData, final android.hardware.Camera camera) {
             if (mPaused) {
                 return;
             }
+            int orientation = Exif.getOrientation(jpegData);
+            Size s = mParameters.getPictureSize();
+            int width, height;
+            if ((mJpegRotation + orientation) % 180 == 0 || mSceneMode == Util.SCENE_MODE_HDR) {
+                width = s.width;
+                height = s.height;
+            } else {
+                width = s.height;
+                height = s.width;
+            }
+
             if (mSceneMode == Util.SCENE_MODE_HDR) {
                 mActivity.showSwitcher();
                 mActivity.setSwipingEnabled(true);
+                if(jpegData!=null){
+                    // figure out the format of samsung raw format
+                    // Get the YuV image
+                    YuvImage yuv_image = new YuvImage(jpegData, ImageFormat.NV21, width, height, null);
+                    // Convert YuV to Jpeg
+                    Rect rect = new Rect(0, 0, width, height);
+                    ByteArrayOutputStream output_stream = new ByteArrayOutputStream();
+                    yuv_image.compressToJpeg(rect, 100, output_stream);
+                    jpegData=output_stream.toByteArray();
+                }
             }
 
             mJpegPictureCallbackTime = System.currentTimeMillis();
@@ -1053,7 +1211,7 @@ public class PhotoModule
                 ((CameraScreenNail) mActivity.mCameraScreenNail).animateSlide();
             }
             mFocusManager.updateFocusUI(); // Ensure focus indicator is hidden.
-            if (!mIsImageCaptureIntent && !Util.enableZSL()) {
+            if (!mIsImageCaptureIntent && !Util.enableZSL() || mSceneMode == Util.SCENE_MODE_HDR) {
                 if (ApiHelper.CAN_START_PREVIEW_IN_JPEG_CALLBACK) {
                     setupPreview();
                 } else {
@@ -1068,17 +1226,6 @@ public class PhotoModule
             }
 
             if (!mIsImageCaptureIntent) {
-                // Calculate the width and the height of the jpeg.
-                Size s = mParameters.getPictureSize();
-                int orientation = Exif.getOrientation(jpegData);
-                int width, height;
-                if ((mJpegRotation + orientation) % 180 == 0) {
-                    width = s.width;
-                    height = s.height;
-                } else {
-                    width = s.height;
-                    height = s.width;
-                }
                 Uri uri = mImageNamer.getUri();
                 mActivity.addSecureAlbumItemIfNeeded(false, uri);
                 String title = mImageNamer.getTitle();
