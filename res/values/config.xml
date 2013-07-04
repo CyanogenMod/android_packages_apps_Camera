@@ -52,7 +52,8 @@
     <bool name="sendMagicSamsungZSLCommand">false</bool>
     <!-- force Software HDR if hardware HDR is enabled  -->
     <bool name="forceSoftwareHDR">false</bool>
-
+    <!-- Decode YV16 format on Samsung HDR hardware -->
+    <bool name="needsSamsungHDRFormat">false</bool>
     <string name="videoHdrParam" translatable="false">video-hdr</string>
     <!-- Enable to allow changing shutter speed -->
     <bool name="enableShutterSpeed">false</bool>
