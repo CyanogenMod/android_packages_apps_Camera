@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Face;
@@ -76,6 +77,7 @@ import com.android.camera.ui.ZoomRenderer;
 import com.android.gallery3d.app.CropImage;
 import com.android.gallery3d.common.ApiHelper;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -1006,6 +1008,46 @@ public class PhotoModule
         }
     }
 
+ public static Bitmap decodeYUV422P(byte[] yuv422p, int width, int height)
+            throws NullPointerException, IllegalArgumentException {
+
+            final int frameSize = width * height;
+            int[] rgb = new int[frameSize];
+            for (int j = 0, yp = 0; j < height; j++) {
+                int up = frameSize + (j * (width/2)), u = 0, v = 0;
+                int vp = ((int)(frameSize*1.5) + (j*(width/2)));
+                for (int i = 0; i < width; i++, yp++) {
+                    int y = (0xff & ((int) yuv422p[yp])) - 16;
+                    if (y < 0)
+                        y = 0;
+                    if ((i & 1) == 0) {
+                        u = (0xff & yuv422p[up++]) - 128;
+                        v = (0xff & yuv422p[vp++]) - 128;
+                    }
+
+                    int y1192 = 1192 * y;
+                    int r = (y1192 + 1634 * v);
+                    int g = (y1192 - 833 * v - 400 * u);
+                    int b = (y1192 + 2066 * u);
+
+                    if (r < 0)
+                        r = 0;
+                    else if (r > 262143)
+                        r = 262143;
+                    if (g < 0)
+                        g = 0;
+                    else if (g > 262143)
+                        g = 262143;
+                    if (b < 0)
+                        b = 0;
+                    else if (b > 262143)
+                        b = 262143;
+
+                    rgb[yp] = 0xff000000 | ((r << 6) & 0xff0000) | ((g >> 2) & 0xff00) | ((b >> 10) & 0xff);
+                }
+        }
+        return Bitmap.createBitmap(rgb, width, height, Bitmap.Config.ARGB_8888);
+    }
     private final class JpegPictureCallback implements PictureCallback {
         Location mLocation;
 
@@ -1015,10 +1057,21 @@ public class PhotoModule
 
         @Override
         public void onPictureTaken(
-                final byte [] jpegData, final android.hardware.Camera camera) {
+                byte [] jpegData, final android.hardware.Camera camera) {
             if (mPaused) {
                 return;
             }
+            int orientation = Exif.getOrientation(jpegData);
+            Size s = mParameters.getPictureSize();
+            int width, height;
+            if ((mJpegRotation + orientation) % 180 == 0 || mSceneMode == Util.SCENE_MODE_HDR) {
+                width = s.width;
+                height = s.height;
+            } else {
+                width = s.height;
+                height = s.width;
+            }
+
             if (mSceneMode == Util.SCENE_MODE_HDR) {
                 mActivity.showSwitcher();
                 mActivity.setSwipingEnabled(true);
@@ -1053,7 +1106,7 @@ public class PhotoModule
                 ((CameraScreenNail) mActivity.mCameraScreenNail).animateSlide();
             }
             mFocusManager.updateFocusUI(); // Ensure focus indicator is hidden.
-            if (!mIsImageCaptureIntent && !Util.enableZSL()) {
+            if (!mIsImageCaptureIntent && (!Util.enableZSL() || mSceneMode == Util.SCENE_MODE_HDR)) {
                 if (ApiHelper.CAN_START_PREVIEW_IN_JPEG_CALLBACK) {
                     setupPreview();
                 } else {
@@ -1068,17 +1121,6 @@ public class PhotoModule
             }
 
             if (!mIsImageCaptureIntent) {
-                // Calculate the width and the height of the jpeg.
-                Size s = mParameters.getPictureSize();
-                int orientation = Exif.getOrientation(jpegData);
-                int width, height;
-                if ((mJpegRotation + orientation) % 180 == 0) {
-                    width = s.width;
-                    height = s.height;
-                } else {
-                    width = s.height;
-                    height = s.width;
-                }
                 Uri uri = mImageNamer.getUri();
                 mActivity.addSecureAlbumItemIfNeeded(false, uri);
                 String title = mImageNamer.getTitle();
@@ -1217,6 +1259,21 @@ public class PhotoModule
                         continue;
                     }
                     r = mQueue.get(0);
+                }
+                if (mSceneMode == Util.SCENE_MODE_HDR) {
+                    if(r.data!=null){
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        Bitmap bm = decodeYUV422P(r.data, r.width, r.height);
+                        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        r.data=baos.toByteArray();
+                        r.orientation = mJpegRotation;
+                        int x=r.height;
+                        int y=r.width;
+                        if (r.orientation % 180 != 0) {
+                            r.width = x;
+                            r.height = y;
+                        }
+                    }
                 }
                 storeImage(r.data, r.uri, r.title, r.loc, r.width, r.height,
                         r.orientation);
@@ -1416,7 +1473,7 @@ public class PhotoModule
                 mPostViewPictureCallback, new JpegPictureCallback(loc),
                 mCameraState, mFocusManager.getFocusState());
 
-        if (Util.enableZSL()) {
+        if (Util.enableZSL() && mSceneMode != Util.SCENE_MODE_HDR) {
             mRestartPreview = false;
         }
 
