@@ -75,6 +75,9 @@ import com.android.camera.ui.TwoStateImageView;
 import com.android.camera.ui.ZoomRenderer;
 import com.android.gallery3d.app.CropImage;
 import com.android.gallery3d.common.ApiHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import java.io.ByteArrayOutputStream;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -1015,13 +1018,20 @@ public class PhotoModule
 
         @Override
         public void onPictureTaken(
-                final byte [] jpegData, final android.hardware.Camera camera) {
+                byte [] jpegData, final android.hardware.Camera camera) {
             if (mPaused) {
                 return;
             }
             if (mSceneMode == Util.SCENE_MODE_HDR) {
                 mActivity.showSwitcher();
                 mActivity.setSwipingEnabled(true);
+                if(jpegData!=null){
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    // figure out the format of samsung raw format
+                    Bitmap bm = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length);
+                    bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    jpegData=baos.toByteArray();
+                }
             }
 
             mJpegPictureCallbackTime = System.currentTimeMillis();
