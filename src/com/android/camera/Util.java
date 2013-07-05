@@ -115,7 +115,7 @@ public class Util {
 
     public static boolean isCameraHdrSupported(Parameters params) {
         List<String> supported = params.getSupportedSceneModes();
-        boolean ret = (supported != null) && supported.contains(SCENE_MODE_HDR);
+        boolean ret = (supported != null) && supported.contains(SCENE_MODE_HDR) && !sForceSoftwareHDR;
         if (ret && sEnableSoftwareHDR) { sEnableSoftwareHDR = false; }
         return ret;
     }
@@ -171,7 +171,8 @@ public class Util {
     private static boolean sEnableSoftwareHDR;
     private static boolean sDoSoftwareHDRShot;
     private static int sSoftwareHDRExposureSettleTime;
-
+    private static boolean sForceSoftwareHDR;
+    
     // Do not change the focus mode when TTF is used
     private static boolean sNoFocusModeChangeForTouch;
 
@@ -210,6 +211,7 @@ public class Util {
                 R.bool.noFaceDetectOnFrontCamera);
 
         sEnableSoftwareHDR = !context.getResources().getBoolean(R.bool.disableSoftwareHDR);
+        sForceSoftwareHDR = !context.getResources().getBoolean(R.bool.forceSoftwareHDR);
         sSoftwareHDRExposureSettleTime = context.getResources().getInteger(
                 R.integer.softwareHDRExposureSettleTime);
         sDoSoftwareHDRShot = false;
@@ -266,7 +268,7 @@ public class Util {
     public static boolean useSoftwareHDR() {
         return sEnableSoftwareHDR;
     }
-
+    
     public static void setDoSoftwareHDRShot(boolean enable) {
         sDoSoftwareHDRShot = enable;
     }
