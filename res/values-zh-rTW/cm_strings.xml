@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pref_camera_storage_title">存儲</string>
+    <string name="pref_camera_picturesize_entry_13mp">1300 萬像素</string>
+    <string name="pref_camera_picturesize_entry_12_8mp">1280 萬像素</string>
+    <string name="pref_camera_picturesize_entry_11_5mp">1150 萬像素</string>
+    <string name="pref_camera_picturesize_entry_9mp">900 萬像素</string>
+    <string name="pref_camera_picturesize_entry_7mp">700 萬像素</string>
+    <string name="pref_camera_picturesize_entry_6_4mp">640 萬像素</string>
+    <string name="pref_camera_picturesize_entry_6mp">600 萬像素</string>
+    <string name="pref_camera_picturesize_entry_4_5mp">450 萬像素</string>
+    <string name="pref_camera_picturesize_entry_4mp">400 萬像素</string>
+    <string name="pref_camera_picturesize_entry_3_7mp">370 萬像素</string>
+    <string name="pref_camera_picturesize_entry_2_5mp">250 萬像素</string>
+    <string name="pref_camera_picturesize_entry_2_4mp">240 萬像素</string>
+    <string name="pref_camera_picturesize_entry_2_1mp">210 萬像素</string>
+    <string name="pref_camera_picturesize_entry_1_9mp">190 萬像素</string>
+    <string name="pref_camera_picturesize_entry_1_5mp">150 萬像素</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">持續性 (圖像)</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">持續性 (影像)</string>
+    <string name="pref_camera_focusmode_entry_extended">擴展</string>
+    <string name="pref_camera_focusmode_entry_facedetect">臉部偵測</string>
+    <string name="pref_camera_focusmode_entry_facepriority">臉部優先</string>
+    <string name="pref_camera_focusmode_entry_fixed">固定</string>
+    <string name="pref_camera_focusmode_entry_portrait">肖像</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">超焦距</string>
+    <string name="pref_camera_scenemode_entry_nightportrait">夜晚肖像</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">夜晚室内</string>
+    <string name="pref_camera_scenemode_entry_supernight">漆黑夜晚</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">黄昏/黎明</string>
+    <string name="pref_camera_scenemode_entry_candlelight">燭光</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">秋色</string>
+    <string name="pref_camera_scenemode_entry_closeup">特寫</string>
+    <string name="pref_camera_scenemode_entry_landscape">風景</string>
+    <string name="pref_camera_scenemode_entry_aqua">水景</string>
+    <string name="pref_camera_scenemode_entry_sports">體育</string>
+    <string name="pref_camera_scenemode_entry_mood">情緒</string>
+    <string name="pref_camera_scenemode_entry_fireworks">煙花</string>
+    <string name="pref_camera_scenemode_entry_cine">電影</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">老電影</string>
+    <string name="pref_camera_scenemode_entry_beach">沙滩</string>
+    <string name="pref_camera_scenemode_entry_portrait">肖像</string>
+    <string name="pref_camera_scenemode_entry_snow">雪景</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">平穩照片</string>
+    <string name="pref_camera_scenemode_entry_theatre">劇院</string>
+    <string name="pref_camera_scenemode_entry_backlight">背光</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">背光肖像</string>
+    <string name="pref_camera_scenemode_entry_document">文件</string>
+    <string name="pref_camera_scenemode_entry_barcode">條碼</string>
+    <string name="pref_camera_scenemode_entry_text">文字</string>
+    <string name="pref_camera_scenemode_entry_beauty">美麗</string>
+    <string name="pref_camera_scenemode_entry_flowers">花朵</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">白板</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">背景虛化</string>
+    <string name="pref_camera_power_shutter_title">電源鍵快門</string>
+    <string name="pref_camera_iso_entry_auto">自動</string>
+    <string name="pref_camera_iso_entry_isodeblur">自動 (HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">體育</string>
+    <string name="pref_camera_iso_entry_isonight">夜晚</string>
+    <string name="pref_camera_iso_entry_isomovie">電影</string>
+    <string name="pref_camera_jpeg_title">JPEG 質素</string>
+    <string name="pref_camera_jpeg_entry_super">無損</string>
+    <string name="pref_camera_jpeg_entry_high">高</string>
+    <string name="pref_camera_jpeg_entry_medium">中</string>
+    <string name="pref_camera_jpeg_entry_low">低</string>
+    <string name="pref_camera_coloreffect_title">色彩效果</string>
+    <string name="pref_camera_coloreffect_entry_none">無</string>
+    <string name="pref_camera_coloreffect_entry_mono">黑白</string>
+    <string name="pref_camera_coloreffect_entry_sepia">棕褐色</string>
+    <string name="pref_camera_coloreffect_entry_negative">反色</string>
+    <string name="pref_camera_coloreffect_entry_solarize">負感作用</string>
+    <string name="pref_camera_coloreffect_entry_posterize">高反差色調</string>
+    <string name="pref_camera_coloreffect_entry_aqua">水色</string>
+    <string name="pref_camera_coloreffect_entry_emboss">浮雕</string>
+    <string name="pref_camera_coloreffect_entry_sketch">素描</string>
+    <string name="pref_camera_coloreffect_entry_neon">氖燈</string>
+    <string name="pref_camera_coloreffect_entry_pastel">粉彩</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">馬賽克</string>
+    <string name="pref_camera_coloreffect_entry_redtint">偏红</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">偏藍</string>
+    <string name="pref_camera_coloreffect_entry_greentint">偏綠</string>
+    <string name="pref_camera_burst_title">連拍模式</string>
+    <string name="pref_camera_burst_entry_off">關閉</string>
+    <string name="pref_camera_burst_entry_5">5 張</string>
+    <string name="pref_camera_burst_entry_10">10 張</string>
+    <string name="pref_camera_burst_entry_15">15 張</string>
+    <string name="pref_camera_burst_entry_20">20 張</string>
+    <string name="pref_camera_focustime_title">觸摸對焦持續時間</string>
+    <string name="pref_camera_focustime_summary">選擇觸摸對焦的持續時間</string>
+    <string name="pref_camera_focustime_entry_5">5 秒</string>
+    <string name="pref_camera_focustime_entry_10">10 秒</string>
+    <string name="pref_camera_focustime_entry_15">15 秒</string>
+    <string name="pref_camera_focustime_entry_20">20 秒</string>
+    <string name="pref_camera_focustime_entry_30">30 秒</string>
+    <string name="pref_camera_focustime_entry_infinite">永久</string>
+    <string name="pref_camera_nohands_title">語音快門</string>
+    <string name="pref_camera_nohands_voice_entry">語音</string>
+    <string name="pref_camera_timer_entry_0">關閉</string>
+    <string name="pref_camera_timer_entry_10">10 秒</string>
+    <string name="pref_camera_timer_entry_20">20 秒</string>
+    <string name="pref_camera_timer_entry_30">30 秒</string>
+    <string name="pref_camera_timer_entry_40">40 秒</string>
+    <string name="pref_camera_timer_entry_50">50 秒</string>
+    <string name="pref_camera_timer_entry_60">60 秒</string>
+    <string name="voice_hint">通過說出關鍵詞進行遠程拍照 (關鍵詞包括 \"Cid\", \"威士忌\", 和 \"茄子\"!)</string>
+    <string name="pref_nohands_persistent_title">持續性語音快門</string>
+</resources>
