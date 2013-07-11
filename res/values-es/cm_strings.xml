@@ -98,6 +98,13 @@
     <string name="pref_camera_coloreffect_entry_redtint">Tintado en rojo</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Tintado en azul</string>
     <string name="pref_camera_coloreffect_entry_greentint">Tintado en verde</string>
+    <string name="pref_camera_coloreffect_entry_washed">Lavado</string>
+    <string name="pref_camera_coloreffect_entry_vintage_warm">Retro cálido</string>
+    <string name="pref_camera_coloreffect_entry_vintage_cold">Retro frío</string>
+    <string name="pref_camera_coloreffect_entry_point_blue">Punto azul</string>
+    <string name="pref_camera_coloreffect_entry_point_green">Punto verde</string>
+    <string name="pref_camera_coloreffect_entry_point_red_yellow">Punto rojo-amarillo</string>
+    <string name="pref_camera_coloreffect_entry_cartoonize">Viñeta</string>
     <string name="pref_camera_burst_title">Modo ráfaga</string>
     <string name="pref_camera_burst_entry_off">Apagado</string>
     <string name="pref_camera_burst_entry_5">5 disparos</string>
@@ -123,4 +130,8 @@
     <string name="pref_camera_timer_entry_60">60 segundos</string>
     <string name="voice_hint">Tomar una foto a distancia al decir una palabra clave: Puedes utilizar \u00ABCid\u00BB, \u00ABwhisky\u00BB y, por supuesto, \u00ABpatata\u00BB</string>
     <string name="pref_nohands_persistent_title">Manos libres persistente</string>
+    <string name="pref_video_hdr">HDR</string>
+    <string name="pref_shutter_speed_title">Velocidad obturador</string>
+    <string name="pref_shutter_speed_entry_auto">Automática</string>
+    <string name="pref_camera_flashmode_entry_redeye">Ojos rojos</string>
 </resources>
