@@ -125,7 +125,7 @@ public class Util {
     }
 
     public static boolean isShutterSpeedSupported(Parameters params) {
-         return (sShutterSpeed && params.get("shutter-speed") != null);
+         return sShutterSpeed;
     }
 
     @TargetApi(ApiHelper.VERSION_CODES.ICE_CREAM_SANDWICH)
