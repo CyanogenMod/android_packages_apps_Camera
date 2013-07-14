@@ -316,6 +316,7 @@ public class PhotoModule
     private boolean mHDRRendering = false;
     private ProgressDialog mHdrProgressDialog = null;
     private static ArrayList<Uri> sHDRShotsPaths = new ArrayList<Uri>();
+    int resetExposure;
 
     // Camera timer.
     private boolean mTimerMode = false;
@@ -1110,6 +1111,9 @@ public class PhotoModule
             if (mSnapshotOnIdle && mBurstShotsDone > 0) {
                 mHandler.post(mDoSnapRunnable);
             }
+            // reset exposure
+            mParameters.setExposureCompensation(resetExposure);
+            mCameraDevice.setParameters(mParameters);
         }
     }
 
@@ -1420,7 +1424,12 @@ public class PhotoModule
             animateFlash();
         }
 
+        //save data
+        resetExposure = mParameters.getExposureCompensation();
         // Set rotation and gps data.
+        if (mSceneMode == Util.SCENE_MODE_HDR && Util.needSamsungHDRFormat())
+            /* samsung actually speficify max range via exposure compinsation */
+            mParameters.setExposureCompensation(mParameters.getMaxExposureCompensation());
         mJpegRotation = Util.getJpegRotation(mCameraId, mOrientation);
         mParameters.setRotation(mJpegRotation);
         Location loc = mLocationManager.getCurrentLocation();
@@ -2873,6 +2882,7 @@ public class PhotoModule
         setupPreview();
         loadCameraPreferences();
         initializePhotoControl();
+        resetExposure= mParameters.getExposureCompensation();
 
         // from initializeFirstTime
         initializeZoom();
