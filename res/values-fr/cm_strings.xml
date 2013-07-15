@@ -124,4 +124,9 @@
     <string name="voice_hint">Prenez-vous en photo de loin en prononçant un mot clé : vous pouvez utiliser \'Cid\', \'Whisky\', \'Cerise\' et bien sûr \'Ouistiti!\'</string>
     <string name="pref_nohands_persistent_title">Déclenchement différé persistant</string>
     <string name="pref_video_hdr">HDR</string>
+    <string name="pref_shutter_speed_title">Vitesse d\'obturation</string>
+    <string name="pref_shutter_speed_default">automatique</string>
+    <string name="pref_shutter_speed_entry_auto">Automatique</string>
+    <string name="pref_shutter_speed_entry_0">0 (Lent)</string>
+    <string name="pref_shutter_speed_entry_12">12 (Rapide)</string>
 </resources>
