@@ -98,6 +98,13 @@
     <string name="pref_camera_coloreffect_entry_redtint">Teinte rouge</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Teinte bleue</string>
     <string name="pref_camera_coloreffect_entry_greentint">Teinte verte</string>
+    <string name="pref_camera_coloreffect_entry_washed">Délavé</string>
+    <string name="pref_camera_coloreffect_entry_vintage_warm">Ancien chaud</string>
+    <string name="pref_camera_coloreffect_entry_vintage_cold">Ancien froid</string>
+    <string name="pref_camera_coloreffect_entry_point_blue">Point bleu</string>
+    <string name="pref_camera_coloreffect_entry_point_green">Point vert</string>
+    <string name="pref_camera_coloreffect_entry_point_red_yellow">Point rouge-jaune</string>
+    <string name="pref_camera_coloreffect_entry_cartoonize">Cartoon</string>
     <string name="pref_camera_burst_title">Mode rafale</string>
     <string name="pref_camera_burst_entry_off">Désactivé</string>
     <string name="pref_camera_burst_entry_5">5 prises</string>
@@ -124,4 +131,7 @@
     <string name="voice_hint">Prenez-vous en photo de loin en prononçant un mot clé : vous pouvez utiliser \'Cid\', \'Whisky\', \'Cerise\' et bien sûr \'Ouistiti!\'</string>
     <string name="pref_nohands_persistent_title">Déclenchement différé persistant</string>
     <string name="pref_video_hdr">HDR</string>
+    <string name="pref_shutter_speed_title">Vitesse d\'obturation</string>
+    <string name="pref_shutter_speed_entry_auto">Automatique</string>
+    <string name="pref_camera_flashmode_entry_redeye">Yeux rouges</string>
 </resources>
