@@ -204,19 +204,19 @@
 
     <!-- Shutter speed -->
     <string name="pref_shutter_speed_title">Shutter speed</string>
-    <string name="pref_shutter_speed_default">auto</string>
+    <string name="pref_shutter_speed_default" translatable="false">auto</string>
     <string name="pref_shutter_speed_entry_auto">Auto</string>
-    <string name="pref_shutter_speed_entry_0">1\"</string>
-    <string name="pref_shutter_speed_entry_1">1/2</string>
-    <string name="pref_shutter_speed_entry_2">1/4</string>
-    <string name="pref_shutter_speed_entry_3">1/8</string>
-    <string name="pref_shutter_speed_entry_4">1/16</string>
-    <string name="pref_shutter_speed_entry_5">1/32</string>
-    <string name="pref_shutter_speed_entry_6">1/100</string>
-    <string name="pref_shutter_speed_entry_7">1/125</string>
-    <string name="pref_shutter_speed_entry_8">1/250</string>
-    <string name="pref_shutter_speed_entry_9">1/500</string>
-    <string name="pref_shutter_speed_entry_10">1/1000</string>
-    <string name="pref_shutter_speed_entry_11">1/2000</string>
-    <string name="pref_shutter_speed_entry_12">1/3333</string>
+    <string name="pref_shutter_speed_entry_0" translatable="false">1\"</string>
+    <string name="pref_shutter_speed_entry_1" translatable="false">1/2</string>
+    <string name="pref_shutter_speed_entry_2" translatable="false">1/4</string>
+    <string name="pref_shutter_speed_entry_3" translatable="false">1/8</string>
+    <string name="pref_shutter_speed_entry_4" translatable="false">1/16</string>
+    <string name="pref_shutter_speed_entry_5" translatable="false">1/32</string>
+    <string name="pref_shutter_speed_entry_6" translatable="false">1/100</string>
+    <string name="pref_shutter_speed_entry_7" translatable="false">1/125</string>
+    <string name="pref_shutter_speed_entry_8" translatable="false">1/250</string>
+    <string name="pref_shutter_speed_entry_9" translatable="false">1/500</string>
+    <string name="pref_shutter_speed_entry_10" translatable="false">1/1000</string>
+    <string name="pref_shutter_speed_entry_11" translatable="false">1/2000</string>
+    <string name="pref_shutter_speed_entry_12" translatable="false">1/3333</string>
 </resources>
