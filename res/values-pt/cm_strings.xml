@@ -127,6 +127,4 @@
     <string name="pref_shutter_speed_title">Velocidade do disparador</string>
     <string name="pref_shutter_speed_default">auto</string>
     <string name="pref_shutter_speed_entry_auto">Auto</string>
-    <string name="pref_shutter_speed_entry_0">0 (Devagar)</string>
-    <string name="pref_shutter_speed_entry_12">12 (Rápido)</string>
 </resources>
