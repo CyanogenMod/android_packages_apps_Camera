@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pref_camera_storage_title">ストレージ</string>
+    <string name="pref_camera_picturesize_entry_13mp">13Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_12_8mp">12.8Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_11_5mp">11.5Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_9mp">9Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_7mp">7Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_6_4mp">6.4Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_6mp">6Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_4_5mp">4.5Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_4mp">4Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_3_7mp">3.7Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_2_5mp">2.5Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_2_4mp">2.4Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_2_1mp">2.1Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_1_9mp">1.9Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_1_5mp">1.5Mピクセル</string>
+    <string name="pref_camera_picturesize_entry_wxga">WXGA</string>
+    <string name="pref_camera_picturesize_entry_xga">XGA</string>
+    <string name="pref_camera_picturesize_entry_svga">SVGA</string>
+    <string name="pref_camera_picturesize_entry_wvga">WVGA</string>
+    <string name="pref_camera_picturesize_entry_wqvga">WQVGA</string>
+    <string name="pref_camera_focusmode_entry_continuouspicture">連続写真</string>
+    <string name="pref_camera_focusmode_entry_continuousvideo">連続動画</string>
+    <string name="pref_camera_focusmode_entry_extended">拡張焦点</string>
+    <string name="pref_camera_focusmode_entry_facedetect">顔認識</string>
+    <string name="pref_camera_focusmode_entry_facepriority">顔優先度</string>
+    <string name="pref_camera_focusmode_entry_fixed">固定</string>
+    <string name="pref_camera_focusmode_entry_portrait">ポートレート</string>
+    <string name="pref_camera_focusmode_entry_hyperfocal">過焦点</string>
+    <string name="pref_camera_scenemode_entry_nightportrait">夜景ポートレート</string>
+    <string name="pref_camera_scenemode_entry_nightindoor">夜の屋内</string>
+    <string name="pref_camera_scenemode_entry_supernight">暗黒の夜</string>
+    <string name="pref_camera_scenemode_entry_duskdawn">夕暮れ/夜明け</string>
+    <string name="pref_camera_scenemode_entry_candlelight">ろうそくの光</string>
+    <string name="pref_camera_scenemode_entry_fallcolor">秋色</string>
+    <string name="pref_camera_scenemode_entry_closeup">クローズアップ</string>
+    <string name="pref_camera_scenemode_entry_landscape">ランドスケープ</string>
+    <string name="pref_camera_scenemode_entry_aqua">アクア</string>
+    <string name="pref_camera_scenemode_entry_sports">スポーツ</string>
+    <string name="pref_camera_scenemode_entry_mood">ムード</string>
+    <string name="pref_camera_scenemode_entry_fireworks">花火</string>
+    <string name="pref_camera_scenemode_entry_cine">シネ</string>
+    <string name="pref_camera_scenemode_entry_oldfilm">古い映画</string>
+    <string name="pref_camera_scenemode_entry_beach">ビーチ</string>
+    <string name="pref_camera_scenemode_entry_portrait">ポートレート</string>
+    <string name="pref_camera_scenemode_entry_snow">雪</string>
+    <string name="pref_camera_scenemode_entry_steadyphoto">安定した写真</string>
+    <string name="pref_camera_scenemode_entry_theatre">劇場</string>
+    <string name="pref_camera_scenemode_entry_backlight">逆光</string>
+    <string name="pref_camera_scenemode_entry_backlightportrait">逆光ポートレート</string>
+    <string name="pref_camera_scenemode_entry_document">ドキュメント</string>
+    <string name="pref_camera_scenemode_entry_barcode">バーコード</string>
+    <string name="pref_camera_scenemode_entry_text">テキスト</string>
+    <string name="pref_camera_scenemode_entry_beauty">Beauty</string>
+    <string name="pref_camera_scenemode_entry_flowers">花</string>
+    <string name="pref_camera_scenemode_entry_whiteboard">ホワイトボード</string>
+    <string name="pref_camera_scenemode_entry_backgroundblur">背景ぼかし</string>
+    <string name="pref_camera_power_shutter_title">電源ボタンシャッター</string>
+    <string name="pref_camera_iso_entry_auto">自動</string>
+    <string name="pref_camera_iso_entry_isodeblur">自動(HJR)</string>
+    <string name="pref_camera_iso_entry_isosports">スポーツ</string>
+    <string name="pref_camera_iso_entry_isonight">夜景</string>
+    <string name="pref_camera_iso_entry_isomovie">映画</string>
+    <string name="pref_camera_jpeg_title">JPEG品質</string>
+    <string name="pref_camera_jpeg_entry_super">最高</string>
+    <string name="pref_camera_jpeg_entry_high">高</string>
+    <string name="pref_camera_jpeg_entry_medium">中</string>
+    <string name="pref_camera_jpeg_entry_low">低</string>
+    <string name="pref_camera_coloreffect_title">カラーエフェクト</string>
+    <string name="pref_camera_coloreffect_entry_none">なし</string>
+    <string name="pref_camera_coloreffect_entry_mono">モノ</string>
+    <string name="pref_camera_coloreffect_entry_sepia">セピア</string>
+    <string name="pref_camera_coloreffect_entry_negative">ネガティブ</string>
+    <string name="pref_camera_coloreffect_entry_solarize">ソラライズ</string>
+    <string name="pref_camera_coloreffect_entry_posterize">ポスタライズ</string>
+    <string name="pref_camera_coloreffect_entry_aqua">アクア</string>
+    <string name="pref_camera_coloreffect_entry_emboss">エンボス</string>
+    <string name="pref_camera_coloreffect_entry_sketch">スケッチ</string>
+    <string name="pref_camera_coloreffect_entry_neon">ネオン</string>
+    <string name="pref_camera_coloreffect_entry_pastel">パステル</string>
+    <string name="pref_camera_coloreffect_entry_mosaic">モザイク</string>
+    <string name="pref_camera_coloreffect_entry_redtint">赤ティント</string>
+    <string name="pref_camera_coloreffect_entry_bluetint">青ティント</string>
+    <string name="pref_camera_coloreffect_entry_greentint">緑ティント</string>
+    <string name="pref_camera_burst_title">連写モード</string>
+    <string name="pref_camera_burst_entry_off">オフ</string>
+    <string name="pref_camera_burst_entry_5">5連写</string>
+    <string name="pref_camera_burst_entry_10">10連写</string>
+    <string name="pref_camera_burst_entry_15">15連写</string>
+    <string name="pref_camera_burst_entry_20">20連写</string>
+    <string name="pref_camera_focustime_title">タッチフォーカス持続</string>
+    <string name="pref_camera_focustime_summary">タッチフォーカスの持続時間を選択</string>
+    <string name="pref_camera_focustime_entry_5">5秒</string>
+    <string name="pref_camera_focustime_entry_10">10秒</string>
+    <string name="pref_camera_focustime_entry_15">15秒</string>
+    <string name="pref_camera_focustime_entry_20">20秒</string>
+    <string name="pref_camera_focustime_entry_30">30秒</string>
+    <string name="pref_camera_focustime_entry_infinite">無限</string>
+    <string name="pref_camera_nohands_title">ハンズフリーシャッター</string>
+    <string name="pref_camera_nohands_voice_entry">ボイス</string>
+    <string name="pref_camera_timer_entry_0">オフ</string>
+    <string name="pref_camera_timer_entry_10">10秒</string>
+    <string name="pref_camera_timer_entry_20">20秒</string>
+    <string name="pref_camera_timer_entry_30">30秒</string>
+    <string name="pref_camera_timer_entry_40">40秒</string>
+    <string name="pref_camera_timer_entry_50">50秒</string>
+    <string name="pref_camera_timer_entry_60">60秒</string>
+    <string name="voice_hint">トリガーの言葉を言ってから時間をあけて写真を撮ります。使える言葉は、\'シド\'、\'ウィスキー\'、そしてもちろん\'チーズ!\' です。</string>
+    <string name="pref_nohands_persistent_title">ずっとハンズフリー</string>
+    <string name="pref_video_hdr">HDR</string>
+    <string name="pref_shutter_speed_default">自動</string>
+    <string name="pref_shutter_speed_entry_auto">自動</string>
+</resources>
