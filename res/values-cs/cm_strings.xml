@@ -101,6 +101,13 @@
     <string name="pref_camera_coloreffect_entry_redtint">Červený nádech</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Modrý nádech</string>
     <string name="pref_camera_coloreffect_entry_greentint">Zelený nádech</string>
+    <string name="pref_camera_coloreffect_entry_washed">Vypraný</string>
+    <string name="pref_camera_coloreffect_entry_vintage_warm">Starý teplý</string>
+    <string name="pref_camera_coloreffect_entry_vintage_cold">Starý studený</string>
+    <string name="pref_camera_coloreffect_entry_point_blue">Bodový modrý</string>
+    <string name="pref_camera_coloreffect_entry_point_green">Bodový zelený</string>
+    <string name="pref_camera_coloreffect_entry_point_red_yellow">Bodový červenožlutý</string>
+    <string name="pref_camera_coloreffect_entry_cartoonize">Kreslený</string>
 
     <string name="pref_camera_burst_title">Sekvenční snímání</string>
 
@@ -134,4 +141,8 @@
     <string name="voice_hint">Pořízení fotografie vyslovením uričitého slova: pro vyfocení je možné použít \'Cid\', \'Whisky\' a samozřejmě \'Cheese!\'</string>
 
     <string name="pref_nohands_persistent_title">Ovládání závěrky hlasem</string>
+
+    <string name="pref_shutter_speed_title">Rychlost závěrky</string>
+
+    <string name="pref_camera_flashmode_entry_redeye">Červené oči</string>
 </resources>
