@@ -28,6 +28,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Face;
@@ -1227,15 +1228,17 @@ public class PhotoModule
                 if (mSceneMode == Util.SCENE_MODE_HDR && Util.needSamsungHDRFormat()){
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     Bitmap bm = Util.decodeYUV422P(r.data, r.width, r.height);
-                    bm.compress(Bitmap.CompressFormat.JPEG, Integer.parseInt(mPreferences.getString(CameraSettings.KEY_JPEG, mActivity.getString(R.string.pref_camera_jpeg_default))), baos);
-                    r.data=baos.toByteArray();
-                    r.orientation = mJpegRotation;
-                    int x=r.height;
-                    int y=r.width;
-                    if (r.orientation % 180 != 0) {
+                    if (mJpegRotation % 180 != 0) {
+                        int x=r.height;
+                        int y=r.width;
+                        Matrix matrix = new Matrix();
+                        matrix.postRotate(90);
+                        bm = Bitmap.createBitmap(bm, 0, 0, r.width, r.height, matrix, true);
                         r.width = x;
                         r.height = y;
                     }
+                    bm.compress(Bitmap.CompressFormat.JPEG, Integer.parseInt(mPreferences.getString(CameraSettings.KEY_JPEG, mActivity.getString(R.string.pref_camera_jpeg_default))), baos);
+                    r.data=baos.toByteArray();
                 }
                 storeImage(r.data, r.uri, r.title, r.loc, r.width, r.height,
                         r.orientation);
