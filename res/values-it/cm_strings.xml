@@ -118,4 +118,7 @@
     <string name="pref_camera_timer_entry_60">60s</string>
     <string name="voice_hint">Scatta una foto a distanza pronunciando una parola per l\'attivazione: Puoi usare \'Cattura\', \'Scatta\', \'Scatto\' e \'Sorriso\'</string>
     <string name="pref_nohands_persistent_title">Senza mani persistente</string>
+    <string name="pref_video_hdr">HDR</string>
+    <string name="pref_shutter_speed_title">Velocità otturatore</string>
+    <string name="pref_shutter_speed_entry_auto">Automatica</string>
 </resources>
