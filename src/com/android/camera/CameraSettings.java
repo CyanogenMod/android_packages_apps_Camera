@@ -268,8 +268,7 @@ public class CameraSettings {
         if (storage != null) {
             buildStorage(group, storage);
         }
-        if (videoHdr != null &&
-            !Util.isVideoHdrSupported(mParameters)) {
+        if (videoHdr != null && !Util.isVideoHdrSupported(mParameters)) {
             removePreference(group, videoHdr.getKey());
         }
         if (shutterSpeed != null && !Util.isShutterSpeedSupported(mParameters)) {
