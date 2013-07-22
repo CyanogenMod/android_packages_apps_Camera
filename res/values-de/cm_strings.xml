@@ -124,4 +124,6 @@
     <string name="voice_hint">Zum Auslösen aus der Ferne einfach \"Cheese\" sagen.</string>
     <string name="pref_nohands_persistent_title">Selbstausl. speichern</string>
     <string name="pref_video_hdr">HDR</string>
+    <string name="pref_shutter_speed_title">Verschlusszeit</string>
+    <string name="pref_shutter_speed_entry_auto">Automatisch</string>
 </resources>
