@@ -152,6 +152,13 @@
     <string name="pref_camera_coloreffect_entry_redtint">Red tint</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Blue tint</string>
     <string name="pref_camera_coloreffect_entry_greentint">Green tint</string>
+    <string name="pref_camera_coloreffect_entry_washed">Washed</string>
+    <string name="pref_camera_coloreffect_entry_vintage_warm">Vintage warm</string>
+    <string name="pref_camera_coloreffect_entry_vintage_cold">Vintage cold</string>
+    <string name="pref_camera_coloreffect_entry_point_blue">Point blue</string>
+    <string name="pref_camera_coloreffect_entry_point_green">Point green</string>
+    <string name="pref_camera_coloreffect_entry_point_red_yellow">Point red-yellow</string>
+    <string name="pref_camera_coloreffect_entry_cartoonize">Cartoonize</string>
 
     <!-- Settings screen, Burst mode title -->
     <string name="pref_camera_burst_title">Burst mode</string>
