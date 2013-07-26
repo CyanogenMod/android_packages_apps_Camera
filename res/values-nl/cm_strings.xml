@@ -98,6 +98,13 @@
     <string name="pref_camera_coloreffect_entry_redtint">Rode tint</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Blauwe tint</string>
     <string name="pref_camera_coloreffect_entry_greentint">Groene tint</string>
+    <string name="pref_camera_coloreffect_entry_washed">Verwassen</string>
+    <string name="pref_camera_coloreffect_entry_vintage_warm">Ouderwets (warm)</string>
+    <string name="pref_camera_coloreffect_entry_vintage_cold">Ouderwets (koud)</string>
+    <string name="pref_camera_coloreffect_entry_point_blue">Blauwe punt</string>
+    <string name="pref_camera_coloreffect_entry_point_green">Groene punt</string>
+    <string name="pref_camera_coloreffect_entry_point_red_yellow">Rode-gele punt</string>
+    <string name="pref_camera_coloreffect_entry_cartoonize">Tekenfilm</string>
     <string name="pref_camera_burst_title">Burstmodus</string>
     <string name="pref_camera_burst_entry_off">Uit</string>
     <string name="pref_camera_burst_entry_5">5 foto\'s</string>
@@ -124,4 +131,7 @@
     <string name="voice_hint">Neem op afstand een foto door één van de volgende woorden te zeggen: \'Cid\', \'Whisky\' of \'Cheese\'</string>
     <string name="pref_nohands_persistent_title">Blijvend handsfree</string>
     <string name="pref_video_hdr">HDR</string>
+    <string name="pref_shutter_speed_title">Sluitertijd</string>
+    <string name="pref_shutter_speed_entry_auto">Automatisch</string>
+    <string name="pref_camera_flashmode_entry_redeye">Rode ogen</string>
 </resources>
