@@ -93,6 +93,13 @@
     <string name="pref_camera_coloreffect_entry_redtint">Tinta rossa</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Tinta blu</string>
     <string name="pref_camera_coloreffect_entry_greentint">Tinta verde</string>
+    <string name="pref_camera_coloreffect_entry_washed">Lavato</string>
+    <string name="pref_camera_coloreffect_entry_vintage_warm">Vintage caldo</string>
+    <string name="pref_camera_coloreffect_entry_vintage_cold">Vintage freddo</string>
+    <string name="pref_camera_coloreffect_entry_point_blue">Punto blu</string>
+    <string name="pref_camera_coloreffect_entry_point_green">Punto verde</string>
+    <string name="pref_camera_coloreffect_entry_point_red_yellow">Punto rosso-giallo</string>
+    <string name="pref_camera_coloreffect_entry_cartoonize">Cartone animato</string>
     <string name="pref_camera_burst_title">Scatti continui</string>
     <string name="pref_camera_burst_entry_off">Off</string>
     <string name="pref_camera_burst_entry_5">5 scatti</string>
@@ -121,4 +128,5 @@
     <string name="pref_video_hdr">HDR</string>
     <string name="pref_shutter_speed_title">Velocità otturatore</string>
     <string name="pref_shutter_speed_entry_auto">Automatica</string>
+    <string name="pref_camera_flashmode_entry_redeye">Occhi rossi</string>
 </resources>
