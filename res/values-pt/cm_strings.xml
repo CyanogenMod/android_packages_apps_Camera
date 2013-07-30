@@ -133,4 +133,5 @@
     <string name="pref_camera_coloreffect_entry_point_green">Ponto verde</string>
     <string name="pref_camera_coloreffect_entry_point_red_yellow">Ponto vermelho-amarelo</string>
     <string name="pref_camera_coloreffect_entry_cartoonize">Cartunizado</string>
+    <string name="pref_camera_flashmode_entry_redeye">Olho vermelho</string>
 </resources>
