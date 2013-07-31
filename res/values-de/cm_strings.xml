@@ -92,6 +92,13 @@
     <string name="pref_camera_coloreffect_entry_redtint">Rötlich</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Bläulich</string>
     <string name="pref_camera_coloreffect_entry_greentint">Grünlich</string>
+    <string name="pref_camera_coloreffect_entry_washed">Ausgewaschen</string>
+    <string name="pref_camera_coloreffect_entry_vintage_warm">Vintage (warm)</string>
+    <string name="pref_camera_coloreffect_entry_vintage_cold">Vintage (kalt)</string>
+    <string name="pref_camera_coloreffect_entry_point_blue">Blau gepunktet</string>
+    <string name="pref_camera_coloreffect_entry_point_green">Grün gepunktet</string>
+    <string name="pref_camera_coloreffect_entry_point_red_yellow">Rot-orange gepunktet</string>
+    <string name="pref_camera_coloreffect_entry_cartoonize">Cartoon-Effekt</string>
     <string name="pref_camera_burst_title">Serienaufnahme</string>
     <string name="pref_camera_burst_entry_off">Aus</string>
     <string name="pref_camera_burst_entry_5">5 Aufnahmen</string>
@@ -126,4 +133,5 @@
     <string name="pref_video_hdr">HDR</string>
     <string name="pref_shutter_speed_title">Verschlusszeit</string>
     <string name="pref_shutter_speed_entry_auto">Automatisch</string>
+    <string name="pref_camera_flashmode_entry_redeye">Rote Auge-Reduzierung</string>
 </resources>
