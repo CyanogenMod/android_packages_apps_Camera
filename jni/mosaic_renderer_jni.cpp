@@ -736,6 +736,10 @@ JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_step(
 
         gWarper2.DrawTexture(g_dTranslationToFBOCenterGL);
 
+        //clear the render target before drawing,
+        //fix the undefined buffer mess up issue of preview layer
+        gPreview.Clear(0.0, 0.0, 0.0, 1.0);
+
         if (gIsLandscapeOrientation) {
             gPreview.DrawTexture(g_dAffinetransIdentGL);
         } else {
@@ -754,6 +758,11 @@ JNIEXPORT void JNICALL Java_com_android_camera_MosaicRenderer_step(
 
         gWarper1.DrawTexture(g_dAffinetransGL);
         gWarper2.DrawTexture(g_dTranslationToFBOCenterGL);
+
+        //clear the render target before drawing,
+        //fix the undefined buffer mess up issue of preview layer
+        gPreview.Clear(0.0, 0.0, 0.0, 1.0);
+
         gPreview.DrawTexture(g_dAffinetransPanGL);
 
         gCurrentFBOIndex = 1 - gCurrentFBOIndex;
