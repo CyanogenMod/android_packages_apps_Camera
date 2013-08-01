@@ -109,7 +109,7 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"U svemiru"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Zalazak sunca"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Vaš videozapis"</string>
-    <string name="bg_replacement_message" msgid="9184270738916564608">"U nastavku postavite ​​uređaj."\n"Odmaknite se na trenutak."</string>
+    <string name="bg_replacement_message" msgid="9184270738916564608">"U nastavku postavite ​​uređaj.\nOdmaknite se na trenutak."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Dodirnite za fotografiranje tijekom snimanja."</string>
     <string name="video_recording_started" msgid="4132915454417193503">"Pokrenuto je snimanje videozapisa."</string>
     <string name="video_recording_stopped" msgid="5086919511555808580">"Zaustavljeno je snimanje videozapisa."</string>
@@ -187,7 +187,7 @@
     <string name="set_duration" msgid="5578035312407161304">"Postavite trajanje u sekundama"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"Odbrojavanje do snimanja fotografije"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Zapamtiti lokacije fotografija?"</string>
-    <string name="remember_location_prompt" msgid="724592331305808098">"Dodajte svojim fotografijama i videozapisima oznake lokacija na kojima su snimljeni."\n\n"Ostale aplikacije mogu pristupiti tim podacima s vašim spremljenim slikama."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"Dodajte svojim fotografijama i videozapisima oznake lokacija na kojima su snimljeni.\n\nOstale aplikacije mogu pristupiti tim podacima s vašim spremljenim slikama."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Ne, hvala"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Da"</string>
 </resources>

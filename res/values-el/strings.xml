@@ -109,7 +109,7 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"Στο διάστημα"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Δύση ηλίου"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Το βίντεό σας"</string>
-    <string name="bg_replacement_message" msgid="9184270738916564608">"Αφήστε τη συσκευή σας κάτω"\n"Απομακρυνθείτε για λίγο από την εμβέλειά της."</string>
+    <string name="bg_replacement_message" msgid="9184270738916564608">"Αφήστε τη συσκευή σας κάτω\nΑπομακρυνθείτε για λίγο από την εμβέλειά της."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Αγγίξτε για λήψη φωτογραφίας κατά την εγγραφή."</string>
     <string name="video_recording_started" msgid="4132915454417193503">"Έχει ξεκινήσει η εγγραφή βίντεο."</string>
     <string name="video_recording_stopped" msgid="5086919511555808580">"Έχει διακοπεί η εγγραφή βίντεο."</string>
@@ -187,7 +187,7 @@
     <string name="set_duration" msgid="5578035312407161304">"Ορισμός διάρκειας σε δευτερόλεπτα"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"Αντίστροφη μέτρηση για λήψη φωτογραφίας"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Απομνημόνευση τοποθεσίας φωτογραφιών;"</string>
-    <string name="remember_location_prompt" msgid="724592331305808098">"Προσθέστε ετικέτες στις φωτογραφίες και τα βίντεό σας με την τοποθεσία στην οποία έχουν τραβηχτεί."\n\n"Οι άλλες εφαρμογές μπορούν να αποκτήσουν πρόσβαση σε αυτές τις πληροφορίες μαζί με τις αποθηκευμένες σας εικόνες."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"Προσθέστε ετικέτες στις φωτογραφίες και τα βίντεό σας με την τοποθεσία στην οποία έχουν τραβηχτεί.\n\nΟι άλλες εφαρμογές μπορούν να αποκτήσουν πρόσβαση σε αυτές τις πληροφορίες μαζί με τις αποθηκευμένες σας εικόνες."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Όχι ευχαριστώ"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ναι"</string>
 </resources>

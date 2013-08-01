@@ -109,7 +109,7 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"Nello spazio"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Tramonto"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Il tuo video"</string>
-    <string name="bg_replacement_message" msgid="9184270738916564608">"Posa il tuo dispositivo."\n"Esci dalla visualizzazione per un attimo."</string>
+    <string name="bg_replacement_message" msgid="9184270738916564608">"Posa il tuo dispositivo.\nEsci dalla visualizzazione per un attimo."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Tocca per scattare foto durante la registrazione."</string>
     <string name="video_recording_started" msgid="4132915454417193503">"La registrazione video è stata avviata."</string>
     <string name="video_recording_stopped" msgid="5086919511555808580">"La registrazione video è stata interrotta."</string>
@@ -187,7 +187,7 @@
     <string name="set_duration" msgid="5578035312407161304">"Imposta la durata in secondi"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"Conto alla rovescia per scattare una foto"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Memorizzare i luoghi delle foto?"</string>
-    <string name="remember_location_prompt" msgid="724592331305808098">"Aggiungi alle foto e ai video tag relativi alle località in cui sono stati ripresi."\n\n"Altre applicazioni possono accedere a queste informazioni e alle tue immagini salvate."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"Aggiungi alle foto e ai video tag relativi alle località in cui sono stati ripresi.\n\nAltre applicazioni possono accedere a queste informazioni e alle tue immagini salvate."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"No, grazie"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Sì"</string>
 </resources>

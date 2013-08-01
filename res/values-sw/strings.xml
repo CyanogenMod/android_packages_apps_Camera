@@ -109,7 +109,7 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"Kwenya nafasi"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Jua kutua"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Video yako"</string>
-    <string name="bg_replacement_message" msgid="9184270738916564608">"Weka kifaa chako chini."\n"Toka nje ya muonekano kwa muda."</string>
+    <string name="bg_replacement_message" msgid="9184270738916564608">"Weka kifaa chako chini.\nToka nje ya muonekano kwa muda."</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"Gusa ili upige picha wakati unarekodi."</string>
     <string name="video_recording_started" msgid="4132915454417193503">"Kurekodi kwa video kumeanza."</string>
     <string name="video_recording_stopped" msgid="5086919511555808580">"Kurekodi kwa video kumekomeshwa."</string>
@@ -189,7 +189,7 @@
     <string name="set_duration" msgid="5578035312407161304">"Weka muda katika sekunde"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"Inahesabu ili kupiga picha"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Kumbuka maeneo ya picha?"</string>
-    <string name="remember_location_prompt" msgid="724592331305808098">"Tambulisha picha na video zako kwa maeneo ambapo zinachukuliwa."\n\n"Programu nyingine zinaweza kufikia maelezo haya kando na picha zako zilizohifadhiwa."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"Tambulisha picha na video zako kwa maeneo ambapo zinachukuliwa.\n\nProgramu nyingine zinaweza kufikia maelezo haya kando na picha zako zilizohifadhiwa."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"La, asante"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ndiyo"</string>
 </resources>

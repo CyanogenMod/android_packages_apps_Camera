@@ -109,7 +109,7 @@
     <string name="effect_backdropper_space" msgid="7935661090723068402">"太空背景"</string>
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"日落"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"您的视频"</string>
-    <string name="bg_replacement_message" msgid="9184270738916564608">"把设备放好。"\n"离开镜头前片刻。"</string>
+    <string name="bg_replacement_message" msgid="9184270738916564608">"把设备放好。\n离开镜头前片刻。"</string>
     <string name="video_snapshot_hint" msgid="18833576851372483">"在录制视频过程中，轻触一下即可拍一张照片。"</string>
     <string name="video_recording_started" msgid="4132915454417193503">"已开始录制视频。"</string>
     <string name="video_recording_stopped" msgid="5086919511555808580">"已停止录制视频。"</string>
@@ -187,7 +187,7 @@
     <string name="set_duration" msgid="5578035312407161304">"设置倒数时间（秒）"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"拍照倒计时中"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"是否记住照片拍摄地点？"</string>
-    <string name="remember_location_prompt" msgid="724592331305808098">"为您的照片和视频标明拍摄地点。"\n\n"其他应用在查看您保存的图片时将可以访问这些信息。"</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"为您的照片和视频标明拍摄地点。\n\n其他应用在查看您保存的图片时将可以访问这些信息。"</string>
     <string name="remember_location_no" msgid="7541394381714894896">"不用了"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"是"</string>
 </resources>
