@@ -38,6 +38,13 @@
     <string name="pref_camera_coloreffect_entry_redtint">Красный оттенок</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Синий оттенок</string>
     <string name="pref_camera_coloreffect_entry_greentint">Зелёный оттенок</string>
+    <string name="pref_camera_coloreffect_entry_washed">После стирки</string>
+    <string name="pref_camera_coloreffect_entry_vintage_warm">Тёплый винтаж</string>
+    <string name="pref_camera_coloreffect_entry_vintage_cold">Холодный винтаж</string>
+    <string name="pref_camera_coloreffect_entry_point_blue">Выделить синий</string>
+    <string name="pref_camera_coloreffect_entry_point_green">Выделить зелёный</string>
+    <string name="pref_camera_coloreffect_entry_point_red_yellow">Выделить красный и жёлтый</string>
+    <string name="pref_camera_coloreffect_entry_cartoonize">Комикс</string>
     <string name="pref_camera_burst_title">Серийная съёмка</string>
     <string name="pref_camera_burst_entry_off">Выкл.</string>
     <string name="pref_camera_burst_entry_5">5 снимков</string>
@@ -112,4 +119,11 @@
     <string name="pref_camera_timer_entry_60">60 сек.</string>
     <string name="voice_hint">Делайте фотографии на расстоянии, произнося слова: \"Cid\", \"Whisky\" и, конечно, \"Cheese!\"</string>
     <string name="pref_nohands_persistent_title">Автоспуск всегда</string>
+
+    <!-- Shutter speed -->
+    <string name="pref_shutter_speed_title">Выдержка</string>
+    <string name="pref_shutter_speed_entry_auto">Авто</string>
+
+    <!-- Red eye flash mode title -->
+    <string name="pref_camera_flashmode_entry_redeye">Красные глаза</string>
 </resources>
