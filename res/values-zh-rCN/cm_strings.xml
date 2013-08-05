@@ -93,6 +93,13 @@
     <string name="pref_camera_coloreffect_entry_redtint">偏红</string>
     <string name="pref_camera_coloreffect_entry_bluetint">偏蓝</string>
     <string name="pref_camera_coloreffect_entry_greentint">偏绿</string>
+    <string name="pref_camera_coloreffect_entry_washed">褪色</string>
+    <string name="pref_camera_coloreffect_entry_vintage_warm">老式暖色</string>
+    <string name="pref_camera_coloreffect_entry_vintage_cold">老式冷色</string>
+    <string name="pref_camera_coloreffect_entry_point_blue">点蓝</string>
+    <string name="pref_camera_coloreffect_entry_point_green">点绿</string>
+    <string name="pref_camera_coloreffect_entry_point_red_yellow">点红橙</string>
+    <string name="pref_camera_coloreffect_entry_cartoonize">卡通化</string>
     <string name="pref_camera_burst_title">连拍模式</string>
     <string name="pref_camera_burst_entry_off">关闭</string>
     <string name="pref_camera_burst_entry_5">5 张</string>
@@ -118,4 +125,6 @@
     <string name="pref_camera_timer_entry_60">60 秒</string>
     <string name="voice_hint">通过说出关键词进行远程拍照 (关键词包括 \"Cid\", \"威士忌\", 和 \"茄子\"!)</string>
     <string name="pref_nohands_persistent_title">持续性语音快门</string>
+    <string name="pref_shutter_speed_title">快门速度</string>
+    <string name="pref_camera_flashmode_entry_redeye">红眼</string>
 </resources>
