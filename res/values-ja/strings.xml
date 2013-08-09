@@ -44,7 +44,7 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"カメラ設定"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"ビデオ録画設定"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"表示サイズ"</string>
-    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8Mピクセル"</string>
+    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8メガピクセル"</string>
     <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5メガピクセル"</string>
     <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3メガピクセル"</string>
     <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2メガピクセル"</string>
