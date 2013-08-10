@@ -98,6 +98,13 @@
     <string name="pref_camera_coloreffect_entry_redtint">Κόκκινη απόχρωση</string>
     <string name="pref_camera_coloreffect_entry_bluetint">Μπλε απόχρωση</string>
     <string name="pref_camera_coloreffect_entry_greentint">Πράσινη απόχρωση</string>
+    <string name="pref_camera_coloreffect_entry_washed">Ξεθωριασμένο</string>
+    <string name="pref_camera_coloreffect_entry_vintage_warm">Vintage θερμό</string>
+    <string name="pref_camera_coloreffect_entry_vintage_cold">Vintage ψυχρό</string>
+    <string name="pref_camera_coloreffect_entry_point_blue">Επισήμανση μπλε</string>
+    <string name="pref_camera_coloreffect_entry_point_green">Επισήμανση πράσινου</string>
+    <string name="pref_camera_coloreffect_entry_point_red_yellow">Επισήμανση κόκκινου-κίτρινου</string>
+    <string name="pref_camera_coloreffect_entry_cartoonize">Κινούμενα σχέδια</string>
     <string name="pref_camera_burst_title">Λειτουργία ριπής</string>
     <string name="pref_camera_burst_entry_off">Απενεργοποιημένη</string>
     <string name="pref_camera_burst_entry_5">5 λήψεις</string>
@@ -123,4 +130,8 @@
     <string name="pref_camera_timer_entry_60">60δ</string>
     <string name="voice_hint">Τραβήξτε μια φωτογραφία από απόσταση λέγοντας μια λέξη κλειδί: μπορείτε να χρησιμοποιήσετε \'Cid\', \'Whisky\' και φυσικά \'Cheese!\'</string>
     <string name="pref_nohands_persistent_title">Μόνιμο handsfree</string>
+    <string name="pref_video_hdr">HDR</string>
+    <string name="pref_shutter_speed_title">Ταχύτητα κλείστρου</string>
+    <string name="pref_shutter_speed_entry_auto">Αυτόματη</string>
+    <string name="pref_camera_flashmode_entry_redeye">Κόκκινα μάτια</string>
 </resources>
