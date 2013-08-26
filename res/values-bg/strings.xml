@@ -127,7 +127,7 @@
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Контрола за промяна на мащаба"</string>
     <string name="accessibility_decrement" msgid="1411194318538035666">"Намаляване на %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Увеличаване на %1$s"</string>
-    <string name="accessibility_check_box" msgid="7317447218256584181">"Квадратче за отметка за %1$s"</string>
+    <string name="accessibility_check_box" msgid="7317447218256584181">"%1$s check box"</string>
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Превключване към фотоапарат"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Превключване към видео"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Превключване към панорама"</string>
