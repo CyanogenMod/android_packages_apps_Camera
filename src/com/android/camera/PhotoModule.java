@@ -2058,9 +2058,9 @@ public class PhotoModule
         stopPreview();
         // Close the camera now because other activities may need to use it.
         closeCamera();
-        if (Util.mSurfaceTexture != null) {
-            ((CameraScreenNail) mActivity.mCameraScreenNail).releaseSurfaceTexture();
-            Util.mSurfaceTexture = null;
+        final CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
+        if (screenNail.getSurfaceTexture() != null) {
+            screenNail.releaseSurfaceTexture();
         }
         resetScreenOn();
 

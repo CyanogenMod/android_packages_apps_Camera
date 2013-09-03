@@ -196,7 +196,6 @@ public class Util {
     private static boolean mIsCountDownOn;
     private static AudioManager mAudioManager;
     private static boolean mIsMuted = false;
-    public static Object mSurfaceTexture;
 
     private Util() {
     }
@@ -978,7 +977,8 @@ public class Util {
             Parameters mParameters, CameraActivity mActivity) {
         CameraScreenNail screenNail = (CameraScreenNail) mActivity.mCameraScreenNail;
 
-        if (mSurfaceTexture == null || mSwitchCamera) {
+        SurfaceTexture surfaceTexture = screenNail.getSurfaceTexture();
+        if (screenNail.getSurfaceTexture() == null || mSwitchCamera) {
             mSwitchCamera = false;
             Size size = mParameters.getPreviewSize();
 
@@ -991,9 +991,9 @@ public class Util {
             mActivity.notifyScreenNailChanged();
             screenNail.acquireSurfaceTexture();
 
-            mSurfaceTexture = screenNail.getSurfaceTexture();
+            surfaceTexture = screenNail.getSurfaceTexture();
         }
-        return (SurfaceTexture)mSurfaceTexture;
+        return (SurfaceTexture)surfaceTexture;
     }
 
     private static class ImageFileNamer {
