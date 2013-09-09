@@ -184,7 +184,7 @@
     <string name="set_timer_help" msgid="5007708849404589472">"Nedtællingsur er slukket. Slå den til at tælle ned, før du tager et billede."</string>
     <string name="set_duration" msgid="5578035312407161304">"Indstil varigheden i sekunder"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"Tælle ned for at tage et foto"</string>
-    <string name="remember_location_title" msgid="9060472929006917810">"Skal fotosteder huskes?"</string>
+    <string name="remember_location_title" msgid="9060472929006917810">"Husk, hvor fotoet er fra?"</string>
     <string name="remember_location_prompt" msgid="724592331305808098">"Tag dine fotos og videoer med de placeringer, hvor de blev taget.\n\nAndre apps kan få adgang til disse oplysninger sammen med dine gemte billeder."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Nej tak"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Ja"</string>

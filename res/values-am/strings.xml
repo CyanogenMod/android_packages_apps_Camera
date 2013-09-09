@@ -37,7 +37,7 @@
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"ሥፍራ"</string>
     <string name="pref_camera_timer_title" msgid="3105232208281893389">"ሰዓት ቆጣሪ"</string>
   <plurals name="pref_camera_timer_entry">
-    <item quantity="one" msgid="1654523400981245448">"1 ሰከንድ"</item>
+    <item quantity="one" msgid="1654523400981245448">"1 ሴኮንድ"</item>
     <item quantity="other" msgid="6455381617076792481">"%d ሰከንዶች"</item>
   </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
@@ -139,7 +139,7 @@
     <string name="capital_off" msgid="7231052688467970897">"ጠፍቷል"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"ጠፍቷል"</string>
     <string name="pref_video_time_lapse_frame_interval_500" msgid="2949719376111679816">"0.5 ሰከንዶች"</string>
-    <string name="pref_video_time_lapse_frame_interval_1000" msgid="1672458758823855874">"1 ሰከንድ"</string>
+    <string name="pref_video_time_lapse_frame_interval_1000" msgid="1672458758823855874">"1 ሴኮንድ"</string>
     <string name="pref_video_time_lapse_frame_interval_1500" msgid="3415071702490624802">"1.5 ሰከንዶች"</string>
     <string name="pref_video_time_lapse_frame_interval_2000" msgid="827813989647794389">"2 ሰከንዶች"</string>
     <string name="pref_video_time_lapse_frame_interval_2500" msgid="5750464143606788153">"2.5 ሰከንዶች"</string>
