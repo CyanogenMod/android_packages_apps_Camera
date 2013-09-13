@@ -13,11 +13,11 @@ LOCAL_CFLAGS := -O3 -DNDEBUG
 
 LOCAL_SRC_FILES := benchmark.cpp
 
-LOCAL_SHARED_LIBRARIES := libjni_mosaic libGLESv2 libEGL
+LOCAL_SHARED_LIBRARIES := libjni_mosaic libGLESv2 libEGL liblog
 
 LOCAL_MODULE_TAGS := tests
 
-LOCAL_LDFLAGS :=  -llog -lGLESv2
+#LOCAL_LDFLAGS :=  -llog -lGLESv2
 
 LOCAL_MODULE := panorama_bench
 

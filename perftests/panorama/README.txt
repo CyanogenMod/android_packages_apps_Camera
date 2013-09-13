@@ -1,7 +1,7 @@
 How to run and verify the benchmark:
 
 1) adb push input /data/panorama_input
-2) adb shell panorama_bench /data/panorama_input/test /data/panorama.ppm
+2) adb shell /data/local/tmp/panorama_bench /data/panorama_input/test /data/panorama.ppm
 
 Sample output:
 
