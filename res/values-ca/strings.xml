@@ -127,7 +127,9 @@
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"Control de zoom"</string>
     <string name="accessibility_decrement" msgid="1411194318538035666">"Redueix %1$s"</string>
     <string name="accessibility_increment" msgid="8447850530444401135">"Augmenta %1$s"</string>
-    <string name="accessibility_check_box" msgid="7317447218256584181">"Casella de selecció %1$s"</string>
+    <!-- String.format failed for translation -->
+    <!-- no translation found for accessibility_check_box (7317447218256584181) -->
+    <skip />
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"Canvia a foto"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"Canvia a vídeo"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Canvia a panorama"</string>
