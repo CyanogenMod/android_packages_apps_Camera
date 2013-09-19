@@ -110,7 +110,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Zonsondergang"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"Uw video"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Zet uw apparaat neer.\nStap even uit beeld."</string>
-    <string name="video_snapshot_hint" msgid="18833576851372483">"Raak aan om een foto te maken tijdens een opname."</string>
+    <string name="video_snapshot_hint" msgid="18833576851372483">"Tik op het scherm en maak een foto tijdens een opname"</string>
     <string name="video_recording_started" msgid="4132915454417193503">"Video-opname is gestart."</string>
     <string name="video_recording_stopped" msgid="5086919511555808580">"Video-opname is gestopt."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Videosnapshot staat uit als speciale effecten zijn ingeschakeld."</string>

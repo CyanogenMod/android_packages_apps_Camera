@@ -189,7 +189,7 @@
     <string name="set_duration" msgid="5578035312407161304">"Configuració de la durada en segons"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"Compte enrere per fer una foto"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Vols que es recordin les ubicacions de les fotos?"</string>
-    <string name="remember_location_prompt" msgid="724592331305808098">"Etiqueta les teves fotos i els teus vídeos amb les ubicacions des de les quals es fan.\n\nAltres aplicacions podran accedir a aquesta informació juntament amb les imatges desades."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"Etiqueta les teves fotos i els teus vídeos amb les ubicacions on s\'han fet.\n\nAltres aplicacions podran accedir a aquesta informació i a les imatges desades."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"No, gràcies"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Sí"</string>
 </resources>
