@@ -52,7 +52,7 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Camera settings"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Camcorder settings"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Picture size"</string>
-    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8M pixels"</string>
+    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 M pixels"</string>
     <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5 M pixels"</string>
     <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3 M pixels"</string>
     <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2 M pixels"</string>
@@ -188,6 +188,6 @@
     <string name="count_down_title_text" msgid="4976386810910453266">"Counting down to take a photo"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Remember photo locations?"</string>
     <string name="remember_location_prompt" msgid="724592331305808098">"Tag your photos and videos with the locations where they are taken.\n\nOther apps can access this information along with your saved images."</string>
-    <string name="remember_location_no" msgid="7541394381714894896">"No thanks"</string>
+    <string name="remember_location_no" msgid="7541394381714894896">"No, thanks"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Yes"</string>
 </resources>

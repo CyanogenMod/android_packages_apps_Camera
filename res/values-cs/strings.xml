@@ -52,7 +52,7 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Nastavení fotoaparátu"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Nastavení videokamery"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Velikost fotografií"</string>
-    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 megapixelů"</string>
+    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 Mpx"</string>
     <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5 Mpx"</string>
     <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3 Mpx"</string>
     <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2 Mpx"</string>
@@ -177,9 +177,9 @@
     <string name="pref_video_time_lapse_frame_interval_43200000" msgid="285992046818504906">"12 hodin"</string>
     <string name="pref_video_time_lapse_frame_interval_54000000" msgid="5740227373848829515">"15 hodin"</string>
     <string name="pref_video_time_lapse_frame_interval_86400000" msgid="9040201678470052298">"24 hodin"</string>
-    <string name="time_lapse_seconds" msgid="2105521458391118041">"sekundy"</string>
-    <string name="time_lapse_minutes" msgid="7738520349259013762">"minuty"</string>
-    <string name="time_lapse_hours" msgid="1776453661704997476">"hodiny"</string>
+    <string name="time_lapse_seconds" msgid="2105521458391118041">"s"</string>
+    <string name="time_lapse_minutes" msgid="7738520349259013762">"min"</string>
+    <string name="time_lapse_hours" msgid="1776453661704997476">"hod"</string>
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Hotovo"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Nastavit časový interval"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Funkce časosběr je vypnutá. Zapněte ji a nastavte časový interval."</string>
