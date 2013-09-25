@@ -186,7 +186,7 @@
     <string name="set_timer_help" msgid="5007708849404589472">"مؤقت العد التنازلي متوقف. يُمكنك تشغيله لإجراء العد التنازلي قبل التقاط صورة."</string>
     <string name="set_duration" msgid="5578035312407161304">"تعيين المدة بالثواني"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"العد التنازلي لالتقاط صورة"</string>
-    <string name="remember_location_title" msgid="9060472929006917810">"هل تتذكر مواقع الصور؟"</string>
+    <string name="remember_location_title" msgid="9060472929006917810">"هل تريد حفظ مواقع الصور؟"</string>
     <string name="remember_location_prompt" msgid="724592331305808098">"ضع علامة على الصور ومقاطع الفيديو التابعة لك تشير إلى المواقع التي تم التقاطها منها.\n\nيمكن لتطبيقات أخرى الدخول إلى هذه المعلومات إلى جانب صورك المحفوظة."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"لا، شكرًا"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"نعم"</string>

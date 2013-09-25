@@ -42,7 +42,7 @@
   </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
     <skip />
-    <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"카운트다운하는 동안 신호음 울리기"</string>
+    <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"카운트다운 신호음 켜기"</string>
     <string name="setting_off" msgid="4480039384202951946">"OFF"</string>
     <string name="setting_on" msgid="8602246224465348901">"ON"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"동영상 화질"</string>
@@ -56,7 +56,7 @@
     <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5M 픽셀"</string>
     <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3M 픽셀"</string>
     <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2M 픽셀"</string>
-    <string name="pref_camera_picturesize_entry_1_3mp" msgid="829109608140747258">"1.3M 픽셀"</string>
+    <string name="pref_camera_picturesize_entry_1_3mp" msgid="829109608140747258">"130만 픽셀"</string>
     <string name="pref_camera_picturesize_entry_1mp" msgid="1669725616780375066">"1M 픽셀"</string>
     <string name="pref_camera_picturesize_entry_vga" msgid="806934254162981919">"VGA"</string>
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"QVGA"</string>
@@ -187,7 +187,7 @@
     <string name="set_duration" msgid="5578035312407161304">"시간 설정(초)"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"사진을 찍으려면 카운트다운하세요."</string>
     <string name="remember_location_title" msgid="9060472929006917810">"사진 위치를 기록하시겠습니까?"</string>
-    <string name="remember_location_prompt" msgid="724592331305808098">"촬영한 위치로 사진과 동영상에 태그를 지정하세요.\n\n다른 앱이 저장된 이미지와 더불어 이 정보에 액세스할 수 있습니다."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"촬영한 위치로 사진과 동영상에 태그를 지정하세요.\n\n다른 앱이 저장된 이미지와 함께 이 정보를 볼 수 있습니다."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"아니요"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"예"</string>
 </resources>

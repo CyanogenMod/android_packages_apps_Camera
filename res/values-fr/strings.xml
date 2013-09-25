@@ -35,7 +35,7 @@
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Arrière"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Avant"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Enregist. position"</string>
-    <string name="pref_camera_timer_title" msgid="3105232208281893389">"Compte à rebours"</string>
+    <string name="pref_camera_timer_title" msgid="3105232208281893389">"Retardateur"</string>
   <plurals name="pref_camera_timer_entry">
     <item quantity="one" msgid="1654523400981245448">"1 seconde"</item>
     <item quantity="other" msgid="6455381617076792481">"%d secondes"</item>
@@ -52,7 +52,7 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Paramètres appareil photo"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Mode Caméra"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Taille d\'image"</string>
-    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 mégapixels"</string>
+    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 Mpx"</string>
     <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5 M pixels"</string>
     <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3 M pixels"</string>
     <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2 M pixels"</string>
@@ -183,7 +183,7 @@
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"OK"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Définir l\'intervalle de temps"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"La fonctionnalité Time Lapse est désactivée. Veuillez l\'activer pour définir un intervalle."</string>
-    <string name="set_timer_help" msgid="5007708849404589472">"La fonctionnalité de compte à rebours est désactivée. Activez-la pour effectuer un compte à rebours avant de prendre une photo."</string>
+    <string name="set_timer_help" msgid="5007708849404589472">"Le retardateur est désactivé. Activez-le pour déclencher un compte à rebours avant de prendre une photo."</string>
     <string name="set_duration" msgid="5578035312407161304">"Définir la durée en secondes"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"Compte à rebours avant la photo"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Se souvenir du lieu des photos ?"</string>

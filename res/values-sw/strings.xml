@@ -64,7 +64,7 @@
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"Otomatiki"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"Pasipo mwisho"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Makro"</string>
-    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Hali ya mweka"</string>
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Hali ya mmweko"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Otomatiki"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Washa"</string>
     <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Zima"</string>
@@ -182,7 +182,7 @@
     <string name="time_lapse_seconds" msgid="2105521458391118041">"sekunde"</string>
     <string name="time_lapse_minutes" msgid="7738520349259013762">"dakika"</string>
     <string name="time_lapse_hours" msgid="1776453661704997476">"saa"</string>
-    <string name="time_lapse_interval_set" msgid="2486386210951700943">"Imekamilika"</string>
+    <string name="time_lapse_interval_set" msgid="2486386210951700943">"Nimemaliza"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Weka Nafasi ya Muda"</string>
     <string name="set_time_interval_help" msgid="6665849510484821483">"Kipengele cha muda kupita kimezimika. Kiwashe ili kuweka nafasi ya muda."</string>
     <string name="set_timer_help" msgid="5007708849404589472">"Kipima muda kimezimwa. Kiwashe ili kihesabu kabla ya kupiga picha."</string>

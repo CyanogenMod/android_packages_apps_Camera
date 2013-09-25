@@ -42,7 +42,7 @@
   </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
     <skip />
-    <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"Cte à reb sonore"</string>
+    <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"Compte à rebours sonore"</string>
     <string name="setting_off" msgid="4480039384202951946">"DÉSACTIVÉE"</string>
     <string name="setting_on" msgid="8602246224465348901">"ACTIVÉE"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualité vidéo"</string>

@@ -30,7 +30,7 @@
     <string name="access_sd_fail" product="default" msgid="1584968646870054352">"No s\'ha pogut accedir a la targeta SD."</string>
     <string name="review_cancel" msgid="8188009385853399254">"CANCEL·LA"</string>
     <string name="review_ok" msgid="1156261588693116433">"FET"</string>
-    <string name="time_lapse_title" msgid="4360632427760662691">"S\'està enregistrant lapse de temps"</string>
+    <string name="time_lapse_title" msgid="4360632427760662691">"S\'està enregistrant a intervals de temps"</string>
     <string name="pref_camera_id_title" msgid="4040791582294635851">"Tria de la càmera"</string>
     <string name="pref_camera_id_entry_back" msgid="5142699735103692485">"Enrere"</string>
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Frontal"</string>
@@ -48,16 +48,16 @@
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualitat de vídeo"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Alta"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Baixa"</string>
-    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Lapse de temps"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Interval de temps"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Configuració de la càmera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Configuració de la càmera de vídeo"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Mida de la imatge"</string>
-    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 megapíxels"</string>
-    <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5 megapíxels"</string>
-    <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3 megapíxels"</string>
-    <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2 megapíxels"</string>
-    <string name="pref_camera_picturesize_entry_1_3mp" msgid="829109608140747258">"1,3 megapíxels"</string>
-    <string name="pref_camera_picturesize_entry_1mp" msgid="1669725616780375066">"1 megapíxel"</string>
+    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 Mp"</string>
+    <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5 Mp"</string>
+    <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3 Mp"</string>
+    <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2 Mp"</string>
+    <string name="pref_camera_picturesize_entry_1_3mp" msgid="829109608140747258">"1,3 Mp"</string>
+    <string name="pref_camera_picturesize_entry_1mp" msgid="1669725616780375066">"1 Mp"</string>
     <string name="pref_camera_picturesize_entry_vga" msgid="806934254162981919">"VGA"</string>
     <string name="pref_camera_picturesize_entry_qvga" msgid="8576186463069770133">"QVGA"</string>
     <string name="pref_camera_focusmode_title" msgid="2877248921829329127">"Mode d\'enfocament"</string>
@@ -71,7 +71,7 @@
     <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Balanç de blancs"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Automàtica"</string>
     <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Incandescent"</string>
-    <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Llum de dia"</string>
+    <string name="pref_camera_whitebalance_entry_daylight" msgid="2534757270149561027">"Llum natural"</string>
     <string name="pref_camera_whitebalance_entry_fluorescent" msgid="2435332872847454032">"Fluorescent"</string>
     <string name="pref_camera_whitebalance_entry_cloudy" msgid="3531996716997959326">"Ennuvolat"</string>
     <string name="pref_camera_scenemode_title" msgid="1420535844292504016">"Mode d\'escena"</string>
@@ -110,7 +110,7 @@
     <string name="effect_backdropper_sunset" msgid="45198943771777870">"Posta del sol"</string>
     <string name="effect_backdropper_gallery" msgid="959158844620991906">"El teu vídeo"</string>
     <string name="bg_replacement_message" msgid="9184270738916564608">"Deixa el dispositiu.\nSurt un moment de la visualització."</string>
-    <string name="video_snapshot_hint" msgid="18833576851372483">"Toca per fer una foto mentre enregistres."</string>
+    <string name="video_snapshot_hint" msgid="18833576851372483">"Toca per fer una foto mentre enregistres un vídeo."</string>
     <string name="video_recording_started" msgid="4132915454417193503">"L\'enregistrament de vídeo ha començat."</string>
     <string name="video_recording_stopped" msgid="5086919511555808580">"L\'enregistrament de vídeo s\'ha aturat."</string>
     <string name="disable_video_snapshot_hint" msgid="4957723267826476079">"Les instantànies del vídeo es desactiven quan hi ha els efectes especials activats."</string>
@@ -184,12 +184,12 @@
     <string name="time_lapse_hours" msgid="1776453661704997476">"hores"</string>
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Fet"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Definició d\'interval de temps"</string>
-    <string name="set_time_interval_help" msgid="6665849510484821483">"La funció de lapse de temps està desactivada. Activa-la per definir l\'interval de temps."</string>
+    <string name="set_time_interval_help" msgid="6665849510484821483">"L\'interval de temps està desactivat. Activa aquesta funció per establir un interval de temps."</string>
     <string name="set_timer_help" msgid="5007708849404589472">"El temporitzador del compte enrere està desactivat. Activa el compte enrere abans de fer una foto."</string>
     <string name="set_duration" msgid="5578035312407161304">"Configuració de la durada en segons"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"Compte enrere per fer una foto"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Vols que es recordin les ubicacions de les fotos?"</string>
-    <string name="remember_location_prompt" msgid="724592331305808098">"Etiqueta les teves fotos i els teus vídeos amb les ubicacions des de les quals es fan.\n\nAltres aplicacions podran accedir a aquesta informació juntament amb les imatges desades."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"Etiqueta les teves fotos i els teus vídeos amb les ubicacions on s\'han fet.\n\nAltres aplicacions podran accedir a aquesta informació i a les imatges desades."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"No, gràcies"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Sí"</string>
 </resources>

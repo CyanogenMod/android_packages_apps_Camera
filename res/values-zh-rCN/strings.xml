@@ -18,7 +18,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="camera_error_title" msgid="6484667504938477337">"相机故障"</string>
     <string name="cannot_connect_camera" msgid="955440687597185163">"无法连接到相机。"</string>
-    <string name="camera_disabled" msgid="8923911090533439312">"由于安全政策的限制，相机已被停用。"</string>
+    <string name="camera_disabled" msgid="8923911090533439312">"由于安全政策的限制，相机已被禁用。"</string>
     <string name="camera_label" msgid="6346560772074764302">"相机"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"摄像机"</string>
     <string name="wait" msgid="8600187532323801552">"请稍候..."</string>
@@ -187,7 +187,7 @@
     <string name="set_duration" msgid="5578035312407161304">"设置倒数时间（秒）"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"拍照倒计时中"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"是否记住照片拍摄地点？"</string>
-    <string name="remember_location_prompt" msgid="724592331305808098">"为您的照片和视频标明拍摄地点。\n\n其他应用在查看您保存的图片时将可以访问这些信息。"</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"为您的照片和视频标明拍摄地点。\n\n其他应用在查看您保存的照片和视频时将可以使用这些信息。"</string>
     <string name="remember_location_no" msgid="7541394381714894896">"不用了"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"好"</string>
 </resources>

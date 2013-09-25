@@ -187,7 +187,7 @@
     <string name="set_duration" msgid="5578035312407161304">"Definir duração em segundos"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"Contagem regressiva para tirar foto"</string>
     <string name="remember_location_title" msgid="9060472929006917810">"Memorizar locais de fotos?"</string>
-    <string name="remember_location_prompt" msgid="724592331305808098">"Marque seus vídeos e fotos com os locais onde foram gerados.\n\nOutros aplicativos podem acessar essas informações juntamente com suas imagens salvas."</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"Marque seus vídeos e fotos com os locais onde foram gerados.\n\nOutros aplicativos podem acessar essas informações junto com suas imagens salvas."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Não, obrigado"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Sim"</string>
 </resources>

@@ -52,7 +52,7 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Ustawienia aparatu"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Ustawienia kamery"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Rozmiar zdjęcia"</string>
-    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 megapikseli"</string>
+    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 Mpix"</string>
     <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5 Mpix"</string>
     <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3 Mpix"</string>
     <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2 Mpix"</string>
@@ -181,8 +181,8 @@
     <string name="time_lapse_minutes" msgid="7738520349259013762">"min"</string>
     <string name="time_lapse_hours" msgid="1776453661704997476">"godz."</string>
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Gotowe"</string>
-    <string name="set_time_interval" msgid="2970567717633813771">"Ustaw interwał czasu"</string>
-    <string name="set_time_interval_help" msgid="6665849510484821483">"Funkcja filmu poklatkowego jest wyłączona. Włącz ją, by ustawić interwał czasu."</string>
+    <string name="set_time_interval" msgid="2970567717633813771">"Ustaw odstęp czasu"</string>
+    <string name="set_time_interval_help" msgid="6665849510484821483">"Funkcja filmu poklatkowego jest wyłączona. Włącz ją, by ustawić odstęp czasu."</string>
     <string name="set_timer_help" msgid="5007708849404589472">"Samowyzwalacz jest wyłączony. Włącz go, by odliczał czas pozostały do wykonania zdjęcia."</string>
     <string name="set_duration" msgid="5578035312407161304">"Ustaw czas w sekundach"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"Odliczanie czasu pozostałego do zrobienia zdjęcia"</string>
