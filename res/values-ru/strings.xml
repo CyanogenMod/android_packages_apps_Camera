@@ -48,7 +48,7 @@
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Качество видео"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Высокое качество"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Низкое качество"</string>
-    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Замедленная съемка"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Замедл. съемка"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Настройки камеры"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Настройки видеокамеры"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Размер фото"</string>
