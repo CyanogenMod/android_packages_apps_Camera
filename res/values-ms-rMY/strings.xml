@@ -42,13 +42,13 @@
   </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
     <skip />
-    <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"Bip semasa kira detik"</string>
+    <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"Bip kira detik"</string>
     <string name="setting_off" msgid="4480039384202951946">"Matikan"</string>
     <string name="setting_on" msgid="8602246224465348901">"Hidupkan"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Kualiti video"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Tinggi"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Rendah"</string>
-    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Selang masa"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Sela masa"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Tetapan kamera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Tetapan kamkorder"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Saiz gambar"</string>
