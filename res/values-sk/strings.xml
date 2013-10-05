@@ -52,7 +52,7 @@
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Nastavenia fotoaparátu"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Nastavenie videokamery"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Veľkosť fotografie"</string>
-    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 megapixelov"</string>
+    <string name="pref_camera_picturesize_entry_8mp" msgid="259953780932849079">"8 Mpx"</string>
     <string name="pref_camera_picturesize_entry_5mp" msgid="2882928212030661159">"5 megapixlov"</string>
     <string name="pref_camera_picturesize_entry_3mp" msgid="741415860337400696">"3 megapixle"</string>
     <string name="pref_camera_picturesize_entry_2mp" msgid="1753709802245460393">"2 megapixle"</string>
@@ -186,8 +186,8 @@
     <string name="set_timer_help" msgid="5007708849404589472">"Časovač odpočítavania je vypnutý. Ak chcete odpočítavať pred aktivovaním spúšte fotoaparátu, zapnite ho."</string>
     <string name="set_duration" msgid="5578035312407161304">"Nastavte dobu trvania v sekundách"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"Odpočítavanie spúšte fotoaparátu"</string>
-    <string name="remember_location_title" msgid="9060472929006917810">"Zapamätať si, kde boli fotografie vytvorené?"</string>
-    <string name="remember_location_prompt" msgid="724592331305808098">"Označte pre fotografie a videá polohy, kde boli zaznamenané.\n\nOstatné aplikácie môžu pristupovať k týmto informáciám aj k vašim uloženým snímkam."</string>
+    <string name="remember_location_title" msgid="9060472929006917810">"Zapamätať si, kde boli fotky vytvorené?"</string>
+    <string name="remember_location_prompt" msgid="724592331305808098">"Pridajte k fotkám a videám polohy, kde boli zaznamenané.\n\nOstatné aplikácie môžu pristupovať k týmto informáciám spolu s prístupom k vašim uloženým snímkam."</string>
     <string name="remember_location_no" msgid="7541394381714894896">"Nie, ďakujem"</string>
     <string name="remember_location_yes" msgid="862884269285964180">"Áno"</string>
 </resources>
