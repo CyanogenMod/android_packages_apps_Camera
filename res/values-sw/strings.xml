@@ -139,7 +139,7 @@
     <string name="accessibility_review_retake" msgid="659300290054705484">"Kagua ukaguzi"</string>
     <string name="capital_on" msgid="5491353494964003567">"IMEWASHWA"</string>
     <string name="capital_off" msgid="7231052688467970897">"IMEZIMWA"</string>
-    <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Imezimwa"</string>
+    <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Kimezimwa"</string>
     <string name="pref_video_time_lapse_frame_interval_500" msgid="2949719376111679816">"Sekunde 0.5"</string>
     <string name="pref_video_time_lapse_frame_interval_1000" msgid="1672458758823855874">"Sekunde 1"</string>
     <string name="pref_video_time_lapse_frame_interval_1500" msgid="3415071702490624802">"Sekunde 1.5"</string>
