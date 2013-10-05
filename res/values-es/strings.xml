@@ -133,7 +133,7 @@
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"Cambiar a modo panorámico"</string>
     <string name="accessibility_switch_to_new_panorama" msgid="8116783308051524188">"Cambiar a nueva panorámica"</string>
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"Cancelar"</string>
-    <string name="accessibility_review_ok" msgid="7793302834271343168">"Listo"</string>
+    <string name="accessibility_review_ok" msgid="7793302834271343168">"Revisión terminada"</string>
     <string name="accessibility_review_retake" msgid="659300290054705484">"Revisar repetición"</string>
     <string name="capital_on" msgid="5491353494964003567">"SÍ"</string>
     <string name="capital_off" msgid="7231052688467970897">"NO"</string>

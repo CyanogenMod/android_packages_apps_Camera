@@ -43,8 +43,8 @@
     <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
     <skip />
     <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"Bip conto alla rov."</string>
-    <string name="setting_off" msgid="4480039384202951946">"Disattivata"</string>
-    <string name="setting_on" msgid="8602246224465348901">"Attiva"</string>
+    <string name="setting_off" msgid="4480039384202951946">"OFF"</string>
+    <string name="setting_on" msgid="8602246224465348901">"ON"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualità video"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Alta"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Bassa"</string>
@@ -66,8 +66,8 @@
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Modalità flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatica"</string>
-    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Attiva"</string>
-    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Non attiva"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"ON"</string>
+    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"OFF"</string>
     <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Bilanciamento bianco"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Automatico"</string>
     <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Luce incandescenza"</string>
@@ -137,7 +137,7 @@
     <string name="accessibility_review_retake" msgid="659300290054705484">"Scatta/Riprendi di nuovo per recensione"</string>
     <string name="capital_on" msgid="5491353494964003567">"ON"</string>
     <string name="capital_off" msgid="7231052688467970897">"OFF"</string>
-    <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"Non attivo"</string>
+    <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"OFF"</string>
     <string name="pref_video_time_lapse_frame_interval_500" msgid="2949719376111679816">"0,5 secondi"</string>
     <string name="pref_video_time_lapse_frame_interval_1000" msgid="1672458758823855874">"1 secondo"</string>
     <string name="pref_video_time_lapse_frame_interval_1500" msgid="3415071702490624802">"1,5 secondi"</string>
