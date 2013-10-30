@@ -22,12 +22,12 @@
     <string name="camera_label" msgid="6346560772074764302">"מצלמה"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"מצלמת וידאו"</string>
     <string name="wait" msgid="8600187532323801552">"המתן..."</string>
-    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"טען אחסון USB לפני השימוש במצלמה."</string>
-    <string name="no_storage" product="default" msgid="5137703033746873624">"הכנס כרטיס SD לפני השימוש במצלמה."</string>
-    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"מכין אחסון USB..."</string>
-    <string name="preparing_sd" product="default" msgid="2914969119574812666">"מכין כרטיס SD..."</string>
-    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"לא ניתן לגשת לאחסון ה-USB."</string>
-    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"לא ניתן לגשת לכרטיס ה-SD."</string>
+    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"‏טען אחסון USB לפני השימוש במצלמה."</string>
+    <string name="no_storage" product="default" msgid="5137703033746873624">"‏הכנס כרטיס SD לפני השימוש במצלמה."</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"‏מכין אחסון USB..."</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"‏מכין כרטיס SD..."</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"‏לא ניתן לגשת לאחסון ה-USB."</string>
+    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"‏לא ניתן לגשת לכרטיס ה-SD."</string>
     <string name="review_cancel" msgid="8188009385853399254">"ביטול"</string>
     <string name="review_ok" msgid="1156261588693116433">"בוצע"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"הקלטה של מעבר זמן"</string>
@@ -38,7 +38,7 @@
     <string name="pref_camera_timer_title" msgid="3105232208281893389">"טיימר לספירה לאחור"</string>
   <plurals name="pref_camera_timer_entry">
     <item quantity="one" msgid="1654523400981245448">"שנייה אחת"</item>
-    <item quantity="other" msgid="6455381617076792481">"%d שניות"</item>
+    <item quantity="other" msgid="6455381617076792481">"‏%d שניות"</item>
   </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
     <skip />
@@ -64,7 +64,7 @@
     <string name="pref_camera_focusmode_entry_auto" msgid="7374820710300362457">"אוטומטי"</string>
     <string name="pref_camera_focusmode_entry_infinity" msgid="3413922419264967552">"אינסוף"</string>
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"מאקרו"</string>
-    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"מצב Flash"</string>
+    <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"‏מצב Flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"אוטומטי"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"מופעל"</string>
     <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"כבוי"</string>
@@ -86,8 +86,8 @@
     <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
     <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"אישור"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"אוזל המקום באמצעי האחסון מסוג USB. שנה את הגדרת האיכות או מחק כמה תמונות או קבצים אחרים."</string>
-    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"השטח בכרטיס SD אוזל. שנה את הגדרת האיכות או מחק חלק מהתמונות או קבצים אחרים."</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"‏אוזל המקום באמצעי האחסון מסוג USB. שנה את הגדרת האיכות או מחק כמה תמונות או קבצים אחרים."</string>
+    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"‏השטח בכרטיס SD אוזל. שנה את הגדרת האיכות או מחק חלק מהתמונות או קבצים אחרים."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"הגעת למגבלת הגודל."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"מהר מדי"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"מכין פנורמה"</string>
@@ -125,9 +125,9 @@
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"פקדי הגדרות נוספות"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"סגור פקדי הגדרה"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"פקד \'הגדל/הקטן\'"</string>
-    <string name="accessibility_decrement" msgid="1411194318538035666">"הקטן %1$s"</string>
-    <string name="accessibility_increment" msgid="8447850530444401135">"הגדל %1$s"</string>
-    <string name="accessibility_check_box" msgid="7317447218256584181">"תיבת סימון %1$s"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"‏הקטן %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"‏הגדל %1$s"</string>
+    <string name="accessibility_check_box" msgid="7317447218256584181">"‏תיבת סימון %1$s"</string>
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"עבור לצילום תמונות"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"עבור לווידאו"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"עבור לפנורמה"</string>
