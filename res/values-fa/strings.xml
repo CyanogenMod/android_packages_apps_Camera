@@ -22,12 +22,12 @@
     <string name="camera_label" msgid="6346560772074764302">"دوربین"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"دوربین فیلمبرداری"</string>
     <string name="wait" msgid="8600187532323801552">"لطفاً منتظر بمانید…"</string>
-    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"قبل از استفاده از دوربین حافظهٔ USB را وصل کنید."</string>
-    <string name="no_storage" product="default" msgid="5137703033746873624">"قبل از استفاده از دوربین یک کارت SD وارد کنید."</string>
-    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"آماده سازی حافظهٔ USB..."</string>
-    <string name="preparing_sd" product="default" msgid="2914969119574812666">"در حال آماده سازی کارت SD..."</string>
-    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"دسترسی به حافظهٔ USB ممکن نیست."</string>
-    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"دسترسی به کارت SD ممکن نیست."</string>
+    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"‏قبل از استفاده از دوربین حافظهٔ USB را وصل کنید."</string>
+    <string name="no_storage" product="default" msgid="5137703033746873624">"‏قبل از استفاده از دوربین یک کارت SD وارد کنید."</string>
+    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"‏آماده سازی حافظهٔ USB..."</string>
+    <string name="preparing_sd" product="default" msgid="2914969119574812666">"‏در حال آماده سازی کارت SD..."</string>
+    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"‏دسترسی به حافظهٔ USB ممکن نیست."</string>
+    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"‏دسترسی به کارت SD ممکن نیست."</string>
     <string name="review_cancel" msgid="8188009385853399254">"لغو"</string>
     <string name="review_ok" msgid="1156261588693116433">"انجام شد"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"زمان سپری شده ضبط"</string>
@@ -38,7 +38,7 @@
     <string name="pref_camera_timer_title" msgid="3105232208281893389">"تایمر شمارش معکوس"</string>
   <plurals name="pref_camera_timer_entry">
     <item quantity="one" msgid="1654523400981245448">"۱ ثانیه"</item>
-    <item quantity="other" msgid="6455381617076792481">"%d ثانیه"</item>
+    <item quantity="other" msgid="6455381617076792481">"‏%d ثانیه"</item>
   </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
     <skip />
@@ -86,8 +86,8 @@
     <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
     <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"تأیید"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"حافظهٔ USB پر است. تنظیمات کیفیت را تغییر دهید یا برخی تصاویر یا سایر فایل‌ها را حذف کنید."</string>
-    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"کارت SD شما پر شده است. تنظیمات کیفیت را تغییر دهید یا برخی تصاویر یا فایل‌های دیگر را حذف کنید."</string>
+    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"‏حافظهٔ USB پر است. تنظیمات کیفیت را تغییر دهید یا برخی تصاویر یا سایر فایل‌ها را حذف کنید."</string>
+    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"‏کارت SD شما پر شده است. تنظیمات کیفیت را تغییر دهید یا برخی تصاویر یا فایل‌های دیگر را حذف کنید."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"بیش از حداکثر مجاز."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"بسیار سریع"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"تهیه پانوراما"</string>
@@ -125,9 +125,9 @@
     <string name="accessibility_second_level_indicators" msgid="3855951632917627620">"کنترل‌های تنظیم بیشتر"</string>
     <string name="accessibility_back_to_first_level" msgid="5234411571109877131">"بستن کنترل‌های تنظیم"</string>
     <string name="accessibility_zoom_control" msgid="1339909363226825709">"کنترل بزرگنمایی"</string>
-    <string name="accessibility_decrement" msgid="1411194318538035666">"کاهش %1$s"</string>
-    <string name="accessibility_increment" msgid="8447850530444401135">"افزایش %1$s"</string>
-    <string name="accessibility_check_box" msgid="7317447218256584181">"کادر انتخاب %1$s"</string>
+    <string name="accessibility_decrement" msgid="1411194318538035666">"‏کاهش %1$s"</string>
+    <string name="accessibility_increment" msgid="8447850530444401135">"‏افزایش %1$s"</string>
+    <string name="accessibility_check_box" msgid="7317447218256584181">"‏کادر انتخاب %1$s"</string>
     <string name="accessibility_switch_to_camera" msgid="5951340774212969461">"رفتن به عکس"</string>
     <string name="accessibility_switch_to_video" msgid="4991396355234561505">"رفتن به ویدئو"</string>
     <string name="accessibility_switch_to_panorama" msgid="604756878371875836">"رفتن به پانوراما"</string>
