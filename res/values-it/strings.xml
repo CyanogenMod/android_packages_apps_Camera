@@ -48,7 +48,7 @@
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Qualità video"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Alta"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Bassa"</string>
-    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Rallentatore"</string>
+    <string name="pref_video_time_lapse_frame_interval_title" msgid="6245716906744079302">"Time lapse"</string>
     <string name="pref_camera_settings_category" msgid="2576236450859613120">"Impostazioni fotocamera"</string>
     <string name="pref_camcorder_settings_category" msgid="460313486231965141">"Impostazioni videocamera"</string>
     <string name="pref_camera_picturesize_title" msgid="4333724936665883006">"Dimensioni foto"</string>
@@ -182,7 +182,7 @@
     <string name="time_lapse_hours" msgid="1776453661704997476">"ore"</string>
     <string name="time_lapse_interval_set" msgid="2486386210951700943">"Fine"</string>
     <string name="set_time_interval" msgid="2970567717633813771">"Imposta l\'intervallo di tempo"</string>
-    <string name="set_time_interval_help" msgid="6665849510484821483">"La funzione Rallentatore non è attiva. Attivala per impostare l\'intervallo di tempo."</string>
+    <string name="set_time_interval_help" msgid="6665849510484821483">"La funzione Time lapse non è attiva. Attivala per impostare l\'intervallo di tempo."</string>
     <string name="set_timer_help" msgid="5007708849404589472">"Timer del conto alla rovescia non attivo. Attivalo per il conto alla rovescia prima di scattare una foto."</string>
     <string name="set_duration" msgid="5578035312407161304">"Imposta la durata in secondi"</string>
     <string name="count_down_title_text" msgid="4976386810910453266">"Conto alla rovescia per scattare una foto"</string>
