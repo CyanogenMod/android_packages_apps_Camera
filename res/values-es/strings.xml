@@ -44,7 +44,7 @@
     <skip />
     <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"Utilizar pitido"</string>
     <string name="setting_off" msgid="4480039384202951946">"No"</string>
-    <string name="setting_on" msgid="8602246224465348901">"Activado"</string>
+    <string name="setting_on" msgid="8602246224465348901">"Sí"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"Calidad de vídeo"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"Alta"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"Baja"</string>
@@ -66,7 +66,7 @@
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"Macro"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Flash"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automático"</string>
-    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Activado"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Sí"</string>
     <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"No"</string>
     <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Balance de blancos"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Automático"</string>
