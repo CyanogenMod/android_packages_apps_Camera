@@ -1787,7 +1787,10 @@ public class VideoCamera extends BaseCamera
 
         // Maximum zoom value may change after preview size is set. Get the
         // latest parameters here.
-        mZoomMax = mParameters.getMaxZoom();
+        /*
+        	Max zoom value can not be more than zoomRatios.
+         */
+	      mZoomMax = mParameters.getZoomRatios().size() -1;
         mGestureDetector = new GestureDetector(this, new ZoomGestureListener());
 
         mCameraDevice.setZoomChangeListener(mZoomListener);
