@@ -67,7 +67,7 @@
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"Lampa błyskowa"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"Automatyczna"</string>
     <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"Włączona"</string>
-    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Wyłączona"</string>
+    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"Wyłączone"</string>
     <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"Balans bieli"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"Auto"</string>
     <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"Światło żarowe"</string>

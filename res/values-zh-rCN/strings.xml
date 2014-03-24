@@ -44,7 +44,7 @@
     <skip />
     <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"倒计时过程中发出提示音"</string>
     <string name="setting_off" msgid="4480039384202951946">"关闭"</string>
-    <string name="setting_on" msgid="8602246224465348901">"打开"</string>
+    <string name="setting_on" msgid="8602246224465348901">"开启"</string>
     <string name="pref_video_quality_title" msgid="8245379279801096922">"视频画质"</string>
     <string name="pref_video_quality_entry_high" msgid="8664038216234805914">"高画质"</string>
     <string name="pref_video_quality_entry_low" msgid="7258507152393173784">"低画质"</string>
@@ -66,8 +66,8 @@
     <string name="pref_camera_focusmode_entry_macro" msgid="4424489110551866161">"微距"</string>
     <string name="pref_camera_flashmode_title" msgid="2287362477238791017">"闪光模式"</string>
     <string name="pref_camera_flashmode_entry_auto" msgid="7288383434237457709">"自动"</string>
-    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"开"</string>
-    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"关"</string>
+    <string name="pref_camera_flashmode_entry_on" msgid="5330043918845197616">"开启"</string>
+    <string name="pref_camera_flashmode_entry_off" msgid="867242186958805761">"关闭"</string>
     <string name="pref_camera_whitebalance_title" msgid="677420930596673340">"白平衡"</string>
     <string name="pref_camera_whitebalance_entry_auto" msgid="6580665476983469293">"自动"</string>
     <string name="pref_camera_whitebalance_entry_incandescent" msgid="8856667786449549938">"白炽光"</string>
@@ -135,7 +135,7 @@
     <string name="accessibility_review_cancel" msgid="9070531914908644686">"取消"</string>
     <string name="accessibility_review_ok" msgid="7793302834271343168">"完成"</string>
     <string name="accessibility_review_retake" msgid="659300290054705484">"重拍"</string>
-    <string name="capital_on" msgid="5491353494964003567">"打开"</string>
+    <string name="capital_on" msgid="5491353494964003567">"开启"</string>
     <string name="capital_off" msgid="7231052688467970897">"关闭"</string>
     <string name="pref_video_time_lapse_frame_interval_off" msgid="3490489191038309496">"关闭"</string>
     <string name="pref_video_time_lapse_frame_interval_500" msgid="2949719376111679816">"0.5 秒"</string>
