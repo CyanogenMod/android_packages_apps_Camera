@@ -248,12 +248,6 @@ public class CameraManager {
                         // do nothing
                         break;
 
-                    case ENABLE_SAMSUNG_ZSL_MODE:
-                        // I don't know the significance of 1508, it was discovered
-                        // by reading logs and reverse engineering.
-                        mCamera.sendRawCommand(1508, 0, 0);
-                        break;
-
                     default:
                         throw new RuntimeException("Invalid CameraProxy message=" + msg.what);
                 }
